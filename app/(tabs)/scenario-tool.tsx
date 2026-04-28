@@ -359,7 +359,7 @@ export default function ScenarioToolScreen() {
           <>
             {/* PDF Export Button */}
             <TouchableOpacity
-              style={[S.calcBtn, { backgroundColor: '#0ea5e9', marginBottom: 8 }]}
+              style={[S.calcBtn, { backgroundColor: '#33C5FF', marginBottom: 8 }]}
               onPress={async () => {
                 if (!result) return;
                 setPdfLoading(true);
@@ -417,7 +417,7 @@ export default function ScenarioToolScreen() {
                     table.breakdown th { background: #1e3a5f; color: #f59e0b; padding: 6px 4px; text-align: center; }
                     table.breakdown td { padding: 4px; text-align: center; border-bottom: 1px solid #334155; }
                     .box { border: 1px solid #334155; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; background: #1e293b; }
-                    .box-title { font-weight: 700; color: #38bdf8; margin-bottom: 6px; font-size: 13px; }
+                    .box-title { font-weight: 700; color: #33C5FF; margin-bottom: 6px; font-size: 13px; }
                     .box-body { color: #cbd5e1; font-size: 12px; line-height: 1.6; }
                     .disclaimer { margin-top: 24px; padding: 12px 16px; background: rgba(239,68,68,0.08); border-left: 4px solid #ef4444; border-radius: 4px; font-size: 11px; color: #94a3b8; line-height: 1.6; }
                     .footer { margin-top: 28px; padding-top: 14px; border-top: 1px solid #334155; font-size: 11px; color: #64748b; }
@@ -521,20 +521,20 @@ export default function ScenarioToolScreen() {
 
             {/* Summary Cards */}
             <View style={S.card}>
-              <Text style={S.sectionLabel}>{t(language, 'currentStatus').toUpperCase()}</Text>
+              <Text style={S.sectionLabel}>{`STRATEGY SUMMARY — ${Math.round(result.months.length / 12)} YEAR STRATEGY`}</Text>
               <View style={S.summaryGrid}>
                 <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} red />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
                 <SummaryItem label={t(language,'finalBalance')} value={fmt(result.finalCap)} green />
                 <SummaryItem
-                  label="Net Result"
+                  label="Total Purchase Benefit"
                   value={`${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)`}
-                  green={result.netResult > 0}
+                  green={result.netResult >= 0}
                   red={result.netResult < 0}
                 />
-                <SummaryItem label="Wallet+Pots" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label="VIP Cost" value={result.totalVipCost > 0 ? `-${fmt(result.totalVipCost)}` : fmt(0)} red={result.totalVipCost > 0} />
-                <SummaryItem label="Max Monthly Out" value={fmt(result.maxMonthlyOut)} green />
+                <SummaryItem label="Available Rebates" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
+                <SummaryItem label="VIP Access Fee" value={result.totalVipCost > 0 ? `-${fmt(result.totalVipCost)}` : fmt(0)} red={result.totalVipCost > 0} />
+                <SummaryItem label={`MAX MONTHLY REBATE (Month ${result.months.length})`} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
                   value={result.rocMonth
@@ -542,6 +542,13 @@ export default function ScenarioToolScreen() {
                     : t(language,'waiting')}
                 />
               </View>
+            </View>
+
+            {/* Buyback Guarantee Note */}
+            <View style={{ paddingHorizontal: 16, paddingVertical: 10, marginTop: -8, marginBottom: 4 }}>
+              <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", fontStyle: "italic" }}>
+                {"All physical diamonds are protected by a contractual 100% Buyback Guarantee upon completion of the strategy period."}
+              </Text>
             </View>
 
             {/* Monthly Table */}
@@ -676,7 +683,7 @@ const S = StyleSheet.create({
   bulkRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 4 },
   bulkInput: { flex: 1, backgroundColor: "#0f172a", color: "#fff", borderRadius: 6, padding: 7, fontSize: 15, borderWidth: 1, borderColor: "#334155" },
   bulkSmall: { width: 64, backgroundColor: "#0f172a", color: "#fff", borderRadius: 6, padding: 7, fontSize: 15, borderWidth: 1, borderColor: "#334155" },
-  btnBlue: { backgroundColor: "#0ea5e9", borderRadius: 6, paddingHorizontal: 10, paddingVertical: 7 },
+  btnBlue: { backgroundColor: "#33C5FF", borderRadius: 6, paddingHorizontal: 10, paddingVertical: 7 },
   btnAmber: { backgroundColor: "#f59e0b", borderRadius: 6, paddingHorizontal: 10, paddingVertical: 7 },
   btnPurple: { backgroundColor: "#a78bfa", borderRadius: 6, paddingHorizontal: 10, paddingVertical: 7 },
   btnText: { color: "#fff", fontWeight: "bold", fontSize: 14 },

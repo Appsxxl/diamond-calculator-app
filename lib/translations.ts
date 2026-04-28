@@ -10,7 +10,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Home",
     scenarioTool: "Scenario Tool",
-    strategyEngineer: "Strategy Engineer",
+    strategyEngineer: "Plan B Architect",
     settings: "Settings",
 
     // Home Screen
@@ -23,23 +23,24 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Client Name",
     language: "Language",
     vipStatus: "VIP Status",
-    goal: "Goal",
-    startDiamonds: "Start Diamonds",
-    years: "Years",
+    vipAccessFee: "VIP Access Fee",
+    goal: "Target Monthly Rebate",
+    startDiamonds: "Initial Purchase",
+    years: "Strategy Duration (Years)",
     month: "Month",
     months: "Months",
     year: "Year",
     yearSale: "Year Sale",
 
     // Scenario Tool
-    deposit: "Deposit",
+    deposit: "Monthly Diamond Purchases",
     extraAmounts: "Extra Amounts",
     annual: "Annual",
     oneTime: "One Time",
-    withdrawal: "Withdrawal",
+    withdrawal: "Rebate Payout / Usage",
     monthlyAmount: "Monthly Amount",
-    outPercentage: "Out %",
-    compoundPercentage: "Compound %",
+    outPercentage: "Rebate Allocation %",
+    compoundPercentage: "Growth Logic %",
     from: "From",
     till: "Till",
     ok: "OK",
@@ -49,21 +50,23 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Diamonds",
-    depositCol: "Deposit",
-    outPercentageCol: "Out %",
-    withdrawalCol: "Withdrawal",
-    compoundCol: "Compound %",
+    depositCol: "Monthly Diamond Purchases",
+    outPercentageCol: "Rebate Allocation %",
+    withdrawalCol: "Rebate Payout / Usage",
+    compoundCol: "Growth Logic %",
     plan: "Plan",
     discount: "Discount",
     status: "Status",
     totalDiamonds: "Total Diamonds",
 
     // Summary
-    totalIn: "Total In",
-    totalOut: "Total Out",
-    rocBreakEven: "ROC Break-Even",
-    currentStatus: "Current Status",
+    totalIn: "Total Purchase Amount",
+    totalOut: "Total Rebates Distributed",
+    availableRebates: "Available Rebates",
+    rocBreakEven: "Purchase Offset Point",
+    currentStatus: "Strategy Summary",
     waiting: "Waiting...",
+    buybackNote: "All physical diamonds are protected by a contractual 100% Buyback Guarantee upon completion of the strategy period.",
 
     // Strategy Engineer
     strategyTemplate: "Strategy Template",
@@ -107,25 +110,26 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Monthly",
-    finalBalance: "Final Balance",
-    monthlyBreakdown: "Monthly Breakdown",
-    selectStrategy: "Select an investment strategy",
+    finalBalance: "Final Diamond Value",
+    netResult: "Total Purchase Benefit",
+    monthlyBreakdown: "Monthly Rebate Schedule",
+    selectStrategy: "Select a purchase strategy",
     tip: "Tip",
     dataManagement: "Data Management",
 
     // SP Overview
     spLevelOverview: "SP LEVEL OVERVIEW",
-    vipInfo: "VIP: +3.0% bonus rate — costs $1,000 for 12 months",
+    vipInfo: "VIP: Activating VIP Status adds up to +3% to your monthly rebate. Cost: $1,000 for 12 months.",
     baseRate: "Base",
     vipRate: "VIP",
 
     // Help Articles
     helpArticle1Title: "How to Use the Calculator",
-    helpArticle2Title: "Understanding Investment Strategies",
+    helpArticle2Title: "Understanding Purchase Strategies",
     helpArticle3Title: "Reading the Monthly Breakdown",
     helpArticle4Title: "Disclaimer",
     faqSubtitle: "Frequently Asked Questions about Plan B",
-    faqDisclaimer: "This app is a mathematical simulation tool only. It is not financial advice. Always consult a licensed financial advisor before making any investment decisions.",
+    faqDisclaimer: "This app is a mathematical simulation tool only. It is not financial advice. All physical diamonds are protected by a contractual 100% Buyback Guarantee upon completion of the strategy period.",
 
     // PDF
     exportPdf: "Export PDF",

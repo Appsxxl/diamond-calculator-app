@@ -99,7 +99,7 @@ export default function StrategyEngineerScreen() {
           <TouchableOpacity onPress={() => router.back()} style={S.backBtn}>
             <Text style={S.backText}>← {t(language, "back")}</Text>
           </TouchableOpacity>
-          <Text style={S.title}>🧠 {t(language, "strategyEngineer")}</Text>
+          <Text style={S.title}>💎 {t(language, "strategyEngineer")}</Text>
           <Text style={S.subtitle}>Plan B — {t(language, "seSubtitle")}</Text>
         </View>
 
@@ -177,9 +177,9 @@ export default function StrategyEngineerScreen() {
             </View>
 
             {/* Plan A */}
-            <View style={[S.card, { borderLeftWidth: 3, borderLeftColor: "#0ea5e9" }]}>
+            <View style={[S.card, { borderLeftWidth: 3, borderLeftColor: "#33C5FF" }]}>
               <View style={S.planHeader}>
-                <View style={[S.badge, { backgroundColor: "#0ea5e9" }]}>
+                <View style={[S.badge, { backgroundColor: "#33C5FF" }]}>
                   <Text style={S.badgeText}>{t(language, "sePlanA")}</Text>
                 </View>
                 <Text style={S.planTitle}>{t(language, "sePlanATitle")}</Text>
@@ -187,14 +187,14 @@ export default function StrategyEngineerScreen() {
               <Text style={S.planDesc}>{t(language, "sePlanADesc")}</Text>
               <View style={S.resultBox}>
                 <Text style={S.resultLabel}>{t(language, "sePlanALabel")}</Text>
-                <Text style={[S.resultValue, { color: "#0ea5e9" }]}>
+                <Text style={[S.resultValue, { color: "#33C5FF" }]}>
                   {result.planA_deposit === "MET"
                     ? t(language, "sePlanAMet")
                     : `${fmt(result.planA_deposit as number)} ${t(language, "sePlanAPerMonth")}`}
                 </Text>
               </View>
-              <TouchableOpacity style={[S.applyBtn, { borderColor: "#0ea5e9" }]} onPress={() => applyPlan("A")}>
-                <Text style={[S.applyBtnText, { color: "#0ea5e9" }]}>
+              <TouchableOpacity style={[S.applyBtn, { borderColor: "#33C5FF" }]} onPress={() => applyPlan("A")}>
+                <Text style={[S.applyBtnText, { color: "#33C5FF" }]}>
                   {t(language, "seApplyPlan")} A {t(language, "seApplyToScenario")}
                 </Text>
               </TouchableOpacity>

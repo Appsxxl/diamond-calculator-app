@@ -213,7 +213,7 @@ export default function HomeScreen() {
 
         {/* Tool 2: Scenario Tool */}
         <TouchableOpacity style={S.toolCard} onPress={() => router.push("/scenario-tool")} activeOpacity={0.85}>
-          <View style={[S.toolBadge, { backgroundColor: "#0ea5e9" }]}>
+          <View style={[S.toolBadge, { backgroundColor: "#33C5FF" }]}>
             <Text style={S.toolBadgeText}>TOOL 2</Text>
           </View>
           <Text style={S.toolTitle}>📊 {t(language, "scenarioTool")}</Text>
@@ -322,28 +322,28 @@ const S = StyleSheet.create({
   sectionTitle: { color: "#f59e0b", fontSize: 16, fontWeight: "bold", letterSpacing: 0.5 },
   sectionSub: { color: "#64748b", fontSize: 14, marginTop: 2 },
   goalGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 16 },
-  goalCard: { backgroundColor: "#1e293b", borderRadius: 14, padding: 14, width: "48%", borderTopWidth: 2, borderTopColor: "#0ea5e9" },
+  goalCard: { backgroundColor: "#1e293b", borderRadius: 14, padding: 14, width: "48%", borderTopWidth: 2, borderTopColor: "#33C5FF" },
   goalIcon: { fontSize: 28, marginBottom: 6 },
   goalTitle: { color: "#fff", fontSize: 15, fontWeight: "bold", marginBottom: 3 },
   goalSubtitle: { color: "#94a3b8", fontSize: 13, marginBottom: 6, lineHeight: 18 },
   goalRecommended: { color: "#f59e0b", fontSize: 13, fontWeight: "600", marginBottom: 10 },
   goalButtons: { gap: 6 },
-  explainBtn: { backgroundColor: "#0ea5e9", borderRadius: 6, paddingVertical: 7, alignItems: "center" },
+  explainBtn: { backgroundColor: "#33C5FF", borderRadius: 6, paddingVertical: 7, alignItems: "center" },
   explainBtnText: { color: "#fff", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 },
   calcBtn: { backgroundColor: "#1e3a5f", borderRadius: 6, paddingVertical: 7, alignItems: "center", borderWidth: 1, borderColor: "#334155" },
   calcBtnText: { color: "#94a3b8", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 },
 
   // Tool Cards
-  toolCard: { backgroundColor: "#1e293b", borderRadius: 16, padding: 16, marginBottom: 10, borderTopWidth: 3, borderTopColor: "#0ea5e9" },
+  toolCard: { backgroundColor: "#1e293b", borderRadius: 16, padding: 16, marginBottom: 10, borderTopWidth: 3, borderTopColor: "#33C5FF" },
   toolBadge: { alignSelf: "flex-start", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 8 },
   toolBadgeText: { color: "#fff", fontWeight: "bold", fontSize: 12, letterSpacing: 1 },
   toolTitle: { fontSize: 17, fontWeight: "bold", color: "#fff", marginBottom: 6 },
   toolDesc: { fontSize: 15, color: "#94a3b8", lineHeight: 22, marginBottom: 10 },
   toolFeatures: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 10 },
   featureTag: { backgroundColor: "rgba(14,165,233,0.13)", borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1, borderColor: "rgba(14,165,233,0.27)" },
-  featureText: { color: "#0ea5e9", fontSize: 13, fontWeight: "600" },
+  featureText: { color: "#33C5FF", fontSize: 13, fontWeight: "600" },
   toolArrow: { borderTopWidth: 1, borderTopColor: "rgba(14,165,233,0.2)", paddingTop: 10 },
-  toolArrowText: { color: "#0ea5e9", fontWeight: "bold", fontSize: 14 },
+  toolArrowText: { color: "#33C5FF", fontWeight: "bold", fontSize: 14 },
 
   // Affiliate Card
   affiliateCard: { backgroundColor: "#1e293b", borderRadius: 14, padding: 14, marginBottom: 10, flexDirection: "row", alignItems: "center", borderLeftWidth: 3, borderLeftColor: "#22c55e" },
@@ -372,13 +372,13 @@ const S = StyleSheet.create({
   modalBox: { backgroundColor: "#1e293b", borderRadius: 20, padding: 24, width: "100%", maxWidth: 400 },
   modalIcon: { fontSize: 40, textAlign: "center", marginBottom: 10 },
   modalTitle: { color: "#fff", fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 4 },
-  modalSubtitle: { color: "#0ea5e9", fontSize: 15, textAlign: "center", marginBottom: 12 },
+  modalSubtitle: { color: "#33C5FF", fontSize: 15, textAlign: "center", marginBottom: 12 },
   modalDesc: { color: "#94a3b8", fontSize: 15, lineHeight: 22, marginBottom: 14 },
   modalRecommendedRow: { backgroundColor: "rgba(245,158,11,0.09)", borderRadius: 8, padding: 10, marginBottom: 16, borderWidth: 1, borderColor: "rgba(245,158,11,0.27)" },
   modalRecommendedLabel: { color: "#94a3b8", fontSize: 13, marginBottom: 2 },
   modalRecommendedValue: { color: "#f59e0b", fontSize: 16, fontWeight: "bold" },
   modalClose: { alignItems: "center", paddingVertical: 10, marginBottom: 8 },
   modalCloseText: { color: "#64748b", fontSize: 15 },
-  modalCalcBtn: { backgroundColor: "#0ea5e9", borderRadius: 10, paddingVertical: 12, alignItems: "center" },
+  modalCalcBtn: { backgroundColor: "#33C5FF", borderRadius: 10, paddingVertical: 12, alignItems: "center" },
   modalCalcBtnText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
 });
