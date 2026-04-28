@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure proper scrolling on web */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Allow React Native Web ScrollViews to scroll properly */
+[class*="r-WebkitOverflowScrolling"] {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure the app container fills the viewport */
+#root > div {
+  height: 100%;
+}
