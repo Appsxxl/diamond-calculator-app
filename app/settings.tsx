@@ -293,7 +293,11 @@ export default function SettingsScreen() {
             activeOpacity={0.7}
             onPress={async () => {
               await AsyncStorage.removeItem("onboarding_seen");
-              router.push({ pathname: "/onboarding" });
+              if (typeof window !== "undefined") {
+                window.location.href = "/onboarding";
+              } else {
+                router.replace({ pathname: "/onboarding" });
+              }
             }}
             style={[S.articleRow, { marginTop: 8, borderTopWidth: 0.5, borderTopColor: "#1e293b" }]}
           >
