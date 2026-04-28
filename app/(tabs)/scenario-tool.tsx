@@ -359,7 +359,8 @@ export default function ScenarioToolScreen() {
           <>
             {/* PDF Export Button */}
             <TouchableOpacity
-              style={[S.calcBtn, { backgroundColor: '#33C5FF', marginBottom: 8 }]}
+              style={[S.calcBtn, { backgroundColor: '#33C5FF', marginBottom: 8, opacity: pdfLoading ? 0.6 : 1 }]}
+              disabled={pdfLoading}
               onPress={async () => {
                 if (!result) return;
                 setPdfLoading(true);
@@ -581,18 +582,28 @@ export default function ScenarioToolScreen() {
 
                   </body></html>`;
 
-                  const { uri } = await Print.printToFileAsync({ html, base64: false });
                   if (Platform.OS === 'web') {
-                    const a = document.createElement('a');
-                    a.href = uri; a.download = `plan-b-strategy-${clientName || 'roadmap'}.pdf`; a.click();
-                  } else if (Platform.OS === 'android') {
-                    await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-                      data: uri,
-                      flags: 1,
-                      type: 'application/pdf',
-                    });
+                    // Web: open in new window and trigger browser print dialog
+                    const printWindow = window.open('', '_blank');
+                    if (printWindow) {
+                      printWindow.document.write(html);
+                      printWindow.document.close();
+                      printWindow.focus();
+                      setTimeout(() => {
+                        printWindow.print();
+                      }, 500);
+                    }
                   } else {
-                    await Print.printAsync({ uri });
+                    const { uri } = await Print.printToFileAsync({ html, base64: false });
+                    if (Platform.OS === 'android') {
+                      await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+                        data: uri,
+                        flags: 1,
+                        type: 'application/pdf',
+                      });
+                    } else {
+                      await Print.printAsync({ uri });
+                    }
                   }
                 } catch (e) {
                   Alert.alert(t(language,'pdfError'), String(e));
@@ -610,7 +621,7 @@ export default function ScenarioToolScreen() {
             <View style={S.card}>
               <Text style={S.sectionLabel}>{`STRATEGY SUMMARY — ${Math.round(result.months.length / 12)} YEAR STRATEGY`}</Text>
               <View style={S.summaryGrid}>
-                <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} red />
+                <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
                 <SummaryItem label={t(language,'finalBalance')} value={fmt(result.finalCap)} green />
                 <SummaryItem
@@ -644,7 +655,7 @@ export default function ScenarioToolScreen() {
               <ScrollView horizontal showsHorizontalScrollIndicator>
                 <View>
                   <View style={S.tableHead}>
-                    {["M","Diamonds","Deposit","Out%","Withdrawal","Comp%","Plan","Discount","Status","Total"].map(h => (
+                    {["M","Diamonds","Monthly Purchase","Rebate %","Rebate Payout","Growth %","Plan","Rebate","Status","Total"].map(h => (
                       <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
                     ))}
                   </View>
