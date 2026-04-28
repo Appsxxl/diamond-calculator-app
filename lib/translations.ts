@@ -321,7 +321,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Startpagina",
     scenarioTool: "Scenario Tool",
-    strategyEngineer: "Strategie Engineer",
+    strategyEngineer: "Plan B Architect",
     settings: "Instellingen",
 
     // Home Screen
@@ -334,23 +334,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Naam Klant",
     language: "Taal",
     vipStatus: "VIP Status",
-    goal: "Doel",
-    startDiamonds: "Start Diamanten",
-    years: "Jaren",
+    goal: "Streef Maandelijkse Korting",
+    startDiamonds: "Initiële Aankoop",
+    years: "Strategie Duur (Jaren)",
     month: "Maand",
     months: "Maanden",
     year: "Jaar",
     yearSale: "Jaar Verkoop",
 
     // Scenario Tool
-    deposit: "Storting",
+    deposit: "Maandelijkse Diamant Aankopen",
     extraAmounts: "Extra Bedragen",
     annual: "Jaarlijks",
     oneTime: "Eenmalig",
-    withdrawal: "Opname",
+    withdrawal: "Korting Uitbetaling / Gebruik",
     monthlyAmount: "Maandelijks Bedrag",
-    outPercentage: "Opname %",
-    compoundPercentage: "Samengesteld %",
+    outPercentage: "Korting Toewijzing %",
+    compoundPercentage: "Groei Logica %",
     from: "Van",
     till: "Tot",
     ok: "OK",
@@ -360,20 +360,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Diamanten",
-    depositCol: "Storting",
-    outPercentageCol: "Opname %",
-    withdrawalCol: "Opname",
-    compoundCol: "Samengesteld %",
+    depositCol: "Maandelijkse Diamant Aankopen",
+    outPercentageCol: "Korting Toewijzing %",
+    withdrawalCol: "Korting Uitbetaling / Gebruik",
+    compoundCol: "Groei Logica %",
     plan: "Plan",
     discount: "Korting",
     status: "Status",
     totalDiamonds: "Totaal Diamanten",
 
     // Summary
-    totalIn: "Totaal In",
-    totalOut: "Totaal Uit",
-    rocBreakEven: "ROC Break-Even",
-    currentStatus: "Huidige Status",
+    totalIn: "Totaal Aankoopbedrag",
+    totalOut: "Totaal Uitbetaalde Kortingen",
+    rocBreakEven: "Aankoop Terugverdienpunt",
+    currentStatus: "Strategie Samenvatting",
     waiting: "Wachten...",
 
     // Strategy Engineer
@@ -418,8 +418,8 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Maandelijks",
-    finalBalance: "Eindbalans",
-    monthlyBreakdown: "Maandelijkse Uitsplitsing",
+    finalBalance: "Eindwaarde Diamanten",
+    monthlyBreakdown: "Maandelijks Korting Schema",
     selectStrategy: "Selecteer een investeringsstrategie",
     tip: "Tip",
     dataManagement: "Gegevensbeheer",
@@ -621,7 +621,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Startseite",
     scenarioTool: "Szenario-Tool",
-    strategyEngineer: "Strategie-Ingenieur",
+    strategyEngineer: "Plan B Architekt",
     settings: "Einstellungen",
 
     // Home Screen
@@ -634,23 +634,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Kundenname",
     language: "Sprache",
     vipStatus: "VIP-Status",
-    goal: "Ziel",
-    startDiamonds: "Start Diamanten",
-    years: "Jahre",
+    goal: "Ziel Monatliche Vergütung",
+    startDiamonds: "Erstkauf",
+    years: "Strategie Dauer (Jahre)",
     month: "Monat",
     months: "Monate",
     year: "Jahr",
     yearSale: "Jahresverkauf",
 
     // Scenario Tool
-    deposit: "Einzahlung",
+    deposit: "Monatliche Diamant Käufe",
     extraAmounts: "Zusätzliche Beträge",
     annual: "Jährlich",
     oneTime: "Einmalig",
-    withdrawal: "Abhebung",
+    withdrawal: "Vergütungsauszahlung / Nutzung",
     monthlyAmount: "Monatlicher Betrag",
-    outPercentage: "Abhebung %",
-    compoundPercentage: "Zinseszins %",
+    outPercentage: "Vergütungszuteilung %",
+    compoundPercentage: "Wachstumslogik %",
     from: "Von",
     till: "Bis",
     ok: "OK",
@@ -660,20 +660,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Diamanten",
-    depositCol: "Einzahlung",
-    outPercentageCol: "Abhebung %",
-    withdrawalCol: "Abhebung",
-    compoundCol: "Zinseszins %",
+    depositCol: "Monatliche Diamant Käufe",
+    outPercentageCol: "Vergütungszuteilung %",
+    withdrawalCol: "Vergütungsauszahlung / Nutzung",
+    compoundCol: "Wachstumslogik %",
     plan: "Plan",
     discount: "Rabatt",
     status: "Status",
     totalDiamonds: "Gesamtdiamanten",
 
     // Summary
-    totalIn: "Gesamt Einzahlung",
-    totalOut: "Gesamt Abhebung",
-    rocBreakEven: "ROC Break-Even",
-    currentStatus: "Aktueller Status",
+    totalIn: "Gesamter Kaufbetrag",
+    totalOut: "Gesamte Vergütungen",
+    rocBreakEven: "Kaufausgleichspunkt",
+    currentStatus: "Strategie Zusammenfassung",
     waiting: "Warten...",
 
     // Strategy Engineer
@@ -718,8 +718,8 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Monatlich",
-    finalBalance: "Endsaldo",
-    monthlyBreakdown: "Monatliche Aufschlüsselung",
+    finalBalance: "Endwert der Diamanten",
+    monthlyBreakdown: "Monatlicher Vergütungsplan",
     selectStrategy: "Wählen Sie eine Anlagestrategie",
     tip: "Tipp",
     dataManagement: "Datenverwaltung",
@@ -920,7 +920,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Accueil",
     scenarioTool: "Outil de Scénario",
-    strategyEngineer: "Ingénieur de Stratégie",
+    strategyEngineer: "Architecte Plan B",
     settings: "Paramètres",
 
     // Home Screen
@@ -933,23 +933,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Nom du Client",
     language: "Langue",
     vipStatus: "Statut VIP",
-    goal: "Objectif",
-    startDiamonds: "Diamants de Départ",
-    years: "Années",
+    goal: "Remise Mensuelle Cible",
+    startDiamonds: "Achat Initial",
+    years: "Durée de la Stratégie (Années)",
     month: "Mois",
     months: "Mois",
     year: "Année",
     yearSale: "Vente Annuelle",
 
     // Scenario Tool
-    deposit: "Dépôt",
+    deposit: "Achats Mensuels de Diamants",
     extraAmounts: "Montants Supplémentaires",
     annual: "Annuel",
     oneTime: "Ponctuel",
-    withdrawal: "Retrait",
+    withdrawal: "Versement / Utilisation de la Remise",
     monthlyAmount: "Montant Mensuel",
-    outPercentage: "Retrait %",
-    compoundPercentage: "Intérêt Composé %",
+    outPercentage: "Allocation de Remise %",
+    compoundPercentage: "Logique de Croissance %",
     from: "De",
     till: "À",
     ok: "OK",
@@ -959,20 +959,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Diamants",
-    depositCol: "Dépôt",
-    outPercentageCol: "Retrait %",
-    withdrawalCol: "Retrait",
-    compoundCol: "Intérêt Composé %",
+    depositCol: "Achats Mensuels de Diamants",
+    outPercentageCol: "Allocation de Remise %",
+    withdrawalCol: "Versement / Utilisation de la Remise",
+    compoundCol: "Logique de Croissance %",
     plan: "Plan",
     discount: "Remise",
     status: "Statut",
     totalDiamonds: "Diamants Totaux",
 
     // Summary
-    totalIn: "Total Entrant",
-    totalOut: "Total Sortant",
-    rocBreakEven: "ROC Seuil de Rentabilité",
-    currentStatus: "Statut Actuel",
+    totalIn: "Montant Total Payé",
+    totalOut: "Total des Remises Distribuées",
+    rocBreakEven: "Point de Récupération d'Achat",
+    currentStatus: "Résumé de la Stratégie",
     waiting: "Attente...",
 
     // Strategy Engineer
@@ -1017,8 +1017,8 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Mensuel",
-    finalBalance: "Solde Final",
-    monthlyBreakdown: "Ventilation Mensuelle",
+    finalBalance: "Valeur Finale des Diamants",
+    monthlyBreakdown: "Calendrier Mensuel des Remises",
     selectStrategy: "Sélectionnez une stratégie d'investissement",
     tip: "Conseil",
     dataManagement: "Gestion des Données",
@@ -1220,7 +1220,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Inicio",
     scenarioTool: "Herramienta de Escenarios",
-    strategyEngineer: "Ingeniero de Estrategia",
+    strategyEngineer: "Arquitecto Plan B",
     settings: "Configuración",
 
     // Home Screen
@@ -1233,23 +1233,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Nombre del Cliente",
     language: "Idioma",
     vipStatus: "Estado VIP",
-    goal: "Objetivo",
-    startDiamonds: "Diamantes Iniciales",
-    years: "Años",
+    goal: "Reembolso Mensual Objetivo",
+    startDiamonds: "Compra Inicial",
+    years: "Duración de la Estrategia (Años)",
     month: "Mes",
     months: "Meses",
     year: "Año",
     yearSale: "Venta Anual",
 
     // Scenario Tool
-    deposit: "Depósito",
+    deposit: "Compras Mensuales de Diamantes",
     extraAmounts: "Montos Adicionales",
     annual: "Anual",
     oneTime: "Único",
-    withdrawal: "Retiro",
+    withdrawal: "Pago / Uso del Reembolso",
     monthlyAmount: "Monto Mensual",
-    outPercentage: "Retiro %",
-    compoundPercentage: "Interés Compuesto %",
+    outPercentage: "Asignación de Reembolso %",
+    compoundPercentage: "Lógica de Crecimiento %",
     from: "De",
     till: "Hasta",
     ok: "OK",
@@ -1259,20 +1259,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Diamantes",
-    depositCol: "Depósito",
-    outPercentageCol: "Retiro %",
-    withdrawalCol: "Retiro",
-    compoundCol: "Interés Compuesto %",
+    depositCol: "Compras Mensuales de Diamantes",
+    outPercentageCol: "Asignación de Reembolso %",
+    withdrawalCol: "Pago / Uso del Reembolso",
+    compoundCol: "Lógica de Crecimiento %",
     plan: "Plan",
     discount: "Descuento",
     status: "Estado",
     totalDiamonds: "Diamantes Totales",
 
     // Summary
-    totalIn: "Total Entrada",
-    totalOut: "Total Salida",
-    rocBreakEven: "ROC Punto de Equilibrio",
-    currentStatus: "Estado Actual",
+    totalIn: "Monto Total Pagado",
+    totalOut: "Total de Reembolsos Distribuidos",
+    rocBreakEven: "Punto de Recuperación de Compra",
+    currentStatus: "Resumen de la Estrategia",
     waiting: "Esperando...",
 
     // Strategy Engineer
@@ -1317,8 +1317,8 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Mensual",
-    finalBalance: "Saldo Final",
-    monthlyBreakdown: "Desglose Mensual",
+    finalBalance: "Valor Final de los Diamantes",
+    monthlyBreakdown: "Calendario Mensual de Reembolsos",
     selectStrategy: "Seleccione una estrategia de inversión",
     tip: "Consejo",
     dataManagement: "Gestión de Datos",
@@ -1519,7 +1519,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "Главная",
     scenarioTool: "Сценарий",
-    strategyEngineer: "Стратег",
+    strategyEngineer: "Архитектор Плана Б",
     settings: "Настройки",
 
     // Home Screen
@@ -1532,23 +1532,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "Имя клиента",
     language: "Язык",
     vipStatus: "VIP статус",
-    goal: "Цель",
-    startDiamonds: "Начальные алмазы",
-    years: "Лет",
+    goal: "Целевой ежемесячный возврат",
+    startDiamonds: "Первоначальная покупка",
+    years: "Срок стратегии (лет)",
     month: "Месяц",
     months: "Месяцев",
     year: "Год",
     yearSale: "Годовая продажа",
 
     // Scenario Tool
-    deposit: "Депозит",
+    deposit: "Ежемесячные покупки алмазов",
     extraAmounts: "Доп. суммы",
     annual: "Ежегодно",
     oneTime: "Разово",
-    withdrawal: "Вывод",
+    withdrawal: "Выплата возврата / использование",
     monthlyAmount: "Ежемесячная сумма",
-    outPercentage: "Вывод %",
-    compoundPercentage: "Реинвест %",
+    outPercentage: "Распределение возврата %",
+    compoundPercentage: "Логика роста %",
     from: "С",
     till: "По",
     ok: "OK",
@@ -1558,20 +1558,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "Алмазы",
-    depositCol: "Депозит",
-    outPercentageCol: "Вывод %",
-    withdrawalCol: "Вывод",
-    compoundCol: "Реинвест %",
+    depositCol: "Ежемесячные покупки алмазов",
+    outPercentageCol: "Распределение возврата %",
+    withdrawalCol: "Выплата возврата / использование",
+    compoundCol: "Логика роста %",
     plan: "План",
     discount: "Скидка",
     status: "Статус",
     totalDiamonds: "Всего алмазов",
 
     // Summary
-    totalIn: "Всего внесено",
-    totalOut: "Всего выведено",
-    rocBreakEven: "ROC Безубыточность",
-    currentStatus: "Текущий статус",
+    totalIn: "Общая сумма покупок",
+    totalOut: "Общая сумма возвратов",
+    rocBreakEven: "Точка окупаемости покупки",
+    currentStatus: "Сводка стратегии",
     waiting: "Ожидание...",
 
     // Strategy Engineer
@@ -1616,8 +1616,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Additional Keys
     monthly: "Ежемесячно",
-    finalBalance: "Итоговый баланс",
-    monthlyBreakdown: "Помесячная разбивка",
+    finalBalance: "Итоговая стоимость алмазов",
+    monthlyBreakdown: "Ежемесячный план возвратов",
     selectStrategy: "Выберите инвестиционную стратегию",
     tip: "Совет",
     dataManagement: "Управление данными",
@@ -1818,7 +1818,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation & Tabs
     home: "主页",
     scenarioTool: "情景工具",
-    strategyEngineer: "策略工程师",
+    strategyEngineer: "B计划架构师",
     settings: "设置",
 
     // Home Screen
@@ -1831,23 +1831,23 @@ export const translations: Record<Language, Record<string, string>> = {
     clientName: "客户姓名",
     language: "语言",
     vipStatus: "VIP状态",
-    goal: "目标",
-    startDiamonds: "初始钻石",
-    years: "年",
+    goal: "目标月度返利",
+    startDiamonds: "初始购买",
+    years: "策略期限（年）",
     month: "月",
     months: "个月",
     year: "年",
     yearSale: "年度销售",
 
     // Scenario Tool
-    deposit: "存款",
+    deposit: "每月钻石购买",
     extraAmounts: "额外金额",
     annual: "每年",
     oneTime: "一次性",
-    withdrawal: "提款",
+    withdrawal: "返利支付/使用",
     monthlyAmount: "月金额",
-    outPercentage: "提款%",
-    compoundPercentage: "复利%",
+    outPercentage: "返利分配%",
+    compoundPercentage: "增长逻辑%",
     from: "从",
     till: "至",
     ok: "确定",
@@ -1857,20 +1857,20 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Results Table Headers
     diamonds: "钻石",
-    depositCol: "存款",
-    outPercentageCol: "提款%",
-    withdrawalCol: "提款",
-    compoundCol: "复利%",
+    depositCol: "每月钻石购买",
+    outPercentageCol: "返利分配%",
+    withdrawalCol: "返利支付/使用",
+    compoundCol: "增长逻辑%",
     plan: "计划",
     discount: "折扣",
     status: "状态",
     totalDiamonds: "总钻石",
 
     // Summary
-    totalIn: "总存入",
-    totalOut: "总提取",
-    rocBreakEven: "ROC盈亏平衡",
-    currentStatus: "当前状态",
+    totalIn: "总购买金额",
+    totalOut: "总返利分配",
+    rocBreakEven: "购买回收点",
+    currentStatus: "策略摘要",
     waiting: "等待中...",
 
     // Strategy Engineer
@@ -1915,8 +1915,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Additional Keys
     monthly: "每月",
-    finalBalance: "最终余额",
-    monthlyBreakdown: "月度明细",
+    finalBalance: "钻石最终价值",
+    monthlyBreakdown: "每月返利计划",
     selectStrategy: "选择投资策略",
     tip: "提示",
     dataManagement: "数据管理",

@@ -363,7 +363,7 @@ export default function ScenarioToolScreen() {
               onPress={async () => {
                 if (!result) return;
                 setPdfLoading(true);
-                try {                  // Office footer data
+                try {
                   const officeData: Record<string, { name: string; address: string; reg: string }> = {
                     dubai: { name: 'Diamond Solution — Dubai Freezone', address: 'DMCC Business Centre, Jumeirah Lakes Towers, Dubai, UAE', reg: 'DMCC License No. 1007195 · SIRA Certified' },
                     vienna: { name: 'Diamond Solution — Vienna, Austria', address: 'Vienna, Austria', reg: 'EU Operations Office' },
@@ -372,139 +372,226 @@ export default function ScenarioToolScreen() {
                   };
                   const office = officeData[officeLocation] ?? officeData.dubai;
                   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+                  const totalYears = Math.round(result.months.length / 12);
+                  const totalMonths = result.months.length;
+                  const maxRebateMonth = result.months.reduce((best, r) => r.grossYield > best.grossYield ? r : best, result.months[0]);
 
-                  const tableRows = result.months.map(row => {
-                    const md = monthData[row.month] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 };
-                    const rowBg = row.month % 2 === 0 ? '#1e293b' : '#0f172a';
-                    return `<tr style="background:${rowBg}">
-                      <td>${row.month}</td>
-                      <td>$${fmt(row.capStart)}</td>
-                      <td>${fmt(row.deposit) !== '0' ? '$'+fmt(row.deposit) : '—'}</td>
-                      <td>${md.opnP.toFixed(0)}%</td>
-                      <td>${row.withdrawal > 0 ? '$'+fmt(row.withdrawal) : '—'}</td>
-                      <td>${md.comp.toFixed(0)}%</td>
-                      <td>${row.spName} (${row.totalRate.toFixed(1)}%)</td>
-                      <td>$${fmt(row.grossYield)}</td>
-                      <td>${row.vipStatus || '—'}</td>
-                      <td><b>$${fmt(row.capEnd)}</b></td>
-                    </tr>`;
-                  }).join('');
+                  // Build monthly table rows — grouped by year if > 5 years
+                  let tableBody = '';
+                  if (totalYears <= 5) {
+                    let cumulative = 0;
+                    tableBody = result.months.map(row => {
+                      cumulative += row.grossYield;
+                      const bg = row.month % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      return `<tr style="background:${bg}">
+                        <td style="text-align:center;color:#1e293b">${row.month}</td>
+                        <td style="text-align:right;color:#16a34a;font-weight:600">$${fmt(row.grossYield)}</td>
+                        <td style="text-align:right;color:#16a34a">$${fmt(cumulative)}</td>
+                        <td style="text-align:right;color:#1e3a5f;font-weight:600">$${fmt(row.capEnd)}</td>
+                      </tr>`;
+                    }).join('');
+                  } else {
+                    // Group by year
+                    let cumulative = 0;
+                    const years_map: Record<number, { rebates: number; finalVal: number; months: number }> = {};
+                    result.months.forEach(row => {
+                      const yr = Math.ceil(row.month / 12);
+                      if (!years_map[yr]) years_map[yr] = { rebates: 0, finalVal: 0, months: 0 };
+                      years_map[yr].rebates += row.grossYield;
+                      years_map[yr].finalVal = row.capEnd;
+                      years_map[yr].months = row.month;
+                    });
+                    tableBody = Object.entries(years_map).map(([yr, data]) => {
+                      cumulative += data.rebates;
+                      const bg = parseInt(yr) % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      return `<tr style="background:${bg}">
+                        <td style="text-align:center;color:#1e293b;font-weight:600">Year ${yr} (Month ${(parseInt(yr)-1)*12+1}–${data.months})</td>
+                        <td style="text-align:right;color:#16a34a;font-weight:600">$${fmt(data.rebates)}</td>
+                        <td style="text-align:right;color:#16a34a">$${fmt(cumulative)}</td>
+                        <td style="text-align:right;color:#1e3a5f;font-weight:600">$${fmt(data.finalVal)}</td>
+                      </tr>`;
+                    }).join('');
+                  }
 
-                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Plan B Quotation</title>
+                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+                  <title>Plan B — Personal Strategy Roadmap</title>
                   <style>
                     * { box-sizing: border-box; margin: 0; padding: 0; }
-                    body { font-family: Arial, Helvetica, sans-serif; background: #0a0f1e; color: #e2e8f0; padding: 28px; font-size: 13px; }
-                    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #f59e0b; padding-bottom: 16px; margin-bottom: 20px; }
-                    .logo { font-size: 26px; font-weight: 900; color: #f59e0b; letter-spacing: -1px; }
-                    .logo span { color: #e2e8f0; }
-                    .quotation-badge { background: #f59e0b; color: #0a0f1e; font-weight: 900; font-size: 14px; padding: 6px 16px; border-radius: 6px; letter-spacing: 1px; }
-                    .meta { color: #94a3b8; font-size: 12px; margin-top: 4px; }
-                    .client-block { background: #1e293b; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; border-left: 4px solid #f59e0b; }
-                    .client-name { font-size: 18px; font-weight: 700; color: #fff; }
-                    .client-meta { color: #94a3b8; font-size: 12px; margin-top: 4px; }
-                    h2 { font-size: 13px; font-weight: 700; color: #f59e0b; letter-spacing: 1px; text-transform: uppercase; margin: 20px 0 10px; }
-                    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-                    .stat { background: #1e293b; border-radius: 8px; padding: 10px 14px; }
-                    .stat-label { font-size: 11px; color: #94a3b8; margin-bottom: 3px; }
-                    .stat-value { font-size: 15px; font-weight: 700; color: #fff; }
-                    .green { color: #22c55e !important; }
-                    .amber { color: #f59e0b !important; }
-                    .sp-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
-                    .sp-table th { background: #1e3a5f; color: #f59e0b; padding: 7px 8px; text-align: left; }
-                    .sp-table td { padding: 6px 8px; border-bottom: 1px solid #334155; color: #e2e8f0; }
-                    .sp-table tr:nth-child(even) td { background: #1e293b; }
-                    table.breakdown { width: 100%; border-collapse: collapse; font-size: 11px; }
-                    table.breakdown th { background: #1e3a5f; color: #f59e0b; padding: 6px 4px; text-align: center; }
-                    table.breakdown td { padding: 4px; text-align: center; border-bottom: 1px solid #334155; }
-                    .box { border: 1px solid #334155; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; background: #1e293b; }
-                    .box-title { font-weight: 700; color: #33C5FF; margin-bottom: 6px; font-size: 13px; }
-                    .box-body { color: #cbd5e1; font-size: 12px; line-height: 1.6; }
-                    .disclaimer { margin-top: 24px; padding: 12px 16px; background: rgba(239,68,68,0.08); border-left: 4px solid #ef4444; border-radius: 4px; font-size: 11px; color: #94a3b8; line-height: 1.6; }
-                    .footer { margin-top: 28px; padding-top: 14px; border-top: 1px solid #334155; font-size: 11px; color: #64748b; }
-                    .footer strong { color: #94a3b8; }
+                    @page { size: A4; margin: 20mm 15mm; }
+                    body { font-family: Arial, Helvetica, sans-serif; background: #ffffff; color: #1e293b; font-size: 12px; line-height: 1.5; }
+                    
+                    /* Header */
+                    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 3px solid #1e3a5f; margin-bottom: 18px; }
+                    .logo-area { display: flex; align-items: center; gap: 10px; }
+                    .logo-emoji { font-size: 32px; }
+                    .logo-text { font-size: 22px; font-weight: 900; color: #1e3a5f; letter-spacing: -0.5px; }
+                    .logo-sub { font-size: 10px; color: #64748b; margin-top: 2px; }
+                    .doc-title { text-align: right; }
+                    .doc-title-main { font-size: 14px; font-weight: 900; color: #1e3a5f; letter-spacing: 1px; text-transform: uppercase; }
+                    .doc-meta { font-size: 10px; color: #64748b; margin-top: 3px; }
+
+                    /* Client block */
+                    .client-block { background: #f1f5f9; border-left: 4px solid #33C5FF; border-radius: 6px; padding: 12px 16px; margin-bottom: 18px; }
+                    .client-name { font-size: 17px; font-weight: 700; color: #1e3a5f; }
+                    .client-meta { font-size: 10px; color: #64748b; margin-top: 3px; }
+
+                    /* Section titles */
+                    .section-title { font-size: 11px; font-weight: 700; color: #1e3a5f; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 1.5px solid #33C5FF; padding-bottom: 5px; margin: 18px 0 10px; }
+
+                    /* Parameters grid */
+                    .params-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+                    .param-row { display: flex; flex-direction: column; }
+                    .param-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .param-value { font-size: 14px; font-weight: 700; color: #1e3a5f; margin-top: 2px; }
+
+                    /* Summary grid */
+                    .summary-box { border: 1.5px solid #1e3a5f; border-radius: 8px; padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; background: #fff; }
+                    .stat { padding: 8px 12px; border-radius: 6px; background: #f8fafc; }
+                    .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+                    .stat-value { font-size: 15px; font-weight: 700; color: #1e3a5f; }
+                    .green { color: #16a34a !important; }
+                    .blue { color: #33C5FF !important; }
+
+                    /* Table */
+                    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 18px; }
+                    thead tr { background: #1e3a5f; }
+                    thead th { color: #ffffff; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.5px; }
+                    thead th:not(:first-child) { text-align: right; }
+                    tbody td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
+
+                    /* Guarantee box */
+                    .guarantee-box { background: #f0fdf4; border: 1.5px solid #16a34a; border-radius: 8px; padding: 14px 18px; margin-bottom: 14px; }
+                    .guarantee-title { font-size: 12px; font-weight: 700; color: #16a34a; margin-bottom: 6px; }
+                    .guarantee-item { font-size: 11px; color: #166534; margin-bottom: 4px; padding-left: 12px; position: relative; }
+                    .guarantee-item::before { content: "✓"; position: absolute; left: 0; color: #16a34a; font-weight: 700; }
+
+                    /* Disclaimer */
+                    .disclaimer { margin-top: 14px; padding: 10px 14px; background: #fefce8; border-left: 3px solid #ca8a04; border-radius: 4px; font-size: 10px; color: #78350f; line-height: 1.6; }
+
+                    /* Footer */
+                    .footer { margin-top: 18px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; display: flex; justify-content: space-between; }
                   </style></head><body>
 
+                  <!-- HEADER -->
                   <div class="header">
-                    <div>
-                      <div class="logo">💎 Plan<span> B</span></div>
-                      <div class="meta">Diamond Solution International</div>
+                    <div class="logo-area">
+                      <div class="logo-emoji">💎</div>
+                      <div>
+                        <div class="logo-text">Plan B</div>
+                        <div class="logo-sub">Diamond Solution International</div>
+                      </div>
                     </div>
-                    <div style="text-align:right">
-                      <div class="quotation-badge">QUOTATION</div>
-                      <div class="meta" style="margin-top:6px">${today}</div>
+                    <div class="doc-title">
+                      <div class="doc-title-main">Personal Strategy Roadmap</div>
+                      <div class="doc-meta">Date: ${today}</div>
+                      <div class="doc-meta">${office.name}</div>
                     </div>
                   </div>
 
-                  ${clientName ? `<div class="client-block"><div class="client-name">${clientName}</div><div class="client-meta">Personal Investment Projection &nbsp;·&nbsp; ${office.name}</div></div>` : ''}
+                  <!-- CLIENT BLOCK -->
+                  ${clientName ? `<div class="client-block">
+                    <div class="client-name">${clientName}</div>
+                    <div class="client-meta">Prepared for: ${totalYears}-Year Plan B Strategy &nbsp;·&nbsp; ${office.reg}</div>
+                  </div>` : ''}
 
-                  <h2>Investment Overview</h2>
-                  <div class="summary-grid">
-                    <div class="stat"><div class="stat-label">Initial Deposit</div><div class="stat-value">$${fmt(numVal(startAmount))}</div></div>
-                    <div class="stat"><div class="stat-label">Projection Period</div><div class="stat-value">${years} ${parseInt(years) === 1 ? 'Year' : 'Years'}</div></div>
-                    <div class="stat"><div class="stat-label">VIP Status</div><div class="stat-value ${vipEnabled ? 'amber' : ''}">${vipEnabled ? 'Active (+3.0%)' : 'Not Active'}</div></div>
-                    <div class="stat"><div class="stat-label">Total In</div><div class="stat-value">$${fmt(result.totalIn)}</div></div>
-                    <div class="stat"><div class="stat-label">Total Out (Withdrawals)</div><div class="stat-value green">$${fmt(result.totalOut)}</div></div>
-                    <div class="stat"><div class="stat-label">Final Diamond Value</div><div class="stat-value green">$${fmt(result.finalCap)}</div></div>
-                    <div class="stat"><div class="stat-label">Net Result</div><div class="stat-value ${result.netResult >= 0 ? 'green' : ''}">$${fmt(result.netResult)}</div></div>
-                    <div class="stat"><div class="stat-label">ROC Break-Even</div><div class="stat-value">${result.rocMonth ? 'Month ' + result.rocMonth : 'Pending'}</div></div>
-                    <div class="stat"><div class="stat-label">Max Monthly Out</div><div class="stat-value amber">$${fmt(result.maxMonthlyOut)}</div></div>
+                  <!-- STRATEGY PARAMETERS -->
+                  <div class="section-title">Strategy Parameters</div>
+                  <div class="params-box">
+                    <div class="param-row">
+                      <div class="param-label">Initial Diamond Purchase</div>
+                      <div class="param-value">$${fmt(numVal(startAmount))}</div>
+                    </div>
+                    <div class="param-row">
+                      <div class="param-label">Strategy Duration</div>
+                      <div class="param-value">${totalYears} Years (${totalMonths} Months)</div>
+                    </div>
+                    <div class="param-row">
+                      <div class="param-label">Monthly Diamond Purchases</div>
+                      <div class="param-value">${result.months[0]?.deposit > 0 ? '$'+fmt(result.months[0].deposit) : 'None'}</div>
+                    </div>
+                    <div class="param-row">
+                      <div class="param-label">VIP Status</div>
+                      <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? 'Active (+3% Monthly Rebate)' : 'Standard'}</div>
+                    </div>
                   </div>
 
-                  <h2>Solution Plan Overview</h2>
-                  <table class="sp-table">
-                    <thead><tr><th>Plan</th><th>Deposit Range</th><th>Base Rate / Month</th><th>With VIP / Month</th><th>12-Month Total (no VIP)</th><th>12-Month Total (VIP)</th></tr></thead>
-                    <tbody>
-                      <tr><td>SP1</td><td>$100 – $999</td><td>2.2%</td><td>5.2%</td><td>26.4%</td><td>62.4%</td></tr>
-                      <tr><td>SP2</td><td>$1,000 – $2,499</td><td>2.45%</td><td>5.45%</td><td>29.4%</td><td>65.4%</td></tr>
-                      <tr><td>SP3</td><td>$2,500 – $4,999</td><td>2.7%</td><td>5.7%</td><td>32.4%</td><td>68.4%</td></tr>
-                      <tr><td>SP4</td><td>$5,000 – $9,999</td><td>3.0%</td><td>6.0%</td><td>36.0%</td><td>72.0%</td></tr>
-                      <tr><td>SP5</td><td>$10,000 – $19,999</td><td>3.1%</td><td>6.1%</td><td>37.2%</td><td>73.2%</td></tr>
-                      <tr><td>SP6</td><td>$20,000 – $49,999</td><td>3.2%</td><td>6.2%</td><td>38.4%</td><td>74.4%</td></tr>
-                      <tr><td>SP7</td><td>$50,000+</td><td>3.3%</td><td>6.3%</td><td>39.6%</td><td>75.6%</td></tr>
-                    </tbody>
+                  <!-- STRATEGY SUMMARY -->
+                  <div class="section-title">Strategy Summary — ${totalYears} Year Period</div>
+                  <div class="summary-box">
+                    <div class="stat">
+                      <div class="stat-label">Total Purchase Amount</div>
+                      <div class="stat-value">$${fmt(result.totalIn)}</div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-label">Total Rebates Distributed</div>
+                      <div class="stat-value green">$${fmt(result.totalOut)}</div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-label">Final Diamond Value</div>
+                      <div class="stat-value green">$${fmt(result.finalCap)}</div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-label">Total Strategy Benefit</div>
+                      <div class="stat-value green">$${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)</div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-label">Purchase Offset Point</div>
+                      <div class="stat-value blue">${result.rocMonth ? 'Month ' + result.rocMonth + ' (Year ' + Math.ceil(result.rocMonth/12) + ')' : 'Pending'}</div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-label">Max Monthly Rebate (Month ${totalMonths})</div>
+                      <div class="stat-value green">$${fmt(result.maxMonthlyOut)}</div>
+                    </div>
+                  </div>
+
+                  <!-- MONTHLY REBATE SCHEDULE -->
+                  <div class="section-title">Monthly Rebate Schedule ${totalYears > 5 ? '(Grouped by Year)' : ''}</div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>${totalYears > 5 ? 'Period' : 'Month'}</th>
+                        <th style="text-align:right">${totalYears > 5 ? 'Annual Rebate ($)' : 'Monthly Rebate ($)'}</th>
+                        <th style="text-align:right">Cumulative Rebates ($)</th>
+                        <th style="text-align:right">Total Asset Value ($)</th>
+                      </tr>
+                    </thead>
+                    <tbody>${tableBody}</tbody>
                   </table>
 
-                  <div class="box">
-                    <div class="box-title">🛡️ 100% Buyback Guarantee</div>
-                    <div class="box-body">After exactly 12 months, the client has the contractual right to sell the GIA-certified diamonds back to Diamond Solution for 100% of the original deposit amount. The full principal capital is returned regardless of market conditions. This right must be exercised in the 11th month by notifying Diamond Solution of the chosen option: Home Delivery or 100% Buyback.</div>
+                  <!-- SECURITY & GUARANTEES -->
+                  <div class="section-title">Security & Guarantees</div>
+                  <div class="guarantee-box">
+                    <div class="guarantee-title">🛡️ Your Protections</div>
+                    <div class="guarantee-item">Contractual 100% Buyback Guarantee on completion of the ${totalYears}-year strategy period.</div>
+                    <div class="guarantee-item">Ownership of physical, GIA-certified diamonds — legally yours.</div>
+                    <div class="guarantee-item">Diamonds stored in secure Dubai Freezone or delivered to your home.</div>
+                    <div class="guarantee-item">All ownership rights transferable to your children or next of kin.</div>
                   </div>
 
-                  <div class="box">
-                    <div class="box-title">🏠 Inheritance &amp; Ownership Clause</div>
-                    <div class="box-body">The diamonds are the legal property of the client through the Ownership Contract. The client may keep, sell, or transfer the diamonds to their children or next of kin. All ownership rights and associated contractual rights transfer automatically in accordance with the client's will or applicable inheritance laws.</div>
+                  <!-- DISCLAIMER -->
+                  <div class="disclaimer">
+                    ⚠️ <strong>Mathematical Calculation Only:</strong> This document provides mathematical calculations for illustrative purposes and is not financial advice. All projections are based on current plan parameters and may vary. Always review the official Diamond Solution contract documents.
                   </div>
 
-                  <div class="box">
-                    <div class="box-title">🏦 Tax &amp; VAT Notice</div>
-                    <div class="box-body">While stored in Dubai Freezone: 0% VAT and tax-efficient storage. If delivered to Europe: local import VAT may apply (e.g. 21% in Netherlands, 19% in Germany, 20% in Austria). Most clients keep diamonds in Dubai storage during the 12-month period for maximum efficiency. Please consult a licensed tax advisor in your country of residence.</div>
-                  </div>
-
-                  <h2>Monthly Breakdown</h2>
-                  <table class="breakdown"><thead><tr><th>M</th><th>Diamonds</th><th>Deposit</th><th>Out%</th><th>Withdrawal</th><th>Comp%</th><th>Plan</th><th>Rebate</th><th>Status</th><th>Total</th></tr></thead><tbody>${tableRows}</tbody></table>
-
-                  <div class="disclaimer">⚠️ This document is generated by the Plan B mathematical simulation tool. It is for informational and illustrative purposes only. It does NOT constitute financial advice, an investment offer, or a guarantee of future results. All projections are based on current plan parameters and may change. Always review the official Diamond Solution contract documents and consult a licensed financial advisor before making any investment decision.</div>
-
+                  <!-- FOOTER -->
                   <div class="footer">
-                    <strong>${office.name}</strong><br/>
-                    ${office.address}<br/>
-                    ${office.reg}<br/>
-                    <span style="color:#475569">Generated by Plan B App · ${today}</span>
+                    <span><strong>${office.name}</strong> · ${office.address} · ${office.reg}</span>
+                    <span>Generated by Plan B App · ${today}</span>
                   </div>
 
                   </body></html>`;
+
                   const { uri } = await Print.printToFileAsync({ html, base64: false });
                   if (Platform.OS === 'web') {
                     const a = document.createElement('a');
-                    a.href = uri; a.download = `plan-b-${clientName || 'report'}.pdf`; a.click();
+                    a.href = uri; a.download = `plan-b-strategy-${clientName || 'roadmap'}.pdf`; a.click();
                   } else if (Platform.OS === 'android') {
-                    // Use IntentLauncher to avoid expo-sharing FilePermissionService crash on Android
                     await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
                       data: uri,
                       flags: 1,
                       type: 'application/pdf',
                     });
                   } else {
-                    // iOS: use Print.printAsync to show native print/share sheet
                     await Print.printAsync({ uri });
                   }
                 } catch (e) {
