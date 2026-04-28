@@ -1,55 +1,64 @@
-// Fallback for using MaterialIcons on Android and web.
-
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SymbolWeight, SymbolViewProps } from "expo-symbols";
 import { ComponentProps } from "react";
-import { OpaqueColorValue, type StyleProp, type TextStyle } from "react-native";
+import { OpaqueColorValue, Platform, type StyleProp, type TextStyle } from "react-native";
 
 type IconMapping = Record<SymbolViewProps["name"], ComponentProps<typeof MaterialIcons>["name"]>;
 type IconSymbolName = keyof typeof MAPPING;
 
-/**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
 const MAPPING = {
   "house.fill": "home",
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
-  // Calculator / Scenario Tool
   "chart.bar.fill": "bar-chart",
   "chart.bar.xaxis": "bar-chart",
-  // Strategy Engineer
   "brain.head.profile": "psychology",
   "lightbulb.fill": "lightbulb",
-  // Settings
   "gearshape.fill": "settings",
   "gear": "settings",
-  // Affiliate
   "person.2.fill": "people",
   "link": "link",
   "diamond.fill": "diamond",
   "star.fill": "star",
   "person.badge.plus": "person-add",
-  // Partner Tools
   "briefcase.fill": "business-center",
   "person.3.fill": "groups",
   "lock.fill": "lock",
   "lock.open.fill": "lock-open",
-  // Compliance
   "shield.fill": "verified-user",
   "doc.text.fill": "description",
-  // Videos
   "play.rectangle.fill": "smart-display",
 } as IconMapping;
 
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
- */
+// Web-safe icon using Google Material Icons CSS class (CDN loaded)
+function WebIcon({ name, size, color }: { name: string; size: number; color: string }) {
+  return (
+    <span
+      className="material-icons"
+      style={{
+        fontSize: size,
+        color: color as string,
+        fontFamily: "Material Icons",
+        fontWeight: "normal",
+        fontStyle: "normal",
+        lineHeight: 1,
+        letterSpacing: "normal",
+        textTransform: "none",
+        display: "inline-block",
+        whiteSpace: "nowrap",
+        wordWrap: "normal",
+        direction: "ltr",
+        WebkitFontFeatureSettings: "'liga'",
+        WebkitFontSmoothing: "antialiased",
+        userSelect: "none",
+      }}
+    >
+      {name}
+    </span>
+  );
+}
+
 export function IconSymbol({
   name,
   size = 24,
@@ -62,5 +71,11 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const iconName = MAPPING[name];
+
+  if (Platform.OS === "web") {
+    return <WebIcon name={iconName} size={size} color={color as string} />;
+  }
+
+  return <MaterialIcons color={color} size={size} name={iconName} style={style} />;
 }
