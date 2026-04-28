@@ -63,3 +63,8 @@ Thumbs.db
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
+
+# React Native CSS Interop cache
+node_modules/**/.cache/
+**/node_modules/.cache/
+.cache/
