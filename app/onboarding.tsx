@@ -108,7 +108,11 @@ export default function OnboardingScreen() {
         {/* Header */}
         <View style={S.header}>
           <View style={S.logoRow}>
-            <Text style={S.logoText}>◆</Text>
+            <Image
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663417308751/jCtAQ46pJGZpaYNWHBsQ4H/icon-jCB2JpzktDjtWxrhwEp9nT.webp" }}
+              style={S.logoImage}
+              resizeMode="contain"
+            />
             <Text style={S.logoLabel}>Plan B</Text>
           </View>
           <Text style={S.headline}>{tr("onboardingHeadline")}</Text>
@@ -245,6 +249,11 @@ const S = StyleSheet.create({
   logoText: {
     fontSize: 28,
     color: "#38BDF8",
+  },
+  logoImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 12,
   },
   logoLabel: {
     fontSize: 22,
