@@ -71,24 +71,79 @@ function calcTimeline(
 ) {
   const clients = Math.floor(dbSize * (convRate / 100));
   const teamVolume = clients * avgPurchase;
-  const monthlyRebate = avgPurchase * 0.033;
-  const clientMonthlyPurchase = monthlyRebate * (rebateReuseP / 100);
-  const directResidual = clientMonthlyPurchase * 0.10 * clients;
   const poolUnlocked = teamVolume >= BLUE_DIAMOND_THRESHOLD;
-  const pool1 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool1Parts, 1) * myParts : 0;
-  const pool2 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool2Parts, 1) * myParts : 0;
-  const pool3 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool3Parts, 1) * myParts : 0;
+
+  // Pool payouts — fixed monthly from global turnover
+  // Pool 1: $10M × 1% ÷ 500 estimated total parts × myParts (projected share)
+  const ESTIMATED_TOTAL_PARTS = 500;
+  const pool1PerPart = (stats.globalTurnover * 0.01) / ESTIMATED_TOTAL_PARTS;
+  const pool1 = poolUnlocked ? pool1PerPart * Math.min(myParts, POOL_MAX.pool1) : 0;
+  const pool2PerPart = (stats.globalTurnover * 0.01) / ESTIMATED_TOTAL_PARTS;
+  const pool2 = poolUnlocked ? pool2PerPart * Math.min(myParts, POOL_MAX.pool2) : 0;
+  const pool3PerPart = (stats.globalTurnover * 0.01) / ESTIMATED_TOTAL_PARTS;
+  const pool3 = poolUnlocked ? pool3PerPart * Math.min(myParts, POOL_MAX.pool3) : 0;
+  const totalPoolMonthly = pool1 + pool2 + pool3;
+
+  // RECURSIVE COMPOUNDING MATH:
+  // Each client starts with avgPurchase diamonds.
+  // Each month: client earns rebate (SP rate ~3.3%), uses rebateReuseP% to buy more diamonds.
+  // Their portfolio grows → rebate grows → Agent's 10% residual grows every month.
+  // We simulate all 60 months and pick milestone snapshots.
+  const SP_BASE_RATE = 0.033; // 3.3% base rebate rate
+  const reuseDecimal = rebateReuseP / 100;
+
   const milestones = [1, 3, 6, 12, 24, 36, 48, 60];
-  const labels: Record<number,string> = {1:"Mo.1",3:"Mo.3",6:"Mo.6",12:"Yr.1",24:"Yr.2",36:"Yr.3",48:"Yr.4",60:"Yr.5"};
+  const labels: Record<number,string> = {
+    1:"Mo.1", 3:"Mo.3", 6:"Mo.6", 12:"Yr.1",
+    24:"Yr.2", 36:"Yr.3", 48:"Yr.4", 60:"Yr.5"
+  };
+
+  // Run full 60-month recursive simulation
+  type MonthRow = { month: number; label: string; clientPortfolio: number; monthlyRebate: number; agentResidual10pct: number; cumulative: number };
+  const allMonths: MonthRow[] = [];
+  let clientPortfolio = avgPurchase; // per client, starts at initial purchase
+  let cumulativeResidual = 0;
+
+  for (let m = 1; m <= 60; m++) {
+    // This month's rebate for one client
+    const monthlyRebate = clientPortfolio * SP_BASE_RATE;
+    // Client reinvests rebateReuseP% back into diamonds → portfolio grows
+    const reinvested = monthlyRebate * reuseDecimal;
+    clientPortfolio += reinvested;
+    // Agent earns 10% of each client's monthly reinvestment purchase
+    const agentPerClient = reinvested * 0.10;
+    const totalAgentResidual = agentPerClient * clients;
+    cumulativeResidual += totalAgentResidual;
+
+    if (milestones.includes(m)) {
+      allMonths.push({
+        month: m,
+        label: labels[m],
+        clientPortfolio,
+        monthlyRebate: monthlyRebate * clients,
+        agentResidual10pct: totalAgentResidual,
+        cumulative: cumulativeResidual,
+      });
+    }
+  }
+
+  const peakRow = allMonths[allMonths.length - 1];
+  const peakMonthly = (peakRow?.agentResidual10pct ?? 0) + totalPoolMonthly;
+
   return {
-    clients, teamVolume, directResidual, poolUnlocked,
+    clients, teamVolume, poolUnlocked,
     pool1Payout: pool1, pool2Payout: pool2, pool3Payout: pool3,
-    peakMonthly: directResidual + (poolUnlocked ? pool1 + pool2 + pool3 : 0),
-    timeline: milestones.map(month => {
-      const ramp = Math.min(month / 6, 1);
-      const monthly = directResidual * ramp + (poolUnlocked ? pool1 + pool2 + pool3 : 0);
-      return { month, label: labels[month], monthly, cumulative: monthly * month };
-    }),
+    totalPoolMonthly, peakMonthly,
+    pool1PerPart, pool2PerPart, pool3PerPart,
+    timeline: allMonths.map(row => ({
+      month: row.month,
+      label: row.label,
+      clientPortfolio: row.clientPortfolio,
+      agentResidual: row.agentResidual10pct,
+      poolBonus: totalPoolMonthly,
+      monthly: row.agentResidual10pct + totalPoolMonthly,
+      cumulative: row.cumulative,
+    })),
   };
 }
 
@@ -754,6 +809,18 @@ function getAlerts(partner: Partner, tx: typeof TX["en"]): string[] {
   if (enabled.includes("alert12month") && months >= 12) {
     alerts.push(tx.alert12month);
   }
+
+  // ── Compounding Review Trigger ──────────────────────────────────────────
+  // Highlight clients whose portfolio has grown enough to warrant a new conversation
+  const estimatedCurrentPortfolio = partner.amount * Math.pow(1 + 0.033 * 0.5, months); // ~50% avg reuse
+  const portfolioGrowthPct = ((estimatedCurrentPortfolio - partner.amount) / partner.amount) * 100;
+  if (months >= 6 && months < 12 && portfolioGrowthPct >= 10) {
+    alerts.push(`📈 Compounding Review — Portfolio est. +${portfolioGrowthPct.toFixed(0)}% (Mo.${months})`);
+  }
+  if (months >= 12 && portfolioGrowthPct >= 20) {
+    alerts.push(`💎 Compounding Review — Portfolio est. +${portfolioGrowthPct.toFixed(0)}% — New strategy opportunity!`);
+  }
+
   return alerts;
 }
 
@@ -1232,6 +1299,33 @@ export default function PartnerToolsScreen() {
 
   const alertCount = partners.reduce((sum, p) => sum + getAlerts(p, tx).length, 0);
 
+  // ── Current Residual Stream — computed from actual Call List ──────────────
+  const residualSummary = React.useMemo(() => {
+    if (partners.length === 0) return null;
+    let totalPortfolio = 0;
+    let totalMonthlyRebate = 0;
+    let totalAgentResidual = 0;
+    let compoundingReviewCount = 0;
+    partners.forEach(p => {
+      const months = monthsElapsed(p.startDate);
+      const reuseDecimal = parseFloat(revenueReuse) / 100;
+      // Simulate compounded portfolio
+      let portfolio = p.amount;
+      for (let m = 0; m < months; m++) {
+        const rebate = portfolio * 0.033;
+        portfolio += rebate * reuseDecimal;
+      }
+      const thisMonthRebate = portfolio * 0.033;
+      const agentCut = thisMonthRebate * reuseDecimal * 0.10;
+      totalPortfolio += portfolio;
+      totalMonthlyRebate += thisMonthRebate;
+      totalAgentResidual += agentCut;
+      const growth = ((portfolio - p.amount) / p.amount) * 100;
+      if (months >= 6 && growth >= 10) compoundingReviewCount++;
+    });
+    return { totalPortfolio, totalMonthlyRebate, totalAgentResidual, compoundingReviewCount };
+  }, [partners, revenueReuse]);
+
   return (
     <ScreenContainer bgColor="#0d1a2a">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
@@ -1274,56 +1368,99 @@ export default function PartnerToolsScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
-          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 10 }}>
-            Unlock 3 pools of Global Bonus at <Text style={{ color: GOLD, fontWeight: "bold" }}>Blue Diamond Rank ($1,000,000 Team Volume)</Text>. Each pool = 1% of global turnover.
-          </Text>
-          {/* Progress Bar */}
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
-            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
-            <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
-              {fmtM(poolTeamVolume)} / $1M
-            </Text>
+
+        {/* ── SECTION 2: Call List Dashboard ──────────────────────────────── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <View style={S.sectionHeader}>
+            <Text style={S.sectionTitle}>{tx.callListTitle}</Text>
+            <TouchableOpacity style={S.addBtn} onPress={openAddModal} activeOpacity={0.8}>
+              <Text style={S.addBtnText}>{tx.addBtn}</Text>
+            </TouchableOpacity>
           </View>
-          <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
-            <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
-          </View>
-          <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 12 }}>
-            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Global Pool Active!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to unlock`}
-          </Text>
-          {/* 3 Pools */}
-          {[
-            { name: "Pool 1 — Blue Diamond 🔵", color: BLUE, maxParts: 6, parts: globalStats.pool1Parts },
-            { name: "Pool 2 — Pink Diamond 💗", color: "#ec4899", maxParts: 4, parts: globalStats.pool2Parts },
-            { name: "Pool 3 — Black Diamond ⚫", color: "#9ca3af", maxParts: 2, parts: globalStats.pool3Parts },
-          ].map(pool => {
-            const payout = (globalStats.globalTurnover * 0.01) / Math.max(pool.parts, 1);
-            return (
-              <View key={pool.name} style={{ backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10, marginBottom: 8, borderLeftWidth: 3, borderLeftColor: pool.color }}>
-                <Text style={{ color: pool.color, fontSize: 12, fontWeight: "bold", marginBottom: 6 }}>{pool.name}</Text>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Per Part/Month</Text>
-                    <Text style={{ color: GREEN, fontSize: 14, fontWeight: "bold" }}>{fmtM(payout)}</Text>
+
+          {partners.length === 0 ? (
+            <View style={S.emptyCard}>
+              <Text style={S.emptyIcon}>👥</Text>
+              <Text style={S.emptyTitle}>{tx.noPartners}</Text>
+              <Text style={S.emptyDesc}>{tx.noPartnersDesc}</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={partners}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={false}
+              renderItem={({ item }) => {
+                const alerts = getAlerts(item, tx);
+                const months = monthsElapsed(item.startDate);
+                const sp = getSPLabel(item.amount);
+                return (
+                  <View style={S.partnerCard}>
+                    <View style={S.partnerHeader}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={S.partnerName}>{item.name}</Text>
+                        <Text style={S.partnerSub}>
+                          {item.country ? `${item.country} · ` : ""}{sp} · ${item.amount.toLocaleString()} · {tx.started} {item.startDate} · {tx.month} {months}/12
+                        </Text>
+                        {item.whatsapp ? (
+                          <Text style={S.partnerWhatsapp}>📱 {item.whatsapp}</Text>
+                        ) : null}
+                      </View>
+                      <View style={S.partnerActions}>
+                        <TouchableOpacity onPress={() => openEditModal(item)} style={S.editBtn}>
+                          <Text style={S.editBtnText}>✏️</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => deletePartner(item.id)} style={S.deleteBtn}>
+                          <Text style={S.deleteBtnText}>🗑</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    {alerts.length > 0 && (
+                      <View style={S.alertsBox}>
+                        {alerts.map((alert, i) => (
+                          <Text key={i} style={S.alertText}>{alert}</Text>
+                        ))}
+                      </View>
+                    )}
                   </View>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Active Parts</Text>
-                    <Text style={{ color: pool.color, fontSize: 14, fontWeight: "bold" }}>{pool.parts}/{pool.maxParts}</Text>
-                  </View>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Pool Total</Text>
-                    <Text style={{ color: GOLD, fontSize: 14, fontWeight: "bold" }}>{fmtM(globalStats.globalTurnover * 0.01)}/mo</Text>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
-          <Text style={{ color: "#2a4a6a", fontSize: 10, textAlign: "center" }}>
-            Formula: (Global Turnover × 1%) ÷ Total Qualified Parts × Your Parts · Gate: $1M Team Volume
-          </Text>
+                );
+              }}
+            />
+          )}
         </View>
+
+
+        {/* ── RESIDUAL STREAM SUMMARY ── */}
+        {residualSummary && (
+          <View style={[S.section, { backgroundColor: "#0a1f0a", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#14532d", marginBottom: 12 }]}>
+            <Text style={[S.sectionTitle, { color: GREEN }]}>💰 CURRENT RESIDUAL STREAM</Text>
+            <Text style={{ color: "#64748b", fontSize: 11, marginBottom: 10 }}>
+              Live estimate from your {partners.length} Call List member{partners.length !== 1 ? "s" : ""} — based on compounded portfolio growth.
+            </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+              {[
+                { label: "Total Portfolio Value", value: fmtM(residualSummary.totalPortfolio), color: BLUE },
+                { label: "Total Monthly Rebates", value: fmtM(residualSummary.totalMonthlyRebate), color: GREEN },
+                { label: "Your 10% Residual/mo", value: fmtM(residualSummary.totalAgentResidual), color: GOLD },
+                { label: "Compounding Reviews", value: String(residualSummary.compoundingReviewCount), color: "#f97316" },
+              ].map(s => (
+                <View key={s.label} style={{ minWidth: "45%", flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10 }}>
+                  <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.label}</Text>
+                  <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 4 }}>{s.value}</Text>
+                </View>
+              ))}
+            </View>
+            {residualSummary.compoundingReviewCount > 0 && (
+              <View style={{ backgroundColor: "rgba(249,115,22,0.1)", borderRadius: 8, padding: 10, borderWidth: 1, borderColor: "rgba(249,115,22,0.3)" }}>
+                <Text style={{ color: "#f97316", fontSize: 12, fontWeight: "bold" }}>
+                  📞 {residualSummary.compoundingReviewCount} client{residualSummary.compoundingReviewCount !== 1 ? "s" : ""} ready for a Compounding Review call
+                </Text>
+                <Text style={{ color: "#64748b", fontSize: 11, marginTop: 3 }}>
+                  Portfolio growth milestone reached — ideal moment to discuss strategy expansion.
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
 
         {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
@@ -1355,7 +1492,7 @@ export default function PartnerToolsScreen() {
                 {[
                   { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
                   { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
-                  { label: "Peak Monthly", value: fmtM(revenueResult.peakMonthly), color: GREEN },
+                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
                 ].map(s => (
                   <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
                     <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
@@ -1367,13 +1504,15 @@ export default function PartnerToolsScreen() {
               <View style={{ borderRadius: 8, overflow: "hidden" }}>
                 <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
                   <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Monthly</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
                   <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
                 </View>
                 {revenueResult.timeline.map(row => (
                   <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
                     <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
-                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.monthly)}</Text>
+                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.agentResidual)}</Text>
+                    <Text style={{ flex: 1, color: "#94a3b8", fontSize: 11, textAlign: "right" }}>{fmtM(row.clientPortfolio)}</Text>
                     <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
                   </View>
                 ))}
@@ -1381,6 +1520,7 @@ export default function PartnerToolsScreen() {
             </>
           )}
         </View>
+
 
         {/* ── SECURITY BADGE BAR ── */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
@@ -1390,6 +1530,7 @@ export default function PartnerToolsScreen() {
             </View>
           ))}
         </View>
+
 
         {/* ── SECTION 1: Potential Calculator ─────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
@@ -1485,64 +1626,6 @@ export default function PartnerToolsScreen() {
           </View>
         </View>
 
-        {/* ── SECTION 2: Call List Dashboard ──────────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <View style={S.sectionHeader}>
-            <Text style={S.sectionTitle}>{tx.callListTitle}</Text>
-            <TouchableOpacity style={S.addBtn} onPress={openAddModal} activeOpacity={0.8}>
-              <Text style={S.addBtnText}>{tx.addBtn}</Text>
-            </TouchableOpacity>
-          </View>
-
-          {partners.length === 0 ? (
-            <View style={S.emptyCard}>
-              <Text style={S.emptyIcon}>👥</Text>
-              <Text style={S.emptyTitle}>{tx.noPartners}</Text>
-              <Text style={S.emptyDesc}>{tx.noPartnersDesc}</Text>
-            </View>
-          ) : (
-            <FlatList
-              data={partners}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-              renderItem={({ item }) => {
-                const alerts = getAlerts(item, tx);
-                const months = monthsElapsed(item.startDate);
-                const sp = getSPLabel(item.amount);
-                return (
-                  <View style={S.partnerCard}>
-                    <View style={S.partnerHeader}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={S.partnerName}>{item.name}</Text>
-                        <Text style={S.partnerSub}>
-                          {item.country ? `${item.country} · ` : ""}{sp} · ${item.amount.toLocaleString()} · {tx.started} {item.startDate} · {tx.month} {months}/12
-                        </Text>
-                        {item.whatsapp ? (
-                          <Text style={S.partnerWhatsapp}>📱 {item.whatsapp}</Text>
-                        ) : null}
-                      </View>
-                      <View style={S.partnerActions}>
-                        <TouchableOpacity onPress={() => openEditModal(item)} style={S.editBtn}>
-                          <Text style={S.editBtnText}>✏️</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deletePartner(item.id)} style={S.deleteBtn}>
-                          <Text style={S.deleteBtnText}>🗑</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    {alerts.length > 0 && (
-                      <View style={S.alertsBox}>
-                        {alerts.map((alert, i) => (
-                          <Text key={i} style={S.alertText}>{alert}</Text>
-                        ))}
-                      </View>
-                    )}
-                  </View>
-                );
-              }}
-            />
-          )}
-        </View>
 
         {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
@@ -1617,6 +1700,7 @@ export default function PartnerToolsScreen() {
           </View>
         </View>
 
+
         {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.savingsTitle}</Text>
@@ -1685,6 +1769,7 @@ export default function PartnerToolsScreen() {
             )}
           </View>
         </View>
+
 
         {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
@@ -1774,6 +1859,70 @@ export default function PartnerToolsScreen() {
             )}
           </View>
         </View>
+
+
+        {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 10 }}>
+            Unlock 3 pools of Global Bonus at <Text style={{ color: GOLD, fontWeight: "bold" }}>Blue Diamond Rank ($1,000,000 Team Volume)</Text>. Each pool = 1% of global turnover.
+          </Text>
+          {/* Progress Bar */}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
+            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
+            <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
+              {fmtM(poolTeamVolume)} / $1M
+            </Text>
+          </View>
+          <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
+            <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
+          </View>
+          <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 12 }}>
+            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Global Pool Active!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to unlock`}
+          </Text>
+          {/* 3 Pools */}
+          {[
+            { name: "Pool 1 — Blue Diamond 🔵", color: BLUE, maxParts: 6, parts: globalStats.pool1Parts },
+            { name: "Pool 2 — Pink Diamond 💗", color: "#ec4899", maxParts: 4, parts: globalStats.pool2Parts },
+            { name: "Pool 3 — Black Diamond ⚫", color: "#9ca3af", maxParts: 2, parts: globalStats.pool3Parts },
+          ].map(pool => {
+            const payout = (globalStats.globalTurnover * 0.01) / Math.max(pool.parts, 1);
+            return (
+              <View key={pool.name} style={{ backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10, marginBottom: 8, borderLeftWidth: 3, borderLeftColor: pool.color }}>
+                <Text style={{ color: pool.color, fontSize: 12, fontWeight: "bold", marginBottom: 6 }}>{pool.name}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Per Part/Month</Text>
+                    <Text style={{ color: GREEN, fontSize: 14, fontWeight: "bold" }}>{fmtM(payout)}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Active Parts</Text>
+                    <Text style={{ color: pool.color, fontSize: 14, fontWeight: "bold" }}>{pool.parts}/{pool.maxParts}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Pool Total</Text>
+                    <Text style={{ color: GOLD, fontSize: 14, fontWeight: "bold" }}>{fmtM(globalStats.globalTurnover * 0.01)}/mo</Text>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
+          <Text style={{ color: "#2a4a6a", fontSize: 10, textAlign: "center" }}>
+            Formula: ($10M × 1%) ÷ 500 est. total parts × Your Parts
+          </Text>
+          <View style={{ backgroundColor: "rgba(230,126,34,0.08)", borderRadius: 6, padding: 10, marginTop: 8, borderWidth: 1, borderColor: "rgba(230,126,34,0.2)" }}>
+            <Text style={{ color: "#e67e22", fontSize: 11, fontWeight: "bold", marginBottom: 4 }}>
+              📌 Projected Share Value — Based on Global Activity
+            </Text>
+            <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 18 }}>
+              {"Pool 1: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 6 parts\n"}
+              {"Pool 2: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 4 parts\n"}
+              {"Pool 3: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 2 parts\n"}
+              {"Gate: $1,000,000 Team Volume — Blue Diamond Rank required."}
+            </Text>
+          </View>
+        </View>
+
 
       </ScrollView>
 
