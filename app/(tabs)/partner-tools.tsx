@@ -78,7 +78,7 @@ const TX: Record<string, {
   monthlyRebate: string;
   annualRebate: string;
   applyToScenario: string;
-  applyToScenarioNote: string;
+  applyToStrategyNote: string;
   applyNoVip: string;
   applyWithVip: string;
   // Savings Goal
@@ -124,16 +124,16 @@ const TX: Record<string, {
 }> = {
   en: {
     title: "🤝 Partner Tools",
-    potentialTitle: "📊 POTENTIAL CALCULATOR",
+    potentialTitle: "📊 PROJECTED REVENUE MODEL",
     potentialDesc: "Estimate your earning potential based on your contact database size and conversion rate.",
     dbSizeLabel: "Your Database Size (contacts)",
     convRateLabel: "Estimated Conversion Rate (%)",
-    avgAmountLabel: "Average Deposit per Client ($)",
+    avgAmountLabel: "Average Product Purchase ($)",
     calcPotentialBtn: "Calculate Potential",
     estClients: "Estimated Clients",
     directVolume: "Total Volume Generated",
-    directComm: "Direct Commission (10%)",
-    rebatePool: "Monthly Rebate Pool (~3%)",
+    directComm: "Direct Residual Income (10%)",
+    rebatePool: "Global Pool Bonus (~3%)",
     callListTitle: "📋 CALL LIST DASHBOARD",
     addBtn: "+ Add",
     noPartners: "No partners yet",
@@ -156,7 +156,7 @@ const TX: Record<string, {
     monthlyRebate: "Monthly Rebate",
     annualRebate: "Annual Rebate",
     applyToScenario: "📊 Open in Scenario Tool",
-    applyToScenarioNote: "Pre-fills deposit, VIP, and monthly withdrawal from Month 1",
+    applyToStrategyNote: "Pre-fills deposit, VIP, and monthly withdrawal from Month 1",
     applyNoVip: "📊 Apply (No VIP)",
     applyWithVip: "📊 Apply (With VIP)",
     addPartner: "Add Partner",
@@ -230,7 +230,7 @@ const TX: Record<string, {
     monthlyRebate: "Maandelijkse Korting",
     annualRebate: "Jaarlijkse Korting",
     applyToScenario: "📊 Openen in Scenario Tool",
-    applyToScenarioNote: "Vult storting, VIP en maandelijkse opname in vanaf Maand 1",
+    applyToStrategyNote: "Vult storting, VIP en maandelijkse opname in vanaf Maand 1",
     applyNoVip: "📊 Toepassen (Geen VIP)",
     applyWithVip: "📊 Toepassen (Met VIP)",
     addPartner: "Partner Toevoegen",
@@ -304,7 +304,7 @@ const TX: Record<string, {
     monthlyRebate: "Monatlicher Rabatt",
     annualRebate: "Jährlicher Rabatt",
     applyToScenario: "📊 Im Szenario-Tool öffnen",
-    applyToScenarioNote: "Füllt Einzahlung, VIP und monatliche Auszahlung ab Monat 1 vor",
+    applyToStrategyNote: "Füllt Einzahlung, VIP und monatliche Auszahlung ab Monat 1 vor",
     applyNoVip: "📊 Anwenden (Kein VIP)",
     applyWithVip: "📊 Anwenden (Mit VIP)",
     addPartner: "Partner Hinzufügen",
@@ -378,7 +378,7 @@ const TX: Record<string, {
     monthlyRebate: "Remise Mensuelle",
     annualRebate: "Remise Annuelle",
     applyToScenario: "📊 Ouvrir dans l'Outil Scénario",
-    applyToScenarioNote: "Pré-remplit le dépôt, VIP et le retrait mensuel à partir du Mois 1",
+    applyToStrategyNote: "Pré-remplit le dépôt, VIP et le retrait mensuel à partir du Mois 1",
     applyNoVip: "📊 Appliquer (Sans VIP)",
     applyWithVip: "📊 Appliquer (Avec VIP)",
     addPartner: "Ajouter un Partenaire",
@@ -452,7 +452,7 @@ const TX: Record<string, {
     monthlyRebate: "Descuento Mensual",
     annualRebate: "Descuento Anual",
     applyToScenario: "📊 Abrir en Herramienta de Escenario",
-    applyToScenarioNote: "Rellena depósito, VIP y retiro mensual desde el Mes 1",
+    applyToStrategyNote: "Rellena depósito, VIP y retiro mensual desde el Mes 1",
     applyNoVip: "📊 Aplicar (Sin VIP)",
     applyWithVip: "📊 Aplicar (Con VIP)",
     addPartner: "Agregar Socio",
@@ -526,7 +526,7 @@ const TX: Record<string, {
     monthlyRebate: "Ежемесячная Скидка",
     annualRebate: "Годовая Скидка",
     applyToScenario: "📊 Открыть в Инструменте Сценария",
-    applyToScenarioNote: "Заполняет депозит, VIP и ежемесячный вывод с 1-го месяца",
+    applyToStrategyNote: "Заполняет депозит, VIP и ежемесячный вывод с 1-го месяца",
     applyNoVip: "📊 Применить (Без VIP)",
     applyWithVip: "📊 Применить (С VIP)",
     addPartner: "Добавить Партнёра",
@@ -600,7 +600,7 @@ const TX: Record<string, {
     monthlyRebate: "每月折扣",
     annualRebate: "年度折扣",
     applyToScenario: "📊 在场景工具中打开",
-    applyToScenarioNote: "预填存款、VIP和从第1个月起的每月提款",
+    applyToStrategyNote: "预填存款、VIP和从第1个月起的每月提款",
     applyNoVip: "📊 应用（无VIP）",
     applyWithVip: "📊 应用（有VIP）",
     addPartner: "添加合作伙伴",

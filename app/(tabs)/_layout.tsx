@@ -53,7 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="affiliate"
         options={{
-          title: "Affiliate",
+          title: "Advisers",
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="person.2.fill" color={color} />,
           href: partnerMode ? undefined : null,
         }}
@@ -61,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="partner-tools"
         options={{
-          title: "Partner",
+          title: "Advisers",
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="briefcase.fill" color={color} />,
           href: partnerMode ? undefined : null,
         }}
