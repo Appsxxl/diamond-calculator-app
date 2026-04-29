@@ -36,8 +36,8 @@ const CARD_SHORT_KEYS = [
 const CARD_SHORT_EN = [
   "Monthly cash rebate paid directly to your account.",
   "100% Buyback Guarantee — your capital is fully protected.",
-  "GIA-certified physical diamonds you legally own.",
-  "Legal ownership transferable to your children or next of kin.",
+  "GIA-certified. Laser-engraved. Ethically sourced. Fully yours from day one.",
+  "Your diamonds. Your legacy. Pass them to future generations.",
 ];
 
 const CARD_KEYS = [
