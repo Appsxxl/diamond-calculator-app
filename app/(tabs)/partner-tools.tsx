@@ -14,6 +14,8 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Clipboard from "expo-clipboard";
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
@@ -39,6 +41,56 @@ interface Partner {
 }
 
 const STORAGE_KEY = "partner_list";
+const REFERRAL_STORAGE_KEY = "referral_code";
+const REFERRAL_BASE = "https://diamond-solution.net/user/register?reference=";
+const NAVY = "#0d1a2a";
+const GOLD = "#e67e22";
+const GREEN = "#22c55e";
+const BLUE = "#33C5FF";
+const POOL_MAX = { pool1: 6, pool2: 4, pool3: 2 };
+const BLUE_DIAMOND_THRESHOLD = 1_000_000;
+
+// fetchDailyStats() — replace URL with real API endpoint when backend is ready
+// Shape: { globalTurnover, pool1Parts, pool2Parts, pool3Parts }
+const fetchDailyStats = async () => ({
+  globalTurnover: 10_000_000,
+  pool1Parts: 4,
+  pool2Parts: 2,
+  pool3Parts: 1,
+});
+
+const fmtM = (n: number) =>
+  n >= 1_000_000 ? `$${(n/1_000_000).toFixed(2)}M`
+  : n >= 1_000 ? `$${(n/1_000).toFixed(1)}K`
+  : `$${n.toFixed(0)}`;
+
+function calcTimeline(
+  dbSize: number, convRate: number, avgPurchase: number,
+  rebateReuseP: number, myParts: number,
+  stats: { globalTurnover: number; pool1Parts: number; pool2Parts: number; pool3Parts: number }
+) {
+  const clients = Math.floor(dbSize * (convRate / 100));
+  const teamVolume = clients * avgPurchase;
+  const monthlyRebate = avgPurchase * 0.033;
+  const clientMonthlyPurchase = monthlyRebate * (rebateReuseP / 100);
+  const directResidual = clientMonthlyPurchase * 0.10 * clients;
+  const poolUnlocked = teamVolume >= BLUE_DIAMOND_THRESHOLD;
+  const pool1 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool1Parts, 1) * myParts : 0;
+  const pool2 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool2Parts, 1) * myParts : 0;
+  const pool3 = poolUnlocked ? (stats.globalTurnover * 0.01) / Math.max(stats.pool3Parts, 1) * myParts : 0;
+  const milestones = [1, 3, 6, 12, 24, 36, 48, 60];
+  const labels: Record<number,string> = {1:"Mo.1",3:"Mo.3",6:"Mo.6",12:"Yr.1",24:"Yr.2",36:"Yr.3",48:"Yr.4",60:"Yr.5"};
+  return {
+    clients, teamVolume, directResidual, poolUnlocked,
+    pool1Payout: pool1, pool2Payout: pool2, pool3Payout: pool3,
+    peakMonthly: directResidual + (poolUnlocked ? pool1 + pool2 + pool3 : 0),
+    timeline: milestones.map(month => {
+      const ramp = Math.min(month / 6, 1);
+      const monthly = directResidual * ramp + (poolUnlocked ? pool1 + pool2 + pool3 : 0);
+      return { month, label: labels[month], monthly, cumulative: monthly * month };
+    }),
+  };
+}
 
 // ─── Translations ─────────────────────────────────────────────────────────────
 const TX: Record<string, {
@@ -724,6 +776,52 @@ export default function PartnerToolsScreen() {
   const [dbSize, setDbSize] = useState("100");
   const [convRate, setConvRate] = useState("10");
   const [avgAmount, setAvgAmount] = useState("5000");
+  // ── New Adviser Dashboard state ──────────────────────────────────────
+  const [referralCode, setReferralCode] = useState("");
+  const [editingCode, setEditingCode] = useState(false);
+  const [tempCode, setTempCode] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [globalStats, setGlobalStats] = useState({ globalTurnover: 10_000_000, pool1Parts: 4, pool2Parts: 2, pool3Parts: 1 });
+  const [revenueDb, setRevenueDb] = useState("200");
+  const [revenueConv, setRevenueConv] = useState("10");
+  const [revenueAvg, setRevenueAvg] = useState("10000");
+  const [revenueReuse, setRevenueReuse] = useState("50");
+  const [revenueParts, setRevenueParts] = useState("1");
+  const [revenueResult, setRevenueResult] = useState<ReturnType<typeof calcTimeline> | null>(null);
+
+  // Referral code loader + stats
+  React.useEffect(() => {
+    AsyncStorage.getItem(REFERRAL_STORAGE_KEY).then(v => { if (v) setReferralCode(v); });
+    fetchDailyStats().then(setGlobalStats);
+  }, []);
+
+  const poolTeamVolume = React.useMemo(() => {
+    const c = Math.floor((parseFloat(revenueDb)||0) * ((parseFloat(revenueConv)||0) / 100));
+    return c * (parseFloat(revenueAvg)||0);
+  }, [revenueDb, revenueConv, revenueAvg]);
+  const poolProgress = Math.min(poolTeamVolume / BLUE_DIAMOND_THRESHOLD, 1);
+
+  const handleCopyLink = async () => {
+    const link = referralCode ? `${REFERRAL_BASE}${referralCode}` : "";
+    if (!link) { Alert.alert("No code", "Set your referral code first."); return; }
+    await Clipboard.setStringAsync(link);
+    setCopied(true); setTimeout(() => setCopied(false), 2500);
+  };
+  const handleSaveCode = async () => {
+    const trimmed = tempCode.trim();
+    setReferralCode(trimmed);
+    await AsyncStorage.setItem(REFERRAL_STORAGE_KEY, trimmed);
+    setEditingCode(false);
+  };
+  const handleCalcRevenue = () => {
+    setRevenueResult(calcTimeline(
+      parseFloat(revenueDb)||0, parseFloat(revenueConv)||0,
+      parseFloat(revenueAvg)||0, parseFloat(revenueReuse)||0,
+      parseFloat(revenueParts)||1, globalStats
+    ));
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   const [potentialResult, setPotentialResult] = useState<{
     clients: number;
     totalVolume: number;
@@ -1135,22 +1233,167 @@ export default function PartnerToolsScreen() {
   const alertCount = partners.reduce((sum, p) => sum + getAlerts(p, tx).length, 0);
 
   return (
-    <ScreenContainer bgColor="#0f172a">
+    <ScreenContainer bgColor="#0d1a2a">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
 
-        {/* Header */}
-        <View style={S.header}>
-          <Text style={S.headerTitle}>{tx.title}</Text>
+        {/* ── HEADER ── */}
+        <View style={[S.header, { borderBottomWidth: 1, borderBottomColor: "#1a3550", paddingBottom: 16, marginBottom: 16 }]}>
+          <Text style={S.headerTitle}>💎 ADVISER COMMAND CENTRE</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, textAlign: "center", marginTop: 4 }}>Real Estate Agents & Advisers — Plan B Diamond Solution</Text>
           {alertCount > 0 && (
-            <View style={S.alertBadge}>
-              <Text style={S.alertBadgeText}>{alertCount}</Text>
+            <View style={[S.alertBadge, { marginTop: 8 }]}>
+              <Text style={S.alertBadgeText}>{alertCount} alerts</Text>
             </View>
           )}
         </View>
 
+        {/* ── SECTION 0A: REFERRAL CODE ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>🔗 YOUR REFERRAL LINK</Text>
+          {editingCode ? (
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
+              <TextInput style={[S.input, { flex: 1 }]} value={tempCode} onChangeText={setTempCode}
+                placeholder="e.g. appsxxl" placeholderTextColor="#2a4a6a"
+                autoCapitalize="none" autoCorrect={false} returnKeyType="done" onSubmitEditing={handleSaveCode} />
+              <TouchableOpacity style={[S.calcBtn, { width: 44, padding: 0, justifyContent: "center" }]} onPress={handleSaveCode}>
+                <Text style={[S.calcBtnText, { fontSize: 18 }]}>✓</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={{ color: referralCode ? GOLD : "#2a4a6a", fontSize: 16, fontWeight: "bold" }}>
+                {referralCode ? `${REFERRAL_BASE}${referralCode}` : "No code set — tap ✏️ to add"}
+              </Text>
+              <TouchableOpacity onPress={() => { setTempCode(referralCode); setEditingCode(true); }}>
+                <Text style={{ fontSize: 18 }}>✏️</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <TouchableOpacity style={[S.calcBtn, { backgroundColor: copied ? GREEN : BLUE }]} onPress={handleCopyLink}>
+            <Text style={S.calcBtnText}>{copied ? "✓ Copied!" : "📋 Copy Referral Link"}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 10 }}>
+            Unlock 3 pools of Global Bonus at <Text style={{ color: GOLD, fontWeight: "bold" }}>Blue Diamond Rank ($1,000,000 Team Volume)</Text>. Each pool = 1% of global turnover.
+          </Text>
+          {/* Progress Bar */}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
+            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
+            <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
+              {fmtM(poolTeamVolume)} / $1M
+            </Text>
+          </View>
+          <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
+            <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
+          </View>
+          <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 12 }}>
+            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Global Pool Active!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to unlock`}
+          </Text>
+          {/* 3 Pools */}
+          {[
+            { name: "Pool 1 — Blue Diamond 🔵", color: BLUE, maxParts: 6, parts: globalStats.pool1Parts },
+            { name: "Pool 2 — Pink Diamond 💗", color: "#ec4899", maxParts: 4, parts: globalStats.pool2Parts },
+            { name: "Pool 3 — Black Diamond ⚫", color: "#9ca3af", maxParts: 2, parts: globalStats.pool3Parts },
+          ].map(pool => {
+            const payout = (globalStats.globalTurnover * 0.01) / Math.max(pool.parts, 1);
+            return (
+              <View key={pool.name} style={{ backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10, marginBottom: 8, borderLeftWidth: 3, borderLeftColor: pool.color }}>
+                <Text style={{ color: pool.color, fontSize: 12, fontWeight: "bold", marginBottom: 6 }}>{pool.name}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Per Part/Month</Text>
+                    <Text style={{ color: GREEN, fontSize: 14, fontWeight: "bold" }}>{fmtM(payout)}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Active Parts</Text>
+                    <Text style={{ color: pool.color, fontSize: 14, fontWeight: "bold" }}>{pool.parts}/{pool.maxParts}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>Pool Total</Text>
+                    <Text style={{ color: GOLD, fontSize: 14, fontWeight: "bold" }}>{fmtM(globalStats.globalTurnover * 0.01)}/mo</Text>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
+          <Text style={{ color: "#2a4a6a", fontSize: 10, textAlign: "center" }}>
+            Formula: (Global Turnover × 1%) ÷ Total Qualified Parts × Your Parts · Gate: $1M Team Volume
+          </Text>
+        </View>
+
+        {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
+            10% Direct Residual on every monthly diamond purchase your clients make.
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+            {[
+              { label: "Database Size", val: revenueDb, set: setRevenueDb },
+              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
+              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
+              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
+              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
+            ].map(item => (
+              <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
+                <TextInput style={[S.input, { padding: 8 }]} value={item.val} onChangeText={item.set}
+                  keyboardType="numeric" placeholderTextColor="#2a4a6a" />
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
+            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
+          </TouchableOpacity>
+          {revenueResult && (
+            <>
+              <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
+                {[
+                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
+                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
+                  { label: "Peak Monthly", value: fmtM(revenueResult.peakMonthly), color: GREEN },
+                ].map(s => (
+                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
+                    <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
+                    <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{s.value}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
+              <View style={{ borderRadius: 8, overflow: "hidden" }}>
+                <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Monthly</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
+                </View>
+                {revenueResult.timeline.map(row => (
+                  <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
+                    <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
+                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.monthly)}</Text>
+                    <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
+        </View>
+
+        {/* ── SECURITY BADGE BAR ── */}
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
+          {["💎 GIA Certified", "🔒 AES-256", "✅ 3DS2 Verified", "🛡️ Lloyd's Insured"].map(b => (
+            <View key={b} style={{ backgroundColor: "#0f2035", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: "#1a3550" }}>
+              <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold" }}>{b}</Text>
+            </View>
+          ))}
+        </View>
+
         {/* ── SECTION 1: Potential Calculator ─────────────────────────────── */}
-        <View style={S.section}>
-          <Text style={S.sectionTitle}>{tx.potentialTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.potentialTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.potentialDesc}</Text>
 
@@ -1243,7 +1486,7 @@ export default function PartnerToolsScreen() {
         </View>
 
         {/* ── SECTION 2: Call List Dashboard ──────────────────────────────── */}
-        <View style={S.section}>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
           <View style={S.sectionHeader}>
             <Text style={S.sectionTitle}>{tx.callListTitle}</Text>
             <TouchableOpacity style={S.addBtn} onPress={openAddModal} activeOpacity={0.8}>
@@ -1302,8 +1545,8 @@ export default function PartnerToolsScreen() {
         </View>
 
         {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
-        <View style={S.section}>
-          <Text style={S.sectionTitle}>{tx.propTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.propTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.propDesc}</Text>
 
@@ -1375,8 +1618,8 @@ export default function PartnerToolsScreen() {
         </View>
 
         {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
-        <View style={S.section}>
-          <Text style={S.sectionTitle}>{tx.savingsTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.savingsTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
 
@@ -1444,8 +1687,8 @@ export default function PartnerToolsScreen() {
         </View>
 
         {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
-        <View style={S.section}>
-          <Text style={S.sectionTitle}>{tx.assetTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.assetTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.assetDesc}</Text>
 

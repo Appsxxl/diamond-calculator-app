@@ -39,7 +39,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="scenario-tool"
         options={{
-          title: "Scenario",
+          title: "Strategy",
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="chart.bar.fill" color={color} />,
         }}
       />
@@ -53,9 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="affiliate"
         options={{
-          title: "Advisers",
-          tabBarIcon: ({ color }) => <IconSymbol size={26} name="person.2.fill" color={color} />,
-          href: partnerMode ? undefined : null,
+          href: null,
         }}
       />
       <Tabs.Screen
