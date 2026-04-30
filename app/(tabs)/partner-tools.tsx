@@ -99,18 +99,21 @@ function calcTimeline(
   };
 
   // Run full 60-month recursive simulation
+  // KEY: portfolio grows every month → rebate grows → agent residual grows
   type MonthRow = { month: number; label: string; clientPortfolio: number; monthlyRebate: number; agentResidual10pct: number; cumulative: number };
   const allMonths: MonthRow[] = [];
-  let clientPortfolio = avgPurchase; // per client, starts at initial purchase
-  let cumulativeResidual = 0;
+  let clientPortfolio = avgPurchase; // starts at initial purchase per client
+  // Month 1: Agent earns 10% initial commission on the purchase itself
+  let cumulativeResidual = avgPurchase * 0.10 * clients;
 
   for (let m = 1; m <= 60; m++) {
-    // This month's rebate for one client
+    // Rebate this month based on CURRENT portfolio (grows each month)
     const monthlyRebate = clientPortfolio * SP_BASE_RATE;
-    // Client reinvests rebateReuseP% back into diamonds → portfolio grows
+    // Client reinvests rebateReuseP% as a new diamond purchase → portfolio grows
     const reinvested = monthlyRebate * reuseDecimal;
+    // Portfolio grows BEFORE next calculation → true compounding
     clientPortfolio += reinvested;
-    // Agent earns 10% of each client's monthly reinvestment purchase
+    // Agent earns 10% of each client's reinvestment (the new purchase)
     const agentPerClient = reinvested * 0.10;
     const totalAgentResidual = agentPerClient * clients;
     cumulativeResidual += totalAgentResidual;
@@ -119,9 +122,9 @@ function calcTimeline(
       allMonths.push({
         month: m,
         label: labels[m],
-        clientPortfolio,
+        clientPortfolio,              // grows every milestone — visible compound growth
         monthlyRebate: monthlyRebate * clients,
-        agentResidual10pct: totalAgentResidual,
+        agentResidual10pct: totalAgentResidual, // grows every milestone
         cumulative: cumulativeResidual,
       });
     }
@@ -856,6 +859,17 @@ export default function PartnerToolsScreen() {
   const [revenueParts, setRevenueParts] = useState("1");
   const [revenueResult, setRevenueResult] = useState<ReturnType<typeof calcTimeline> | null>(null);
 
+  // Live pool inputs — Adviser fills from back office
+  const [pool1Total, setPool1Total] = useState("100000");
+  const [pool1Users, setPool1Users] = useState("500");
+  const [pool1Parts, setPool1Parts] = useState("1");
+  const [pool2Total, setPool2Total] = useState("100000");
+  const [pool2Users, setPool2Users] = useState("200");
+  const [pool2Parts, setPool2Parts] = useState("1");
+  const [pool3Total, setPool3Total] = useState("100000");
+  const [pool3Users, setPool3Users] = useState("50");
+  const [pool3Parts, setPool3Parts] = useState("1");
+
   // Referral code loader + stats
   React.useEffect(() => {
     AsyncStorage.getItem(REFERRAL_STORAGE_KEY).then(v => { if (v) setReferralCode(v); });
@@ -1341,8 +1355,8 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
-        {/* ── SECTION 0A: REFERRAL CODE ── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+        {/* ── SECTION 0A: REFERRAL CODE — Pinned Header ── */}
+        <View style={[S.section, { backgroundColor: "#0a1628", borderRadius: 14, padding: 14, borderWidth: 2, borderColor: BLUE, marginBottom: 14 }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>🔗 YOUR REFERRAL LINK</Text>
           {editingCode ? (
             <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
@@ -1532,98 +1546,446 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── SECTION 1: Potential Calculator ─────────────────────────────── */}
+        {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.potentialTitle}</Text>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.propTitle}</Text>
           <View style={S.card}>
-            <Text style={S.cardDesc}>{tx.potentialDesc}</Text>
+            <Text style={S.cardDesc}>{tx.propDesc}</Text>
 
-            <Text style={S.inputLabel}>{tx.dbSizeLabel}</Text>
-            <TextInput
-              style={S.input}
-              value={dbSize}
-              onChangeText={setDbSize}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholderTextColor="#64748b"
-              placeholder="e.g. 100"
-            />
-
-            <Text style={S.inputLabel}>{tx.convRateLabel}</Text>
+            <Text style={S.inputLabel}>{tx.propCostLabel}</Text>
             <View style={S.chipRow}>
-              {["5", "10", "15", "20", "25"].map((v) => (
+              {["500", "1000", "2000", "3000", "5000"].map((v) => (
                 <Pressable
                   key={v}
-                  onPress={() => setConvRate(v)}
-                  style={[S.chip, convRate === v && S.chipActive]}
+                  onPress={() => setPropCost(v)}
+                  style={[S.chip, propCost === v && S.chipActive]}
                 >
-                  <Text style={[S.chipText, convRate === v && S.chipTextActive]}>{v}%</Text>
+                  <Text style={[S.chipText, propCost === v && S.chipTextActive]}>${parseInt(v).toLocaleString()}</Text>
                 </Pressable>
               ))}
             </View>
             <TextInput
               style={S.input}
-              value={convRate}
-              onChangeText={setConvRate}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholderTextColor="#64748b"
-              placeholder="Custom %"
-            />
-
-            <Text style={S.inputLabel}>{tx.avgAmountLabel}</Text>
-            <View style={S.chipRow}>
-              {["1000", "5000", "10000", "25000"].map((v) => (
-                <Pressable
-                  key={v}
-                  onPress={() => setAvgAmount(v)}
-                  style={[S.chip, avgAmount === v && S.chipActive]}
-                >
-                  <Text style={[S.chipText, avgAmount === v && S.chipTextActive]}>${parseInt(v).toLocaleString()}</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              style={S.input}
-              value={avgAmount}
-              onChangeText={setAvgAmount}
+              value={propCost}
+              onChangeText={setPropCost}
               keyboardType="numeric"
               returnKeyType="done"
               placeholderTextColor="#64748b"
               placeholder="Custom amount"
             />
 
-            <TouchableOpacity style={S.calcBtn} onPress={calculatePotential} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.calcPotentialBtn}</Text>
+            <TouchableOpacity style={S.calcBtn} onPress={calculateProperty} activeOpacity={0.8}>
+              <Text style={S.calcBtnText}>{tx.findPlanBtn}</Text>
             </TouchableOpacity>
 
-            {potentialResult && (
+            {propResult && (
               <View style={S.resultBox}>
-                <View style={S.resultRow}>
-                  <Text style={S.resultLabel}>{tx.estClients}</Text>
-                  <Text style={S.resultValue}>{potentialResult.clients}</Text>
+                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
+                  Target: ${propResult.targetCost.toLocaleString()}/mo — {tx.propNote}
+                </Text>
+
+                {/* Side-by-side comparison */}
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  {/* Without VIP */}
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
+                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{propResult.noVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${propResult.noVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{propResult.noVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>${propResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(propResult.noVip.monthlyRebate * 12).toLocaleString()}/yr</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleApplyNoVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.applyNoVip}</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* With VIP */}
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
+                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{propResult.withVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${propResult.withVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{propResult.withVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>${propResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(propResult.withVip.monthlyRebate * 12).toLocaleString()}/yr</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleApplyWithVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.applyWithVip}</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={[S.resultRow, S.resultRowBorder]}>
-                  <Text style={S.resultLabel}>{tx.directVolume}</Text>
-                  <Text style={[S.resultValue, { color: "#38bdf8" }]}>
-                    ${potentialResult.totalVolume.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </Text>
-                </View>
-                <View style={[S.resultRow, S.resultRowBorder]}>
-                  <Text style={S.resultLabel}>{tx.directComm}</Text>
-                  <Text style={[S.resultValue, { color: "#22c55e" }]}>
-                    ${potentialResult.directComm.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </Text>
-                </View>
-                <View style={S.resultRow}>
-                  <Text style={S.resultLabel}>{tx.rebatePool}</Text>
-                  <Text style={[S.resultValue, { color: "#f59e0b" }]}>
-                    ${potentialResult.monthlyRebatePool.toLocaleString(undefined, { maximumFractionDigits: 0 })}/mo
-                  </Text>
-                </View>
+
+                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
               </View>
             )}
           </View>
+        </View>
+
+
+        {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.savingsTitle}</Text>
+          <View style={S.card}>
+            <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
+
+            <Text style={S.inputLabel}>{tx.savingsGoalLabel}</Text>
+            <View style={S.chipRow}>
+              {["1000", "2000", "3000", "5000", "10000"].map((v) => (
+                <Pressable
+                  key={v}
+                  onPress={() => setSavingsGoal(v)}
+                  style={[S.chip, savingsGoal === v && S.chipActive]}
+                >
+                  <Text style={[S.chipText, savingsGoal === v && S.chipTextActive]}>${parseInt(v).toLocaleString()}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput
+              style={S.input}
+              value={savingsGoal}
+              onChangeText={setSavingsGoal}
+              keyboardType="numeric"
+              returnKeyType="done"
+              placeholderTextColor="#64748b"
+              placeholder="Custom amount"
+            />
+
+            <TouchableOpacity style={S.calcBtn} onPress={calculateSavings} activeOpacity={0.8}>
+              <Text style={S.calcBtnText}>{tx.findSavingsBtn}</Text>
+            </TouchableOpacity>
+
+            {savingsResult && (
+              <View style={S.resultBox}>
+                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
+                  Target: ${savingsResult.targetIncome.toLocaleString()}/mo — {tx.savingsNote}
+                </Text>
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
+                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.noVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.noVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.noVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.noVip.payout75.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.noVip.payout75 * 12).toLocaleString()}/yr</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleSavingsApplyNoVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
+                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.withVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.withVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.withVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.withVip.payout75.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.withVip.payout75 * 12).toLocaleString()}/yr</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleSavingsApplyWithVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+
+        {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.assetTitle}</Text>
+          <View style={S.card}>
+            <Text style={S.cardDesc}>{tx.assetDesc}</Text>
+
+            <Text style={S.inputLabel}>{tx.assetTargetLabel}</Text>
+            <View style={S.chipRow}>
+              {["50000", "100000", "250000", "500000"].map((v) => (
+                <Pressable
+                  key={v}
+                  onPress={() => setAssetTarget(v)}
+                  style={[S.chip, assetTarget === v && S.chipActive]}
+                >
+                  <Text style={[S.chipText, assetTarget === v && S.chipTextActive]}>${(parseInt(v)/1000).toFixed(0)}K</Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput
+              style={S.input}
+              value={assetTarget}
+              onChangeText={setAssetTarget}
+              keyboardType="numeric"
+              returnKeyType="next"
+              placeholderTextColor="#64748b"
+              placeholder="Target amount"
+            />
+
+            <Text style={S.inputLabel}>{tx.assetYearsLabel}</Text>
+            <View style={S.chipRow}>
+              {["5", "7", "10", "15", "20"].map((v) => (
+                <Pressable
+                  key={v}
+                  onPress={() => setAssetYears(v)}
+                  style={[S.chip, assetYears === v && S.chipActive]}
+                >
+                  <Text style={[S.chipText, assetYears === v && S.chipTextActive]}>{v}y</Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput
+              style={S.input}
+              value={assetYears}
+              onChangeText={setAssetYears}
+              keyboardType="numeric"
+              returnKeyType="done"
+              placeholderTextColor="#64748b"
+              placeholder="Years"
+            />
+
+            <TouchableOpacity style={S.calcBtn} onPress={calculateAsset} activeOpacity={0.8}>
+              <Text style={S.calcBtnText}>{tx.findAssetBtn}</Text>
+            </TouchableOpacity>
+
+            {assetResult && (
+              <View style={S.resultBox}>
+                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
+                  Total Out ${assetResult.targetAmount.toLocaleString()} in {assetResult.years}y @ 80% — {tx.assetNote}
+                </Text>
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
+                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.noVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.noVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.noVip.totalOut.toLocaleString()}</Text>
+                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}/mo avg</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleAssetApplyNoVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
+                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
+                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.withVip.sp}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.withVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.withVip.totalOut.toLocaleString()}</Text>
+                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}/mo avg</Text>
+                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleAssetApplyWithVip} activeOpacity={0.85}>
+                      <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+
+        {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
+            Three pools of Global Bonus with different rank requirements. Enter your back office values for an accurate real-time payout.
+          </Text>
+
+          {/* Progress toward Blue Diamond */}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
+            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
+            <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
+              {fmtM(poolTeamVolume)} / $1M Blue Diamond Gate
+            </Text>
+          </View>
+          <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
+            <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
+          </View>
+          <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 14 }}>
+            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Pool 1 Unlocked!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to Blue Diamond`}
+          </Text>
+
+          {/* Pool 1 — Blue Diamond */}
+          <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 10, borderLeftWidth: 3, borderLeftColor: BLUE }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <Text style={{ color: BLUE, fontSize: 13, fontWeight: "bold" }}>Pool 1 — Blue Diamond 🔵</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Blue Diamond · Max 6 parts</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Total}
+                  onChangeText={setPool1Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Users}
+                  onChangeText={setPool1Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Parts}
+                  onChangeText={setPool1Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="1–6" />
+              </View>
+            </View>
+            <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
+                {fmtM((parseFloat(pool1Total)||0) / Math.max(parseFloat(pool1Users)||1, 1) * (parseFloat(pool1Parts)||1))}/mo
+              </Text>
+            </View>
+          </View>
+
+          {/* Pool 2 — Purple Diamond */}
+          <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 10, borderLeftWidth: 3, borderLeftColor: "#a855f7" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <Text style={{ color: "#a855f7", fontSize: 13, fontWeight: "bold" }}>Pool 2 — Purple Diamond 💜</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Purple Diamond · Max 4 parts</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Total}
+                  onChangeText={setPool2Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Users}
+                  onChangeText={setPool2Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Parts}
+                  onChangeText={setPool2Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="1–4" />
+              </View>
+            </View>
+            <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
+                {fmtM((parseFloat(pool2Total)||0) / Math.max(parseFloat(pool2Users)||1, 1) * (parseFloat(pool2Parts)||1))}/mo
+              </Text>
+            </View>
+          </View>
+
+          {/* Pool 3 — Double Diamond Elite */}
+          <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 12, borderLeftWidth: 3, borderLeftColor: "#f59e0b" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "bold" }}>Pool 3 — Double Diamond Elite 👑</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Double Diamond Elite · Max 2 parts</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Total}
+                  onChangeText={setPool3Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Users}
+                  onChangeText={setPool3Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="From back office" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Parts}
+                  onChangeText={setPool3Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
+                  placeholder="1–2" />
+              </View>
+            </View>
+            <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
+                {fmtM((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1, 1) * (parseFloat(pool3Parts)||1))}/mo
+              </Text>
+            </View>
+          </View>
+
+          {/* Total Pool Payout */}
+          <View style={{ backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "rgba(34,197,94,0.25)", marginBottom: 10 }}>
+            <Text style={{ color: "#64748b", fontSize: 11, textTransform: "uppercase", letterSpacing: 0.5 }}>Total Pool Payout (All 3 Pools)</Text>
+            <Text style={{ color: GREEN, fontSize: 20, fontWeight: "bold", marginTop: 4 }}>
+              {fmtM(
+                ((parseFloat(pool1Total)||0) / Math.max(parseFloat(pool1Users)||1,1) * (parseFloat(pool1Parts)||1)) +
+                ((parseFloat(pool2Total)||0) / Math.max(parseFloat(pool2Users)||1,1) * (parseFloat(pool2Parts)||1)) +
+                ((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1,1) * (parseFloat(pool3Parts)||1))
+              )}/mo
+            </Text>
+            <Text style={{ color: "#64748b", fontSize: 10, marginTop: 3 }}>
+              Formula: Pool Total ÷ Total Qualified Users × Your Parts · Enter values from your back office for accuracy.
+            </Text>
+          </View>
+
+        </View>
+                {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
+            10% Direct Residual on every monthly diamond purchase your clients make.
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+            {[
+              { label: "Database Size", val: revenueDb, set: setRevenueDb },
+              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
+              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
+              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
+              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
+            ].map(item => (
+              <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
+                <TextInput style={[S.input, { padding: 8 }]} value={item.val} onChangeText={item.set}
+                  keyboardType="numeric" placeholderTextColor="#2a4a6a" />
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
+            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
+          </TouchableOpacity>
+          {revenueResult && (
+            <>
+              <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
+                {[
+                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
+                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
+                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
+                ].map(s => (
+                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
+                    <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
+                    <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{s.value}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
+              <View style={{ borderRadius: 8, overflow: "hidden" }}>
+                <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
+                </View>
+                {revenueResult.timeline.map(row => (
+                  <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
+                    <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
+                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.agentResidual)}</Text>
+                    <Text style={{ flex: 1, color: "#94a3b8", fontSize: 11, textAlign: "right" }}>{fmtM(row.clientPortfolio)}</Text>
+                    <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
+        </View>
+
+
+        {/* ── SECURITY BADGE BAR ── */}
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
+          {["💎 GIA Certified", "🔒 AES-256", "✅ 3DS2 Verified", "🛡️ Lloyd's Insured"].map(b => (
+            <View key={b} style={{ backgroundColor: "#0f2035", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: "#1a3550" }}>
+              <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold" }}>{b}</Text>
+            </View>
+          ))}
         </View>
 
 
