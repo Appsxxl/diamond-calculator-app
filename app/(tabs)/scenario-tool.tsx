@@ -44,16 +44,16 @@ export default function ScenarioToolScreen() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [globalCompPct, setGlobalCompPct] = useState(100);
 
-  const applyGlobalComp = useCallback((pct: number) => {
+  const applyGlobalComp = useCallback((pct: number, yrs: string) => {
     setGlobalCompPct(pct);
     setMonthData(prev => {
       const updated = { ...prev };
-      for (let m = 1; m <= (numVal(years) * 12); m++) {
+      for (let m = 1; m <= (numVal(yrs) * 12); m++) {
         updated[m] = { ...(updated[m] ?? createDefaultMonthData()), comp: pct };
       }
       return updated;
     });
-  }, [years]);
+  }, []);
 
   const [clientName, setClientName] = useState("");
   const [startAmount, setStartAmount] = useState("10000");
@@ -372,7 +372,7 @@ export default function ScenarioToolScreen() {
               <TouchableOpacity
                 key={pct}
                 style={{ flex: 1, backgroundColor: globalCompPct === pct ? "#f59e0b" : "#1e293b", borderRadius: 8, paddingVertical: 10, alignItems: "center", borderWidth: 1, borderColor: globalCompPct === pct ? "#f59e0b" : "#334155" }}
-                onPress={() => applyGlobalComp(pct)}
+                onPress={() => applyGlobalComp(pct, years)}
               >
                 <Text style={{ color: globalCompPct === pct ? "#0f172a" : "#64748b", fontWeight: "bold", fontSize: 14 }}>{pct}%</Text>
               </TouchableOpacity>

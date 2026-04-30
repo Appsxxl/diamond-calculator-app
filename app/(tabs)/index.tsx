@@ -136,6 +136,30 @@ export default function HomeScreen() {
       tool1: "逐月模拟您的财富增长。配置存款、提款、复利百分比和VIP状态。",
       tool2: "目标规划计算器。输入您的初始存款和每月收入目标 — 获得4个战略计划（A/B/C/D）。",
     },
+    tl: {
+      tool1: "Simulate your wealth growth month-by-month with deposit, withdrawal and VIP settings.",
+      tool2: "Goal planning calculator. Get 4 strategic plans (A/B/C/D) with exact amounts.",
+    },
+    pt: {
+      tool1: "Simule o seu crescimento de riqueza mês a mês com depósitos, retiradas e VIP.",
+      tool2: "Calculadora de objectivos. Obtenha 4 planos estratégicos (A/B/C/D).",
+    },
+    ar: {
+      tool1: "محاكاة نمو ثروتك شهراً بشهر مع الودائع والسحوبات وحالة VIP.",
+      tool2: "حاسبة تخطيط الأهداف. احصل على 4 خطط استراتيجية (A/B/C/D).",
+    },
+    th: {
+      tool1: "จำลองการเติบโตของความมั่งคั่งทีละเดือน พร้อมการฝากเงินและสถานะ VIP",
+      tool2: "เครื่องคำนวณการวางแผนเป้าหมาย รับ 4 แผนกลยุทธ์ (A/B/C/D)",
+    },
+    hi: {
+      tool1: "महीने दर महीने अपनी संपत्ति वृद्धि का अनुकरण करें। जमा, निकासी और VIP स्थिति कॉन्फ़िगर करें।",
+      tool2: "लक्ष्य योजना कैलकुलेटर। 4 रणनीतिक योजनाएं (A/B/C/D) प्राप्त करें।",
+    },
+    vi: {
+      tool1: "Mô phỏng tăng trưởng tài sản hàng tháng với cài đặt nạp tiền, rút tiền và VIP.",
+      tool2: "Máy tính lập kế hoạch mục tiêu. Nhận 4 kế hoạch chiến lược (A/B/C/D).",
+    },
   };
 
   const desc = toolDescriptions[language] || toolDescriptions.en;

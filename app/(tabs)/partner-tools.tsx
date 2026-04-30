@@ -1553,7 +1553,7 @@ export default function PartnerToolsScreen() {
                   </View>
                 </View>
 
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
+                <Text style={S.applyBtnNote}>{tx.applyToScenario}</Text>
               </View>
             )}
           </View>
@@ -1623,7 +1623,7 @@ export default function PartnerToolsScreen() {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
+                <Text style={S.applyBtnNote}>{tx.applyToScenario}</Text>
               </View>
             )}
           </View>
@@ -1713,7 +1713,7 @@ export default function PartnerToolsScreen() {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
+                <Text style={S.applyBtnNote}>{tx.applyToScenario}</Text>
               </View>
             )}
           </View>

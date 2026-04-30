@@ -31,7 +31,7 @@ const MAPPING = {
   "play.rectangle.fill": "smart-display",
   "globe": "globe",
   "link.circle.fill": "handshake",
-} as IconMapping;
+} as unknown as IconMapping;
 
 // SVG paths for each icon — zero font dependency
 const SVG_ICONS: Record<string, string> = {

@@ -688,9 +688,7 @@ export const translations: Record<Language, Record<string, string>> = {
     totalOut: "Gesamte Vergütungen",
     rocBreakEven: "Kaufausgleichspunkt",
     currentStatus: "Strategie Zusammenfassung",
-    onboardingCTA: "Loslegen",
     waiting: "Warten...",
-        waiting: "Warten...",
 
     // Strategy Engineer
     strategyTemplate: "Strategie-Vorlage",
@@ -926,7 +924,8 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCard3Title: "GIA-zertifizierte Physische Diamanten",
     onboardingCard3Desc: "Jeder Diamant ist unabhängig vom Gemological Institute of America (GIA) zertifiziert — dem weltweiten Goldstandard.\n\nSie werden über Kimberley-Prozess-konforme Verträge bezogen und können entweder nach Hause geliefert oder in sicherer Dubai-Freizone-Lagerung aufbewahrt werden.\n\nEin echtes, greifbares Vermögenswert, das Sie physisch besitzen.",
     onboardingCard4Title: "Erbe & Nachlass",
-    onboardingCard4Desc: "Durch den Eigentumsvertrag werden die Diamanten Ihr rechtliches Eigentum.\n\nSie können sie behalten, verkaufen oder an Ihre Kinder oder nächsten Angehörigen weitergeben.\n\nDas Vermögen und alle damit verbundenen Rechte werden automatisch gemäß Ihrem Testament oder Erbrecht übertragen.",    onboardingCTA: "Meinen Persönlichen Plan B Erstellen",
+    onboardingCard4Desc: "Durch den Eigentumsvertrag werden die Diamanten Ihr rechtliches Eigentum.\n\nSie können sie behalten, verkaufen oder an Ihre Kinder oder nächsten Angehörigen weitergeben.\n\nDas Vermögen und alle damit verbundenen Rechte werden automatisch gemäß Ihrem Testament oder Erbrecht übertragen.",
+    onboardingCTA: "Loslegen",
     onboardingSkip: "Überspringen",
     viewOnboarding: "Einführung Erneut Ansehen",
   },
@@ -1911,9 +1910,7 @@ export const translations: Record<Language, Record<string, string>> = {
     totalOut: "总返利分配",
     rocBreakEven: "购买回收点",
     currentStatus: "策略摘要",
-    onboardingCTA: "开始使用",
     waiting: "等待中...",
-        waiting: "等待中...",
 
     // Strategy Engineer
     strategyTemplate: "策略模板",
@@ -2141,7 +2138,6 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingSubheadline: "在当今快节奏的世界中，仅依赖一种方式往往是不够的。B计划提供了一个简单的替代方案：拥有真实的实体钻石。",
     onboardingSubheadline2: "",
     onboardingCard1Title: "每月返利",
-        onboardingCard1Desc: "每月您将直接收到现金返利，存入您的账户。此优惠专属于Solution Plan（SP）等级。\n\nSolution Plan（SP）详情：\n• 基础返利：2.2%至3.3%\n• VIP奖励：每月额外最高+3%\n• 每月总返利：最高6.3%，取决于您的VIP状态。\n\n条款与使用\n这些返利在整个12个月合同期内提供。客户通常将其用于日常开支、购买更多钻石或作为财务安全网。",
     onboardingCard1Short: "每月最高6.3%的现金返利直接存入您的账户。仅限Solution Plan专属。",
     onboardingCard1Desc: "每月您将直接收到现金返利，存入您的账户。此优惠专属于Solution Plan（SP）等级。\n\nSolution Plan（SP）详情：\n• 基础返利：2.2%至3.3%\n• VIP奖励：每月额外最高+3%\n• 每月总返利：最高6.3%，取决于您的VIP状态。\n\n条款与使用\n这些返利在整个12个月合同期内提供。",
     onboardingCard2Title: "100% 回购保证",
@@ -2150,7 +2146,8 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCard3Title: "GIA认证实体钓石",
     onboardingCard3Desc: "每颗钻石均由美国宝石学院（GIA）独立认证——全球黄金标准。\n\n通过符合金伯利进程的合同采购，可以送货上门或存放在迪拜自由区的安全仓储中。\n\n您实际拥有的真实有形资产。",
     onboardingCard4Title: "遗产与继承",
-    onboardingCard4Desc: "通过所有权合同，钻石成为您的法定财产。\n\n您可以保留、出售或传给您的子女或近亲。\n\n资产及所有相关权利将根据您的遗嘱或继承法自动转让。",    onboardingCTA: "建立我的个人 B 计划",
+    onboardingCard4Desc: "通过所有权合同，钻石成为您的法定财产。\n\n您可以保留、出售或传给您的子女或近亲。\n\n资产及所有相关权利将根据您的遗嘱或继承法自动转让。",
+    onboardingCTA: "开始使用",
     onboardingSkip: "跳过",
     viewOnboarding: "再次查看介绍",
   },

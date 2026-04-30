@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   Modal,
+  Linking,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
