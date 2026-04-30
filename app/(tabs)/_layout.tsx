@@ -46,7 +46,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="strategy-engineer"
         options={{
-          title: "Strategy",
+          title: "Architect",
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="lightbulb.fill" color={color} />,
         }}
       />

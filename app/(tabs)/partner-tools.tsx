@@ -860,14 +860,14 @@ export default function PartnerToolsScreen() {
   const [revenueResult, setRevenueResult] = useState<ReturnType<typeof calcTimeline> | null>(null);
 
   // Live pool inputs — Adviser fills from back office
-  const [pool1Total, setPool1Total] = useState("100000");
-  const [pool1Users, setPool1Users] = useState("500");
+  const [pool1Total, setPool1Total] = useState("73908");
+  const [pool1Users, setPool1Users] = useState("14");
   const [pool1Parts, setPool1Parts] = useState("1");
-  const [pool2Total, setPool2Total] = useState("100000");
-  const [pool2Users, setPool2Users] = useState("200");
+  const [pool2Total, setPool2Total] = useState("73908");
+  const [pool2Users, setPool2Users] = useState("3");
   const [pool2Parts, setPool2Parts] = useState("1");
-  const [pool3Total, setPool3Total] = useState("100000");
-  const [pool3Users, setPool3Users] = useState("50");
+  const [pool3Total, setPool3Total] = useState("297522");
+  const [pool3Users, setPool3Users] = useState("0");
   const [pool3Parts, setPool3Parts] = useState("1");
 
   // Referral code loader + stats
@@ -1898,7 +1898,7 @@ export default function PartnerToolsScreen() {
             <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
               <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
               <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
-                {fmtM((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1, 1) * (parseFloat(pool3Parts)||1))}/mo
+                {(parseFloat(pool3Users)||0) === 0 ? "No members yet" : fmtM((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1, 1) * (parseFloat(pool3Parts)||1)) + "/mo"}
               </Text>
             </View>
           </View>
@@ -2222,68 +2222,6 @@ export default function PartnerToolsScreen() {
           </View>
         </View>
 
-
-        {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
-          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 10 }}>
-            Unlock 3 pools of Global Bonus at <Text style={{ color: GOLD, fontWeight: "bold" }}>Blue Diamond Rank ($1,000,000 Team Volume)</Text>. Each pool = 1% of global turnover.
-          </Text>
-          {/* Progress Bar */}
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
-            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
-            <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
-              {fmtM(poolTeamVolume)} / $1M
-            </Text>
-          </View>
-          <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
-            <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
-          </View>
-          <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 12 }}>
-            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Global Pool Active!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to unlock`}
-          </Text>
-          {/* 3 Pools */}
-          {[
-            { name: "Pool 1 — Blue Diamond 🔵", color: BLUE, maxParts: 6, parts: globalStats.pool1Parts },
-            { name: "Pool 2 — Pink Diamond 💗", color: "#ec4899", maxParts: 4, parts: globalStats.pool2Parts },
-            { name: "Pool 3 — Black Diamond ⚫", color: "#9ca3af", maxParts: 2, parts: globalStats.pool3Parts },
-          ].map(pool => {
-            const payout = (globalStats.globalTurnover * 0.01) / Math.max(pool.parts, 1);
-            return (
-              <View key={pool.name} style={{ backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10, marginBottom: 8, borderLeftWidth: 3, borderLeftColor: pool.color }}>
-                <Text style={{ color: pool.color, fontSize: 12, fontWeight: "bold", marginBottom: 6 }}>{pool.name}</Text>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Per Part/Month</Text>
-                    <Text style={{ color: GREEN, fontSize: 14, fontWeight: "bold" }}>{fmtM(payout)}</Text>
-                  </View>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Active Parts</Text>
-                    <Text style={{ color: pool.color, fontSize: 14, fontWeight: "bold" }}>{pool.parts}/{pool.maxParts}</Text>
-                  </View>
-                  <View>
-                    <Text style={{ color: "#64748b", fontSize: 10 }}>Pool Total</Text>
-                    <Text style={{ color: GOLD, fontSize: 14, fontWeight: "bold" }}>{fmtM(globalStats.globalTurnover * 0.01)}/mo</Text>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
-          <Text style={{ color: "#2a4a6a", fontSize: 10, textAlign: "center" }}>
-            Formula: ($10M × 1%) ÷ 500 est. total parts × Your Parts
-          </Text>
-          <View style={{ backgroundColor: "rgba(230,126,34,0.08)", borderRadius: 6, padding: 10, marginTop: 8, borderWidth: 1, borderColor: "rgba(230,126,34,0.2)" }}>
-            <Text style={{ color: "#e67e22", fontSize: 11, fontWeight: "bold", marginBottom: 4 }}>
-              📌 Projected Share Value — Based on Global Activity
-            </Text>
-            <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 18 }}>
-              {"Pool 1: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 6 parts\n"}
-              {"Pool 2: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 4 parts\n"}
-              {"Pool 3: " + fmtM(globalStats.globalTurnover * 0.01 / 500) + "/mo per part · Max 2 parts\n"}
-              {"Gate: $1,000,000 Team Volume — Blue Diamond Rank required."}
-            </Text>
-          </View>
-        </View>
 
 
       </ScrollView>
