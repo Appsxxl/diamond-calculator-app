@@ -288,21 +288,27 @@ export default function SettingsScreen() {
             <Text style={S.articleTitle}>FAQ — Frequently Asked Questions</Text>
             <Text style={S.articleChevron}>›</Text>
           </TouchableOpacity>
-          {/* Back to Onboarding */}
+          {/* View Onboarding — always available, opens live URL */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={async () => {
-              await AsyncStorage.removeItem("onboarding_seen");
               if (typeof window !== "undefined") {
-                window.location.href = "/onboarding";
+                // Web: navigate directly within app
+                window.location.href = "https://diamond-calculator-plan-b.pages.dev/onboarding";
               } else {
-                router.replace({ pathname: "/onboarding" });
+                // Native: open in browser or navigate in app
+                try {
+                  await Linking.openURL("https://diamond-calculator-plan-b.pages.dev/onboarding");
+                } catch {
+                  await AsyncStorage.removeItem("onboarding_seen");
+                  router.replace({ pathname: "/onboarding" });
+                }
               }
             }}
             style={[S.articleRow, { marginTop: 8, borderTopWidth: 0.5, borderTopColor: "#1e293b" }]}
           >
-            <Text style={S.articleIcon}>🚀</Text>
-            <Text style={S.articleTitle}>{t(language, "viewOnboarding") || "View Onboarding"}</Text>
+            <Text style={S.articleIcon}>💎</Text>
+            <Text style={S.articleTitle}>{t(language, "viewOnboarding") || "View Introduction"}</Text>
             <Text style={S.articleChevron}>›</Text>
           </TouchableOpacity>
         </View>

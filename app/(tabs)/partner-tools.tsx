@@ -1355,7 +1355,7 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
-        {/* ── SECTION 0A: REFERRAL CODE — Pinned Header ── */}
+{/* ── SECTION 0A: REFERRAL CODE — Pinned Header ── */}
         <View style={[S.section, { backgroundColor: "#0a1628", borderRadius: 14, padding: 14, borderWidth: 2, borderColor: BLUE, marginBottom: 14 }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>🔗 YOUR REFERRAL LINK</Text>
           {editingCode ? (
@@ -1475,66 +1475,6 @@ export default function PartnerToolsScreen() {
             )}
           </View>
         )}
-
-        {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
-          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
-            10% Direct Residual on every monthly diamond purchase your clients make.
-          </Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-            {[
-              { label: "Database Size", val: revenueDb, set: setRevenueDb },
-              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
-              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
-              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
-              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
-            ].map(item => (
-              <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
-                <TextInput style={[S.input, { padding: 8 }]} value={item.val} onChangeText={item.set}
-                  keyboardType="numeric" placeholderTextColor="#2a4a6a" />
-              </View>
-            ))}
-          </View>
-          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
-            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
-          </TouchableOpacity>
-          {revenueResult && (
-            <>
-              <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
-                {[
-                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
-                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
-                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
-                ].map(s => (
-                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
-                    <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
-                    <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{s.value}</Text>
-                  </View>
-                ))}
-              </View>
-              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
-              <View style={{ borderRadius: 8, overflow: "hidden" }}>
-                <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
-                </View>
-                {revenueResult.timeline.map(row => (
-                  <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
-                    <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
-                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.agentResidual)}</Text>
-                    <Text style={{ flex: 1, color: "#94a3b8", fontSize: 11, textAlign: "right" }}>{fmtM(row.clientPortfolio)}</Text>
-                    <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          )}
-        </View>
-
 
         {/* ── SECURITY BADGE BAR ── */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
@@ -1777,6 +1717,66 @@ export default function PartnerToolsScreen() {
               </View>
             )}
           </View>
+        </View>
+
+
+        {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
+            10% Direct Residual on every monthly diamond purchase your clients make.
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+            {[
+              { label: "Database Size", val: revenueDb, set: setRevenueDb },
+              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
+              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
+              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
+              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
+            ].map(item => (
+              <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
+                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
+                <TextInput style={[S.input, { padding: 8 }]} value={item.val} onChangeText={item.set}
+                  keyboardType="numeric" placeholderTextColor="#2a4a6a" />
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
+            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
+          </TouchableOpacity>
+          {revenueResult && (
+            <>
+              <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
+                {[
+                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
+                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
+                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
+                ].map(s => (
+                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
+                    <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
+                    <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{s.value}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
+              <View style={{ borderRadius: 8, overflow: "hidden" }}>
+                <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
+                </View>
+                {revenueResult.timeline.map(row => (
+                  <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
+                    <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
+                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.agentResidual)}</Text>
+                    <Text style={{ flex: 1, color: "#94a3b8", fontSize: 11, textAlign: "right" }}>{fmtM(row.clientPortfolio)}</Text>
+                    <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
         </View>
 
 
@@ -1919,311 +1919,7 @@ export default function PartnerToolsScreen() {
           </View>
 
         </View>
-                {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
-          <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
-            10% Direct Residual on every monthly diamond purchase your clients make.
-          </Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-            {[
-              { label: "Database Size", val: revenueDb, set: setRevenueDb },
-              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
-              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
-              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
-              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
-            ].map(item => (
-              <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
-                <TextInput style={[S.input, { padding: 8 }]} value={item.val} onChangeText={item.set}
-                  keyboardType="numeric" placeholderTextColor="#2a4a6a" />
-              </View>
-            ))}
-          </View>
-          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
-            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
-          </TouchableOpacity>
-          {revenueResult && (
-            <>
-              <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
-                {[
-                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
-                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
-                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
-                ].map(s => (
-                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
-                    <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
-                    <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{s.value}</Text>
-                  </View>
-                ))}
-              </View>
-              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
-              <View style={{ borderRadius: 8, overflow: "hidden" }}>
-                <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
-                </View>
-                {revenueResult.timeline.map(row => (
-                  <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
-                    <Text style={{ flex: 1, color: GOLD, fontSize: 12, fontWeight: "bold" }}>{row.label}</Text>
-                    <Text style={{ flex: 1, color: GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{fmtM(row.agentResidual)}</Text>
-                    <Text style={{ flex: 1, color: "#94a3b8", fontSize: 11, textAlign: "right" }}>{fmtM(row.clientPortfolio)}</Text>
-                    <Text style={{ flex: 1, color: "#fff", fontSize: 12, textAlign: "right" }}>{fmtM(row.cumulative)}</Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          )}
-        </View>
-
-
-        {/* ── SECURITY BADGE BAR ── */}
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
-          {["💎 GIA Certified", "🔒 AES-256", "✅ 3DS2 Verified", "🛡️ Lloyd's Insured"].map(b => (
-            <View key={b} style={{ backgroundColor: "#0f2035", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: "#1a3550" }}>
-              <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold" }}>{b}</Text>
-            </View>
-          ))}
-        </View>
-
-
-        {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.propTitle}</Text>
-          <View style={S.card}>
-            <Text style={S.cardDesc}>{tx.propDesc}</Text>
-
-            <Text style={S.inputLabel}>{tx.propCostLabel}</Text>
-            <View style={S.chipRow}>
-              {["500", "1000", "2000", "3000", "5000"].map((v) => (
-                <Pressable
-                  key={v}
-                  onPress={() => setPropCost(v)}
-                  style={[S.chip, propCost === v && S.chipActive]}
-                >
-                  <Text style={[S.chipText, propCost === v && S.chipTextActive]}>${parseInt(v).toLocaleString()}</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              style={S.input}
-              value={propCost}
-              onChangeText={setPropCost}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholderTextColor="#64748b"
-              placeholder="Custom amount"
-            />
-
-            <TouchableOpacity style={S.calcBtn} onPress={calculateProperty} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findPlanBtn}</Text>
-            </TouchableOpacity>
-
-            {propResult && (
-              <View style={S.resultBox}>
-                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Target: ${propResult.targetCost.toLocaleString()}/mo — {tx.propNote}
-                </Text>
-
-                {/* Side-by-side comparison */}
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  {/* Without VIP */}
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
-                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{propResult.noVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${propResult.noVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{propResult.noVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>${propResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(propResult.noVip.monthlyRebate * 12).toLocaleString()}/yr</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleApplyNoVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.applyNoVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* With VIP */}
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
-                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{propResult.withVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${propResult.withVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{propResult.withVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>${propResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(propResult.withVip.monthlyRebate * 12).toLocaleString()}/yr</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleApplyWithVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.applyWithVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-
-        {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.savingsTitle}</Text>
-          <View style={S.card}>
-            <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
-
-            <Text style={S.inputLabel}>{tx.savingsGoalLabel}</Text>
-            <View style={S.chipRow}>
-              {["1000", "2000", "3000", "5000", "10000"].map((v) => (
-                <Pressable
-                  key={v}
-                  onPress={() => setSavingsGoal(v)}
-                  style={[S.chip, savingsGoal === v && S.chipActive]}
-                >
-                  <Text style={[S.chipText, savingsGoal === v && S.chipTextActive]}>${parseInt(v).toLocaleString()}</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              style={S.input}
-              value={savingsGoal}
-              onChangeText={setSavingsGoal}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholderTextColor="#64748b"
-              placeholder="Custom amount"
-            />
-
-            <TouchableOpacity style={S.calcBtn} onPress={calculateSavings} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findSavingsBtn}</Text>
-            </TouchableOpacity>
-
-            {savingsResult && (
-              <View style={S.resultBox}>
-                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Target: ${savingsResult.targetIncome.toLocaleString()}/mo — {tx.savingsNote}
-                </Text>
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
-                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.noVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.noVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.noVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.noVip.payout75.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.noVip.payout75 * 12).toLocaleString()}/yr</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleSavingsApplyNoVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
-                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.withVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.withVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.withVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.withVip.payout75.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.withVip.payout75 * 12).toLocaleString()}/yr</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleSavingsApplyWithVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-
-        {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.assetTitle}</Text>
-          <View style={S.card}>
-            <Text style={S.cardDesc}>{tx.assetDesc}</Text>
-
-            <Text style={S.inputLabel}>{tx.assetTargetLabel}</Text>
-            <View style={S.chipRow}>
-              {["50000", "100000", "250000", "500000"].map((v) => (
-                <Pressable
-                  key={v}
-                  onPress={() => setAssetTarget(v)}
-                  style={[S.chip, assetTarget === v && S.chipActive]}
-                >
-                  <Text style={[S.chipText, assetTarget === v && S.chipTextActive]}>${(parseInt(v)/1000).toFixed(0)}K</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              style={S.input}
-              value={assetTarget}
-              onChangeText={setAssetTarget}
-              keyboardType="numeric"
-              returnKeyType="next"
-              placeholderTextColor="#64748b"
-              placeholder="Target amount"
-            />
-
-            <Text style={S.inputLabel}>{tx.assetYearsLabel}</Text>
-            <View style={S.chipRow}>
-              {["5", "7", "10", "15", "20"].map((v) => (
-                <Pressable
-                  key={v}
-                  onPress={() => setAssetYears(v)}
-                  style={[S.chip, assetYears === v && S.chipActive]}
-                >
-                  <Text style={[S.chipText, assetYears === v && S.chipTextActive]}>{v}y</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              style={S.input}
-              value={assetYears}
-              onChangeText={setAssetYears}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholderTextColor="#64748b"
-              placeholder="Years"
-            />
-
-            <TouchableOpacity style={S.calcBtn} onPress={calculateAsset} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findAssetBtn}</Text>
-            </TouchableOpacity>
-
-            {assetResult && (
-              <View style={S.resultBox}>
-                <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Total Out ${assetResult.targetAmount.toLocaleString()} in {assetResult.years}y @ 80% — {tx.assetNote}
-                </Text>
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
-                    <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.noVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.noVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.noVip.totalOut.toLocaleString()}</Text>
-                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}/mo avg</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleAssetApplyNoVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
-                    <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
-                    <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.withVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.withVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.withVip.totalOut.toLocaleString()}</Text>
-                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}/mo avg</Text>
-                    <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleAssetApplyWithVip} activeOpacity={0.85}>
-                      <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <Text style={S.applyBtnNote}>{tx.applyToScenarioNote}</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-
-
+                
       </ScrollView>
 
       {/* ── Add/Edit Partner Modal ────────────────────────────────────────── */}

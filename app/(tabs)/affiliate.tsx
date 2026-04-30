@@ -22,8 +22,8 @@ import { t } from "@/lib/translations";
 
 const DIAMOND_TIERS = [
   { rank: "Partner",              emoji: "🤝", directs: 0, teamVol: "$0",           distrib: "—",   infinity: "—",   poolShares: "—",                              bonus: "—"           },
-  { rank: "Pearl",                emoji: "🤍", directs: 0, teamVol: "$0",           distrib: "—",   infinity: "$100", poolShares: "—",                             bonus: "—"           },
-  { rank: "Ruby",                 emoji: "❤️", directs: 2, teamVol: "$0",           distrib: "—",   infinity: "$500", poolShares: "—",                             bonus: "—"           },
+  { rank: "Pearl",                emoji: "🤍", directs: 0, teamVol: "$100",          distrib: "—",   infinity: "—",    poolShares: "—",                             bonus: "—"           },
+  { rank: "Ruby",                 emoji: "❤️", directs: 2, teamVol: "$500",          distrib: "—",   infinity: "—",    poolShares: "—",                             bonus: "—"           },
   { rank: "Sapphire",             emoji: "💙", directs: 2, teamVol: "$25,000",      distrib: "60%", infinity: "3.0%", poolShares: "—",                             bonus: "—"           },
   { rank: "Emerald",              emoji: "💚", directs: 2, teamVol: "$50,000",      distrib: "60%", infinity: "6.0%", poolShares: "—",                             bonus: "$1,000"      },
   { rank: "Diamond",              emoji: "💎", directs: 2, teamVol: "$250,000",     distrib: "50%", infinity: "9.0%", poolShares: "—",                             bonus: "$5,000"      },
