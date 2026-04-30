@@ -862,13 +862,13 @@ export default function PartnerToolsScreen() {
   // Live pool inputs — Adviser fills from back office
   const [pool1Total, setPool1Total] = useState("73908");
   const [pool1Users, setPool1Users] = useState("14");
-  const [pool1Parts, setPool1Parts] = useState("1");
+  const [pool1Parts, setPool1Parts] = useState("0");
   const [pool2Total, setPool2Total] = useState("73908");
   const [pool2Users, setPool2Users] = useState("3");
-  const [pool2Parts, setPool2Parts] = useState("1");
+  const [pool2Parts, setPool2Parts] = useState("0");
   const [pool3Total, setPool3Total] = useState("297522");
   const [pool3Users, setPool3Users] = useState("0");
-  const [pool3Parts, setPool3Parts] = useState("1");
+  const [pool3Parts, setPool3Parts] = useState("0");
 
   // Referral code loader + stats
   React.useEffect(() => {

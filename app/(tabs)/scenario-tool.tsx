@@ -14,7 +14,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Print from "expo-print";
 import * as IntentLauncher from "expo-intent-launcher";
 import { ScreenContainer } from "@/components/screen-container";
-import { DisclaimerFooter } from "@/components/disclaimer-footer";
+import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
 import { useCalculator } from "@/lib/calculator-context";
 import { t } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams } from "@/lib/calculator";
@@ -752,12 +752,14 @@ export default function ScenarioToolScreen() {
                 </View>
               </ScrollView>
             </View>
-          </>
+          {/* Disclaimer — shown only after results are visible */}
+          <DisclaimerInline />
+        </>
         )}
 
-        <View style={{ height: 60 }} />
+        <View style={{ height: 20 }} />
+        <DisclaimerFooter />
       </ScrollView>
-      <DisclaimerFooter />
     </ScreenContainer>
   );
 }

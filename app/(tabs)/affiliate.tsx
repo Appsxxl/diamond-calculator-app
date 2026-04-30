@@ -21,15 +21,19 @@ import { router } from "expo-router";
 import { t } from "@/lib/translations";
 
 const DIAMOND_TIERS = [
-  { rank: "Emerald",              emoji: "💚", partnersNum: "2", bonus: "$1,000"     },
-  { rank: "Diamond",              emoji: "💎", partnersNum: "2", bonus: "$5,000"     },
-  { rank: "Blue Diamond",         emoji: "🔵", partnersNum: "2", bonus: "$20,000"    },
-  { rank: "Green Diamond",        emoji: "💚", partnersNum: "3", bonus: "$50,000"    },
-  { rank: "Purple Diamond",       emoji: "💜", partnersNum: "3", bonus: "$100,000"   },
-  { rank: "Diamond Elite",        emoji: "💎", partnersNum: "4", bonus: "$150,000"   },
-  { rank: "Double Diamond Elite", emoji: "👑", partnersNum: "4", bonus: "$1,000,000" },
-  { rank: "Triple Diamond Elite", emoji: "🏆", partnersNum: "4", bonus: "$2,000,000" },
-  { rank: "Black Diamond",        emoji: "⚫", partnersNum: "5", bonus: "$5,000,000" },
+  { rank: "Partner",              emoji: "🤝", directs: 0, teamVol: "$0",           distrib: "—",   infinity: "—",   poolShares: "—",                              bonus: "—"           },
+  { rank: "Pearl",                emoji: "🤍", directs: 0, teamVol: "$0",           distrib: "—",   infinity: "$100", poolShares: "—",                             bonus: "—"           },
+  { rank: "Ruby",                 emoji: "❤️", directs: 2, teamVol: "$0",           distrib: "—",   infinity: "$500", poolShares: "—",                             bonus: "—"           },
+  { rank: "Sapphire",             emoji: "💙", directs: 2, teamVol: "$25,000",      distrib: "60%", infinity: "3.0%", poolShares: "—",                             bonus: "—"           },
+  { rank: "Emerald",              emoji: "💚", directs: 2, teamVol: "$50,000",      distrib: "60%", infinity: "6.0%", poolShares: "—",                             bonus: "$1,000"      },
+  { rank: "Diamond",              emoji: "💎", directs: 2, teamVol: "$250,000",     distrib: "50%", infinity: "9.0%", poolShares: "—",                             bonus: "$5,000"      },
+  { rank: "Blue Diamond",         emoji: "🔵", directs: 2, teamVol: "$1,000,000",   distrib: "50%", infinity: "12.0%", poolShares: "1× Pool 1",                    bonus: "$20,000"     },
+  { rank: "Green Diamond",        emoji: "💚", directs: 3, teamVol: "$2,500,000",   distrib: "40%", infinity: "15.0%", poolShares: "2× Pool 1",                    bonus: "$50,000"     },
+  { rank: "Purple Diamond",       emoji: "💜", directs: 3, teamVol: "$5,000,000",   distrib: "40%", infinity: "18.0%", poolShares: "2× P1 + 1× P2",               bonus: "$100,000"    },
+  { rank: "Diamond Elite",        emoji: "💎", directs: 4, teamVol: "$10,000,000",  distrib: "30%", infinity: "21.0%", poolShares: "2× P1 + 2× P2",               bonus: "$150,000"    },
+  { rank: "Double Diamond Elite", emoji: "👑", directs: 4, teamVol: "$50,000,000",  distrib: "30%", infinity: "22.0%", poolShares: "2× P1 + 2× P2 + 1× P3",       bonus: "$1,000,000"  },
+  { rank: "Triple Diamond Elite", emoji: "🏆", directs: 4, teamVol: "$150,000,000", distrib: "25%", infinity: "23.0%", poolShares: "2× P1 + 2× P2 + 2× P3",       bonus: "$2,000,000"  },
+  { rank: "Black Diamond",        emoji: "⚫", directs: 5, teamVol: "$500,000,000", distrib: "20%", infinity: "24.0%", poolShares: "2× P1 + 2× P2 + 3× P3",       bonus: "$5,000,000"  },
 ];
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -46,9 +50,9 @@ const RED              = "#ef4444";
 
 // ─── Real back-office pool data (update when back office updates) ──────────
 const POOL_DEFAULTS = {
-  pool1Total: "73908",  pool1Members: "14", pool1Parts: "1",
-  pool2Total: "73908",  pool2Members: "3",  pool2Parts: "1",
-  pool3Total: "297522", pool3Members: "0",  pool3Parts: "1",
+  pool1Total: "73908",  pool1Members: "14", pool1Parts: "0",
+  pool2Total: "73908",  pool2Members: "3",  pool2Parts: "0",
+  pool3Total: "297522", pool3Members: "0",  pool3Parts: "0",
 };
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -497,21 +501,85 @@ export default function AffiliateScreen() {
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
           <Text style={S.sectionLabel}>🏆 DIAMOND RANK BONUS PLAN</Text>
-          <View style={{ flexDirection: "row", paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: BORDER, marginBottom: 4 }}>
-            <Text style={{ flex: 2, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Rank</Text>
-            <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "center" }}>Partners</Text>
-            <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>One-Time Bonus</Text>
+
+          {/* 5-Bonus System Summary */}
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+            {[
+              { label: "Unilevel", value: "18%", sub: "10/5/3%", color: BLUE },
+              { label: "Infinity", value: "24%", sub: "Gap Rule", color: "#a855f7" },
+              { label: "Matching", value: "25%", sub: "5×5%", color: GREEN },
+              { label: "Pools", value: "3%", sub: "Global", color: GOLD },
+              { label: "Rank Bonus", value: "$8.3M", sub: "Total", color: "#f43f5e" },
+            ].map(b => (
+              <View key={b.label} style={{ flex: 1, minWidth: "18%", backgroundColor: NAVY, borderRadius: 8, padding: 8, alignItems: "center", borderTopWidth: 2, borderTopColor: b.color }}>
+                <Text style={{ color: b.color, fontSize: 13, fontWeight: "bold" }}>{b.value}</Text>
+                <Text style={{ color: "#fff", fontSize: 10, fontWeight: "bold", marginTop: 2 }}>{b.label}</Text>
+                <Text style={{ color: "#64748b", fontSize: 9 }}>{b.sub}</Text>
+              </View>
+            ))}
           </View>
-          {DIAMOND_TIERS.map((tier, idx) => (
-            <View key={tier.rank} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: NAVY, backgroundColor: idx % 2 === 0 ? "rgba(15,32,53,0.5)" : "transparent" }}>
-              <Text style={{ flex: 2, color: "#fff", fontSize: 13, fontWeight: "bold" }}>{tier.emoji} {tier.rank}</Text>
-              <Text style={{ flex: 1, color: "#64748b", fontSize: 13, textAlign: "center" }}>{tier.partnersNum}</Text>
-              <Text style={{ flex: 1, color: GREEN, fontSize: 13, fontWeight: "bold", textAlign: "right" }}>{tier.bonus}</Text>
+
+          {/* ★ FOR LIFE badge */}
+          <View style={{ backgroundColor: "rgba(245,158,11,0.12)", borderRadius: 8, padding: 8, marginBottom: 12, borderWidth: 1, borderColor: "rgba(245,158,11,0.3)", flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Text style={{ fontSize: 18 }}>⭐</Text>
+            <Text style={{ color: GOLD, fontSize: 12, fontWeight: "bold", flex: 1 }}>
+              CONFIRMED FOR LIFE — Once a career rank is achieved, it is yours permanently.
+            </Text>
+          </View>
+
+          {/* Full rank table — horizontal scroll */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View>
+              {/* Header */}
+              <View style={{ flexDirection: "row", backgroundColor: "#0a1520", paddingVertical: 7, paddingHorizontal: 4, borderRadius: 6, marginBottom: 2 }}>
+                {[
+                  { label: "Rank",         w: 160 },
+                  { label: "Directs",      w: 55  },
+                  { label: "Team Volume",  w: 110 },
+                  { label: "Distrib.",     w: 60  },
+                  { label: "Infinity",     w: 65  },
+                  { label: "Pool Shares",  w: 140 },
+                  { label: "Rank Bonus",   w: 100 },
+                ].map(col => (
+                  <Text key={col.label} style={{ width: col.w, color: "#64748b", fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{col.label}</Text>
+                ))}
+              </View>
+              {DIAMOND_TIERS.map((tier, idx) => (
+                <View key={tier.rank} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 4, backgroundColor: idx % 2 === 0 ? "rgba(15,32,53,0.6)" : "transparent", borderBottomWidth: 1, borderBottomColor: "#0a1520" }}>
+                  <Text style={{ width: 160, color: "#fff", fontSize: 12, fontWeight: "bold" }}>{tier.emoji} {tier.rank}</Text>
+                  <Text style={{ width: 55,  color: "#94a3b8", fontSize: 12, textAlign: "center" }}>{tier.directs}</Text>
+                  <Text style={{ width: 110, color: GOLD, fontSize: 11, fontWeight: "bold" }}>{tier.teamVol}</Text>
+                  <Text style={{ width: 60,  color: "#94a3b8", fontSize: 11, textAlign: "center" }}>{tier.distrib}</Text>
+                  <Text style={{ width: 65,  color: BLUE, fontSize: 11, textAlign: "center" }}>{tier.infinity}</Text>
+                  <Text style={{ width: 140, color: "#a855f7", fontSize: 10 }}>{tier.poolShares}</Text>
+                  <Text style={{ width: 100, color: tier.bonus === "—" ? "#334155" : GREEN, fontSize: 12, fontWeight: "bold", textAlign: "right" }}>{tier.bonus}</Text>
+                </View>
+              ))}
             </View>
-          ))}
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 10, marginTop: 4, borderTopWidth: 1, borderTopColor: BORDER }}>
+          </ScrollView>
+
+          {/* Total bonus */}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 10, marginTop: 6, borderTopWidth: 1, borderTopColor: BORDER }}>
             <Text style={{ color: "#64748b", fontSize: 13, fontWeight: "bold" }}>Total Potential Rank Bonuses</Text>
             <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>$8,326,000</Text>
+          </View>
+
+          {/* Diamond payment note */}
+          <View style={{ backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 8, padding: 10, marginTop: 10, borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
+            <Text style={{ color: "#94a3b8", fontSize: 11, lineHeight: 18 }}>
+              💎 <Text style={{ color: GREEN, fontWeight: "bold" }}>Paid in Physical Diamonds:</Text> All bonuses are paid in physical, GIA-certified diamonds at the carat value of the bonus amount at the time of payment.
+            </Text>
+          </View>
+
+          {/* Rules */}
+          <View style={{ marginTop: 10 }}>
+            {[
+              "Unilevel: Level 1 (10%) · Level 2 (5%) · Level 3 (3%) = 18% total",
+              "Infinity Bonus (Gap Rule): You earn the difference between your % and your downline's %",
+              "Distribution: Max % of total volume from a single leg",
+            ].map((rule, i) => (
+              <Text key={i} style={{ color: "#64748b", fontSize: 11, lineHeight: 18, marginBottom: 3 }}>• {rule}</Text>
+            ))}
           </View>
         </View>
 

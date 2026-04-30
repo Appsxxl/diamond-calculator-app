@@ -31,56 +31,104 @@ interface VimeoVideo {
   type: "invitation" | "presentation" | "compensation";
 }
 
+interface VimeoLangTab {
+  code: string;
+  label: string;
+  native: boolean;
+}
+
 // ─── Vimeo JPP Data ───────────────────────────────────────────────────────────
 // Official Diamond Solution company presentation videos from vimeo.com/diamondsolution
+// Languages with native STIG videos: EN, DE, ES
+// All others use EN fallback + Coming Soon indicator
 const VIMEO_VIDEOS: Record<string, VimeoVideo[]> = {
   en: [
-    { id: "1146526988", title: "JPP1 — Invitation",         duration: "1:37", type: "invitation"    },
-    { id: "1146537304", title: "JPP2 — Presentation",       duration: "7:00", type: "presentation"  },
-    { id: "1150833840", title: "JPP3 — Compensation Plan",  duration: "5:59", type: "compensation"  },
+    { id: "1146526988", title: "JPP1 — Invitation",          duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Presentation",        duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Compensation Plan",   duration: "5:59", type: "compensation" },
   ],
   de: [
-    { id: "1146526795", title: "JPP1 — Einladung",          duration: "1:35", type: "invitation"    },
-    { id: "1146536856", title: "JPP2 — Präsentation",       duration: "4:23", type: "presentation"  },
-    { id: "1150822555", title: "JPP3 — Vergütungsplan",     duration: "6:36", type: "compensation"  },
+    { id: "1146526795", title: "JPP1 — Einladung",           duration: "1:35", type: "invitation"   },
+    { id: "1146536856", title: "JPP2 — Präsentation",        duration: "4:23", type: "presentation" },
+    { id: "1150822555", title: "JPP3 — Vergütungsplan",      duration: "6:36", type: "compensation" },
   ],
   es: [
-    { id: "1146527199", title: "JPP1 — Invitación",         duration: "1:45", type: "invitation"    },
-    { id: "1149707800", title: "JPP2 — Presentación",       duration: "7:55", type: "presentation"  },
-    { id: "1150834090", title: "JPP3 — Plan de Compensación", duration: "6:39", type: "compensation" },
+    { id: "1146527199", title: "JPP1 — Invitación",          duration: "1:45", type: "invitation"   },
+    { id: "1149707800", title: "JPP2 — Presentación",        duration: "7:55", type: "presentation" },
+    { id: "1150834090", title: "JPP3 — Plan de Compensación",duration: "6:39", type: "compensation" },
   ],
+  // Below: EN fallback until native version is published on vimeo.com/diamondsolution
   nl: [
-    // Dutch uses English videos (closest available)
-    { id: "1146526988", title: "JPP1 — Uitnodiging (EN)",   duration: "1:37", type: "invitation"    },
-    { id: "1146537304", title: "JPP2 — Presentatie (EN)",   duration: "7:00", type: "presentation"  },
-    { id: "1150833840", title: "JPP3 — Compensatieplan (EN)", duration: "5:59", type: "compensation" },
+    { id: "1146526988", title: "JPP1 — Uitnodiging",         duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Presentatie",         duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Compensatieplan",     duration: "5:59", type: "compensation" },
   ],
   fr: [
-    { id: "1146526988", title: "JPP1 — Invitation (EN)",    duration: "1:37", type: "invitation"    },
-    { id: "1146537304", title: "JPP2 — Présentation (EN)",  duration: "7:00", type: "presentation"  },
-    { id: "1150833840", title: "JPP3 — Plan de compensation (EN)", duration: "5:59", type: "compensation" },
+    { id: "1146526988", title: "JPP1 — Invitation",          duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Présentation",        duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Plan de compensation",duration: "5:59", type: "compensation" },
   ],
   ru: [
-    { id: "1146526988", title: "JPP1 — Приглашение (EN)",   duration: "1:37", type: "invitation"    },
-    { id: "1146537304", title: "JPP2 — Презентация (EN)",   duration: "7:00", type: "presentation"  },
-    { id: "1150833840", title: "JPP3 — Компенсационный план (EN)", duration: "5:59", type: "compensation" },
+    { id: "1146526988", title: "JPP1 — Приглашение",         duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Презентация",         duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Компенсационный план",duration: "5:59", type: "compensation" },
   ],
   zh: [
-    { id: "1146526988", title: "JPP1 — 邀请 (EN)",          duration: "1:37", type: "invitation"    },
-    { id: "1146537304", title: "JPP2 — 演示 (EN)",          duration: "7:00", type: "presentation"  },
-    { id: "1150833840", title: "JPP3 — 薪酬计划 (EN)",      duration: "5:59", type: "compensation"  },
+    { id: "1146526988", title: "JPP1 — 邀请",                duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — 演示",                duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — 薪酬计划",            duration: "5:59", type: "compensation" },
+  ],
+  // New languages — Coming Soon (EN fallback shown)
+  tl: [
+    { id: "1146526988", title: "JPP1 — Imbitasyon (EN)",     duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Presentasyon (EN)",   duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Compensation (EN)",   duration: "5:59", type: "compensation" },
+  ],
+  pt: [
+    { id: "1146526988", title: "JPP1 — Convite (EN)",        duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Apresentação (EN)",   duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Plano de Compen. (EN)",duration: "5:59", type: "compensation"},
+  ],
+  ar: [
+    { id: "1146526988", title: "JPP1 — دعوة (EN)",           duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — عرض تقديمي (EN)",    duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — خطة التعويض (EN)",   duration: "5:59", type: "compensation" },
+  ],
+  th: [
+    { id: "1146526988", title: "JPP1 — คำเชิญ (EN)",         duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — การนำเสนอ (EN)",     duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — แผนค่าตอบแทน (EN)", duration: "5:59", type: "compensation" },
+  ],
+  hi: [
+    { id: "1146526988", title: "JPP1 — आमंत्रण (EN)",       duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — प्रस्तुति (EN)",     duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — मुआवजा योजना (EN)", duration: "5:59", type: "compensation" },
+  ],
+  vi: [
+    { id: "1146526988", title: "JPP1 — Lời mời (EN)",        duration: "1:37", type: "invitation"   },
+    { id: "1146537304", title: "JPP2 — Thuyết trình (EN)",   duration: "7:00", type: "presentation" },
+    { id: "1150833840", title: "JPP3 — Kế hoạch bồi thường (EN)", duration: "5:59", type: "compensation" },
   ],
 };
 
-// Vimeo language filter tabs — only show languages that have native videos
+// Native video languages (have dedicated STIG Vimeo content)
+const NATIVE_VIDEO_LANGS = new Set(["en", "de", "es"]);
+
+// All language tabs for Vimeo filter
 const VIMEO_LANG_TABS = [
-  { code: "en", label: "EN" },
-  { code: "de", label: "DE" },
-  { code: "es", label: "ES" },
-  { code: "nl", label: "NL" },
-  { code: "fr", label: "FR" },
-  { code: "ru", label: "RU" },
-  { code: "zh", label: "中文" },
+  { code: "en", label: "🇬🇧 EN",       native: true  },
+  { code: "de", label: "🇩🇪 DE",       native: true  },
+  { code: "es", label: "🇪🇸 ES",       native: true  },
+  { code: "nl", label: "🇳🇱 NL",       native: false },
+  { code: "fr", label: "🇫🇷 FR",       native: false },
+  { code: "ru", label: "🇷🇺 RU",       native: false },
+  { code: "zh", label: "🇨🇳 中文",     native: false },
+  { code: "tl", label: "🇵🇭 Filipino", native: false },
+  { code: "pt", label: "🇵🇹 PT",       native: false },
+  { code: "ar", label: "🇸🇦 عربي",     native: false },
+  { code: "th", label: "🇹🇭 ไทย",      native: false },
+  { code: "hi", label: "🇮🇳 हिंदी",    native: false },
+  { code: "vi", label: "🇻🇳 Việt",     native: false },
 ];
 
 // Type badge colors
@@ -405,16 +453,19 @@ export default function VideosScreen() {
 
           {/* Language filter tabs */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={S.langTabScroll} contentContainerStyle={S.langTabRow}>
-            {VIMEO_LANG_TABS.map(tab => (
+            {VIMEO_LANG_TABS.map((tab: VimeoLangTab) => (
               <TouchableOpacity
                 key={tab.code}
-                style={[S.langTab, vimeoLang === tab.code && S.langTabActive]}
+                style={[S.langTab, vimeoLang === tab.code && S.langTabActive, !tab.native && { borderStyle: "dashed" }]}
                 onPress={() => setVimeoLang(tab.code)}
                 activeOpacity={0.75}
               >
                 <Text style={[S.langTabText, vimeoLang === tab.code && S.langTabTextActive]}>
                   {tab.label}
                 </Text>
+                {!tab.native && (
+                  <Text style={{ fontSize: 7, color: "#f59e0b", textAlign: "center", marginTop: 1 }}>EN</Text>
+                )}
               </TouchableOpacity>
             ))}
           </ScrollView>
