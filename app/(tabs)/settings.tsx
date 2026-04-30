@@ -34,13 +34,19 @@ export default function SettingsScreen() {
   const [pinError, setPinError] = useState(false);
 
   const languages = [
-    { code: "en" as const, label: "EN" },
-    { code: "nl" as const, label: "NL" },
-    { code: "de" as const, label: "DE" },
-    { code: "fr" as const, label: "FR" },
-    { code: "es" as const, label: "ES" },
-    { code: "ru" as const, label: "RU" },
-    { code: "zh" as const, label: "中文" },
+    { code: "en" as const, label: "🇬🇧 EN" },
+    { code: "nl" as const, label: "🇳🇱 NL" },
+    { code: "de" as const, label: "🇩🇪 DE" },
+    { code: "fr" as const, label: "🇫🇷 FR" },
+    { code: "es" as const, label: "🇪🇸 ES" },
+    { code: "ru" as const, label: "🇷🇺 RU" },
+    { code: "zh" as const, label: "🇨🇳 中文" },
+    { code: "tl" as const, label: "🇵🇭 Filipino" },
+    { code: "pt" as const, label: "🇵🇹 PT" },
+    { code: "ar" as const, label: "🇸🇦 عربي" },
+    { code: "th" as const, label: "🇹🇭 ไทย" },
+    { code: "hi" as const, label: "🇮🇳 हिंदी" },
+    { code: "vi" as const, label: "🇻🇳 Việt" },
   ];
 
   const helpArticles = [

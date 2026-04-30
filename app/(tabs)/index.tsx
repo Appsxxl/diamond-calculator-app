@@ -7,14 +7,20 @@ import { useCalculator } from "@/lib/calculator-context";
 import { t, Language } from "@/lib/translations";
 import * as Haptics from "expo-haptics";
 
-const LANGUAGES: { code: Language; label: string }[] = [
-  { code: "en", label: "EN" },
-  { code: "nl", label: "NL" },
-  { code: "de", label: "DE" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-  { code: "ru", label: "RU" },
-  { code: "zh", label: "中文" },
+const LANGUAGES: { code: Language; label: string; flag: string }[] = [
+  { code: "en", label: "EN", flag: "🇬🇧" },
+  { code: "nl", label: "NL", flag: "🇳🇱" },
+  { code: "de", label: "DE", flag: "🇩🇪" },
+  { code: "fr", label: "FR", flag: "🇫🇷" },
+  { code: "es", label: "ES", flag: "🇪🇸" },
+  { code: "ru", label: "RU", flag: "🇷🇺" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "tl", label: "Filipino", flag: "🇵🇭" },
+  { code: "pt", label: "PT", flag: "🇵🇹" },
+  { code: "ar", label: "عربي", flag: "🇸🇦" },
+  { code: "th", label: "ไทย", flag: "🇹🇭" },
+  { code: "hi", label: "हिंदी", flag: "🇮🇳" },
+  { code: "vi", label: "Việt", flag: "🇻🇳" },
 ];
 
 const SP_LEVELS = [
@@ -146,7 +152,7 @@ export default function HomeScreen() {
               style={[S.langBtn, language === l.code && S.langBtnActive]}
               onPress={() => handleLang(l.code)}
             >
-              <Text style={[S.langText, language === l.code && S.langTextActive]}>{l.label}</Text>
+              <Text style={[S.langText, language === l.code && S.langTextActive]}>{l.flag} {l.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
