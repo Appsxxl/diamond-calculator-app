@@ -48,6 +48,7 @@ export interface CalculationResult {
   activeWithdrawalMonths: number;
   goalReached: boolean;
   goalProgress: number; // 0-100
+  goalReachedMonth: number | null;
 }
 
 export interface CalculationParams {

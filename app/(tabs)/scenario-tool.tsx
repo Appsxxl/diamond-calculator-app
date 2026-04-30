@@ -17,7 +17,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
 import { useCalculator } from "@/lib/calculator-context";
 import { t } from "@/lib/translations";
-import { runCalculation, MonthResult, fmt, MonthData, CalculationParams } from "@/lib/calculator";
+import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData } from "@/lib/calculator";
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
