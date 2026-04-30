@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Platform } from "react-native";
@@ -10,25 +9,28 @@ export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const { partnerMode } = useCalculator();
   const bottomPadding = Platform.OS === "web" ? 12 : Math.max(insets.bottom, 8);
-  const tabBarHeight = 56 + bottomPadding;
+  const tabBarHeight  = 56 + bottomPadding;
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#f59e0b",
+        tabBarActiveTintColor:   "#f59e0b",
         tabBarInactiveTintColor: "#64748b",
-        headerShown: false,
+        headerShown:  false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          paddingTop: 8,
-          paddingBottom: bottomPadding,
-          height: tabBarHeight,
-          backgroundColor: "#0f172a",
-          borderTopColor: "#1e293b",
-          borderTopWidth: 0.5,
+          paddingTop:       8,
+          paddingBottom:    bottomPadding,
+          height:           tabBarHeight,
+          backgroundColor:  "#0f172a",
+          borderTopColor:   "#1e293b",
+          borderTopWidth:   0.5,
         },
       }}
     >
+      {/* ── CLIENT-FACING TABS ─────────────────────────────────────── */}
+
+      {/* Home */}
       <Tabs.Screen
         name="index"
         options={{
@@ -36,6 +38,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="house.fill" color={color} />,
         }}
       />
+
+      {/* Strategy — client calculator (formerly Scenario) */}
       <Tabs.Screen
         name="scenario-tool"
         options={{
@@ -43,6 +47,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="chart.bar.fill" color={color} />,
         }}
       />
+
+      {/* Plan B Architect — strategy engineer */}
       <Tabs.Screen
         name="strategy-engineer"
         options={{
@@ -50,20 +56,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="lightbulb.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="affiliate"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="partner-tools"
-        options={{
-          title: "Advisers",
-          tabBarIcon: ({ color }) => <IconSymbol size={26} name="briefcase.fill" color={color} />,
-          href: partnerMode ? undefined : null,
-        }}
-      />
+
+      {/* Videos */}
       <Tabs.Screen
         name="videos"
         options={{
@@ -71,6 +65,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="play.rectangle.fill" color={color} />,
         }}
       />
+
+      {/* Compliance */}
       <Tabs.Screen
         name="compliance"
         options={{
@@ -78,11 +74,43 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="shield.fill" color={color} />,
         }}
       />
+
+      {/* Settings */}
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <IconSymbol size={26} name="gearshape.fill" color={color} />,
+        }}
+      />
+
+      {/* ── ADVISER-ONLY TABS (shown when partnerMode is on) ─────────── */}
+
+      {/*
+       * AFFILIATE = Private Adviser Back-Office
+       * Contains: Referral Link (pinned) + Call List + Global Pool
+       * Separate from client-facing Strategy tabs
+       */}
+      <Tabs.Screen
+        name="affiliate"
+        options={{
+          title: "Affiliate",
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="person.2.fill" color={color} />,
+          href: partnerMode ? undefined : null,
+        }}
+      />
+
+      {/*
+       * PARTNER-TOOLS = Adviser Command Centre
+       * Contains: Revenue Model + Property Optimizer + Savings Goal + Asset Planner
+       * Full suite of tools for client-facing calculations
+       */}
+      <Tabs.Screen
+        name="partner-tools"
+        options={{
+          title: "Advisers",
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="briefcase.fill" color={color} />,
+          href: partnerMode ? undefined : null,
         }}
       />
     </Tabs>
