@@ -46,7 +46,7 @@ export default function ScenarioToolScreen() {
 
   const applyGlobalComp = useCallback((pct: number) => {
     setGlobalCompPct(pct);
-    setMonthFields(prev => {
+    setMonthData(prev => {
       const updated = { ...prev };
       for (let m = 1; m <= (numVal(years) * 12); m++) {
         updated[m] = { ...(updated[m] ?? createDefaultMonthData()), comp: pct };
