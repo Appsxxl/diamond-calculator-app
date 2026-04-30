@@ -42,6 +42,18 @@ export default function ScenarioToolScreen() {
   const { language, officeLocation } = useCalculator();
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [globalCompPct, setGlobalCompPct] = useState(100);
+
+  const applyGlobalComp = useCallback((pct: number) => {
+    setGlobalCompPct(pct);
+    setMonthFields(prev => {
+      const updated = { ...prev };
+      for (let m = 1; m <= (numVal(years) * 12); m++) {
+        updated[m] = { ...(updated[m] ?? createDefaultMonthData()), comp: pct };
+      }
+      return updated;
+    });
+  }, [years]);
 
   const [clientName, setClientName] = useState("");
   const [startAmount, setStartAmount] = useState("10000");
@@ -349,6 +361,25 @@ export default function ScenarioToolScreen() {
           </View>
         </View>
 
+        {/* Global Rebate Re-Use % quick presets */}
+        <View style={S.card}>
+          <Text style={S.sectionLabel}>🔄 {t(language, 'compoundPercentage').toUpperCase()} — QUICK PRESETS</Text>
+          <Text style={{ color: "#64748b", fontSize: 11, marginBottom: 8 }}>
+            Apply one rebate re-use % to all months instantly.
+          </Text>
+          <View style={{ flexDirection: "row", gap: 6 }}>
+            {[0, 25, 50, 75, 100].map(pct => (
+              <TouchableOpacity
+                key={pct}
+                style={{ flex: 1, backgroundColor: globalCompPct === pct ? "#f59e0b" : "#1e293b", borderRadius: 8, paddingVertical: 10, alignItems: "center", borderWidth: 1, borderColor: globalCompPct === pct ? "#f59e0b" : "#334155" }}
+                onPress={() => applyGlobalComp(pct)}
+              >
+                <Text style={{ color: globalCompPct === pct ? "#0f172a" : "#64748b", fontWeight: "bold", fontSize: 14 }}>{pct}%</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         {/* Calculate */}
         <TouchableOpacity style={S.calcBtn} onPress={handleCalculate}>
           <Text style={S.calcText}>⚡ {t(language, 'calculate').toUpperCase()}</Text>
@@ -620,6 +651,19 @@ export default function ScenarioToolScreen() {
             {/* Summary Cards */}
             <View style={S.card}>
               <Text style={S.sectionLabel}>{`STRATEGY SUMMARY — ${Math.round(result.months.length / 12)} YEAR STRATEGY`}</Text>
+              {result.goalReachedMonth && (
+                <View style={{ backgroundColor: "rgba(34,197,94,0.12)", borderRadius: 8, padding: 10, marginBottom: 10, borderWidth: 1, borderColor: "rgba(34,197,94,0.3)", flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <Text style={{ fontSize: 18 }}>🎯</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold" }}>
+                      Goal Reached at Month {result.goalReachedMonth} (Year {Math.ceil(result.goalReachedMonth / 12)})
+                    </Text>
+                    <Text style={{ color: "#64748b", fontSize: 11 }}>
+                      Target Monthly Rebate achieved — client strategy is on track
+                    </Text>
+                  </View>
+                </View>
+              )}
               <View style={S.summaryGrid}>
                 <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
@@ -659,16 +703,52 @@ export default function ScenarioToolScreen() {
                       <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
                     ))}
                   </View>
-                  {result.months.map((row) => (
-                    <React.Fragment key={row.month}>
-                      {row.isYearStart && (
-                        <View style={S.yearRow}>
-                          <Text style={S.yearText}>── Year {row.yearNumber} Sale Diamonds ──</Text>
+                  {result.months.map((row, idx) => {
+                    // Year summary: collect all months of this year
+                    const isLastOfYear = row.month % 12 === 0;
+                    let yearSummary = null;
+                    if (isLastOfYear) {
+                      const yearStart = row.month - 11;
+                      const yearMonths = result.months.slice(yearStart - 1, row.month);
+                      const yearRebates = yearMonths.reduce((s, r) => s + r.grossYield, 0);
+                      const yearDeposits = yearMonths.reduce((s, r) => s + r.deposit, 0);
+                      yearSummary = (
+                        <View style={{ backgroundColor: "#0f1e35", flexDirection: "row", paddingVertical: 6, paddingHorizontal: 4, borderTopWidth: 1, borderBottomWidth: 2, borderColor: "#f59e0b" }}>
+                          <Text style={{ width: 28, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
+                          <Text style={{ width: 96, color: "#94a3b8", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
+                          <Text style={{ width: 72, color: "#60a5fa", fontSize: 10 }}>{fmt(yearDeposits)}</Text>
+                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
+                          <Text style={{ width: 100, color: "#94a3b8", fontSize: 10 }}>—</Text>
+                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
+                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
+                          <Text style={{ width: 72, color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
+                          <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Year {row.yearNumber} Total</Text>
+                          <Text style={{ width: 96, color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(row.capEnd)}</Text>
                         </View>
-                      )}
-                      <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
-                    </React.Fragment>
-                  ))}
+                      );
+                    }
+                    return (
+                      <React.Fragment key={row.month}>
+                        {row.isYearStart && (
+                          <View style={S.yearRow}>
+                            <Text style={S.yearText}>── Year {row.yearNumber} ──</Text>
+                          </View>
+                        )}
+                        {row.isSpUpgrade && (
+                          <View style={{ backgroundColor: "rgba(245,158,11,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
+                            <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>⬆️ SP UPGRADE → {row.spName} ({row.spBaseRate}% base)</Text>
+                          </View>
+                        )}
+                        {row.isGoalReached && (
+                          <View style={{ backgroundColor: "rgba(34,197,94,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#22c55e" }}>
+                            <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY REBATE REACHED — Month {row.month}</Text>
+                          </View>
+                        )}
+                        <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
+                        {yearSummary}
+                      </React.Fragment>
+                    );
+                  })}
                 </View>
               </ScrollView>
             </View>

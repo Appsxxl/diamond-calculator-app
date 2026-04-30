@@ -28,6 +28,8 @@ export interface MonthResult {
   isVipActive: boolean;
   isYearStart: boolean;
   yearNumber: number;
+  isSpUpgrade: boolean;
+  isGoalReached: boolean;
 }
 
 export interface CalculationResult {
@@ -114,18 +116,21 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     let isNewVip = false;
 
     if (vipEnabled) {
-      if ((cap - 1000) >= 2500 && (!vActive || vMnd <= 0)) {
+      // VIP activation: only when vipPot has enough accumulated ($84/mo × 12 = $1,008)
+      // Diamond cap is NEVER reduced by VIP fee — fee always paid from vipPot reserve
+      if (cap >= 2500 && (!vActive || vMnd <= 0)) {
         const cost = 1000;
         if (vipPot >= cost) {
+          // Pay from vipPot — diamond value untouched ✓
           vipPot -= cost;
-        } else {
-          cap -= cost;
+          tVip += cost;
+          vActive = true;
+          vMnd = 12;
+          vipLabel = 'NEW VIP';
+          isNewVip = true;
         }
-        vActive = true;
-        vMnd = 12;
-        tVip += cost;
-        vipLabel = 'NEW VIP';
-        isNewVip = true;
+        // If vipPot < $1000: defer VIP — keep accumulating until affordable
+        // This means first VIP activates around month 12 (84 × 12 = $1,008)
       } else if (vActive) {
         vipLabel = `VIP (${vMnd}m)`;
       }
@@ -181,6 +186,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     if (vMnd > 0) vMnd--;
     if (vMnd === 0) vActive = false;
 
+    const prevSpName = results.length > 0 ? results[results.length - 1].spName : sp.name;
     results.push({
       month: m,
       capStart,
@@ -201,7 +207,25 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       isVipActive: vActive,
       isYearStart: m > 1 && (m - 1) % 12 === 0,
       yearNumber: Math.ceil(m / 12),
+      isSpUpgrade: sp.name !== prevSpName,
+      isGoalReached: goal > 0 && b >= goal && (results.length === 0 || !results[results.length - 1].isGoalReached),
     });
+  }
+
+  // Find the month goal was first reached
+  let goalReachedMonth: number | null = null;
+  for (const r of results) {
+    if (goal > 0 && r.maxOut >= goal && goalReachedMonth === null) {
+      goalReachedMonth = r.month;
+    }
+  }
+
+  // Find SP upgrade months
+  const spUpgradeMonths = new Set<number>();
+  let prevSP = '';
+  for (const r of results) {
+    if (prevSP && r.spName !== prevSP) spUpgradeMonths.add(r.month);
+    prevSP = r.spName;
   }
 
   const netResult = (cap + tOut + wallet + vipPot + compPot) - tIn;
@@ -223,6 +247,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     activeWithdrawalMonths,
     goalReached: finalMaxVal >= goal,
     goalProgress,
+    goalReachedMonth,
   };
 }
 

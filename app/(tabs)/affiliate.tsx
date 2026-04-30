@@ -17,6 +17,20 @@ import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
+import { router } from "expo-router";
+import { t } from "@/lib/translations";
+
+const DIAMOND_TIERS = [
+  { rank: "Emerald",              emoji: "💚", partnersNum: "2", bonus: "$1,000"     },
+  { rank: "Diamond",              emoji: "💎", partnersNum: "2", bonus: "$5,000"     },
+  { rank: "Blue Diamond",         emoji: "🔵", partnersNum: "2", bonus: "$20,000"    },
+  { rank: "Green Diamond",        emoji: "💚", partnersNum: "3", bonus: "$50,000"    },
+  { rank: "Purple Diamond",       emoji: "💜", partnersNum: "3", bonus: "$100,000"   },
+  { rank: "Diamond Elite",        emoji: "💎", partnersNum: "4", bonus: "$150,000"   },
+  { rank: "Double Diamond Elite", emoji: "👑", partnersNum: "4", bonus: "$1,000,000" },
+  { rank: "Triple Diamond Elite", emoji: "🏆", partnersNum: "4", bonus: "$2,000,000" },
+  { rank: "Black Diamond",        emoji: "⚫", partnersNum: "5", bonus: "$5,000,000" },
+];
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 const REFERRAL_BASE    = "https://diamond-solution.net/user/register?reference=";
@@ -455,6 +469,104 @@ export default function AffiliateScreen() {
             <Text style={[S.poolTotalValue, { color: GREEN }]}>{fmtM(totalPoolPayout)}/mo</Text>
           </View>
         </View>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 4. COMMISSION STRUCTURE                                         */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <View style={S.card}>
+          <Text style={S.sectionLabel}>💼 COMMISSION STRUCTURE</Text>
+          {[
+            { pct: "10%", color: GREEN,    title: "Direct Residual (Level 1)", desc: "10% of every monthly diamond purchase your direct client makes — recurring, every month for the life of their contract." },
+            { pct: "5%",  color: BLUE,     title: "Level 2 Override",           desc: "5% of every purchase made by clients introduced by your direct advisers — builds automatically as your team grows." },
+            { pct: "3%",  color: GOLD,     title: "Level 3 Override",           desc: "3% deep network override — pure passive income from your extended network with no direct management required." },
+          ].map(c => (
+            <View key={c.pct} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 14 }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: c.color, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
+                <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>{c.pct}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>{c.title}</Text>
+                <Text style={{ color: "#64748b", fontSize: 12, marginTop: 2, lineHeight: 18 }}>{c.desc}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 5. DIAMOND RANK BONUS PLAN                                      */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <View style={S.card}>
+          <Text style={S.sectionLabel}>🏆 DIAMOND RANK BONUS PLAN</Text>
+          <View style={{ flexDirection: "row", paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: BORDER, marginBottom: 4 }}>
+            <Text style={{ flex: 2, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Rank</Text>
+            <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "center" }}>Partners</Text>
+            <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>One-Time Bonus</Text>
+          </View>
+          {DIAMOND_TIERS.map((tier, idx) => (
+            <View key={tier.rank} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: NAVY, backgroundColor: idx % 2 === 0 ? "rgba(15,32,53,0.5)" : "transparent" }}>
+              <Text style={{ flex: 2, color: "#fff", fontSize: 13, fontWeight: "bold" }}>{tier.emoji} {tier.rank}</Text>
+              <Text style={{ flex: 1, color: "#64748b", fontSize: 13, textAlign: "center" }}>{tier.partnersNum}</Text>
+              <Text style={{ flex: 1, color: GREEN, fontSize: 13, fontWeight: "bold", textAlign: "right" }}>{tier.bonus}</Text>
+            </View>
+          ))}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 10, marginTop: 4, borderTopWidth: 1, borderTopColor: BORDER }}>
+            <Text style={{ color: "#64748b", fontSize: 13, fontWeight: "bold" }}>Total Potential Rank Bonuses</Text>
+            <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>$8,326,000</Text>
+          </View>
+        </View>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 6. HOW IT WORKS                                                 */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <View style={S.card}>
+          <Text style={S.sectionLabel}>📋 HOW IT WORKS</Text>
+          {[
+            "Register as a Real Estate Agent or Adviser on diamond-solution.net",
+            "Set your referral code and share your link with your network",
+            "Client purchases physical diamonds — you earn 10% of their monthly rebate re-use, every month",
+            "Build your team of advisers to unlock Level 2 (5%) and Level 3 (3%) overrides",
+            "Reach $1M Team Volume to unlock the Blue Diamond Global Pool Bonus",
+          ].map((step, i) => (
+            <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 12 }}>
+              <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: BLUE, alignItems: "center", justifyContent: "center", marginRight: 10, marginTop: 1 }}>
+                <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>{i + 1}</Text>
+              </View>
+              <Text style={{ flex: 1, color: "#94a3b8", fontSize: 13, lineHeight: 20 }}>{step}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 7. REGISTER CTA                                                 */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <TouchableOpacity
+          style={{ backgroundColor: CARD_BG, borderRadius: 14, padding: 14, marginBottom: 14, flexDirection: "row", alignItems: "center", borderLeftWidth: 3, borderLeftColor: GREEN }}
+          onPress={() => Linking.openURL(fullLink || "https://diamond-solution.net/user/register")}
+          activeOpacity={0.85}
+        >
+          <Text style={{ fontSize: 24, marginRight: 12 }}>🌐</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>Register as Adviser</Text>
+            <Text style={{ color: referralCode ? GREEN : GOLD, fontSize: 13, marginTop: 2 }}>
+              {referralCode ? `🔗 With code: ${referralCode}` : "⚠️ Set your referral code first"}
+            </Text>
+          </View>
+          <Text style={{ color: GREEN, fontSize: 18, fontWeight: "bold" }}>→</Text>
+        </TouchableOpacity>
+
+        {/* ── PRO COMPENSATION PLAN BUTTON ─── */}
+        <TouchableOpacity
+          style={{ backgroundColor: CARD_BG, borderRadius: 14, padding: 16, marginBottom: 14, flexDirection: "row", alignItems: "center", borderWidth: 1, borderColor: BLUE }}
+          onPress={() => router.push("/pro-compensation")}
+          activeOpacity={0.8}
+        >
+          <Text style={{ fontSize: 28, marginRight: 12 }}>📊</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>{t(language, "proCompBtn")}</Text>
+            <Text style={{ color: "#64748b", fontSize: 13, marginTop: 2 }}>{t(language, "proCompSubtitle")}</Text>
+          </View>
+          <Text style={{ color: BLUE, fontSize: 20, fontWeight: "bold" }}>→</Text>
+        </TouchableOpacity>
 
         {/* Security Badge Bar */}
         <View style={S.badgeBar}>
