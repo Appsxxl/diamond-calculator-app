@@ -167,11 +167,9 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     wallet = o - nC;
     compPot += nC;
 
-    // Step 11: Add compPot to cap when >= 100
-    if (compPot >= 100) {
-      cap += compPot;
-      compPot = 0;
-    }
+    // Step 11: Flush compPot to cap every month so capEnd always advances
+    cap += compPot;
+    compPot = 0;
 
     // Step 12: VIP countdown
     if (vMnd > 0) vMnd--;
@@ -187,7 +185,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       grossYield: k,
       compoundAdded: nC,
       wallet,
-      vipPot,
+      vipPot: nV,
       compPot,
       capEnd: cap,
       spName: sp.name,
