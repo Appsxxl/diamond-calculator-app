@@ -312,6 +312,7 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
+            <Text style={{ color: '#94a3b8', fontSize: 10, marginTop: 4 }}>Accounts under $3,550 will defer VIP activation to prioritize compound growth.</Text>
           </View>
           <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
             <Text style={S.label}>{t(language, 'years').toUpperCase()}</Text>

@@ -190,7 +190,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       grossYield: k,
       compoundAdded: nC,
       wallet,
-      vipPot: nV,
+      vipPot: vipPot,
       compPot,
       capEnd: cap,
       spName: sp.name,
