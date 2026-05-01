@@ -119,7 +119,11 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
         const cost = 1000;
-        cap -= cost;
+        if (vipPot >= cost) {
+          vipPot -= cost;  // renewal: funded by accumulated vipPot
+        } else {
+          cap -= cost;     // first activation: deduct from capital
+        }
         tVip += cost;
         vActive = true;
         vMnd = 12;
@@ -139,8 +143,9 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // Step 5: Gross yield
     const k = Math.round(cap * (totalRate / 100));
 
-    // Step 6: Monthly VIP cost deducted from yield ($84/month)
+    // Step 6: $84/month accumulates in vipPot to fund future renewals
     const nV = vActive ? 84 : 0;
+    if (vipEnabled) vipPot += nV;
 
     // Step 7: Available to withdraw = (grossYield - vipCost) + wallet
     const b = (k - nV) + wallet;
@@ -251,6 +256,7 @@ export function stratSimulate(
 ): number {
   let cap = inleg;
   let wallet = 0;
+  let vipPot = 0;
   let vActive = false;
   let vMnd = 0;
   let finalPayout = 0;
@@ -260,7 +266,8 @@ export function stratSimulate(
 
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
-        cap -= 1000;
+        if (vipPot >= 1000) vipPot -= 1000;
+        else cap -= 1000;
         vActive = true;
         vMnd = 12;
       }
@@ -277,6 +284,7 @@ export function stratSimulate(
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));
     const vipCost = vActive ? 84 : 0;
+    if (vipEnabled) vipPot += vipCost;
 
     const available = (discount - vipCost) + wallet;
 
@@ -307,6 +315,7 @@ export function stratFindMeetingMonth(
 ): number | null {
   let cap = start;
   let wallet = 0;
+  let vipPot = 0;
   let vActive = false;
   let vMnd = 0;
 
@@ -315,7 +324,8 @@ export function stratFindMeetingMonth(
 
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
-        cap -= 1000;
+        if (vipPot >= 1000) vipPot -= 1000;
+        else cap -= 1000;
         vActive = true;
         vMnd = 12;
       }
@@ -332,6 +342,7 @@ export function stratFindMeetingMonth(
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));
     const vipCost = vActive ? 84 : 0;
+    if (vipEnabled) vipPot += vipCost;
 
     const available = (discount - vipCost) + wallet;
     if (available >= goal) return i;
