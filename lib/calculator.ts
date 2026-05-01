@@ -139,13 +139,10 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // Step 5: Gross yield
     const k = Math.round(cap * (totalRate / 100));
 
-    // Step 6: VIP pot earnings ($84/month fixed)
+    // Step 6: Monthly VIP cost deducted from yield ($84/month)
     const nV = vActive ? 84 : 0;
-    if (vipEnabled) {
-      vipPot += nV;
-    }
 
-    // Step 7: Available to withdraw = (grossYield - vipEarnings) + wallet
+    // Step 7: Available to withdraw = (grossYield - vipCost) + wallet
     const b = (k - nV) + wallet;
     if (b > finalMaxVal) {
       finalMaxVal = b;
@@ -256,7 +253,6 @@ export function stratSimulate(
 ): number {
   let cap = inleg;
   let wallet = 0;
-  let vipPot = 0;
   let vActive = false;
   let vMnd = 0;
   let finalPayout = 0;
@@ -282,10 +278,9 @@ export function stratSimulate(
 
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));
-    const vipEarnings = vActive ? 84 : 0;
-    if (vipEnabled) vipPot += vipEarnings;
+    const vipCost = vActive ? 84 : 0;
 
-    const available = (discount - vipEarnings) + wallet;
+    const available = (discount - vipCost) + wallet;
 
     if (opnP > 0) {
       const actualOut = available * (opnP / 100);
@@ -314,7 +309,6 @@ export function stratFindMeetingMonth(
 ): number | null {
   let cap = start;
   let wallet = 0;
-  let vipPot = 0;
   let vActive = false;
   let vMnd = 0;
 
@@ -339,10 +333,9 @@ export function stratFindMeetingMonth(
 
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));
-    const vipEarnings = vActive ? 84 : 0;
-    if (vipEnabled) vipPot += vipEarnings;
+    const vipCost = vActive ? 84 : 0;
 
-    const available = (discount - vipEarnings) + wallet;
+    const available = (discount - vipCost) + wallet;
     if (available >= goal) return i;
 
     cap += available;
