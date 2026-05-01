@@ -495,6 +495,46 @@ export default function ScenarioToolScreen() {
                     : t(language,'waiting')}
                 />
               </View>
+              {(() => {
+                const spTiers = [
+                  { threshold: 1000,   name: 'SP2', rate: 2.45 },
+                  { threshold: 2500,   name: 'SP3', rate: 2.7  },
+                  { threshold: 5000,   name: 'SP4', rate: 3.0  },
+                  { threshold: 10000,  name: 'SP5', rate: 3.1  },
+                  { threshold: 50000,  name: 'SP6', rate: 3.2  },
+                  { threshold: 100000, name: 'SP7', rate: 3.3  },
+                ];
+                const nextSp = spTiers.find(t => result.finalCap < t.threshold && result.finalCap >= t.threshold * 0.8);
+                const spHint = nextSp
+                  ? `${fmt(nextSp.threshold - result.finalCap)} away from ${nextSp.name} — base rate → ${nextSp.rate}%`
+                  : null;
+                const vipCountdownHint = vipEnabled && result.finalVipPot < 1000
+                  ? `~${Math.ceil((1000 - result.finalVipPot) / 84)} months until VP pot self-funds next renewal (${fmt(result.finalVipPot)} of $1,000)`
+                  : null;
+                const withdrawalHint = result.totalOut > 0 && result.finalCap <= (parseFloat(startAmount) || 0)
+                  ? 'High withdrawals are keeping capital flat — lower your rebate % to grow into the next SP tier faster.'
+                  : null;
+                if (!spHint && !vipCountdownHint && !withdrawalHint) return null;
+                return (
+                  <View style={{ marginTop: 10, gap: 6 }}>
+                    {spHint && (
+                      <View style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#fbbf24' }}>
+                        <Text style={{ color: '#fbbf24', fontSize: 11 }}>⬆ SP Upgrade Nearby: {spHint}</Text>
+                      </View>
+                    )}
+                    {vipCountdownHint && (
+                      <View style={{ backgroundColor: 'rgba(167,139,250,0.1)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#a78bfa' }}>
+                        <Text style={{ color: '#a78bfa', fontSize: 11 }}>♦ VIP Renewal: {vipCountdownHint}</Text>
+                      </View>
+                    )}
+                    {withdrawalHint && (
+                      <View style={{ backgroundColor: 'rgba(248,113,113,0.1)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#f87171' }}>
+                        <Text style={{ color: '#f87171', fontSize: 11 }}>⚠ {withdrawalHint}</Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              })()}
             </View>
 
             {/* Monthly Table */}
