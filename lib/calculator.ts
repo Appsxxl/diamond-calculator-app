@@ -117,21 +117,14 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     let isNewVip = false;
 
     if (vipEnabled) {
-      // VIP activation: only when vipPot has enough accumulated ($84/mo × 12 = $1,008)
-      // Diamond cap is NEVER reduced by VIP fee — fee always paid from vipPot reserve
-      if (cap >= 2500 && (!vActive || vMnd <= 0)) {
+      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
         const cost = 1000;
-        if (vipPot >= cost) {
-          // Pay from vipPot — diamond value untouched ✓
-          vipPot -= cost;
-          tVip += cost;
-          vActive = true;
-          vMnd = 12;
-          vipLabel = 'NEW VIP';
-          isNewVip = true;
-        }
-        // If vipPot < $1000: defer VIP — keep accumulating until affordable
-        // This means first VIP activates around month 12 (84 × 12 = $1,008)
+        cap -= cost;
+        tVip += cost;
+        vActive = true;
+        vMnd = 12;
+        vipLabel = 'NEW VIP';
+        isNewVip = true;
       } else if (vActive) {
         vipLabel = `VIP (${vMnd}m)`;
       }
@@ -272,10 +265,8 @@ export function stratSimulate(
     cap += monthlyStort;
 
     if (vipEnabled) {
-      if ((cap - 1000) >= 2500 && (!vActive || vMnd <= 0)) {
-        const cost = 1000;
-        if (vipPot >= cost) vipPot -= cost;
-        else cap -= cost;
+      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
+        cap -= 1000;
         vActive = true;
         vMnd = 12;
       }
@@ -331,10 +322,8 @@ export function stratFindMeetingMonth(
     cap += monthlyStort;
 
     if (vipEnabled) {
-      if ((cap - 1000) >= 2500 && (!vActive || vMnd <= 0)) {
-        const cost = 1000;
-        if (vipPot >= cost) vipPot -= cost;
-        else cap -= cost;
+      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
+        cap -= 1000;
         vActive = true;
         vMnd = 12;
       }
