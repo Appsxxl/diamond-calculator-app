@@ -79,6 +79,7 @@ export default function ScenarioToolScreen() {
 
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
+  const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
 
   // Auto-fill from Strategy Engineer when navigated with plan params
   useEffect(() => {
@@ -734,64 +735,80 @@ export default function ScenarioToolScreen() {
               </Text>
             </View>
 
-            {/* Monthly Table */}
+            {/* Monthly / Yearly Table */}
             <View style={S.card}>
-              <Text style={S.sectionLabel}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator>
-                <View>
-                  <View style={S.tableHead}>
-                    {["M","Diamonds","Monthly Purchase","Rebate %","Rebate Payout","Growth %","Plan","Rebate","Status","Total"].map(h => (
-                      <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
-                    ))}
-                  </View>
-                  {result.months.map((row, idx) => {
-                    // Year summary: collect all months of this year
-                    const isLastOfYear = row.month % 12 === 0;
-                    let yearSummary = null;
-                    if (isLastOfYear) {
-                      const yearStart = row.month - 11;
-                      const yearMonths = result.months.slice(yearStart - 1, row.month);
-                      const yearRebates = yearMonths.reduce((s, r) => s + r.grossYield, 0);
-                      const yearDeposits = yearMonths.reduce((s, r) => s + r.deposit, 0);
-                      yearSummary = (
-                        <View style={{ backgroundColor: "#0f1e35", flexDirection: "row", paddingVertical: 6, paddingHorizontal: 4, borderTopWidth: 1, borderBottomWidth: 2, borderColor: "#f59e0b" }}>
-                          <Text style={{ width: 28, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
-                          <Text style={{ width: 96, color: "#94a3b8", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
-                          <Text style={{ width: 72, color: "#60a5fa", fontSize: 10 }}>{fmt(yearDeposits)}</Text>
-                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
-                          <Text style={{ width: 100, color: "#94a3b8", fontSize: 10 }}>—</Text>
-                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
-                          <Text style={{ width: 72, color: "#94a3b8", fontSize: 10 }}>—</Text>
-                          <Text style={{ width: 72, color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
-                          <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Year {row.yearNumber} Total</Text>
-                          <Text style={{ width: 96, color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(row.capEnd)}</Text>
-                        </View>
-                      );
-                    }
-                    return (
-                      <React.Fragment key={row.month}>
-                        {row.isYearStart && (
-                          <View style={S.yearRow}>
-                            <Text style={S.yearText}>── Year {row.yearNumber} ──</Text>
-                          </View>
-                        )}
-                        {row.isSpUpgrade && (
-                          <View style={{ backgroundColor: "rgba(245,158,11,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
-                            <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>⬆️ SP UPGRADE → {row.spName} ({row.spBaseRate}% base)</Text>
-                          </View>
-                        )}
-                        {row.isGoalReached && (
-                          <View style={{ backgroundColor: "rgba(34,197,94,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#22c55e" }}>
-                            <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY REBATE REACHED — Month {row.month}</Text>
-                          </View>
-                        )}
-                        <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
-                        {yearSummary}
-                      </React.Fragment>
-                    );
-                  })}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={S.sectionLabel}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Text style={{ color: viewMode === 'monthly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>Monthly</Text>
+                  <Switch
+                    value={viewMode === 'yearly'}
+                    onValueChange={v => setViewMode(v ? 'yearly' : 'monthly')}
+                    trackColor={{ false: '#334155', true: '#f59e0b' }}
+                    thumbColor="#fff"
+                  />
+                  <Text style={{ color: viewMode === 'yearly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>Yearly</Text>
                 </View>
-              </ScrollView>
+              </View>
+              {viewMode === 'yearly' ? (
+                <YearlySummary result={result} />
+              ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator>
+                  <View>
+                    <View style={S.tableHead}>
+                      {["M","Rebate Payout","Rebate","Diamonds","Status","Growth %","Plan","Rebate %","Monthly Purchase","Total"].map(h => (
+                        <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
+                      ))}
+                    </View>
+                    {result.months.map((row) => {
+                      const isLastOfYear = row.month % 12 === 0;
+                      let yearSummary = null;
+                      if (isLastOfYear) {
+                        const yearStart = row.month - 11;
+                        const yearMonths = result.months.slice(yearStart - 1, row.month);
+                        const yearPayout  = yearMonths.reduce((s, r) => s + r.withdrawal, 0);
+                        const yearRebates = yearMonths.reduce((s, r) => s + r.grossYield, 0);
+                        const yearDeposits = yearMonths.reduce((s, r) => s + r.deposit, 0);
+                        yearSummary = (
+                          <View style={{ backgroundColor: "#0f1e35", flexDirection: "row", paddingVertical: 6, paddingHorizontal: 4, borderTopWidth: 1, borderBottomWidth: 2, borderColor: "#f59e0b" }}>
+                            <Text style={{ width: 28,  color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
+                            <Text style={{ width: 104, color: "#facc15", fontSize: 10, fontWeight: "bold" }}>{fmt(yearPayout)}</Text>
+                            <Text style={{ width: 80,  color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
+                            <Text style={{ width: 90,  color: "#e2e8f0", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
+                            <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Year {row.yearNumber} Total</Text>
+                            <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: 80,  color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: 72,  color: "#60a5fa", fontSize: 10 }}>{fmt(yearDeposits)}</Text>
+                            <Text style={{ width: 90,  color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(row.capEnd)}</Text>
+                          </View>
+                        );
+                      }
+                      return (
+                        <React.Fragment key={row.month}>
+                          {row.isYearStart && (
+                            <View style={S.yearRow}>
+                              <Text style={S.yearText}>── Year {row.yearNumber} ──</Text>
+                            </View>
+                          )}
+                          {row.isSpUpgrade && (
+                            <View style={{ backgroundColor: "rgba(245,158,11,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
+                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>⬆️ SP UPGRADE → {row.spName} ({row.spBaseRate}% base)</Text>
+                            </View>
+                          )}
+                          {row.isGoalReached && (
+                            <View style={{ backgroundColor: "rgba(34,197,94,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#22c55e" }}>
+                              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY REBATE REACHED — Month {row.month}</Text>
+                            </View>
+                          )}
+                          <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
+                          {yearSummary}
+                        </React.Fragment>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              )}
             </View>
           {/* Disclaimer — shown only after results are visible */}
           <DisclaimerInline />
@@ -806,9 +823,11 @@ export default function ScenarioToolScreen() {
 }
 
 function colWidth(h: string) {
-  if (h === "M") return { width: 28 };
-  if (h === "Diamonds" || h === "Total") return { width: 96 };
-  if (h === "Withdrawal" || h === "Status") return { width: 100 };
+  if (h === "M" || h === "Year") return { width: 28 };
+  if (h === "Rebate Payout") return { width: 104 };
+  if (h === "Diamonds" || h === "Total") return { width: 90 };
+  if (h === "Status") return { width: 100 };
+  if (h === "Rebate" || h === "Plan") return { width: 80 };
   return { width: 72 };
 }
 
@@ -823,36 +842,18 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
   const rowStyle = getRowStyle(row);
   return (
     <View style={[S.tableRow, rowStyle]}>
+      {/* M */}
       <Text style={[S.td, { width: 28, color: "#94a3b8" }]}>{row.month}</Text>
-      <Text style={[S.td, { width: 96, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#60a5fa" }]}
-        value={String(mData.stort)}
-        onChangeText={v => onUpdate(row.month, "stort", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#f59e0b" }]}
-        value={String(mData.opnP)}
-        onChangeText={v => onUpdate(row.month, "opnP", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
-      <View style={{ width: 100 }}>
-        <Text style={[S.td, { color: "#94a3b8", fontSize: 9 }]}>Max:{fmt(row.maxOut)}</Text>
-        <Text style={[S.td, { color: row.withdrawal > 0 ? "#4ade80" : "#94a3b8" }]}>{fmt(row.withdrawal)}</Text>
+      {/* Rebate Payout — primary focus */}
+      <View style={{ width: 104 }}>
+        <Text style={[S.td, { color: "#64748b", fontSize: 9 }]}>Max:{fmt(row.maxOut)}</Text>
+        <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#a78bfa" }]}
-        value={String(mData.comp)}
-        onChangeText={v => onUpdate(row.month, "comp", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
-      <View style={{ width: 72 }}>
-        <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
-          {row.spName} ({row.totalRate.toFixed(1)}%)
-        </Text>
-      </View>
-      <Text style={[S.td, { width: 72, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
+      {/* Rebate */}
+      <Text style={[S.td, { width: 80, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
+      {/* Diamonds */}
+      <Text style={[S.td, { width: 90, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
+      {/* Status */}
       <View style={{ width: 100 }}>
         {row.vipStatus ? (
           <View style={{ backgroundColor: row.isNewVip ? "#7f1d1d" : "#1e3a5f", borderRadius: 4, paddingHorizontal: 3, paddingVertical: 1, marginBottom: 2, alignSelf: "center" }}>
@@ -863,7 +864,74 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
         <Text style={[S.td, { color: "#fbbf24", fontSize: 9 }]}>VP:{fmt(row.vipPot)}</Text>
         <Text style={[S.td, { color: "#c4b5fd", fontSize: 9 }]}>P:{fmt(row.compPot)}</Text>
       </View>
-      <Text style={[S.td, { width: 96, color: row.capEnd >= row.capStart ? "#4ade80" : "#f87171", fontWeight: "bold" }]}>{fmt(row.capEnd)}</Text>
+      {/* Growth % */}
+      <TextInput
+        style={[S.tdInput, { width: 72, color: "#a78bfa" }]}
+        value={String(mData.comp)}
+        onChangeText={v => onUpdate(row.month, "comp", parseFloat(v) || 0)}
+        keyboardType="numeric"
+      />
+      {/* Plan */}
+      <View style={{ width: 80 }}>
+        <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
+          {row.spName} ({row.totalRate.toFixed(1)}%)
+        </Text>
+      </View>
+      {/* Rebate % */}
+      <TextInput
+        style={[S.tdInput, { width: 72, color: "#f59e0b" }]}
+        value={String(mData.opnP)}
+        onChangeText={v => onUpdate(row.month, "opnP", parseFloat(v) || 0)}
+        keyboardType="numeric"
+      />
+      {/* Monthly Purchase */}
+      <TextInput
+        style={[S.tdInput, { width: 72, color: "#60a5fa" }]}
+        value={String(mData.stort)}
+        onChangeText={v => onUpdate(row.month, "stort", parseFloat(v) || 0)}
+        keyboardType="numeric"
+      />
+      {/* Total */}
+      <Text style={[S.td, { width: 90, color: row.capEnd >= row.capStart ? "#4ade80" : "#f87171", fontWeight: "bold" }]}>{fmt(row.capEnd)}</Text>
+    </View>
+  );
+}
+
+function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }) {
+  const numYears = Math.ceil(result.months.length / 12);
+  const rows = Array.from({ length: numYears }, (_, i) => {
+    const y = i + 1;
+    const yearMonths = result.months.filter(m => m.yearNumber === y);
+    const last = yearMonths[yearMonths.length - 1];
+    return {
+      year: y,
+      rebatePayout: yearMonths.reduce((s, m) => s + m.withdrawal, 0),
+      rebate: yearMonths.reduce((s, m) => s + m.grossYield, 0),
+      diamonds: last.capEnd,
+      status: last.vipStatus || '—',
+      total: last.capEnd,
+    };
+  });
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
+        <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>Year</Text>
+        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate Payout</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate</Text>
+        <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Diamonds</Text>
+        <Text style={{ flex: 0.8, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Status</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total</Text>
+      </View>
+      {rows.map(r => (
+        <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
+          <Text style={{ width: 36, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
+          <Text style={{ flex: 1.2, color: '#facc15', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
+          <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
+          <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 13, textAlign: 'right' }}>{fmt(r.diamonds)}</Text>
+          <Text style={{ flex: 0.8, color: '#94a3b8', fontSize: 10, textAlign: 'right' }}>{r.status}</Text>
+          <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
+        </View>
+      ))}
     </View>
   );
 }
