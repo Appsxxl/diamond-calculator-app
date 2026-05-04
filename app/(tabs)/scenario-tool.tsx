@@ -620,23 +620,37 @@ export default function ScenarioToolScreen() {
             {/* Summary Cards */}
             <View style={S.card}>
               <Text style={S.sectionLabel}>{`STRATEGY SUMMARY — ${Math.round(result.months.length / 12)} YEAR STRATEGY`}</Text>
-              {result.goalReachedMonth && (
-                <View style={{ backgroundColor: "rgba(34,197,94,0.12)", borderRadius: 8, padding: 10, marginBottom: 10, borderWidth: 1, borderColor: "rgba(34,197,94,0.3)", flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Text style={{ fontSize: 18 }}>🎯</Text>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold" }}>
-                      Goal Reached at Month {result.goalReachedMonth} (Year {Math.ceil(result.goalReachedMonth / 12)})
-                    </Text>
-                    <Text style={{ color: "#64748b", fontSize: 11 }}>
-                      Target Monthly Discount achieved — client strategy is on track
-                    </Text>
-                  </View>
-                </View>
-              )}
+
+              {/* 🎯 Target Monthly Goal — always visible, prominent */}
+              <View style={{
+                backgroundColor: result.goalReachedMonth ? "rgba(34,197,94,0.12)" : "rgba(30,58,95,0.6)",
+                borderRadius: 10,
+                padding: 12,
+                marginBottom: 10,
+                borderWidth: 1,
+                borderColor: result.goalReachedMonth ? "#22c55e" : "#334155",
+              }}>
+                <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "bold", letterSpacing: 0.5, marginBottom: 4 }}>
+                  🎯 TARGET MONTHLY GOAL
+                </Text>
+                <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold", marginBottom: 6 }}>
+                  ${fmt(numVal(goal))}
+                </Text>
+                {result.goalReachedMonth ? (
+                  <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold" }}>
+                    {`✅ Goal Reached at Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`}
+                  </Text>
+                ) : (
+                  <Text style={{ color: "#94a3b8", fontSize: 12 }}>
+                    {`⏳ Not yet reached — Max discount so far: $${fmt(result.maxMonthlyOut)}`}
+                  </Text>
+                )}
+              </View>
+
               <View style={S.summaryGrid}>
                 <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
-                <SummaryItem label={t(language,'finalBalance')} value={fmt(result.finalCap)} green />
+                <SummaryItem label="Total 💎 Assets" value={fmt(result.finalCap)} green />
                 <SummaryItem
                   label="Total Strategy Discounts"
                   value={`${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)`}
