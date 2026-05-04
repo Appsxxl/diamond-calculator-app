@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -61,9 +61,19 @@ export default function ScenarioToolScreen() {
   const [bulkOpnPVal, setBulkOpnPVal] = useState("");
   const [bulkOpnPFrom, setBulkOpnPFrom] = useState("");
 
+  const [manualVip, setManualVip] = useState(false);
+
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
+
+  // Bulk compounding (reset support)
+  const [bulkCompVal, setBulkCompVal] = useState("");
+  const [bulkCompFrom, setBulkCompFrom] = useState("");
+  const [bulkCompTo, setBulkCompTo] = useState("");
+
+  const tableHeaderScrollRef = useRef<ScrollView>(null);
+  const tableBodyScrollRef = useRef<ScrollView>(null);
 
   // Auto-fill from Strategy Engineer when navigated with plan params
   useEffect(() => {
@@ -203,7 +213,7 @@ export default function ScenarioToolScreen() {
 
   const handleReset = () => {
     setClientName(""); setStartAmount("10000"); setYears("5"); setGoal("2000");
-    setVipEnabled(true); setMonthData({}); setResult(null);
+    setVipEnabled(true); setManualVip(false); setMonthData({}); setResult(null);
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
     setBulkOpnVal(""); setBulkOpnFrom(""); setBulkOpnPVal(""); setBulkOpnPFrom("");
     setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
@@ -215,6 +225,7 @@ export default function ScenarioToolScreen() {
       years: numVal(years, 5),
       goal: numVal(goal, 2000),
       vipEnabled,
+      manualVip,
       monthData,
     };
     const res = runCalculation(params);
@@ -285,7 +296,13 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
-            <Text style={{ color: '#94a3b8', fontSize: 10, marginTop: 4 }}>Accounts under $3,550 will defer VIP activation to prioritize compound growth.</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 6 }}>
+              <Text style={{ color: '#f59e0b', fontSize: 11, fontWeight: 'bold', flex: 1 }}>Manual VIP Activation</Text>
+              <Switch value={manualVip} onValueChange={setManualVip} trackColor={{ false: "#333", true: "#33C5FF" }} thumbColor="#fff" />
+            </View>
+            <View style={{ backgroundColor: 'rgba(51,197,255,0.1)', borderRadius: 6, padding: 8, marginTop: 6, borderLeftWidth: 2, borderLeftColor: '#33C5FF' }}>
+              <Text style={{ color: '#94a3b8', fontSize: 10, lineHeight: 14 }}>ℹ️ Strategy Note: If starting below $3,550, you must manually add $1,000 to trigger VIP status once the threshold is reached.</Text>
+            </View>
           </View>
           <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
             <Text style={S.label}>{t(language, 'years').toUpperCase()}</Text>
@@ -703,13 +720,30 @@ export default function ScenarioToolScreen() {
               {viewMode === 'yearly' ? (
                 <YearlySummary result={result} />
               ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator>
-                  <View>
+                <View>
+                  {/* Sticky header — synced with body horizontal scroll */}
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    scrollEnabled={false}
+                    ref={tableHeaderScrollRef}
+                  >
                     <View style={S.tableHead}>
-                      {["M","Available Value","Discount Applied","Diamonds","Status","Active Comp.","Plan","Strategy Discount %","Monthly Purchase","Total"].map(h => (
+                      {["M","Available Value","Discount Applied","Diamonds","Status","Active Comp.","Plan","Strategy Discount %","Monthly Purchase","Total 💎 Assets"].map(h => (
                         <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
                       ))}
                     </View>
+                  </ScrollView>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator
+                    ref={tableBodyScrollRef}
+                    onScroll={(e) => {
+                      tableHeaderScrollRef.current?.scrollTo({ x: e.nativeEvent.contentOffset.x, animated: false });
+                    }}
+                    scrollEventThrottle={16}
+                  >
+                  <View>
                     {result.months.map((row) => {
                       const isLastOfYear = row.month % 12 === 0;
                       let yearSummary = null;
@@ -757,7 +791,8 @@ export default function ScenarioToolScreen() {
                       );
                     })}
                   </View>
-                </ScrollView>
+                  </ScrollView>
+                </View>
               )}
             </View>
           {/* Disclaimer — shown only after results are visible */}
@@ -772,9 +807,9 @@ export default function ScenarioToolScreen() {
   );
 }
 
-function ActiveCompoundingCell({ grossYield, withdrawal }: { grossYield: number; withdrawal: number }) {
+function ActiveCompoundingCell({ grossYield, withdrawal, vipFee = 0 }: { grossYield: number; withdrawal: number; vipFee?: number }) {
   const pct = grossYield > 0
-    ? Math.max(0, Math.round((grossYield - withdrawal) / grossYield * 100))
+    ? Math.max(0, Math.round((grossYield - withdrawal - vipFee) / grossYield * 100))
     : 100;
   const color = pct === 100 ? '#4ade80' : pct >= 75 ? '#a3e635' : pct >= 50 ? '#fbbf24' : pct >= 25 ? '#f97316' : '#f87171';
   const fillW = Math.max(0, Math.round((pct / 100) * 40));
@@ -791,7 +826,7 @@ function ActiveCompoundingCell({ grossYield, withdrawal }: { grossYield: number;
 function colWidth(h: string) {
   if (h === "M" || h === "Year") return { width: 28 };
   if (h === "Available Value") return { width: 104 };
-  if (h === "Diamonds" || h === "Total") return { width: 90 };
+  if (h === "Diamonds" || h === "Total 💎 Assets") return { width: 90 };
   if (h === "Status") return { width: 100 };
   if (h === "Discount Applied" || h === "Plan") return { width: 80 };
   return { width: 72 };
@@ -817,7 +852,6 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
       </View>
       {/* Available Value — primary focus */}
       <View style={{ width: 104 }}>
-        <Text style={[S.td, { color: "#64748b", fontSize: 9 }]}>Discount (Max:) {fmt(row.maxOut)}</Text>
         <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
       {/* Discount Applied */}
@@ -836,7 +870,7 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
         <Text style={[S.td, { color: "#c4b5fd", fontSize: 9 }]}>VIP:{fmt(row.compPot)}</Text>
       </View>
       {/* Active Compounding */}
-      <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} />
+      <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} vipFee={row.isVipActive ? 84 : 0} />
       {/* Plan */}
       <View style={{ width: 80 }}>
         <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
@@ -844,12 +878,15 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
         </Text>
       </View>
       {/* Strategy Discount % */}
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#f59e0b" }]}
-        value={String(mData.opnP)}
-        onChangeText={v => onUpdate(row.month, "opnP", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
+      <View style={{ width: 72, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <TextInput
+          style={[S.tdInput, { width: 52, color: "#f59e0b" }]}
+          value={String(mData.opnP)}
+          onChangeText={v => onUpdate(row.month, "opnP", parseFloat(v) || 0)}
+          keyboardType="numeric"
+        />
+        <Text style={{ color: '#f59e0b', fontSize: 11, marginLeft: 2 }}>%</Text>
+      </View>
       {/* Monthly Purchase */}
       <TextInput
         style={[S.tdInput, { width: 72, color: "#60a5fa" }]}

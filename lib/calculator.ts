@@ -58,6 +58,7 @@ export interface CalculationParams {
   years: number;
   goal: number;
   vipEnabled: boolean;
+  manualVip?: boolean;
   monthData: Record<number, MonthData>;
 }
 
@@ -86,7 +87,7 @@ export function createDefaultMonthData(): MonthData {
 }
 
 export function runCalculation(params: CalculationParams): CalculationResult {
-  const { startAmount, years, goal, vipEnabled, monthData } = params;
+  const { startAmount, years, goal, vipEnabled, manualVip, monthData } = params;
   const maxMonths = years * 12;
 
   let cap = startAmount;
@@ -126,9 +127,10 @@ export function runCalculation(params: CalculationParams): CalculationResult {
         if (vipPot >= cost) {
           vipPot -= cost;      // renewal: funded by accumulated vipPot
           isVipSelfFunded = true;
-        } else {
+        } else if (!manualVip) {
           cap -= cost;         // first activation: deduct from capital
         }
+        // when manualVip=true: user pays $1,000 out-of-pocket, no cap reduction
         tVip += cost;
         vActive = true;
         vMnd = 12;
