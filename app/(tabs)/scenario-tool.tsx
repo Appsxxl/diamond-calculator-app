@@ -717,7 +717,7 @@ export default function ScenarioToolScreen() {
             </View>
 
             {/* Monthly / Yearly Table */}
-            <View style={S.card}>
+            <View style={[S.card, { overflow: 'visible' }]}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                 <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -734,13 +734,18 @@ export default function ScenarioToolScreen() {
               {viewMode === 'yearly' ? (
                 <YearlySummary result={result} />
               ) : (
-                <View>
-                  {/* Sticky header — synced with body horizontal scroll */}
+                /* overflow:visible so sticky child can escape the card's border-radius stacking context */
+                <View style={{ overflow: 'visible' }}>
+                  {/* Sticky header — position:sticky pins it to the page scroll top */}
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     scrollEnabled={false}
                     ref={tableHeaderScrollRef}
+                    style={Platform.select({
+                      web: { position: 'sticky' as any, top: 0, zIndex: 10, backgroundColor: '#0f172a' } as any,
+                      default: { backgroundColor: '#0f172a', zIndex: 10 },
+                    })}
                   >
                     <View style={S.tableHead}>
                       {["M","Available Value","Discount Applied","Diamonds","Status","Active Comp.","Plan","Strategy Discount %","Monthly Purchase","Total 💎 Assets"].map(h => (
