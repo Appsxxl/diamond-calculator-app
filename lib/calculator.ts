@@ -26,6 +26,7 @@ export interface MonthResult {
   vipStatus: string;      // "NEW VIP" | "VIP (Xm)" | ""
   isNewVip: boolean;
   isVipActive: boolean;
+  isVipSelfFunded: boolean; // true when renewal was paid from vipPot
   isYearStart: boolean;
   yearNumber: number;
   isSpUpgrade: boolean;
@@ -37,6 +38,7 @@ export interface CalculationResult {
   totalIn: number;
   totalOut: number;
   totalVipCost: number;
+  totalVipPotPayments: number;
   finalCap: number;
   finalWallet: number;
   finalVipPot: number;
@@ -94,6 +96,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
   let tIn = startAmount;
   let tOut = 0;
   let tVip = 0;
+  let tVipPot = 0;
   let vActive = false;
   let vMnd = 0;
   let activeWithdrawalMonths = 0;
@@ -112,17 +115,19 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     cap += mD.stort;
     tIn += mD.stort;
 
-    // Step 2: VIP check (exact original logic)
+    // Step 2: VIP check
     let vipLabel = '';
     let isNewVip = false;
+    let isVipSelfFunded = false;
 
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
         const cost = 1000;
         if (vipPot >= cost) {
-          vipPot -= cost;  // renewal: funded by accumulated vipPot
+          vipPot -= cost;      // renewal: funded by accumulated vipPot
+          isVipSelfFunded = true;
         } else {
-          cap -= cost;     // first activation: deduct from capital
+          cap -= cost;         // first activation: deduct from capital
         }
         tVip += cost;
         vActive = true;
@@ -145,7 +150,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
 
     // Step 6: $84/month accumulates in vipPot to fund future renewals
     const nV = vActive ? 84 : 0;
-    if (vipEnabled) vipPot += nV;
+    if (vipEnabled) { vipPot += nV; tVipPot += nV; }
 
     // Step 7: Available to withdraw = (grossYield - vipCost) + wallet
     const b = (k - nV) + wallet;
@@ -199,6 +204,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       vipStatus: vipLabel,
       isNewVip,
       isVipActive: vActive,
+      isVipSelfFunded,
       isYearStart: m > 1 && (m - 1) % 12 === 0,
       yearNumber: Math.ceil(m / 12),
       isSpUpgrade: sp.name !== prevSpName,
@@ -222,7 +228,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     prevSP = r.spName;
   }
 
-  const netResult = (cap + tOut + wallet + vipPot + compPot) - tIn;
+  const netResult = (cap + tOut) - (tIn + tVipPot);
   const goalProgress = goal > 0 ? Math.min((finalMaxVal / goal) * 100, 100) : 0;
 
   return {
@@ -230,6 +236,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     totalIn: tIn,
     totalOut: tOut,
     totalVipCost: tVip,
+    totalVipPotPayments: tVipPot,
     finalCap: cap,
     finalWallet: wallet,
     finalVipPot: vipPot,

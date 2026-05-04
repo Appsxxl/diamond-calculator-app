@@ -677,7 +677,7 @@ export default function ScenarioToolScreen() {
                   red={result.netResult < 0}
                 />
                 <SummaryItem label="Available Rebates" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label="VIP Access Fee" value={result.totalVipCost > 0 ? `-${fmt(result.totalVipCost)}` : fmt(0)} red={result.totalVipCost > 0} />
+                <SummaryItem label="Lifetime Pot Payments" value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
                 <SummaryItem label={`MAX MONTHLY REBATE (Month ${result.months.length})`} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
@@ -737,8 +737,8 @@ export default function ScenarioToolScreen() {
 
             {/* Monthly / Yearly Table */}
             <View style={S.card}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text style={S.sectionLabel}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <Text style={{ color: viewMode === 'monthly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>Monthly</Text>
                   <Switch
@@ -843,7 +843,12 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
   return (
     <View style={[S.tableRow, rowStyle]}>
       {/* M */}
-      <Text style={[S.td, { width: 28, color: "#94a3b8" }]}>{row.month}</Text>
+      <View style={{ width: 28, alignItems: 'center' }}>
+        <Text style={[S.td, { color: "#94a3b8" }]}>{row.month}</Text>
+        {row.isYearStart && (
+          <Text style={{ color: "#f59e0b", fontSize: 7, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
+        )}
+      </View>
       {/* Rebate Payout — primary focus */}
       <View style={{ width: 104 }}>
         <Text style={[S.td, { color: "#64748b", fontSize: 9 }]}>Max:{fmt(row.maxOut)}</Text>
@@ -903,12 +908,15 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
     const y = i + 1;
     const yearMonths = result.months.filter(m => m.yearNumber === y);
     const last = yearMonths[yearMonths.length - 1];
+    const selfFunded = yearMonths.some(m => m.isVipSelfFunded);
+    const firstActivation = yearMonths.some(m => m.isNewVip && !m.isVipSelfFunded);
     return {
       year: y,
       rebatePayout: yearMonths.reduce((s, m) => s + m.withdrawal, 0),
       rebate: yearMonths.reduce((s, m) => s + m.grossYield, 0),
       diamonds: last.capEnd,
-      status: last.vipStatus || '—',
+      selfFunded,
+      firstActivation,
       total: last.capEnd,
     };
   });
@@ -919,7 +927,7 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
         <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate Payout</Text>
         <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate</Text>
         <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Diamonds</Text>
-        <Text style={{ flex: 0.8, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Status</Text>
+        <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Status</Text>
         <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total</Text>
       </View>
       {rows.map(r => (
@@ -928,7 +936,19 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
           <Text style={{ flex: 1.2, color: '#facc15', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
           <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
           <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 13, textAlign: 'right' }}>{fmt(r.diamonds)}</Text>
-          <Text style={{ flex: 0.8, color: '#94a3b8', fontSize: 10, textAlign: 'right' }}>{r.status}</Text>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            {r.selfFunded ? (
+              <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
+                <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>SELF-FUNDED</Text>
+              </View>
+            ) : r.firstActivation ? (
+              <View style={{ backgroundColor: 'rgba(239,68,68,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#ef4444' }}>
+                <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>NEW VIP</Text>
+              </View>
+            ) : (
+              <Text style={{ color: '#64748b', fontSize: 10 }}>—</Text>
+            )}
+          </View>
           <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
         </View>
       ))}
