@@ -363,11 +363,11 @@ export default function ScenarioToolScreen() {
           </View>
         </View>
 
-        {/* Global Rebate Re-Use % quick presets */}
+        {/* Global Discount Re-Use % quick presets */}
         <View style={S.card}>
           <Text style={S.sectionLabel}>🔄 {t(language, 'compoundPercentage').toUpperCase()} — QUICK PRESETS</Text>
           <Text style={{ color: "#64748b", fontSize: 11, marginBottom: 8 }}>
-            Apply one rebate re-use % to all months instantly.
+            Apply one discount re-use % to all months instantly.
           </Text>
           <View style={{ flexDirection: "row", gap: 6 }}>
             {[0, 25, 50, 75, 100].map(pct => (
@@ -545,7 +545,7 @@ export default function ScenarioToolScreen() {
                     </div>
                     <div class="param-row">
                       <div class="param-label">VIP Status</div>
-                      <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? 'Active (+3% Monthly Rebate)' : 'Standard'}</div>
+                      <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? 'Active (+3% Monthly Discount)' : 'Standard'}</div>
                     </div>
                   </div>
 
@@ -557,7 +557,7 @@ export default function ScenarioToolScreen() {
                       <div class="stat-value">$${fmt(result.totalIn)}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Total Rebates Distributed</div>
+                      <div class="stat-label">Total Strategy Discounts</div>
                       <div class="stat-value green">$${fmt(result.totalOut)}</div>
                     </div>
                     <div class="stat">
@@ -565,7 +565,7 @@ export default function ScenarioToolScreen() {
                       <div class="stat-value green">$${fmt(result.finalCap)}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Total Strategy Benefit</div>
+                      <div class="stat-label">Net Strategy Value</div>
                       <div class="stat-value green">$${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)</div>
                     </div>
                     <div class="stat">
@@ -573,19 +573,19 @@ export default function ScenarioToolScreen() {
                       <div class="stat-value blue">${result.rocMonth ? 'Month ' + result.rocMonth + ' (Year ' + Math.ceil(result.rocMonth/12) + ')' : 'Pending'}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Max Monthly Rebate (Month ${totalMonths})</div>
+                      <div class="stat-label">Max Monthly Discount (Month ${totalMonths})</div>
                       <div class="stat-value green">$${fmt(result.maxMonthlyOut)}</div>
                     </div>
                   </div>
 
-                  <!-- MONTHLY REBATE SCHEDULE -->
-                  <div class="section-title">Monthly Rebate Schedule ${totalYears > 5 ? '(Grouped by Year)' : ''}</div>
+                  <!-- MONTHLY DISCOUNT SCHEDULE -->
+                  <div class="section-title">Monthly Discount Schedule ${totalYears > 5 ? '(Grouped by Year)' : ''}</div>
                   <table>
                     <thead>
                       <tr>
                         <th>${totalYears > 5 ? 'Period' : 'Month'}</th>
-                        <th style="text-align:right">${totalYears > 5 ? 'Annual Rebate ($)' : 'Monthly Rebate ($)'}</th>
-                        <th style="text-align:right">Cumulative Rebates ($)</th>
+                        <th style="text-align:right">${totalYears > 5 ? 'Annual Discount Gained ($)' : 'Monthly Discount ($)'}</th>
+                        <th style="text-align:right">Cumulative Discounts ($)</th>
                         <th style="text-align:right">Total Asset Value ($)</th>
                       </tr>
                     </thead>
@@ -661,7 +661,7 @@ export default function ScenarioToolScreen() {
                       Goal Reached at Month {result.goalReachedMonth} (Year {Math.ceil(result.goalReachedMonth / 12)})
                     </Text>
                     <Text style={{ color: "#64748b", fontSize: 11 }}>
-                      Target Monthly Rebate achieved — client strategy is on track
+                      Target Monthly Discount achieved — client strategy is on track
                     </Text>
                   </View>
                 </View>
@@ -671,14 +671,14 @@ export default function ScenarioToolScreen() {
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
                 <SummaryItem label={t(language,'finalBalance')} value={fmt(result.finalCap)} green />
                 <SummaryItem
-                  label="Total Purchase Benefit"
+                  label="Total Strategy Discounts"
                   value={`${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)`}
                   green={result.netResult >= 0}
                   red={result.netResult < 0}
                 />
-                <SummaryItem label="Available Rebates" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
+                <SummaryItem label="Available Discounts" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
                 <SummaryItem label="Lifetime Pot Payments" value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
-                <SummaryItem label={`MAX MONTHLY REBATE (Month ${result.months.length})`} value={fmt(result.maxMonthlyOut)} green />
+                <SummaryItem label={`MAX MONTHLY DISCOUNT (Month ${result.months.length})`} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
                   value={result.rocMonth
@@ -703,7 +703,7 @@ export default function ScenarioToolScreen() {
                   ? `~${Math.ceil((1000 - result.finalVipPot) / 84)} months until VP pot self-funds next renewal (${fmt(result.finalVipPot)} of $1,000)`
                   : null;
                 const withdrawalHint = result.totalOut > 0 && result.finalCap <= (parseFloat(startAmount) || 0)
-                  ? 'High withdrawals are keeping capital flat — lower your rebate % to grow into the next SP tier faster.'
+                  ? 'High withdrawals are keeping capital flat — lower your discount % to grow into the next SP tier faster.'
                   : null;
                 if (!spHint && !vipCountdownHint && !withdrawalHint) return null;
                 return (
@@ -756,7 +756,7 @@ export default function ScenarioToolScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator>
                   <View>
                     <View style={S.tableHead}>
-                      {["M","Rebate Payout","Rebate","Diamonds","Status","Growth %","Plan","Rebate %","Monthly Purchase","Total"].map(h => (
+                      {["M","Available Value","Discount Applied","Diamonds","Status","Growth %","Plan","Strategy Discount %","Monthly Purchase","Total"].map(h => (
                         <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
                       ))}
                     </View>
@@ -798,7 +798,7 @@ export default function ScenarioToolScreen() {
                           )}
                           {row.isGoalReached && (
                             <View style={{ backgroundColor: "rgba(34,197,94,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#22c55e" }}>
-                              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY REBATE REACHED — Month {row.month}</Text>
+                              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY DISCOUNT REACHED — Month {row.month}</Text>
                             </View>
                           )}
                           <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
@@ -824,10 +824,10 @@ export default function ScenarioToolScreen() {
 
 function colWidth(h: string) {
   if (h === "M" || h === "Year") return { width: 28 };
-  if (h === "Rebate Payout") return { width: 104 };
+  if (h === "Available Value") return { width: 104 };
   if (h === "Diamonds" || h === "Total") return { width: 90 };
   if (h === "Status") return { width: 100 };
-  if (h === "Rebate" || h === "Plan") return { width: 80 };
+  if (h === "Discount Applied" || h === "Plan") return { width: 80 };
   return { width: 72 };
 }
 
@@ -849,12 +849,12 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
           <Text style={{ color: "#f59e0b", fontSize: 7, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
         )}
       </View>
-      {/* Rebate Payout — primary focus */}
+      {/* Available Value — primary focus */}
       <View style={{ width: 104 }}>
-        <Text style={[S.td, { color: "#64748b", fontSize: 9 }]}>Max:{fmt(row.maxOut)}</Text>
+        <Text style={[S.td, { color: "#64748b", fontSize: 9 }]}>Discount (Max:) {fmt(row.maxOut)}</Text>
         <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
-      {/* Rebate */}
+      {/* Discount Applied */}
       <Text style={[S.td, { width: 80, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
       {/* Diamonds */}
       <Text style={[S.td, { width: 90, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
@@ -882,7 +882,7 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
           {row.spName} ({row.totalRate.toFixed(1)}%)
         </Text>
       </View>
-      {/* Rebate % */}
+      {/* Strategy Discount % */}
       <TextInput
         style={[S.tdInput, { width: 72, color: "#f59e0b" }]}
         value={String(mData.opnP)}
@@ -924,8 +924,8 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
     <View>
       <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
         <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>Year</Text>
-        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate Payout</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Rebate</Text>
+        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Available Value</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Annual Discount Gained</Text>
         <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Diamonds</Text>
         <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Status</Text>
         <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total</Text>
