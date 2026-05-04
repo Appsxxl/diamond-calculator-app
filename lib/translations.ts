@@ -40,7 +40,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawal: "Available Value",
     monthlyAmount: "Monthly Amount",
     outPercentage: "Strategy Discount %",
-    compoundPercentage: "Growth Logic %",
+    compoundPercentage: "Active Compounding",
     from: "From",
     till: "Till",
     ok: "OK",
@@ -110,7 +110,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Monthly",
-    finalBalance: "Final Diamond Value",
+    finalBalance: "Total 💎 Assets",
     netResult: "Net Strategy Value",
     monthlyBreakdown: "Monthly Discount Schedule",
     selectStrategy: "Select a purchase strategy",

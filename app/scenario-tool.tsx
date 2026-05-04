@@ -55,10 +55,6 @@ export default function ScenarioToolScreen() {
   // Bulk out%
   const [bulkOpnPVal, setBulkOpnPVal] = useState("");
   const [bulkOpnPFrom, setBulkOpnPFrom] = useState("");
-  // Bulk compound%
-  const [bulkCompVal, setBulkCompVal] = useState("");
-  const [bulkCompFrom, setBulkCompFrom] = useState("");
-  const [bulkCompTo, setBulkCompTo] = useState("");
 
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
@@ -161,25 +157,12 @@ export default function ScenarioToolScreen() {
     });
   };
 
-  const applyBulkComp = () => {
-    const val = numVal(bulkCompVal);
-    const from = numVal(bulkCompFrom, 1);
-    const to = numVal(bulkCompTo, totalMonths);
-    setMonthData(prev => {
-      const next = { ...prev };
-      for (let m = from; m <= Math.min(to, totalMonths); m++) {
-        next[m] = { ...(next[m] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), comp: val };
-      }
-      return next;
-    });
-  };
 
   const handleReset = () => {
     setClientName(""); setStartAmount("10000"); setYears("5"); setGoal("2000");
     setVipEnabled(true); setMonthData({}); setResult(null);
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
     setBulkOpnVal(""); setBulkOpnFrom(""); setBulkOpnPVal(""); setBulkOpnPFrom("");
-    setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
   };
 
   const handleCalculate = () => {
@@ -297,15 +280,12 @@ export default function ScenarioToolScreen() {
           </View>
         </View>
 
-        {/* Bulk Compound */}
+        {/* Active Compounding Info */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language,'compoundPercentage').toUpperCase()}</Text>
-          <View style={S.bulkRow}>
-            <TextInput style={S.bulkSmall} value={bulkCompVal} onChangeText={setBulkCompVal} placeholder="%" placeholderTextColor="#555" keyboardType="numeric" />
-            <TextInput style={S.bulkSmall} value={bulkCompFrom} onChangeText={setBulkCompFrom} placeholder={t(language,'from')} placeholderTextColor="#555" keyboardType="numeric" />
-            <TextInput style={S.bulkSmall} value={bulkCompTo} onChangeText={setBulkCompTo} placeholder={t(language,'till')} placeholderTextColor="#555" keyboardType="numeric" />
-            <TouchableOpacity style={S.btnPurple} onPress={applyBulkComp}><Text style={S.btnText}>{t(language,'set')}</Text></TouchableOpacity>
-          </View>
+          <Text style={S.sectionLabel}>⚡ {t(language, 'compoundPercentage').toUpperCase()}</Text>
+          <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 16 }}>
+            When no discount is taken, assets compound at 100%. Each discount taken reduces the active compounding rate proportionally — shown live in the table below.
+          </Text>
         </View>
 
         {/* Calculate */}
@@ -403,7 +383,7 @@ export default function ScenarioToolScreen() {
                     <div class="stat"><div class="stat-label">VIP Status</div><div class="stat-value ${vipEnabled ? 'amber' : ''}">${vipEnabled ? 'Active (+3.0%)' : 'Not Active'}</div></div>
                     <div class="stat"><div class="stat-label">Total In</div><div class="stat-value">$${fmt(result.totalIn)}</div></div>
                     <div class="stat"><div class="stat-label">Total Strategy Discounts</div><div class="stat-value green">$${fmt(result.totalOut)}</div></div>
-                    <div class="stat"><div class="stat-label">Final Diamond Value</div><div class="stat-value green">$${fmt(result.finalCap)}</div></div>
+                    <div class="stat"><div class="stat-label">Total 💎 Assets</div><div class="stat-value green">$${fmt(result.finalCap)}</div></div>
                     <div class="stat"><div class="stat-label">Net Strategy Value</div><div class="stat-value ${result.netResult >= 0 ? 'green' : ''}">$${fmt(result.netResult)}</div></div>
                     <div class="stat"><div class="stat-label">ROC Break-Even</div><div class="stat-value">${result.rocMonth ? 'Month ' + result.rocMonth : 'Pending'}</div></div>
                     <div class="stat"><div class="stat-label">Max Monthly Discount</div><div class="stat-value amber">$${fmt(result.maxMonthlyOut)}</div></div>
@@ -487,7 +467,7 @@ export default function ScenarioToolScreen() {
                 <SummaryItem label={t(language,'finalBalance')} value={fmt(result.finalCap)} green />
                 <SummaryItem label="Net Strategy Value" value={fmt(result.netResult)} green={result.netResult > 0} red={result.netResult < 0} />
                 <SummaryItem label="Available Discounts" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label="Lifetime Pot Payments" value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
+                <SummaryItem label="Total VIP Access Cost" value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
                 <SummaryItem label="Max Monthly Discount" value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
@@ -559,7 +539,7 @@ export default function ScenarioToolScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator>
                   <View>
                     <View style={S.tableHead}>
-                      {["M","Available Value","Discount Applied","Diamonds","Status","Growth %","Plan","Strategy Discount %","Monthly Purchase","Total"].map(h => (
+                      {["M","Available Value","Discount Applied","Diamonds","Status","Active Comp.","Plan","Strategy Discount %","Monthly Purchase","Total"].map(h => (
                         <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
                       ))}
                     </View>
@@ -612,6 +592,22 @@ export default function ScenarioToolScreen() {
   );
 }
 
+function ActiveCompoundingCell({ grossYield, withdrawal }: { grossYield: number; withdrawal: number }) {
+  const pct = grossYield > 0
+    ? Math.max(0, Math.round((grossYield - withdrawal) / grossYield * 100))
+    : 100;
+  const color = pct === 100 ? '#4ade80' : pct >= 75 ? '#a3e635' : pct >= 50 ? '#fbbf24' : pct >= 25 ? '#f97316' : '#f87171';
+  const fillW = Math.max(0, Math.round((pct / 100) * 40));
+  return (
+    <View style={{ width: 72, alignItems: 'center', justifyContent: 'center', paddingVertical: 2 }}>
+      <Text style={{ color, fontWeight: 'bold', fontSize: 11 }}>{pct}%</Text>
+      <View style={{ width: 40, height: 3, backgroundColor: '#1e3a5f', borderRadius: 2, marginTop: 2 }}>
+        <View style={{ width: fillW, height: 3, backgroundColor: color, borderRadius: 2 }} />
+      </View>
+    </View>
+  );
+}
+
 function colWidth(h: string) {
   if (h === "M" || h === "Year") return { width: 28 };
   if (h === "Available Value") return { width: 104 };
@@ -656,16 +652,11 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
           </View>
         ) : null}
         <Text style={[S.td, { color: "#94a3b8", fontSize: 9 }]}>W:{fmt(row.wallet)}</Text>
-        <Text style={[S.td, { color: "#fbbf24", fontSize: 9 }]}>VP:{fmt(row.vipPot)}</Text>
-        <Text style={[S.td, { color: "#c4b5fd", fontSize: 9 }]}>P:{fmt(row.compPot)}</Text>
+        <Text style={[S.td, { color: "#fbbf24", fontSize: 9 }]}>VIP:{fmt(row.vipPot)}</Text>
+        <Text style={[S.td, { color: "#c4b5fd", fontSize: 9 }]}>VIP:{fmt(row.compPot)}</Text>
       </View>
-      {/* Growth % */}
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#a78bfa" }]}
-        value={String(mData.comp)}
-        onChangeText={v => onUpdate(row.month, "comp", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
+      {/* Active Compounding */}
+      <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} />
       {/* Plan */}
       <View style={{ width: 80 }}>
         <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
