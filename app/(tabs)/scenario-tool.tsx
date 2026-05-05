@@ -746,7 +746,7 @@ export default function ScenarioToolScreen() {
                   🎯 TARGET MONTHLY GOAL
                 </Text>
                 <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold", marginBottom: 6 }}>
-                  ${fmt(numVal(goal))}
+                  {fmt(numVal(goal))}
                 </Text>
                 {result.goalReachedMonth ? (
                   <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold" }}>
@@ -754,7 +754,7 @@ export default function ScenarioToolScreen() {
                   </Text>
                 ) : (
                   <Text style={{ color: "#94a3b8", fontSize: 12 }}>
-                    {`⏳ Not yet reached — Max discount so far: $${fmt(result.maxMonthlyOut)}`}
+                    {`⏳ Not yet reached — Max discount so far: ${fmt(result.maxMonthlyOut)}`}
                   </Text>
                 )}
               </View>
@@ -802,8 +802,8 @@ export default function ScenarioToolScreen() {
                 return (
                   <View style={{ marginTop: 10, gap: 6 }}>
                     {spHint && (
-                      <View style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#fbbf24' }}>
-                        <Text style={{ color: '#fbbf24', fontSize: 11 }}>⬆ SP Upgrade Nearby: {spHint}</Text>
+                      <View style={{ backgroundColor: 'rgba(251,191,36,0.88)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#92400e' }}>
+                        <Text style={{ color: '#1e293b', fontSize: 11, fontWeight: 'bold' }}>⬆ SP Upgrade Nearby: {spHint}</Text>
                       </View>
                     )}
                     {vipCountdownHint && (
@@ -1003,7 +1003,7 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
       {/* Active Compounding */}
       <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} vipFee={row.isVipActive ? 84 : 0} />
       {/* Plan */}
-      <View style={{ width: 80 }}>
+      <View style={{ width: 80, alignItems: 'center' }}>
         <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
           {row.spName} ({row.totalRate.toFixed(1)}%)
         </Text>
