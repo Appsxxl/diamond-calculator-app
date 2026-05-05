@@ -16,7 +16,7 @@ import * as IntentLauncher from "expo-intent-launcher";
 import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
 import { useCalculator } from "@/lib/calculator-context";
-import { t } from "@/lib/translations";
+import { t, Language } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData } from "@/lib/calculator";
 
 function numVal(s: string, fallback = 0): number {
@@ -315,7 +315,7 @@ export default function ScenarioToolScreen() {
           <View style={S.row}>
             <Text style={S.progressLabel}>{Math.round(goalProgress)}%</Text>
             {result?.goalReached && (
-              <View style={S.goalBadge}><Text style={S.goalBadgeText}>🎯 GOAL REACHED!</Text></View>
+              <View style={S.goalBadge}><Text style={S.goalBadgeText}>{t(language, 'goalReached')}</Text></View>
             )}
           </View>
         </View>
@@ -457,7 +457,7 @@ export default function ScenarioToolScreen() {
         <View style={S.card}>
           <Text style={S.sectionLabel}>⚡ {t(language, 'compoundPercentage').toUpperCase()}</Text>
           <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 16 }}>
-            When no discount is taken, assets compound at 100%. Each discount taken reduces the active compounding rate proportionally — shown live in the table below.
+            {t(language, 'activeCompInfo')}
           </Text>
         </View>
 
@@ -731,7 +731,7 @@ export default function ScenarioToolScreen() {
 
             {/* Summary Cards */}
             <View style={S.card}>
-              <Text style={S.sectionLabel}>{`STRATEGY SUMMARY — ${Math.round(result.months.length / 12)} YEAR STRATEGY`}</Text>
+              <Text style={S.sectionLabel}>{t(language, 'strategySummaryLabel').replace('{years}', String(Math.round(result.months.length / 12)))}</Text>
 
               {/* 🎯 Target Monthly Goal — always visible, prominent */}
               <View style={{
@@ -764,16 +764,16 @@ export default function ScenarioToolScreen() {
               <View style={S.summaryGrid}>
                 <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
-                <SummaryItem label="Total 💎 Assets" value={fmt(result.finalCap)} green />
+                <SummaryItem label={t(language, 'finalBalance')} value={fmt(result.finalCap)} green />
                 <SummaryItem
-                  label="Total Strategy Discounts"
+                  label={t(language, 'netResult')}
                   value={`${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)`}
                   green={result.netResult >= 0}
                   red={result.netResult < 0}
                 />
-                <SummaryItem label="Available Discounts" value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label="Total VIP Access Cost" value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
-                <SummaryItem label={`MAX MONTHLY DISCOUNT (Month ${result.months.length})`} value={fmt(result.maxMonthlyOut)} green />
+                <SummaryItem label={t(language, 'availableRebates')} value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
+                <SummaryItem label={t(language, 'totalVipCost')} value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
+                <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.months.length))} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
                   value={result.rocMonth
@@ -795,10 +795,12 @@ export default function ScenarioToolScreen() {
                   ? `${fmt(nextSp.threshold - result.finalCap)} away from ${nextSp.name} — base rate → ${nextSp.rate}%`
                   : null;
                 const vipCountdownHint = vipEnabled && result.finalVipPot < 1000
-                  ? `~${Math.ceil((1000 - result.finalVipPot) / 84)} months until VIP self-funds next renewal (${fmt(result.finalVipPot)} of $1,000)`
+                  ? t(language, 'vipRenewalHint')
+                      .replace('{months}', String(Math.ceil((1000 - result.finalVipPot) / 84)))
+                      .replace('{amount}', fmt(result.finalVipPot))
                   : null;
                 const withdrawalHint = result.totalOut > 0 && result.finalCap <= (parseFloat(startAmount) || 0)
-                  ? 'High withdrawals are keeping capital flat — lower your discount % to grow into the next SP tier faster.'
+                  ? t(language, 'withdrawalHintText')
                   : null;
                 if (!spHint && !vipCountdownHint && !withdrawalHint) return null;
                 return (
@@ -810,7 +812,7 @@ export default function ScenarioToolScreen() {
                     )}
                     {vipCountdownHint && (
                       <View style={{ backgroundColor: 'rgba(167,139,250,0.1)', borderRadius: 6, padding: 8, borderLeftWidth: 2, borderLeftColor: '#a78bfa' }}>
-                        <Text style={{ color: '#a78bfa', fontSize: 11 }}>♦ VIP Renewal: {vipCountdownHint}</Text>
+                        <Text style={{ color: '#a78bfa', fontSize: 11 }}>{t(language, 'vipRenewalLabel')} {vipCountdownHint}</Text>
                       </View>
                     )}
                     {withdrawalHint && (
@@ -826,7 +828,7 @@ export default function ScenarioToolScreen() {
             {/* Buyback Guarantee Note */}
             <View style={{ paddingHorizontal: 16, paddingVertical: 10, marginTop: -8, marginBottom: 4 }}>
               <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", fontStyle: "italic" }}>
-                {"All physical diamonds are protected by a contractual 100% Buyback Guarantee upon completion of the strategy period."}
+                {t(language, 'buybackNote')}
               </Text>
             </View>
 
@@ -835,18 +837,18 @@ export default function ScenarioToolScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                 <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ color: viewMode === 'monthly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>Monthly</Text>
+                  <Text style={{ color: viewMode === 'monthly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'monthly')}</Text>
                   <Switch
                     value={viewMode === 'yearly'}
                     onValueChange={v => setViewMode(v ? 'yearly' : 'monthly')}
                     trackColor={{ false: '#334155', true: '#f59e0b' }}
                     thumbColor="#fff"
                   />
-                  <Text style={{ color: viewMode === 'yearly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>Yearly</Text>
+                  <Text style={{ color: viewMode === 'yearly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'yearly')}</Text>
                 </View>
               </View>
               {viewMode === 'yearly' ? (
-                <YearlySummary result={result} />
+                <YearlySummary result={result} language={language} />
               ) : (
                 /* overflow:visible so sticky child can escape the card's border-radius stacking context */
                 <View style={{ overflow: 'visible' }}>
@@ -862,8 +864,19 @@ export default function ScenarioToolScreen() {
                     })}
                   >
                     <View style={S.tableHead}>
-                      {["M","Available Value","Discount Applied","Diamonds","Status","Active Comp.","Plan","Strategy Discount %","Monthly Purchase","Total 💎 Assets"].map(h => (
-                        <Text key={h} style={[S.th, colWidth(h)]}>{h}</Text>
+                      {([
+                        { colKey: "M",                    tKey: "monthHeader" },
+                        { colKey: "Available Value",      tKey: "withdrawal" },
+                        { colKey: "Discount Applied",     tKey: "discountApplied" },
+                        { colKey: "Diamonds",             tKey: "startDiamonds" },
+                        { colKey: "Status",               tKey: "vipStatus" },
+                        { colKey: "Active Comp.",         tKey: "activeCompAbbr" },
+                        { colKey: "Plan",                 tKey: "planPrefix" },
+                        { colKey: "Strategy Discount %",  tKey: "outPercentage" },
+                        { colKey: "Monthly Purchase",     tKey: "deposit" },
+                        { colKey: "Total 💎 Assets",      tKey: "finalBalance" },
+                      ] as { colKey: string; tKey: string }[]).map(h => (
+                        <Text key={h.colKey} style={[S.th, colWidth(h.colKey)]}>{t(language, h.tKey)}</Text>
                       ))}
                     </View>
                   </ScrollView>
@@ -892,7 +905,7 @@ export default function ScenarioToolScreen() {
                             <Text style={{ width: 104, color: "#facc15", fontSize: 10, fontWeight: "bold" }}>{fmt(yearPayout)}</Text>
                             <Text style={{ width: 80,  color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
                             <Text style={{ width: 90,  color: "#e2e8f0", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
-                            <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Year {row.yearNumber} Total</Text>
+                            <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'yearTotal').replace('{year}', String(row.yearNumber))}</Text>
                             <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
                             <Text style={{ width: 80,  color: "#94a3b8", fontSize: 10 }}>—</Text>
                             <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
@@ -905,17 +918,17 @@ export default function ScenarioToolScreen() {
                         <React.Fragment key={row.month}>
                           {row.isYearStart && (
                             <View style={S.yearRow}>
-                              <Text style={S.yearText}>── Year {row.yearNumber} ──</Text>
+                              <Text style={S.yearText}>── {t(language, 'year')} {row.yearNumber} ──</Text>
                             </View>
                           )}
                           {row.isSpUpgrade && (
                             <View style={{ backgroundColor: "rgba(245,158,11,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
-                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>⬆️ SP UPGRADE → {row.spName} ({row.spBaseRate}% base)</Text>
+                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'spUpgradeRow').replace('{plan}', row.spName).replace('{rate}', String(row.spBaseRate))}</Text>
                             </View>
                           )}
                           {row.isGoalReached && (
                             <View style={{ backgroundColor: "rgba(34,197,94,0.15)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#22c55e" }}>
-                              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>🎯 TARGET MONTHLY DISCOUNT REACHED — Month {row.month}</Text>
+                              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>{t(language, 'goalReachedInTable').replace('{month}', String(row.month))}</Text>
                             </View>
                           )}
                           <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
@@ -1033,7 +1046,7 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
   );
 }
 
-function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }) {
+function YearlySummary({ result, language }: { result: ReturnType<typeof runCalculation>; language: Language }) {
   const numYears = Math.ceil(result.months.length / 12);
   const rows = Array.from({ length: numYears }, (_, i) => {
     const y = i + 1;
@@ -1054,12 +1067,12 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
   return (
     <View>
       <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
-        <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>Year</Text>
-        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Available Value</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Annual Discount Gained</Text>
-        <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Diamonds</Text>
-        <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Status</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total</Text>
+        <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
+        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'withdrawal')}</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualDiscountGained')}</Text>
+        <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'startDiamonds')}</Text>
+        <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'vipStatus')}</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'totalLabel')}</Text>
       </View>
       {rows.map(r => (
         <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
@@ -1070,11 +1083,11 @@ function YearlySummary({ result }: { result: ReturnType<typeof runCalculation> }
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             {r.selfFunded ? (
               <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
-                <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>SELF-FUNDED</Text>
+                <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'vipSelfFunded')}</Text>
               </View>
             ) : r.firstActivation ? (
               <View style={{ backgroundColor: 'rgba(239,68,68,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#ef4444' }}>
-                <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>NEW VIP</Text>
+                <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'newVip')}</Text>
               </View>
             ) : (
               <Text style={{ color: '#64748b', fontSize: 10 }}>—</Text>
