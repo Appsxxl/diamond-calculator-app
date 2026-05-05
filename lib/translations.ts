@@ -316,6 +316,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Build My Personal Plan B",
     onboardingSkip: "Skip",
     viewOnboarding: "View Introduction Again",
+
+    // Smart Plan Coach
+    planPrefix: "Plan:",
+    vipAutoActiveTitle: "✨ VIP STATUS ACTIVE",
+    vipAutoActiveFee: "$1,000 activation fee auto-deducted · Month 1",
+    vipRateApplied: "+3% VIP RATE APPLIED",
+    manualVipLabel: "Manual VIP Activation",
+    manualVipNote: "Starting below $3,550 — add $1,000 manually once the threshold is reached to activate VIP.",
+    upsellTipSp4: "💡 Optimization Tip: Add {amount} more to unlock SP4 Plan (3%) + VIP Bonus (3%) for 6% total compounding!",
+    upsellTipGeneric: "💡 Optimization Tip: Add {amount} more to unlock {plan} for significantly higher compounding!",
+    targetMonthlyGoal: "🎯 TARGET MONTHLY GOAL",
+    goalReachedText: "✅ Goal Reached at Month {month} (Year {year})",
+    goalNotReachedText: "⏳ Not yet reached — Max discount so far: {amount}",
+    spUpgradeNearby: "⬆ SP Upgrade Nearby:",
   },
 
 
@@ -622,6 +636,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Bouw Mijn Persoonlijk Plan B",
     onboardingSkip: "Overslaan",
     viewOnboarding: "Introductie Opnieuw Bekijken",
+
+    // Smart Plan Coach
+    planPrefix: "Plan:",
+    vipAutoActiveTitle: "✨ VIP STATUS ACTIEF",
+    vipAutoActiveFee: "Activeringskosten van $1.000 automatisch afgetrokken · Maand 1",
+    vipRateApplied: "+3% VIP-TARIEF TOEGEPAST",
+    manualVipLabel: "Handmatige VIP-activering",
+    manualVipNote: "Start onder $3.550 — voeg handmatig $1.000 toe zodra de drempel bereikt is om VIP te activeren.",
+    upsellTipSp4: "💡 Optimalisatietip: Voeg {amount} meer toe om SP4-plan (3%) + VIP-bonus (3%) te ontgrendelen voor 6% totaalrendement!",
+    upsellTipGeneric: "💡 Optimalisatietip: Voeg {amount} meer toe om {plan} te ontgrendelen voor aanzienlijk hogere rente!",
+    targetMonthlyGoal: "🎯 MAANDELIJKS DOELBEDRAG",
+    goalReachedText: "✅ Doel bereikt in Maand {month} (Jaar {year})",
+    goalNotReachedText: "⏳ Nog niet bereikt — Max korting tot nu toe: {amount}",
+    spUpgradeNearby: "⬆ SP-upgrade nabij:",
   },
 
 
@@ -928,6 +956,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Loslegen",
     onboardingSkip: "Überspringen",
     viewOnboarding: "Einführung Erneut Ansehen",
+
+    // Smart Plan Coach
+    planPrefix: "Plan:",
+    vipAutoActiveTitle: "✨ VIP-STATUS AKTIV",
+    vipAutoActiveFee: "$1.000 Aktivierungsgebühr automatisch abgezogen · Monat 1",
+    vipRateApplied: "+3% VIP-TARIF ANGEWENDET",
+    manualVipLabel: "Manuelle VIP-Aktivierung",
+    manualVipNote: "Start unter $3.550 — fügen Sie manuell $1.000 hinzu, sobald der Schwellenwert erreicht ist, um VIP zu aktivieren.",
+    upsellTipSp4: "💡 Optimierungstipp: Fügen Sie {amount} mehr hinzu, um SP4-Plan (3%) + VIP-Bonus (3%) für 6% Gesamtrendite freizuschalten!",
+    upsellTipGeneric: "💡 Optimierungstipp: Fügen Sie {amount} mehr hinzu, um {plan} für deutlich höhere Rendite freizuschalten!",
+    targetMonthlyGoal: "🎯 MONATLICHES ZIEL",
+    goalReachedText: "✅ Ziel erreicht in Monat {month} (Jahr {year})",
+    goalNotReachedText: "⏳ Noch nicht erreicht — Max. Rabatt bisher: {amount}",
+    spUpgradeNearby: "⬆ SP-Upgrade in der Nähe:",
   },
 
 
@@ -1234,6 +1276,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Construire Mon Plan B Personnel",
     onboardingSkip: "Passer",
     viewOnboarding: "Voir l'Introduction à Nouveau",
+
+    // Smart Plan Coach
+    planPrefix: "Plan :",
+    vipAutoActiveTitle: "✨ STATUT VIP ACTIF",
+    vipAutoActiveFee: "Frais d'activation de 1 000 $ déduits automatiquement · Mois 1",
+    vipRateApplied: "+3% TAUX VIP APPLIQUÉ",
+    manualVipLabel: "Activation VIP Manuelle",
+    manualVipNote: "Départ sous 3 550 $ — ajoutez manuellement 1 000 $ une fois le seuil atteint pour activer le VIP.",
+    upsellTipSp4: "💡 Conseil d'optimisation : Ajoutez {amount} de plus pour débloquer le Plan SP4 (3%) + Bonus VIP (3%) pour 6% de rendement total !",
+    upsellTipGeneric: "💡 Conseil d'optimisation : Ajoutez {amount} de plus pour débloquer {plan} pour un rendement nettement plus élevé !",
+    targetMonthlyGoal: "🎯 OBJECTIF MENSUEL CIBLE",
+    goalReachedText: "✅ Objectif atteint au Mois {month} (Année {year})",
+    goalNotReachedText: "⏳ Pas encore atteint — Remise max. jusqu'ici : {amount}",
+    spUpgradeNearby: "⬆ Mise à niveau SP à proximité :",
   },
 
 
@@ -1540,6 +1596,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Construir Mi Plan B Personal",
     onboardingSkip: "Omitir",
     viewOnboarding: "Ver Introducción de Nuevo",
+
+    // Smart Plan Coach
+    planPrefix: "Plan:",
+    vipAutoActiveTitle: "✨ ESTADO VIP ACTIVO",
+    vipAutoActiveFee: "Tarifa de activación de $1,000 deducida automáticamente · Mes 1",
+    vipRateApplied: "+3% TASA VIP APLICADA",
+    manualVipLabel: "Activación VIP Manual",
+    manualVipNote: "Inicio por debajo de $3,550 — agregue $1,000 manualmente una vez alcanzado el umbral para activar VIP.",
+    upsellTipSp4: "💡 Consejo de optimización: Agregue {amount} más para desbloquear el Plan SP4 (3%) + Bono VIP (3%) para 6% de rendimiento total!",
+    upsellTipGeneric: "💡 Consejo de optimización: Agregue {amount} más para desbloquear {plan} para un rendimiento compuesto significativamente mayor!",
+    targetMonthlyGoal: "🎯 META MENSUAL OBJETIVO",
+    goalReachedText: "✅ Meta alcanzada en el Mes {month} (Año {year})",
+    goalNotReachedText: "⏳ Aún no alcanzado — Descuento máx. hasta ahora: {amount}",
+    spUpgradeNearby: "⬆ Actualización SP cercana:",
   },
 
   ru: {
@@ -1845,6 +1915,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "Создать Мой Личный План Б",
     onboardingSkip: "Пропустить",
     viewOnboarding: "Посмотреть Введение Снова",
+
+    // Smart Plan Coach
+    planPrefix: "План:",
+    vipAutoActiveTitle: "✨ VIP-СТАТУС АКТИВЕН",
+    vipAutoActiveFee: "Плата за активацию $1 000 автоматически списана · Месяц 1",
+    vipRateApplied: "+3% VIP-СТАВКА ПРИМЕНЕНА",
+    manualVipLabel: "Ручная активация VIP",
+    manualVipNote: "Старт ниже $3 550 — добавьте вручную $1 000 после достижения порога для активации VIP.",
+    upsellTipSp4: "💡 Совет по оптимизации: Добавьте ещё {amount}, чтобы разблокировать план SP4 (3%) + VIP-бонус (3%) для 6% общего дохода!",
+    upsellTipGeneric: "💡 Совет по оптимизации: Добавьте ещё {amount}, чтобы разблокировать {plan} для значительно более высокого дохода!",
+    targetMonthlyGoal: "🎯 ЕЖЕМЕСЯЧНАЯ ЦЕЛЕВАЯ СКИДКА",
+    goalReachedText: "✅ Цель достигнута в Месяц {month} (Год {year})",
+    goalNotReachedText: "⏳ Ещё не достигнуто — Макс. скидка пока: {amount}",
+    spUpgradeNearby: "⬆ Ближайшее обновление SP:",
   },
 
   zh: {
@@ -2150,6 +2234,20 @@ export const translations: Record<Language, Record<string, string>> = {
     onboardingCTA: "开始使用",
     onboardingSkip: "跳过",
     viewOnboarding: "再次查看介绍",
+
+    // Smart Plan Coach
+    planPrefix: "方案:",
+    vipAutoActiveTitle: "✨ VIP状态已激活",
+    vipAutoActiveFee: "第1个月自动扣除$1,000激活费",
+    vipRateApplied: "+3% VIP利率已应用",
+    manualVipLabel: "手动VIP激活",
+    manualVipNote: "初始金额低于$3,550 — 达到门槛后手动添加$1,000以激活VIP。",
+    upsellTipSp4: "💡 优化提示：再增加{amount}即可解锁SP4方案(3%) + VIP奖励(3%)，获得6%总收益！",
+    upsellTipGeneric: "💡 优化提示：再增加{amount}即可解锁{plan}，获得更高复利收益！",
+    targetMonthlyGoal: "🎯 每月目标折扣",
+    goalReachedText: "✅ 在第{month}个月达成目标（第{year}年）",
+    goalNotReachedText: "⏳ 尚未达成 — 目前最高折扣：{amount}",
+    spUpgradeNearby: "⬆ SP升级即将到来:",
   },
 
   // ─── Filipino / Tagalog ──────────────────────────────────────────────────
