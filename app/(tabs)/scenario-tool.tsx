@@ -31,9 +31,9 @@ type PlanTier = {
   nextTier: { name: string; threshold: number } | null;
 };
 
-function getPlanTier(amount: number): PlanTier {
-  if (amount >= 15000) return { name: 'SP7 Plan', rate: '3.3%+', color: '#22d3ee', nextTier: null };
-  if (amount >= 3550)  return { name: 'SP4 Plan', rate: '6.0%',  color: '#f59e0b', nextTier: { name: 'SP7 Plan', threshold: 15000 } };
+function getPlanTier(amount: number, vipActive: boolean): PlanTier {
+  if (amount >= 15000) return { name: 'SP7 Plan', rate: vipActive ? '3.3% (+3% VIP)' : '3.3%', color: '#22d3ee', nextTier: null };
+  if (amount >= 3550)  return { name: 'SP4 Plan', rate: vipActive ? '3% (+3% VIP)' : '3%',     color: '#f59e0b', nextTier: { name: 'SP7 Plan', threshold: 15000 } };
   return { name: 'Standard Plan', rate: '2.45%', color: '#64748b', nextTier: { name: 'SP4 Plan', threshold: 3550 } };
 }
 
@@ -86,7 +86,7 @@ export default function ScenarioToolScreen() {
   }, [startAmount]);
 
   // Plan Coach: tier detection & upsell
-  const planTier = getPlanTier(numVal(startAmount));
+  const planTier = getPlanTier(numVal(startAmount), autoVip);
   const upsellGap = planTier.nextTier ? planTier.nextTier.threshold - numVal(startAmount) : 0;
   const showUpsell = planTier.nextTier !== null && upsellGap > 0 && upsellGap <= 2000;
 
@@ -341,20 +341,34 @@ export default function ScenarioToolScreen() {
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
 
             {/* Plan tier badge */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
-              <View style={{
-                backgroundColor: planTier.color + '22',
-                borderRadius: 12,
-                paddingHorizontal: 9,
-                paddingVertical: 3,
-                borderWidth: 1,
-                borderColor: planTier.color,
-              }}>
-                <Text style={{ color: planTier.color, fontSize: 10, fontWeight: 'bold', letterSpacing: 0.4 }}>
-                  Plan: {planTier.name} · {planTier.rate}
-                </Text>
-              </View>
-            </View>
+            {(() => {
+              const vipSuffix = ' (+3% VIP)';
+              const hasVip = planTier.rate.endsWith(vipSuffix);
+              const baseRate = hasVip ? planTier.rate.slice(0, -vipSuffix.length) : planTier.rate;
+              return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
+                  <View style={{
+                    backgroundColor: planTier.color + '22',
+                    borderRadius: 12,
+                    paddingHorizontal: 9,
+                    paddingVertical: 3,
+                    borderWidth: 1,
+                    borderColor: planTier.color,
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                  }}>
+                    <Text style={{ color: planTier.color, fontSize: 10, fontWeight: 'bold', letterSpacing: 0.4 }}>
+                      {'Plan: ' + planTier.name + ' · ' + baseRate}
+                    </Text>
+                    {hasVip && (
+                      <Text style={{ color: planTier.color, fontSize: 8.5, fontWeight: 'bold', opacity: 0.85, marginLeft: 1 }}>
+                        {vipSuffix}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              );
+            })()}
 
             {/* Upsell tip */}
             {showUpsell && (
@@ -367,7 +381,9 @@ export default function ScenarioToolScreen() {
                 borderColor: '#f59e0b',
               }}>
                 <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: 'bold', lineHeight: 15 }}>
-                  {'💡 Optimization Tip: Add $' + fmt(upsellGap) + ' more to unlock ' + planTier.nextTier!.name + ' for significantly higher compounding!'}
+                  {planTier.nextTier!.name === 'SP4 Plan'
+                    ? '💡 Optimization Tip: Add $' + fmt(upsellGap) + ' more to unlock SP4 Plan (3%) + VIP Bonus (3%) for 6% total compounding!'
+                    : '💡 Optimization Tip: Add $' + fmt(upsellGap) + ' more to unlock ' + planTier.nextTier!.name + ' for significantly higher compounding!'}
                 </Text>
               </View>
             )}
