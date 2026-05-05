@@ -63,6 +63,15 @@ export default function ScenarioToolScreen() {
 
   const [manualVip, setManualVip] = useState(false);
 
+  // Auto-trigger VIP when initial purchase >= $3,550
+  const autoVip = numVal(startAmount) >= 3550;
+  useEffect(() => {
+    if (numVal(startAmount) >= 3550) {
+      setVipEnabled(true);
+      setManualVip(false);
+    }
+  }, [startAmount]);
+
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
@@ -296,13 +305,33 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 6 }}>
-              <Text style={{ color: '#f59e0b', fontSize: 11, fontWeight: 'bold', flex: 1 }}>Manual VIP Activation</Text>
-              <Switch value={manualVip} onValueChange={setManualVip} trackColor={{ false: "#333", true: "#33C5FF" }} thumbColor="#fff" />
-            </View>
-            <View style={{ backgroundColor: 'rgba(51,197,255,0.1)', borderRadius: 6, padding: 8, marginTop: 6, borderLeftWidth: 2, borderLeftColor: '#33C5FF' }}>
-              <Text style={{ color: '#94a3b8', fontSize: 10, lineHeight: 14 }}>ℹ️ Strategy Note: If starting below $3,550, you must manually add $1,000 to trigger VIP status once the threshold is reached.</Text>
-            </View>
+            {autoVip ? (
+              <View style={{
+                backgroundColor: 'rgba(16,185,129,0.15)',
+                borderRadius: 8,
+                padding: 10,
+                marginTop: 10,
+                borderWidth: 1.5,
+                borderColor: '#10b981',
+                alignItems: 'center',
+              }}>
+                <Text style={{ color: '#10b981', fontSize: 14, fontWeight: 'bold', letterSpacing: 0.8 }}>✨ VIP STATUS ACTIVE</Text>
+                <Text style={{ color: '#6ee7b7', fontSize: 10, marginTop: 4, textAlign: 'center' }}>$1,000 activation fee auto-deducted · Month 1</Text>
+                <View style={{ marginTop: 6, backgroundColor: 'rgba(16,185,129,0.2)', borderRadius: 4, paddingHorizontal: 8, paddingVertical: 3 }}>
+                  <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: 'bold' }}>+3% VIP RATE APPLIED</Text>
+                </View>
+              </View>
+            ) : (
+              <>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 6 }}>
+                  <Text style={{ color: '#f59e0b', fontSize: 11, fontWeight: 'bold', flex: 1 }}>Manual VIP Activation</Text>
+                  <Switch value={manualVip} onValueChange={setManualVip} trackColor={{ false: "#333", true: "#33C5FF" }} thumbColor="#fff" />
+                </View>
+                <View style={{ backgroundColor: 'rgba(51,197,255,0.1)', borderRadius: 6, padding: 8, marginTop: 6, borderLeftWidth: 2, borderLeftColor: '#33C5FF' }}>
+                  <Text style={{ color: '#94a3b8', fontSize: 10, lineHeight: 14 }}>ℹ️ Starting below $3,550 — add $1,000 manually once the threshold is reached to activate VIP.</Text>
+                </View>
+              </>
+            )}
           </View>
           <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
             <Text style={S.label}>{t(language, 'years').toUpperCase()}</Text>
