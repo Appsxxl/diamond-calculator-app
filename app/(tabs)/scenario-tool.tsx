@@ -57,10 +57,10 @@ export default function ScenarioToolScreen() {
   const [pdfLoading, setPdfLoading] = useState(false);
 
   const [clientName, setClientName] = useState("");
-  const [startAmount, setStartAmount] = useState("10000");
+  const [startAmount, setStartAmount] = useState("3000");
   const [years, setYears] = useState("5");
-  const [goal, setGoal] = useState("2000");
-  const [vipEnabled, setVipEnabled] = useState(true);
+  const [goal, setGoal] = useState("3500");
+  const [vipEnabled, setVipEnabled] = useState(false);
 
   // Bulk deposit
   const [bulkStortVal, setBulkStortVal] = useState("");
@@ -102,7 +102,7 @@ export default function ScenarioToolScreen() {
     setResult(runCalculation({
       startAmount: start,
       years: numVal(years, 5),
-      goal: numVal(goal, 2000),
+      goal: numVal(goal, 3500),
       vipEnabled: effectiveVip ? true : vipEnabled,
       manualVip: effectiveVip ? false : manualVip,
       monthData,
@@ -255,8 +255,8 @@ export default function ScenarioToolScreen() {
 
 
   const handleReset = () => {
-    setClientName(""); setStartAmount("10000"); setYears("5"); setGoal("2000");
-    setVipEnabled(true); setManualVip(false); setMonthData({}); setResult(null);
+    setClientName(""); setStartAmount("3000"); setYears("5"); setGoal("3500");
+    setVipEnabled(false); setManualVip(false); setMonthData({}); setResult(null);
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
     setBulkOpnVal(""); setBulkOpnFrom(""); setBulkOpnPVal(""); setBulkOpnPFrom("");
     setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
@@ -264,9 +264,9 @@ export default function ScenarioToolScreen() {
 
   const handleCalculate = () => {
     const params: CalculationParams = {
-      startAmount: numVal(startAmount, 10000),
+      startAmount: numVal(startAmount, 3000),
       years: numVal(years, 5),
-      goal: numVal(goal, 2000),
+      goal: numVal(goal, 3500),
       vipEnabled,
       manualVip,
       monthData,
