@@ -24,6 +24,19 @@ function numVal(s: string, fallback = 0): number {
   return isNaN(n) ? fallback : n;
 }
 
+type PlanTier = {
+  name: string;
+  rate: string;
+  color: string;
+  nextTier: { name: string; threshold: number } | null;
+};
+
+function getPlanTier(amount: number): PlanTier {
+  if (amount >= 15000) return { name: 'SP7 Plan', rate: '3.3%+', color: '#22d3ee', nextTier: null };
+  if (amount >= 3550)  return { name: 'SP4 Plan', rate: '6.0%',  color: '#f59e0b', nextTier: { name: 'SP7 Plan', threshold: 15000 } };
+  return { name: 'Standard Plan', rate: '2.45%', color: '#64748b', nextTier: { name: 'SP4 Plan', threshold: 3550 } };
+}
+
 export default function ScenarioToolScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
@@ -72,9 +85,30 @@ export default function ScenarioToolScreen() {
     }
   }, [startAmount]);
 
+  // Plan Coach: tier detection & upsell
+  const planTier = getPlanTier(numVal(startAmount));
+  const upsellGap = planTier.nextTier ? planTier.nextTier.threshold - numVal(startAmount) : 0;
+  const showUpsell = planTier.nextTier !== null && upsellGap > 0 && upsellGap <= 2000;
+
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
+
+  // Auto-recalculate when startAmount changes so Goal Reached updates immediately
+  useEffect(() => {
+    const start = numVal(startAmount);
+    if (start <= 0) return;
+    const effectiveVip = start >= 3550;
+    setResult(runCalculation({
+      startAmount: start,
+      years: numVal(years, 5),
+      goal: numVal(goal, 2000),
+      vipEnabled: effectiveVip ? true : vipEnabled,
+      manualVip: effectiveVip ? false : manualVip,
+      monthData,
+    }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startAmount]);
 
   // Bulk compounding (reset support)
   const [bulkCompVal, setBulkCompVal] = useState("");
@@ -305,6 +339,39 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
+
+            {/* Plan tier badge */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
+              <View style={{
+                backgroundColor: planTier.color + '22',
+                borderRadius: 12,
+                paddingHorizontal: 9,
+                paddingVertical: 3,
+                borderWidth: 1,
+                borderColor: planTier.color,
+              }}>
+                <Text style={{ color: planTier.color, fontSize: 10, fontWeight: 'bold', letterSpacing: 0.4 }}>
+                  Plan: {planTier.name} · {planTier.rate}
+                </Text>
+              </View>
+            </View>
+
+            {/* Upsell tip */}
+            {showUpsell && (
+              <View style={{
+                backgroundColor: 'rgba(245,158,11,0.14)',
+                borderRadius: 7,
+                padding: 9,
+                marginTop: 7,
+                borderWidth: 1.5,
+                borderColor: '#f59e0b',
+              }}>
+                <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: 'bold', lineHeight: 15 }}>
+                  {'💡 Optimization Tip: Add $' + fmt(upsellGap) + ' more to unlock ' + planTier.nextTier!.name + ' for significantly higher compounding!'}
+                </Text>
+              </View>
+            )}
+
             {autoVip ? (
               <View style={{
                 backgroundColor: 'rgba(16,185,129,0.15)',
