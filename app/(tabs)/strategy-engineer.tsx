@@ -169,17 +169,28 @@ export default function StrategyEngineerScreen() {
             <View style={S.card}>
               <Text style={S.sectionLabel}>{t(language, "seReadiness")}</Text>
               <View style={S.progressBar}>
-                <View style={[S.progressFill, { width: `${Math.min(result.readiness, 100)}%` as any }]} />
+                <View style={[S.progressFill, {
+                  width: `${Math.min(result.readiness, 100)}%` as any,
+                  backgroundColor: result.readiness >= 67 ? "#22c55e" : result.readiness >= 34 ? "#f59e0b" : "#f87171",
+                }]} />
               </View>
-              <Text style={S.progressLabel}>
-                {result.readiness}% — {t(language, "seReadinessLabel")}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                <Text style={{
+                  fontSize: 22,
+                  fontWeight: 'bold',
+                  color: result.readiness >= 67 ? "#22c55e" : result.readiness >= 34 ? "#f59e0b" : "#f87171",
+                  marginRight: 8,
+                }}>
+                  {result.readiness}%
+                </Text>
+                <Text style={S.progressLabel}>— {t(language, "seReadinessLabel")}</Text>
+              </View>
             </View>
 
             {/* Plan A */}
-            <View style={[S.card, { borderLeftWidth: 3, borderLeftColor: "#33C5FF" }]}>
+            <View style={[S.card, { borderLeftWidth: 3, borderLeftColor: "#22d3ee" }]}>
               <View style={S.planHeader}>
-                <View style={[S.badge, { backgroundColor: "#33C5FF" }]}>
+                <View style={[S.badge, { backgroundColor: "#22d3ee" }]}>
                   <Text style={S.badgeText}>{t(language, "sePlanA")}</Text>
                 </View>
                 <Text style={S.planTitle}>{t(language, "sePlanATitle")}</Text>
@@ -187,14 +198,34 @@ export default function StrategyEngineerScreen() {
               <Text style={S.planDesc}>{t(language, "sePlanADesc")}</Text>
               <View style={S.resultBox}>
                 <Text style={S.resultLabel}>{t(language, "sePlanALabel")}</Text>
-                <Text style={[S.resultValue, { color: "#33C5FF" }]}>
+                <Text style={[S.resultValue, { color: "#22d3ee" }]}>
                   {result.planA_deposit === "MET"
                     ? t(language, "sePlanAMet")
                     : `${fmt(result.planA_deposit as number)} ${t(language, "sePlanAPerMonth")}`}
                 </Text>
               </View>
-              <TouchableOpacity style={[S.applyBtn, { borderColor: "#33C5FF" }]} onPress={() => applyPlan("A")}>
-                <Text style={[S.applyBtnText, { color: "#33C5FF" }]}>
+              {result.planA_deposit !== "MET" && (() => {
+                const template = t(language, "sePlanASummary");
+                const parts = template
+                  .replace('{goal}', '\x00GOAL\x00')
+                  .replace('{years}', '\x00YEARS\x00')
+                  .replace('{amount}', '\x00AMOUNT\x00')
+                  .split('\x00');
+                return (
+                  <View style={{ backgroundColor: 'rgba(34,211,238,0.08)', borderRadius: 8, padding: 10, marginTop: 8, borderLeftWidth: 2, borderLeftColor: '#22d3ee' }}>
+                    <Text style={{ color: '#e2e8f0', fontSize: 14, lineHeight: 22 }}>
+                      {parts.map((seg, i) => {
+                        if (seg === 'GOAL') return <Text key={i} style={{ color: '#22d3ee', fontWeight: 'bold' }}>{fmt(numVal(monthlyGoal))}</Text>;
+                        if (seg === 'YEARS') return <Text key={i} style={{ color: '#f59e0b', fontWeight: 'bold' }}>{targetYears}</Text>;
+                        if (seg === 'AMOUNT') return <Text key={i} style={{ color: '#22d3ee', fontWeight: 'bold' }}>{fmt(result.planA_deposit as number)}</Text>;
+                        return <React.Fragment key={i}>{seg}</React.Fragment>;
+                      })}
+                    </Text>
+                  </View>
+                );
+              })()}
+              <TouchableOpacity style={[S.applyBtn, { borderColor: "#22d3ee" }]} onPress={() => applyPlan("A")}>
+                <Text style={[S.applyBtnText, { color: "#22d3ee" }]}>
                   {t(language, "seApplyPlan")} A {t(language, "seApplyToScenario")}
                 </Text>
               </TouchableOpacity>
