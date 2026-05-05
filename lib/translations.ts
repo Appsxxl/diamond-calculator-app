@@ -300,7 +300,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Onboarding Screen
     onboardingHeadline: "Why Plan B?",
-    onboardingSubheadline: "In today's fast-moving world, depending on just one approach is often not enough. Plan B offers a simple alternative: ownership of real, physical diamonds.",
+    onboardingSubheadline: "A strong portfolio needs more than stocks and digital numbers. Plan B gives you the missing piece: real, physical diamonds you can actually hold. A timeless asset that protects and completes your wealth in an uncertain world.",
+    onboardingSubheadlineHL: "real, physical diamonds",
     onboardingSubheadline2: "",
     onboardingCard1Title: "Monthly Discounts",
     onboardingCard1Desc: "Each month, you receive a strategy discount directly into your account. This discount is available exclusively on the Solution Plan (SP) tier.\n\nSolution Plan (SP) Details:\n• Base Discount: 2.2% to 3.3%\n• VIP Bonus: Up to an additional +3% per month\n• Total Monthly Discount: A maximum of 6.3%, depending on your VIP status.\n\nTerms & Usage\nThese discounts are provided throughout the duration of your 12-month contract. All contracts are based on a fixed 12-month period and conclude upon completion.\n\nClients often utilize these discounts for living expenses, the purchase of additional diamonds, or as a financial safety net.",
@@ -726,7 +727,8 @@ export const translations: Record<Language, Record<string, string>> = {
     goalFreedomRec: "$100.000+ (SP7 + VIP)",
     // Onboarding Screen
     onboardingHeadline: "Waarom Plan B?",
-    onboardingSubheadline: "In de snel veranderende wereld van vandaag is het vertrouwen op slechts één aanpak vaak niet genoeg. Plan B biedt een eenvoudig alternatief: eigendom van echte, fysieke diamanten.",
+    onboardingSubheadline: "Een sterke portfolio heeft meer nodig dan alleen aandelen en digitale cijfers. Plan B geeft u het ontbrekende stukje: echte, fysieke diamanten die u daadwerkelijk kunt vasthouden. Een tijdloos bezit dat uw vermogen beschermt en voltooit in een onzekere wereld.",
+    onboardingSubheadlineHL: "echte, fysieke diamanten",
     onboardingSubheadline2: "",
     onboardingCard1Title: "Maandelijkse Kortingen",
     onboardingCard1Desc: "Elke maand ontvangt u een cashkorting rechtstreeks op uw rekening. Exclusief beschikbaar op het Solution Plan (SP)-niveau.\n\nSolution Plan (SP) Details:\n• Basiskorting: 2,2% tot 3,3%\n• VIP Bonus: Tot een extra +3% per maand\n• Totale Maandelijkse Korting: Maximaal 6,3%, afhankelijk van uw VIP-status.\n\nVoorwaarden\nDeze kortingen worden gedurende de gehele 12-maanden contract verstrekt. Klanten gebruiken deze kortingen vaak voor levensonderhoud, aankoop van extra diamanten of als financieel vangnet.",
@@ -1143,7 +1145,8 @@ export const translations: Record<Language, Record<string, string>> = {
     goalFreedomRec: "$100.000+ (SP7 + VIP)",
     // Onboarding Screen
     onboardingHeadline: "Warum Plan B?",
-    onboardingSubheadline: "In der schnelllebigen Welt von heute reicht es oft nicht aus, sich nur auf einen Ansatz zu verlassen. Plan B bietet eine einfache Alternative: den Besitz echter, physischer Diamanten.",
+    onboardingSubheadline: "Ein starkes Portfolio braucht mehr als nur Aktien und digitale Zahlen. Plan B bietet Ihnen das fehlende Puzzleteil: echte, physische Diamanten, die Sie tatsächlich in den Händen halten können. Ein zeitloser Vermögenswert, der Ihren Wohlstand in einer unsicheren Welt schützt und vervollständigt.",
+    onboardingSubheadlineHL: "echte, physische Diamanten",
     onboardingSubheadline2: "",
     onboardingCard1Title: "Monatliche Rückvergütungen",
     onboardingCard1Desc: "Jeden Monat erhalten Sie eine Barvergütung direkt auf Ihr Konto. Dieses Angebot ist ausschließlich für das Solution Plan (SP)-Niveau verfügbar.\n\nSolution Plan (SP) Details:\n• Basisvergütung: 2,2% bis 3,3%\n• VIP-Bonus: Bis zu zusätzlich +3% pro Monat\n• Gesamte monatliche Vergütung: Maximal 6,3%, abhängig von Ihrem VIP-Status.\n\nBedingungen\nDiese Vergütungen werden während der gesamten 12-monatigen Vertragslaufzeit gewährt. Kunden nutzen sie häufig für Lebenshaltungskosten, den Kauf zusätzlicher Diamanten oder als finanzielles Sicherheitsnetz.",
@@ -1560,7 +1563,8 @@ export const translations: Record<Language, Record<string, string>> = {
     goalFreedomRec: "$100 000+ (SP7 + VIP)",
     // Onboarding Screen
     onboardingHeadline: "Pourquoi Plan B?",
-    onboardingSubheadline: "Dans le monde rapide d'aujourd'hui, dépendre d'une seule approche est souvent insuffisant. Plan B offre une alternative simple : la propriété de vrais diamants physiques.",
+    onboardingSubheadline: "Un portefeuille solide a besoin de plus que de simples actions et des chiffres numériques. Plan B vous apporte la pièce manquante : de vrais diamants physiques que vous pouvez réellement tenir. Un actif intemporel qui protège et complète votre patrimoine dans un monde incertain.",
+    onboardingSubheadlineHL: "de vrais diamants physiques",
     onboardingSubheadline2: "",
     onboardingCard1Title: "Remises Mensuelles",
     onboardingCard1Desc: "Chaque mois, vous recevez un remboursement en espèces directement sur votre compte. Disponible exclusivement sur le niveau Solution Plan (SP).\n\nDétails du Solution Plan (SP):\n• Remise de base: 2,2% à 3,3%\n• Bonus VIP: Jusqu'à +3% supplémentaires par mois\n• Remise mensuelle totale: Maximum 6,3%, selon votre statut VIP.\n\nConditions\nCes remises sont accordées tout au long de votre contrat de 12 mois. Les clients les utilisent souvent pour les dépenses courantes, l'achat de diamants supplémentaires ou comme filet de sécurité financière.",
@@ -1977,7 +1981,8 @@ export const translations: Record<Language, Record<string, string>> = {
     goalFreedomRec: "$100.000+ (SP7 + VIP)",
     // Onboarding Screen
     onboardingHeadline: "¿Por qué Plan B?",
-    onboardingSubheadline: "En el mundo acelerado de hoy, depender de un solo enfoque a menudo no es suficiente. Plan B ofrece una alternativa sencilla: la propiedad de diamantes reales y físicos.",
+    onboardingSubheadline: "Una cartera sólida necesita más que acciones y números digitales. Plan B le ofrece la pieza que falta: diamantes físicos reales que realmente puede poseer. Un activo atemporal que protege y completa su riqueza en un mundo incierto.",
+    onboardingSubheadlineHL: "diamantes físicos reales",
     onboardingSubheadline2: "",
     onboardingCard1Title: "Reembolsos Mensuales",
     onboardingCard1Desc: "Cada mes recibe un reembolso en efectivo directamente en su cuenta. Este beneficio está disponible exclusivamente en el nivel Solution Plan (SP).\n\nDetalles del Solution Plan (SP):\n• Reembolso Base: 2,2% a 3,3%\n• Bono VIP: Hasta +3% adicional por mes\n• Reembolso Mensual Total: Máximo 6,3%, según su estado VIP.\n\nTérminos y Uso\nEstos reembolsos se proporcionan durante todo el contrato de 12 meses. Los clientes los utilizan para gastos de vida, compra de diamantes adicionales o como red de seguridad financiera.",

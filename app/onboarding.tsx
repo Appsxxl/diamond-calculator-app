@@ -112,7 +112,19 @@ export default function OnboardingScreen() {
             <Text style={S.logoLabel}>Plan B</Text>
           </View>
           <Text style={S.headline}>{tr("onboardingHeadline")}</Text>
-          <Text style={S.subheadline}>{tr("onboardingSubheadline")}</Text>
+          {(() => {
+            const full = tr("onboardingSubheadline");
+            const hl = tr("onboardingSubheadlineHL");
+            const parts = full.split(hl);
+            if (parts.length < 2) return <Text style={S.subheadline}>{full}</Text>;
+            return (
+              <Text style={S.subheadline}>
+                {parts[0]}
+                <Text style={{ color: "#f59e0b", fontWeight: "bold" }}>{hl}</Text>
+                {parts[1]}
+              </Text>
+            );
+          })()}
 
         </View>
 
