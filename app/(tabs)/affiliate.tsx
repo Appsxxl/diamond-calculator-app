@@ -169,7 +169,7 @@ export default function AffiliateScreen() {
   const fullLink = referralCode ? `${REFERRAL_BASE}${referralCode}` : "";
 
   const handleCopyLink = useCallback(async () => {
-    if (!fullLink) { Alert.alert("No code", "Set your referral code first."); return; }
+    if (!fullLink) { Alert.alert(t(language, "affRemoveTitle"), t(language, "affRegisterNoCode").replace(/^⚠️ /, "")); return; }
     await Clipboard.setStringAsync(fullLink);
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setCopied(true);
@@ -195,13 +195,13 @@ export default function AffiliateScreen() {
     setShowAddModal(true);
   };
   const handleDelete = (id: string) => {
-    Alert.alert("Remove", "Remove this member from your list?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Remove", style: "destructive", onPress: () => savePartners(partners.filter(p => p.id !== id)) },
+    Alert.alert(t(language, "affRemoveTitle"), t(language, "affRemoveConfirm"), [
+      { text: t(language, "affCancel"), style: "cancel" },
+      { text: t(language, "affRemove"), style: "destructive", onPress: () => savePartners(partners.filter(p => p.id !== id)) },
     ]);
   };
   const handleSaveForm = async () => {
-    if (!form.name.trim()) { Alert.alert("Name required"); return; }
+    if (!form.name.trim()) { Alert.alert(t(language, "affNameRequired")); return; }
     const partner: Partner = {
       id: editingPartner?.id ?? Date.now().toString(),
       name: form.name.trim(),
@@ -260,7 +260,7 @@ export default function AffiliateScreen() {
         <View style={S.partnerHeader}>
           <View style={{ flex: 1 }}>
             <Text style={S.partnerName}>{item.name}</Text>
-            <Text style={S.partnerMeta}>{item.country} · Mo.{months} · {spLabel}</Text>
+            <Text style={S.partnerMeta}>{item.country} · {t(language, "affMo")}{months} · {spLabel}</Text>
           </View>
           <View style={S.partnerBadge}>
             <Text style={[S.partnerBadgeText, { color: GOLD }]}>{fmt(item.amount)}</Text>
@@ -283,7 +283,7 @@ export default function AffiliateScreen() {
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity style={S.editPartnerBtn} onPress={() => openEdit(item)}>
-            <Text style={S.editPartnerBtnText}>✏️ Edit</Text>
+            <Text style={S.editPartnerBtnText}>{t(language, "affEdit")}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={S.deleteBtn} onPress={() => handleDelete(item.id)}>
             <Text style={S.deleteBtnText}>🗑️</Text>
@@ -301,8 +301,8 @@ export default function AffiliateScreen() {
         <View style={S.pageHeader}>
           <Text style={S.pageHeaderIcon}>💼</Text>
           <View style={{ flex: 1 }}>
-            <Text style={S.pageHeaderTitle}>ADVISER BACK-OFFICE</Text>
-            <Text style={S.pageHeaderSub}>Private tools — not visible to clients</Text>
+            <Text style={S.pageHeaderTitle}>{t(language, "affPageTitle")}</Text>
+            <Text style={S.pageHeaderSub}>{t(language, "affPageSub")}</Text>
           </View>
           {totalAlerts > 0 && (
             <View style={S.alertBadge}>
@@ -315,12 +315,12 @@ export default function AffiliateScreen() {
         {/* 1. REFERRAL LINK — PINNED MASTER HEADER                        */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.referralCard}>
-          <Text style={S.sectionLabel}>🔗 YOUR ADVISER REFERRAL LINK</Text>
+          <Text style={S.sectionLabel}>{t(language, "affReferralLinkTitle")}</Text>
 
           {editingCode ? (
             <View style={S.editRow}>
               <TextInput style={[S.input, { flex: 1 }]} value={tempCode} onChangeText={setTempCode}
-                placeholder="Enter your referral code" placeholderTextColor="#2a4a6a"
+                placeholder={t(language, "affEnterCode")} placeholderTextColor="#2a4a6a"
                 autoCapitalize="none" autoCorrect={false} returnKeyType="done"
                 onSubmitEditing={handleSaveCode} autoFocus />
               <TouchableOpacity style={[S.smallBtn, { backgroundColor: GREEN }]} onPress={handleSaveCode}>
@@ -334,7 +334,7 @@ export default function AffiliateScreen() {
             <View style={S.codeRow}>
               <View style={{ flex: 1 }}>
                 <Text style={referralCode ? S.codeValue : S.codePlaceholder} numberOfLines={2}>
-                  {fullLink || "No referral code set — tap ✏️ to add"}
+                  {fullLink || t(language, "affNoCodeSet")}
                 </Text>
               </View>
               <TouchableOpacity onPress={() => { setTempCode(referralCode); setEditingCode(true); }} style={{ padding: 6 }}>
@@ -345,12 +345,12 @@ export default function AffiliateScreen() {
 
           <View style={S.linkBtnRow}>
             <TouchableOpacity style={[S.linkBtn, { backgroundColor: copied ? GREEN : BLUE }]} onPress={handleCopyLink}>
-              <Text style={S.linkBtnText}>{copied ? "✓ Copied!" : "📋 Copy Link"}</Text>
+              <Text style={S.linkBtnText}>{copied ? t(language, "affCopied") : t(language, "affCopyLink")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[S.linkBtn, { backgroundColor: CARD_BG, borderWidth: 1, borderColor: BORDER }]}
-              onPress={() => fullLink ? Linking.openURL(fullLink) : Alert.alert("No code", "Set your referral code first.")}>
-              <Text style={[S.linkBtnText, { color: "#94a3b8" }]}>🌐 Open</Text>
+              onPress={() => fullLink ? Linking.openURL(fullLink) : Alert.alert(t(language, "affRemoveTitle"), t(language, "affRegisterNoCode").replace(/^⚠️ /, ""))}>
+              <Text style={[S.linkBtnText, { color: "#94a3b8" }]}>{t(language, "affOpenLink")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -360,9 +360,9 @@ export default function AffiliateScreen() {
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
           <View style={S.cardHeaderRow}>
-            <Text style={S.sectionLabel}>📋 CALL LIST DASHBOARD</Text>
+            <Text style={S.sectionLabel}>{t(language, "affDashboardTitle")}</Text>
             <TouchableOpacity style={S.addBtn} onPress={openAdd}>
-              <Text style={S.addBtnText}>+ Add Member</Text>
+              <Text style={S.addBtnText}>{t(language, "affAddMember")}</Text>
             </TouchableOpacity>
           </View>
 
@@ -371,10 +371,10 @@ export default function AffiliateScreen() {
             <View style={S.residualSummary}>
               <View style={S.residualRow}>
                 {[
-                  { label: "Members", value: String(partners.length), color: BLUE },
-                  { label: "Portfolio Value", value: fmtM(totalPortfolio), color: GOLD },
-                  { label: "Your 10%/mo", value: fmtM(totalMonthlyResidual), color: GREEN },
-                  { label: "Review Calls", value: String(compoundingReviewCount), color: "#f97316" },
+                  { label: t(language, "affMembers"), value: String(partners.length), color: BLUE },
+                  { label: t(language, "affPortfolioValue"), value: fmtM(totalPortfolio), color: GOLD },
+                  { label: t(language, "affYourShare"), value: fmtM(totalMonthlyResidual), color: GREEN },
+                  { label: t(language, "affReviewCalls"), value: String(compoundingReviewCount), color: "#f97316" },
                 ].map(s => (
                   <View key={s.label} style={S.residualStat}>
                     <Text style={S.residualStatLabel}>{s.label}</Text>
@@ -384,7 +384,7 @@ export default function AffiliateScreen() {
               </View>
               {compoundingReviewCount > 0 && (
                 <Text style={S.reviewCallNote}>
-                  📞 {compoundingReviewCount} client{compoundingReviewCount > 1 ? "s" : ""} ready for a Compounding Review — ideal moment to discuss strategy expansion.
+                  {t(language, "affReviewNote").replace("{count}", String(compoundingReviewCount))}
                 </Text>
               )}
             </View>
@@ -393,17 +393,17 @@ export default function AffiliateScreen() {
           {/* Search */}
           {partners.length > 2 && (
             <TextInput style={[S.input, { marginBottom: 10 }]} value={search} onChangeText={setSearch}
-              placeholder="Search by name or country…" placeholderTextColor="#2a4a6a" />
+              placeholder={t(language, "affSearchPlaceholder")} placeholderTextColor="#2a4a6a" />
           )}
 
           {/* Partner cards */}
           {filteredPartners.length === 0 ? (
             <View style={S.emptyState}>
               <Text style={S.emptyIcon}>👥</Text>
-              <Text style={S.emptyTitle}>No members yet</Text>
-              <Text style={S.emptyDesc}>Add your first client or partner to start tracking their portfolio growth and contact moments.</Text>
+              <Text style={S.emptyTitle}>{t(language, "affNoMembersTitle")}</Text>
+              <Text style={S.emptyDesc}>{t(language, "affNoMembersDesc")}</Text>
               <TouchableOpacity style={[S.addBtn, { marginTop: 12 }]} onPress={openAdd}>
-                <Text style={S.addBtnText}>+ Add First Member</Text>
+                <Text style={S.addBtnText}>{t(language, "affAddFirstMember")}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -417,9 +417,9 @@ export default function AffiliateScreen() {
         {/* 3. GLOBAL POOL BONUS                                            */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={[S.card, { borderColor: "#1a2a4a", borderWidth: 1 }]}>
-          <Text style={S.sectionLabel}>🌍 GLOBAL POOL BONUS</Text>
+          <Text style={S.sectionLabel}>{t(language, "affGlobalPoolTitle")}</Text>
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 14 }}>
-            Enter values from your back office for accurate real-time payouts. Formula: Pool Total ÷ Members × Your Parts.
+            {t(language, "affPoolNote")}
           </Text>
 
           {/* Pool cards */}
@@ -443,25 +443,25 @@ export default function AffiliateScreen() {
               <Text style={S.poolRank}>{pool.rank}</Text>
               <View style={S.poolInputRow}>
                 <View style={{ flex: 1 }}>
-                  <Text style={S.poolInputLabel}>Pool Total ($)</Text>
+                  <Text style={S.poolInputLabel}>{t(language, "affPoolTotal")}</Text>
                   <TextInput style={S.poolInput} value={pool.total} onChangeText={pool.setTotal}
-                    keyboardType="numeric" placeholderTextColor="#2a4a6a" placeholder="From back office" />
+                    keyboardType="numeric" placeholderTextColor="#2a4a6a" placeholder={t(language, "affFromBackOffice")} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={S.poolInputLabel}>Total Members</Text>
+                  <Text style={S.poolInputLabel}>{t(language, "affPoolMembers")}</Text>
                   <TextInput style={S.poolInput} value={pool.members} onChangeText={pool.setMembers}
-                    keyboardType="numeric" placeholderTextColor="#2a4a6a" placeholder="From back office" />
+                    keyboardType="numeric" placeholderTextColor="#2a4a6a" placeholder={t(language, "affFromBackOffice")} />
                 </View>
                 <View style={{ width: 64 }}>
-                  <Text style={S.poolInputLabel}>My Parts</Text>
+                  <Text style={S.poolInputLabel}>{t(language, "affPoolMyParts")}</Text>
                   <TextInput style={S.poolInput} value={pool.parts} onChangeText={pool.setParts}
                     keyboardType="numeric" placeholderTextColor="#2a4a6a" placeholder="1" />
                 </View>
               </View>
               <View style={S.poolPayoutRow}>
-                <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+                <Text style={{ color: "#64748b", fontSize: 12 }}>{t(language, "affPoolYourPayout")}</Text>
                 <Text style={[S.poolPayoutValue, { color: GREEN }]}>
-                  {pool.zeroMembers ? "No members yet" : fmtM(pool.payout) + "/mo"}
+                  {pool.zeroMembers ? t(language, "affPoolNoMembers") : fmtM(pool.payout) + "/mo"}
                 </Text>
               </View>
             </View>
@@ -469,7 +469,7 @@ export default function AffiliateScreen() {
 
           {/* Total */}
           <View style={S.poolTotal}>
-            <Text style={S.poolTotalLabel}>Total Pool Payout (All 3)</Text>
+            <Text style={S.poolTotalLabel}>{t(language, "affPoolTotalLabel")}</Text>
             <Text style={[S.poolTotalValue, { color: GREEN }]}>{fmtM(totalPoolPayout)}/mo</Text>
           </View>
         </View>
@@ -478,11 +478,11 @@ export default function AffiliateScreen() {
         {/* 4. COMMISSION STRUCTURE                                         */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>💼 COMMISSION STRUCTURE</Text>
+          <Text style={S.sectionLabel}>{t(language, "affCommissionTitle")}</Text>
           {[
-            { pct: "10%", color: GREEN,    title: "Direct Residual (Level 1)", desc: "10% of every monthly diamond purchase your direct client makes — recurring, every month for the life of their contract." },
-            { pct: "5%",  color: BLUE,     title: "Level 2 Override",           desc: "5% of every purchase made by clients introduced by your direct advisers — builds automatically as your team grows." },
-            { pct: "3%",  color: GOLD,     title: "Level 3 Override",           desc: "3% deep network override — pure passive income from your extended network with no direct management required." },
+            { pct: "10%", color: GREEN, title: t(language, "affCommL1Title"), desc: t(language, "affCommL1Desc") },
+            { pct: "5%",  color: BLUE,  title: t(language, "affCommL2Title"), desc: t(language, "affCommL2Desc") },
+            { pct: "3%",  color: GOLD,  title: t(language, "affCommL3Title"), desc: t(language, "affCommL3Desc") },
           ].map(c => (
             <View key={c.pct} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 14 }}>
               <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: c.color, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
@@ -500,7 +500,7 @@ export default function AffiliateScreen() {
         {/* 5. DIAMOND RANK BONUS PLAN                                      */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>🏆 DIAMOND RANK BONUS PLAN</Text>
+          <Text style={S.sectionLabel}>{t(language, "affRankPlanTitle")}</Text>
 
           {/* 5-Bonus System Summary */}
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
@@ -523,7 +523,7 @@ export default function AffiliateScreen() {
           <View style={{ backgroundColor: "rgba(245,158,11,0.12)", borderRadius: 8, padding: 8, marginBottom: 12, borderWidth: 1, borderColor: "rgba(245,158,11,0.3)", flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Text style={{ fontSize: 18 }}>⭐</Text>
             <Text style={{ color: GOLD, fontSize: 12, fontWeight: "bold", flex: 1 }}>
-              CONFIRMED FOR LIFE — Once a career rank is achieved, it is yours permanently.
+              {t(language, "affRankForLife")}
             </Text>
           </View>
 
@@ -533,15 +533,15 @@ export default function AffiliateScreen() {
               {/* Header */}
               <View style={{ flexDirection: "row", backgroundColor: "#0a1520", paddingVertical: 7, paddingHorizontal: 4, borderRadius: 6, marginBottom: 2 }}>
                 {[
-                  { label: "Rank",         w: 160 },
-                  { label: "Directs",      w: 55  },
-                  { label: "Team Volume",  w: 110 },
-                  { label: "Distrib.",     w: 60  },
-                  { label: "Infinity",     w: 65  },
-                  { label: "Pool Shares",  w: 140 },
-                  { label: "Rank Bonus",   w: 100 },
+                  { key: "affTblRank",       w: 160 },
+                  { key: "affTblDirects",    w: 55  },
+                  { key: "affTblVolume",     w: 110 },
+                  { key: "affTblDistrib",    w: 60  },
+                  { key: "affTblInfinity",   w: 65  },
+                  { key: "affTblPoolShares", w: 140 },
+                  { key: "affTblRankBonus",  w: 100 },
                 ].map(col => (
-                  <Text key={col.label} style={{ width: col.w, color: "#64748b", fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{col.label}</Text>
+                  <Text key={col.key} style={{ width: col.w, color: "#64748b", fontSize: 10, fontWeight: "bold", textTransform: "uppercase" }}>{t(language, col.key)}</Text>
                 ))}
               </View>
               {DIAMOND_TIERS.map((tier, idx) => (
@@ -560,23 +560,23 @@ export default function AffiliateScreen() {
 
           {/* Total bonus */}
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 10, marginTop: 6, borderTopWidth: 1, borderTopColor: BORDER }}>
-            <Text style={{ color: "#64748b", fontSize: 13, fontWeight: "bold" }}>Total Potential Rank Bonuses</Text>
+            <Text style={{ color: "#64748b", fontSize: 13, fontWeight: "bold" }}>{t(language, "affRankTotalLabel")}</Text>
             <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>$8,326,000</Text>
           </View>
 
           {/* Diamond payment note */}
           <View style={{ backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 8, padding: 10, marginTop: 10, borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
             <Text style={{ color: "#94a3b8", fontSize: 11, lineHeight: 18 }}>
-              💎 <Text style={{ color: GREEN, fontWeight: "bold" }}>Paid in Physical Diamonds:</Text> All bonuses are paid in physical, GIA-certified diamonds at the carat value of the bonus amount at the time of payment.
+              💎 <Text style={{ color: GREEN, fontWeight: "bold" }}>{t(language, "affRankPaidIn")}</Text>{t(language, "affRankPaidInDesc")}
             </Text>
           </View>
 
           {/* Rules */}
           <View style={{ marginTop: 10 }}>
             {[
-              "Unilevel: Level 1 (10%) · Level 2 (5%) · Level 3 (3%) = 18% total",
-              "Infinity Bonus (Gap Rule): You earn the difference between your % and your downline's %",
-              "Distribution: Max % of total volume from a single leg",
+              t(language, "affRule1"),
+              t(language, "affRule2"),
+              t(language, "affRule3"),
             ].map((rule, i) => (
               <Text key={i} style={{ color: "#64748b", fontSize: 11, lineHeight: 18, marginBottom: 3 }}>• {rule}</Text>
             ))}
@@ -587,13 +587,13 @@ export default function AffiliateScreen() {
         {/* 6. HOW IT WORKS                                                 */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>📋 HOW IT WORKS</Text>
+          <Text style={S.sectionLabel}>{t(language, "affHowItWorksTitle")}</Text>
           {[
-            "Register as a Real Estate Agent or Adviser on diamond-solution.net",
-            "Set your referral code and share your link with your network",
-            "Client purchases physical diamonds — you earn 10% of their monthly rebate re-use, every month",
-            "Build your team of advisers to unlock Level 2 (5%) and Level 3 (3%) overrides",
-            "Reach $1M Team Volume to unlock the Blue Diamond Global Pool Bonus",
+            t(language, "affStep1"),
+            t(language, "affStep2"),
+            t(language, "affStep3"),
+            t(language, "affStep4"),
+            t(language, "affStep5"),
           ].map((step, i) => (
             <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 12 }}>
               <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: BLUE, alignItems: "center", justifyContent: "center", marginRight: 10, marginTop: 1 }}>
@@ -614,9 +614,9 @@ export default function AffiliateScreen() {
         >
           <Text style={{ fontSize: 24, marginRight: 12 }}>🌐</Text>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>Register as Adviser</Text>
+            <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>{t(language, "affRegisterTitle")}</Text>
             <Text style={{ color: referralCode ? GREEN : GOLD, fontSize: 13, marginTop: 2 }}>
-              {referralCode ? `🔗 With code: ${referralCode}` : "⚠️ Set your referral code first"}
+              {referralCode ? t(language, "affRegisterWithCode").replace("{code}", referralCode) : t(language, "affRegisterNoCode")}
             </Text>
           </View>
           <Text style={{ color: GREEN, fontSize: 18, fontWeight: "bold" }}>→</Text>
@@ -651,13 +651,13 @@ export default function AffiliateScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
           <View style={S.modalOverlay}>
             <ScrollView style={S.modalSheet} contentContainerStyle={{ paddingBottom: 40 }}>
-              <Text style={S.modalTitle}>{editingPartner ? "Edit Member" : "Add Member"}</Text>
+              <Text style={S.modalTitle}>{editingPartner ? t(language, "affEditMemberTitle") : t(language, "affAddMemberTitle")}</Text>
 
               {[
-                { label: "Full Name *", key: "name",     placeholder: "John Smith",         type: "default" as const },
-                { label: "WhatsApp",    key: "whatsapp", placeholder: "+31 6 12345678",     type: "phone-pad" as const },
-                { label: "Country",     key: "country",  placeholder: "Netherlands",        type: "default" as const },
-                { label: "Start Date (DD/MM/YYYY)", key: "startDate", placeholder: "29/04/2026", type: "default" as const },
+                { label: t(language, "affFieldName"),      key: "name",      placeholder: "John Smith",      type: "default" as const },
+                { label: t(language, "affFieldWhatsapp"),  key: "whatsapp",  placeholder: "+31 6 12345678",  type: "phone-pad" as const },
+                { label: t(language, "affFieldCountry"),   key: "country",   placeholder: "Netherlands",     type: "default" as const },
+                { label: t(language, "affFieldStartDate"), key: "startDate", placeholder: "29/04/2026",      type: "default" as const },
               ].map(field => (
                 <View key={field.key}>
                   <Text style={S.inputLabel}>{field.label}</Text>
@@ -668,7 +668,7 @@ export default function AffiliateScreen() {
                 </View>
               ))}
 
-              <Text style={S.inputLabel}>Initial Purchase Amount ($)</Text>
+              <Text style={S.inputLabel}>{t(language, "affFieldAmount")}</Text>
               <View style={S.chipRow}>
                 {["2500","5000","10000","25000","50000","100000"].map(v => (
                   <Pressable key={v} onPress={() => setForm(f => ({ ...f, amount: v }))}
@@ -681,7 +681,7 @@ export default function AffiliateScreen() {
               </View>
               <TextInput style={S.input} value={form.amount}
                 onChangeText={v => setForm(f => ({ ...f, amount: v }))}
-                keyboardType="numeric" placeholder="Custom amount" placeholderTextColor="#64748b" />
+                keyboardType="numeric" placeholder={t(language, "affCustomAmount")} placeholderTextColor="#64748b" />
 
               {form.amount ? (
                 <View style={[S.poolCard, { borderLeftColor: GOLD, marginTop: 8 }]}>
@@ -693,11 +693,11 @@ export default function AffiliateScreen() {
 
               <View style={[S.linkBtnRow, { marginTop: 16 }]}>
                 <TouchableOpacity style={[S.linkBtn, { backgroundColor: GOLD, flex: 2 }]} onPress={handleSaveForm}>
-                  <Text style={S.linkBtnText}>{editingPartner ? "Save Changes" : "Add Member"}</Text>
+                  <Text style={S.linkBtnText}>{editingPartner ? t(language, "affSaveChanges") : t(language, "affAddMemberTitle")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[S.linkBtn, { backgroundColor: CARD_BG, borderWidth: 1, borderColor: BORDER }]}
                   onPress={() => setShowAddModal(false)}>
-                  <Text style={[S.linkBtnText, { color: "#94a3b8" }]}>Cancel</Text>
+                  <Text style={[S.linkBtnText, { color: "#94a3b8" }]}>{t(language, "affCancel")}</Text>
                 </TouchableOpacity>
               </View>
             </ScrollView>
