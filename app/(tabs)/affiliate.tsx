@@ -416,7 +416,7 @@ export default function AffiliateScreen() {
                 {[
                   { label: t(language, "affMembers"), value: String(partners.length), color: BLUE },
                   { label: t(language, "affPortfolioValue"), value: fmtM(totalPortfolio), color: GOLD },
-                  { label: t(language, "affYourShare"), value: fmtM(totalMonthlyResidual), color: GREEN },
+                  { label: t(language, "affTotalEarnings"), value: fmtM(totalMonthlyResidual), color: GREEN },
                   { label: t(language, "affReviewCalls"), value: String(compoundingReviewCount), color: "#f97316" },
                 ].map(s => (
                   <View key={s.label} style={S.residualStat}>
@@ -452,10 +452,29 @@ export default function AffiliateScreen() {
                     {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
                   </Text>
                 )}
-                {totalRankBonusAchieved > 0 && (
-                  <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", marginTop: 3 }}>
-                    🏆 Total Rank Bonuses Achieved: {fmt(totalRankBonusAchieved)}
-                  </Text>
+                {totalRankBonusAchieved > 0 && (() => {
+                  const note = t(language, "affPhysicalDiamondNote").replace("{amount}", fmt(totalRankBonusAchieved));
+                  const hl = t(language, "affPhysicalDiamondsHL");
+                  const parts = note.split(hl);
+                  return (
+                    <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", marginTop: 3 }}>
+                      {parts[0] ?? ""}<Text style={{ fontWeight: "900" }}>{hl}</Text>{parts[1] ?? ""}
+                    </Text>
+                  );
+                })()}
+
+                {/* ── Income Projection (5% monthly team growth) ── */}
+                {totalMonthlyResidual > 0 && (
+                  <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
+                    <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
+                      <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst6Mo")}</Text>
+                      <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{fmtM(totalMonthlyResidual * 1.34)}/mo</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
+                      <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst1Yr")}</Text>
+                      <Text style={{ color: "#22c55e", fontSize: 14, fontWeight: "bold", marginTop: 2 }}>{fmtM(totalMonthlyResidual * 1.80)}/mo</Text>
+                    </View>
+                  </View>
                 )}
               </View>
             </View>
