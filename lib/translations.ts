@@ -360,6 +360,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawalHintText: "High withdrawals are keeping capital flat — lower your discount % to grow into the next SP tier faster.",
 
     // Affiliate / Adviser Back-Office
+    advCmdCentre: "💎 ADVISER COMMAND CENTRE",
     affPageTitle: "ADVISER BACK-OFFICE",
     affPageSub: "Private tools — not visible to clients",
     affReferralLinkTitle: "🔗 YOUR ADVISER REFERRAL LINK",
@@ -778,6 +779,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawalHintText: "Hoge opnames houden het kapitaal stabiel — verlaag uw kortingspercentage om sneller naar het volgende SP-niveau te groeien.",
 
     // Affiliate / Adviser Back-Office
+    advCmdCentre: "💎 ADVISEUR COMMAND CENTRE",
     affPageTitle: "ADVISEUR BACK-OFFICE",
     affPageSub: "Privé tools — niet zichtbaar voor klanten",
     affReferralLinkTitle: "🔗 UW ADVISEUR REFERRAL LINK",
@@ -1196,6 +1198,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawalHintText: "Hohe Auszahlungen halten das Kapital flach — senken Sie den Rabattprozentsatz für schnelleres SP-Wachstum.",
 
     // Affiliate / Adviser Back-Office
+    advCmdCentre: "💎 BERATER-KOMMANDOZENTRALE",
     affPageTitle: "BERATER BACK-OFFICE",
     affPageSub: "Private Tools — nicht für Kunden sichtbar",
     affReferralLinkTitle: "🔗 IHR BERATER EMPFEHLUNGSLINK",
@@ -1614,6 +1617,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawalHintText: "Les retraits élevés maintiennent le capital stable — réduisez le % de remise pour progresser vers le prochain niveau SP.",
 
     // Affiliate / Adviser Back-Office
+    advCmdCentre: "💎 CENTRE DE COMMANDEMENT CONSEILLER",
     affPageTitle: "BACK-OFFICE CONSEILLER",
     affPageSub: "Outils privés — non visibles par les clients",
     affReferralLinkTitle: "🔗 VOTRE LIEN DE PARRAINAGE CONSEILLER",
@@ -2032,6 +2036,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdrawalHintText: "Los retiros altos mantienen el capital plano — reduzca el % de descuento para crecer al siguiente nivel SP.",
 
     // Affiliate / Adviser Back-Office
+    advCmdCentre: "💎 CENTRO DE MANDO DEL ASESOR",
     affPageTitle: "BACK-OFFICE DEL ASESOR",
     affPageSub: "Herramientas privadas — no visibles para clientes",
     affReferralLinkTitle: "🔗 SU ENLACE DE REFERIDO DE ASESOR",

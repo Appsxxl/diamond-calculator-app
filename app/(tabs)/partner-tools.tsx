@@ -28,6 +28,7 @@ import {
   schedulePartnerNotifications,
   cancelPartnerNotifications,
 } from "@/lib/notifications";
+import { t } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Partner {
@@ -37,10 +38,27 @@ interface Partner {
   country: string;
   startDate: string; // DD-MM-YYYY format
   amount: number;
+  level?: 1 | 2 | 3;
   contactMoments: string[]; // selected alert types
 }
 
 const STORAGE_KEY = "partner_list";
+
+const DIAMOND_TIERS = [
+  { rank: "Partner",              emoji: "🤝", teamVol: "$0",           infinity: "—",    bonus: "—"          },
+  { rank: "Pearl",                emoji: "🤍", teamVol: "$100",          infinity: "—",    bonus: "—"          },
+  { rank: "Ruby",                 emoji: "❤️", teamVol: "$500",          infinity: "—",    bonus: "—"          },
+  { rank: "Sapphire",             emoji: "💙", teamVol: "$25,000",       infinity: "3.0%", bonus: "—"          },
+  { rank: "Emerald",              emoji: "💚", teamVol: "$50,000",       infinity: "6.0%", bonus: "$1,000"     },
+  { rank: "Diamond",              emoji: "💎", teamVol: "$250,000",      infinity: "9.0%", bonus: "$5,000"     },
+  { rank: "Blue Diamond",         emoji: "🔵", teamVol: "$1,000,000",    infinity: "12.0%", bonus: "$20,000"   },
+  { rank: "Green Diamond",        emoji: "💚", teamVol: "$2,500,000",    infinity: "15.0%", bonus: "$50,000"   },
+  { rank: "Purple Diamond",       emoji: "💜", teamVol: "$5,000,000",    infinity: "18.0%", bonus: "$100,000"  },
+  { rank: "Diamond Elite",        emoji: "💎", teamVol: "$10,000,000",   infinity: "21.0%", bonus: "$150,000"  },
+  { rank: "Double Diamond Elite", emoji: "👑", teamVol: "$50,000,000",   infinity: "22.0%", bonus: "$1,000,000"},
+  { rank: "Triple Diamond Elite", emoji: "🏆", teamVol: "$150,000,000",  infinity: "23.0%", bonus: "$2,000,000"},
+  { rank: "Black Diamond",        emoji: "⚫", teamVol: "$500,000,000",  infinity: "24.0%", bonus: "$5,000,000"},
+];
 const REFERRAL_STORAGE_KEY = "referral_code";
 const REFERRAL_BASE = "https://diamond-solution.net/user/register?reference=";
 const NAVY = "#0d1a2a";
@@ -63,6 +81,10 @@ const fmtM = (n: number) =>
   n >= 1_000_000 ? `$${(n/1_000_000).toFixed(2)}M`
   : n >= 1_000 ? `$${(n/1_000).toFixed(1)}K`
   : `$${n.toFixed(0)}`;
+
+function parseVol(s: string): number { return parseFloat(s.replace(/[$,]/g, "")) || 0; }
+function parseInfPct(s: string): number { return s === "—" ? 0 : parseFloat(s) / 100; }
+function parseRankBonus(s: string): number { return s === "—" ? 0 : parseFloat(s.replace(/[$,]/g, "")) || 0; }
 
 function calcTimeline(
   dbSize: number, convRate: number, avgPurchase: number,
@@ -944,6 +966,7 @@ export default function PartnerToolsScreen() {
     country: "",
     startDate: formatDDMMYYYY(new Date()),
     amount: "",
+    level: "1",
     contactMoments: [...CONTACT_MOMENT_KEYS] as string[],
   });
 
@@ -978,7 +1001,7 @@ export default function PartnerToolsScreen() {
 
   const openAddModal = () => {
     setEditingPartner(null);
-    setForm({ name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", contactMoments: [...CONTACT_MOMENT_KEYS] });
+    setForm({ name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", level: "1", contactMoments: [...CONTACT_MOMENT_KEYS] });
     setShowAddModal(true);
   };
 
@@ -990,6 +1013,7 @@ export default function PartnerToolsScreen() {
       country: partner.country,
       startDate: partner.startDate,
       amount: partner.amount.toString(),
+      level: String(partner.level ?? 1),
       contactMoments: partner.contactMoments ?? [...CONTACT_MOMENT_KEYS],
     });
     setShowAddModal(true);
@@ -1024,6 +1048,7 @@ export default function PartnerToolsScreen() {
       country: form.country.trim(),
       startDate: form.startDate,
       amount,
+      level: (parseInt(form.level) || 1) as 1 | 2 | 3,
       contactMoments: form.contactMoments,
     };
     let updated: Partner[];
@@ -1313,32 +1338,58 @@ export default function PartnerToolsScreen() {
 
   const alertCount = partners.reduce((sum, p) => sum + getAlerts(p, tx).length, 0);
 
-  // ── Current Residual Stream — computed from actual Call List ──────────────
+  // ── Rank detection (mirrors affiliate.tsx) ──────────────────────────────
+  const rankVolume = React.useMemo(() => partners.reduce((s, p) => s + p.amount, 0), [partners]);
+  const currentTier = React.useMemo(() => {
+    let tier = DIAMOND_TIERS[0];
+    for (const row of DIAMOND_TIERS) {
+      if (rankVolume >= parseVol(row.teamVol)) tier = row;
+      else break;
+    }
+    return tier;
+  }, [rankVolume]);
+  const nextTier = React.useMemo(() => {
+    const idx = DIAMOND_TIERS.findIndex(row => row.rank === currentTier.rank);
+    return idx < DIAMOND_TIERS.length - 1 ? DIAMOND_TIERS[idx + 1] : null;
+  }, [currentTier]);
+  const rankProgressPct = React.useMemo(() => {
+    if (!nextTier) return 100;
+    const curVol = parseVol(currentTier.teamVol);
+    const nextVol = parseVol(nextTier.teamVol);
+    return Math.min(100, ((rankVolume - curVol) / (nextVol - curVol)) * 100);
+  }, [rankVolume, currentTier, nextTier]);
+  const totalRankBonusAchieved = React.useMemo(() => {
+    let sum = 0;
+    for (const row of DIAMOND_TIERS) {
+      sum += parseRankBonus(row.bonus);
+      if (row.rank === currentTier.rank) break;
+    }
+    return sum;
+  }, [currentTier]);
+
+  // ── Residual Stream — L1 10% + L2 5% + L3 3% + Infinity (mirrors affiliate.tsx) ──
   const residualSummary = React.useMemo(() => {
     if (partners.length === 0) return null;
     let totalPortfolio = 0;
-    let totalMonthlyRebate = 0;
-    let totalAgentResidual = 0;
+    let l1 = 0, l2 = 0, l3 = 0, totalRebate = 0;
     let compoundingReviewCount = 0;
     partners.forEach(p => {
       const months = monthsElapsed(p.startDate);
-      const reuseDecimal = parseFloat(revenueReuse) / 100;
-      // Simulate compounded portfolio
       let portfolio = p.amount;
-      for (let m = 0; m < months; m++) {
-        const rebate = portfolio * 0.033;
-        portfolio += rebate * reuseDecimal;
-      }
-      const thisMonthRebate = portfolio * 0.033;
-      const agentCut = thisMonthRebate * reuseDecimal * 0.10;
+      for (let m = 0; m < months; m++) portfolio += portfolio * 0.033 * 0.5;
+      const rebate = portfolio * 0.033 * 0.5;
       totalPortfolio += portfolio;
-      totalMonthlyRebate += thisMonthRebate;
-      totalAgentResidual += agentCut;
+      totalRebate += rebate;
+      const lvl = p.level ?? 1;
+      if (lvl === 1)      l1 += rebate * 0.10;
+      else if (lvl === 2) l2 += rebate * 0.05;
+      else                l3 += rebate * 0.03;
       const growth = ((portfolio - p.amount) / p.amount) * 100;
       if (months >= 6 && growth >= 10) compoundingReviewCount++;
     });
-    return { totalPortfolio, totalMonthlyRebate, totalAgentResidual, compoundingReviewCount };
-  }, [partners, revenueReuse]);
+    const totalAgentResidual = l1 + l2 + l3 + (totalRebate * parseInfPct(currentTier.infinity));
+    return { totalPortfolio, totalMonthlyRebate: totalRebate, totalAgentResidual, compoundingReviewCount };
+  }, [partners, currentTier]);
 
   return (
     <ScreenContainer bgColor="#0d1a2a">
@@ -1346,8 +1397,8 @@ export default function PartnerToolsScreen() {
 
         {/* ── HEADER ── */}
         <View style={[S.header, { borderBottomWidth: 1, borderBottomColor: "#1a3550", paddingBottom: 16, marginBottom: 16 }]}>
-          <Text style={S.headerTitle}>💎 ADVISER COMMAND CENTRE</Text>
-          <Text style={{ color: "#64748b", fontSize: 12, textAlign: "center", marginTop: 4 }}>Real Estate Agents & Advisers — Plan B Diamond Solution</Text>
+          <Text style={S.headerTitle}>{t(language, "advCmdCentre")}</Text>
+          <Text style={{ color: "#64748b", fontSize: 12, textAlign: "center", marginTop: 4 }}>{t(language, "affPageSub")}</Text>
           {alertCount > 0 && (
             <View style={[S.alertBadge, { marginTop: 8 }]}>
               <Text style={S.alertBadgeText}>{alertCount} alerts</Text>
@@ -1356,37 +1407,51 @@ export default function PartnerToolsScreen() {
         </View>
 
 {/* ── SECTION 0A: REFERRAL CODE — Pinned Header ── */}
-        <View style={[S.section, { backgroundColor: "#0a1628", borderRadius: 14, padding: 14, borderWidth: 2, borderColor: BLUE, marginBottom: 14 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>🔗 YOUR REFERRAL LINK</Text>
+        <View style={[S.section, { backgroundColor: "#0a1628", borderRadius: 14, padding: 16, borderWidth: 2, borderColor: BLUE, marginBottom: 14 }]}>
+          <Text style={{ color: GOLD, fontSize: 13, fontWeight: "bold", letterSpacing: 0.8, marginBottom: 10, textTransform: "uppercase" }}>
+            {t(language, "affReferralLinkTitle")}
+          </Text>
           {editingCode ? (
-            <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
-              <TextInput style={[S.input, { flex: 1 }]} value={tempCode} onChangeText={setTempCode}
-                placeholder="e.g. appsxxl" placeholderTextColor="#2a4a6a"
-                autoCapitalize="none" autoCorrect={false} returnKeyType="done" onSubmitEditing={handleSaveCode} />
-              <TouchableOpacity style={[S.calcBtn, { width: 44, padding: 0, justifyContent: "center" }]} onPress={handleSaveCode}>
-                <Text style={[S.calcBtnText, { fontSize: 18 }]}>✓</Text>
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
+              <TextInput style={[S.input, { flex: 1, marginBottom: 0 }]} value={tempCode} onChangeText={setTempCode}
+                placeholder={t(language, "affEnterCode")} placeholderTextColor="#2a4a6a"
+                autoCapitalize="none" autoCorrect={false} returnKeyType="done" onSubmitEditing={handleSaveCode} autoFocus />
+              <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 8, backgroundColor: GREEN, alignItems: "center", justifyContent: "center" }} onPress={handleSaveCode}>
+                <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>✓</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 8, backgroundColor: "#0f2035", alignItems: "center", justifyContent: "center" }} onPress={() => setEditingCode(false)}>
+                <Text style={{ color: "#64748b", fontSize: 16, fontWeight: "bold" }}>✕</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <Text style={{ color: referralCode ? GOLD : "#2a4a6a", fontSize: 16, fontWeight: "bold" }}>
-                {referralCode ? `${REFERRAL_BASE}${referralCode}` : "No code set — tap ✏️ to add"}
-              </Text>
-              <TouchableOpacity onPress={() => { setTempCode(referralCode); setEditingCode(true); }}>
-                <Text style={{ fontSize: 18 }}>✏️</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: referralCode ? "#94a3b8" : "#2a4a6a", fontSize: 12, lineHeight: 18 }} numberOfLines={2}>
+                  {referralCode ? `${REFERRAL_BASE}${referralCode}` : t(language, "affNoCodeSet")}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => { setTempCode(referralCode); setEditingCode(true); }} style={{ padding: 6 }}>
+                <Text style={{ fontSize: 20 }}>✏️</Text>
               </TouchableOpacity>
             </View>
           )}
-          <TouchableOpacity style={[S.calcBtn, { backgroundColor: copied ? GREEN : BLUE }]} onPress={handleCopyLink}>
-            <Text style={S.calcBtnText}>{copied ? "✓ Copied!" : "📋 Copy Referral Link"}</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <TouchableOpacity style={{ flex: 1, borderRadius: 8, paddingVertical: 10, alignItems: "center", backgroundColor: copied ? GREEN : BLUE }} onPress={handleCopyLink}>
+              <Text style={{ color: "#fff", fontSize: 13, fontWeight: "bold" }}>{copied ? t(language, "affCopied") : t(language, "affCopyLink")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 1, borderRadius: 8, paddingVertical: 10, alignItems: "center", backgroundColor: "#0f2035", borderWidth: 1, borderColor: "#1a3550" }}
+              onPress={() => referralCode ? Linking.openURL(`${REFERRAL_BASE}${referralCode}`) : Alert.alert("No code", "Set your referral code first.")}>
+              <Text style={{ color: "#94a3b8", fontSize: 13, fontWeight: "bold" }}>{t(language, "affOpenLink")}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
 
         {/* ── SECTION 2: Call List Dashboard ──────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
           <View style={S.sectionHeader}>
-            <Text style={S.sectionTitle}>{tx.callListTitle}</Text>
+            <Text style={S.sectionTitle}>{t(language, "affDashboardTitle")}</Text>
             <TouchableOpacity style={S.addBtn} onPress={openAddModal} activeOpacity={0.8}>
               <Text style={S.addBtnText}>{tx.addBtn}</Text>
             </TouchableOpacity>
@@ -1445,34 +1510,52 @@ export default function PartnerToolsScreen() {
 
         {/* ── RESIDUAL STREAM SUMMARY ── */}
         {residualSummary && (
-          <View style={[S.section, { backgroundColor: "#0a1f0a", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#14532d", marginBottom: 12 }]}>
-            <Text style={[S.sectionTitle, { color: GREEN }]}>💰 CURRENT RESIDUAL STREAM</Text>
-            <Text style={{ color: "#64748b", fontSize: 11, marginBottom: 10 }}>
-              Live estimate from your {partners.length} Call List member{partners.length !== 1 ? "s" : ""} — based on compounded portfolio growth.
-            </Text>
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
-              {[
-                { label: "Total Portfolio Value", value: fmtM(residualSummary.totalPortfolio), color: BLUE },
-                { label: "Total Monthly Rebates", value: fmtM(residualSummary.totalMonthlyRebate), color: GREEN },
-                { label: "Your 10% Residual/mo", value: fmtM(residualSummary.totalAgentResidual), color: GOLD },
-                { label: "Compounding Reviews", value: String(residualSummary.compoundingReviewCount), color: "#f97316" },
-              ].map(s => (
-                <View key={s.label} style={{ minWidth: "45%", flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 10 }}>
-                  <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.label}</Text>
-                  <Text style={{ color: s.color, fontSize: 15, fontWeight: "bold", marginTop: 4 }}>{s.value}</Text>
+          <View style={[S.section, { backgroundColor: "rgba(34,197,94,0.06)", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "rgba(34,197,94,0.15)", marginBottom: 12 }]}>
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 6 }}>
+              {([
+                { label: t(language, "affMembers"),        value: String(partners.length),                          color: BLUE  },
+                { label: t(language, "affPortfolioValue"),  value: fmtM(residualSummary.totalPortfolio),            color: GOLD  },
+                { label: t(language, "affYourShare"),       value: fmtM(residualSummary.totalAgentResidual),        color: GREEN },
+                { label: t(language, "affReviewCalls"),     value: String(residualSummary.compoundingReviewCount),  color: "#f97316" },
+              ] as { label: string; value: string; color: string }[]).map(s => (
+                <View key={s.label} style={{ flex: 1, alignItems: "center" }}>
+                  <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{s.label}</Text>
+                  <Text style={{ color: s.color, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{s.value}</Text>
                 </View>
               ))}
             </View>
             {residualSummary.compoundingReviewCount > 0 && (
-              <View style={{ backgroundColor: "rgba(249,115,22,0.1)", borderRadius: 8, padding: 10, borderWidth: 1, borderColor: "rgba(249,115,22,0.3)" }}>
-                <Text style={{ color: "#f97316", fontSize: 12, fontWeight: "bold" }}>
-                  📞 {residualSummary.compoundingReviewCount} client{residualSummary.compoundingReviewCount !== 1 ? "s" : ""} ready for a Compounding Review call
-                </Text>
-                <Text style={{ color: "#64748b", fontSize: 11, marginTop: 3 }}>
-                  Portfolio growth milestone reached — ideal moment to discuss strategy expansion.
-                </Text>
-              </View>
+              <Text style={{ color: "#f97316", fontSize: 11, lineHeight: 16, marginBottom: 6 }}>
+                {t(language, "affReviewNote").replace("{count}", String(residualSummary.compoundingReviewCount))}
+              </Text>
             )}
+            {/* Rank Advancement Tracker */}
+            <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 4, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
+                  {currentTier.emoji} {currentTier.rank}
+                </Text>
+                {nextTier && (
+                  <Text style={{ color: "#64748b", fontSize: 10 }}>
+                    → {nextTier.emoji} {nextTier.rank} ({nextTier.teamVol})
+                  </Text>
+                )}
+              </View>
+              <View style={{ height: 6, backgroundColor: "#1e293b", borderRadius: 3, overflow: "hidden" }}>
+                <View style={{ height: 6, backgroundColor: BLUE, borderRadius: 3, width: `${rankProgressPct.toFixed(0)}%` as any }} />
+              </View>
+              {nextTier && (
+                <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
+                  {fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))} more to {nextTier.rank}
+                  {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
+                </Text>
+              )}
+              {totalRankBonusAchieved > 0 && (
+                <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", marginTop: 3 }}>
+                  🏆 Total Rank Bonuses Achieved: ${totalRankBonusAchieved.toLocaleString()}
+                </Text>
+              )}
+            </View>
           </View>
         )}
 
@@ -1487,7 +1570,7 @@ export default function PartnerToolsScreen() {
 
 
         {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: GOLD }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.propTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.propDesc}</Text>
@@ -1561,8 +1644,8 @@ export default function PartnerToolsScreen() {
 
 
         {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.savingsTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GREEN + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: GREEN }]}>
+          <Text style={[S.sectionTitle, { color: GREEN }]}>{tx.savingsTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
 
@@ -1631,8 +1714,8 @@ export default function PartnerToolsScreen() {
 
 
         {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
-        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.assetTitle}</Text>
+        <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: BLUE + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: BLUE }]}>
+          <Text style={[S.sectionTitle, { color: BLUE }]}>{tx.assetTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.assetDesc}</Text>
 
@@ -1989,6 +2072,21 @@ export default function PartnerToolsScreen() {
                 keyboardType="numeric"
                 returnKeyType="done"
               />
+
+              {/* Level Selector */}
+              <Text style={S.inputLabel}>LEVEL</Text>
+              <View style={S.chipRow}>
+                {([
+                  { value: "1", label: "L1 — 10%" },
+                  { value: "2", label: "L2 — 5%"  },
+                  { value: "3", label: "L3 — 3%"  },
+                ] as { value: string; label: string }[]).map(l => (
+                  <Pressable key={l.value} onPress={() => setForm(f => ({ ...f, level: l.value }))}
+                    style={[S.chip, form.level === l.value && S.chipActive]}>
+                    <Text style={[S.chipText, form.level === l.value && S.chipTextActive]}>{l.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
 
               {/* Contact Moment Toggles */}
               <Text style={S.inputLabel}>{tx.contactMomentsLabel}</Text>
