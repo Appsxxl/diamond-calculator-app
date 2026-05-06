@@ -258,6 +258,11 @@ export default function AffiliateScreen() {
     }
     return sum;
   }, [currentTier]);
+  const isBlueDiamondReached = useMemo(() => {
+    const bdIdx = DIAMOND_TIERS.findIndex(row => row.rank === "Blue Diamond");
+    const curIdx = DIAMOND_TIERS.findIndex(row => row.rank === currentTier.rank);
+    return curIdx >= bdIdx;
+  }, [currentTier]);
 
   const totalMonthlyResidual = useMemo(() => {
     let l1 = 0, l2 = 0, l3 = 0, totalRebate = 0;
@@ -444,7 +449,7 @@ export default function AffiliateScreen() {
                   )}
                 </View>
                 <View style={S.rankProgressBg}>
-                  <View style={[S.rankProgressFill, { width: `${rankProgressPct.toFixed(0)}%` as any }]} />
+                  <View style={[S.rankProgressFill, { width: `${rankProgressPct.toFixed(0)}%` as any, backgroundColor: isBlueDiamondReached ? "#1d4ed8" : nextTier?.rank === "Blue Diamond" ? "#3b82f6" : BLUE }]} />
                 </View>
                 {nextTier && (
                   <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
@@ -452,16 +457,30 @@ export default function AffiliateScreen() {
                     {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
                   </Text>
                 )}
-                {totalRankBonusAchieved > 0 && (() => {
-                  const note = t(language, "affPhysicalDiamondNote").replace("{amount}", fmt(totalRankBonusAchieved));
-                  const hl = t(language, "affPhysicalDiamondsHL");
-                  const parts = note.split(hl);
-                  return (
-                    <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", marginTop: 3 }}>
-                      {parts[0] ?? ""}<Text style={{ fontWeight: "900" }}>{hl}</Text>{parts[1] ?? ""}
+                {isBlueDiamondReached && (
+                  <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6, backgroundColor: "rgba(29,78,216,0.15)", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(29,78,216,0.45)", alignSelf: "flex-start" }}>
+                    <Text style={{ color: "#60a5fa", fontSize: 11, fontWeight: "bold" }}>{t(language, "affGlobalPool")}</Text>
+                  </View>
+                )}
+                {!isBlueDiamondReached && nextTier?.rank === "Blue Diamond" && (
+                  <Text style={{ color: "#60a5fa", fontSize: 10, marginTop: 4, fontStyle: "italic" }}>
+                    {t(language, "affBlueDiamondGateway")}
+                  </Text>
+                )}
+                {totalRankBonusAchieved > 0 && (
+                  <View style={{ backgroundColor: "rgba(230,126,34,0.12)", borderRadius: 10, padding: 12, marginTop: 8, borderWidth: 1.5, borderColor: GOLD }}>
+                    <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>
+                      {t(language, "affTotalDiamondValue")}
                     </Text>
-                  );
-                })()}
+                    <Text style={{ color: GOLD, fontSize: 26, fontWeight: "bold" }}>{fmt(totalRankBonusAchieved)}</Text>
+                    <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, lineHeight: 15 }}>
+                      {"💎"} <Text style={{ color: GREEN, fontWeight: "bold" }}>{t(language, "affRankPaidIn")}</Text>{t(language, "affRankPaidInDesc")}
+                    </Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "bold", marginTop: 6 }}>
+                      {"✨"} On top of your monthly residual income
+                    </Text>
+                  </View>
+                )}
 
                 {/* ── Income Projection (5% monthly team growth) ── */}
                 {totalMonthlyResidual > 0 && (
