@@ -63,6 +63,7 @@ interface Partner {
   country: string;
   startDate: string; // DD/MM/YYYY
   amount: number;
+  level?: 1 | 2 | 3;
   contactMoments?: string[];
 }
 
@@ -72,6 +73,10 @@ const fmtM = (n: number) =>
   n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(2)}M`
   : n >= 1_000   ? `$${(n / 1_000).toFixed(1)}K`
   : `$${n.toFixed(0)}`;
+
+function parseVol(s: string): number { return parseFloat(s.replace(/[$,]/g, "")) || 0; }
+function parseInfPct(s: string): number { return s === "—" ? 0 : parseFloat(s) / 100; }
+function parseRankBonus(s: string): number { return s === "—" ? 0 : parseFloat(s.replace(/[$,]/g, "")) || 0; }
 
 function parseDate(s: string): Date {
   const [d, m, y] = s.split("/").map(Number);
@@ -124,7 +129,7 @@ function getAlerts(p: Partner): string[] {
   return alerts;
 }
 
-const BLANK_FORM = { name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "" };
+const BLANK_FORM = { name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", level: "1" };
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 export default function AffiliateScreen() {
@@ -191,7 +196,7 @@ export default function AffiliateScreen() {
   };
   const openEdit = (p: Partner) => {
     setEditingPartner(p);
-    setForm({ name: p.name, whatsapp: p.whatsapp, country: p.country, startDate: p.startDate, amount: String(p.amount) });
+    setForm({ name: p.name, whatsapp: p.whatsapp, country: p.country, startDate: p.startDate, amount: String(p.amount), level: String(p.level ?? 1) });
     setShowAddModal(true);
   };
   const handleDelete = (id: string) => {
@@ -209,6 +214,7 @@ export default function AffiliateScreen() {
       country: form.country.trim(),
       startDate: form.startDate || formatDDMMYYYY(new Date()),
       amount: parseFloat(form.amount) || 0,
+      level: (parseInt(form.level) || 1) as 1 | 2 | 3,
     };
     const updated = editingPartner
       ? partners.map(p => p.id === partner.id ? partner : p)
@@ -225,12 +231,49 @@ export default function AffiliateScreen() {
     for (let m = 0; m < months; m++) pf += pf * 0.033 * 0.5;
     return s + pf;
   }, 0), [partners]);
-  const totalMonthlyResidual = useMemo(() => partners.reduce((s, p) => {
-    const months = monthsElapsed(p.startDate);
-    let pf = p.amount;
-    for (let m = 0; m < months; m++) pf += pf * 0.033 * 0.5;
-    return s + pf * 0.033 * 0.5 * 0.10;
-  }, 0), [partners]);
+  const rankVolume = useMemo(() => partners.reduce((s, p) => s + p.amount, 0), [partners]);
+  const currentTier = useMemo(() => {
+    let tier = DIAMOND_TIERS[0];
+    for (const t of DIAMOND_TIERS) {
+      if (rankVolume >= parseVol(t.teamVol)) tier = t;
+      else break;
+    }
+    return tier;
+  }, [rankVolume]);
+  const nextTier = useMemo(() => {
+    const idx = DIAMOND_TIERS.findIndex(t => t.rank === currentTier.rank);
+    return idx < DIAMOND_TIERS.length - 1 ? DIAMOND_TIERS[idx + 1] : null;
+  }, [currentTier]);
+  const rankProgressPct = useMemo(() => {
+    if (!nextTier) return 100;
+    const curVol = parseVol(currentTier.teamVol);
+    const nextVol = parseVol(nextTier.teamVol);
+    return Math.min(100, ((rankVolume - curVol) / (nextVol - curVol)) * 100);
+  }, [rankVolume, currentTier, nextTier]);
+  const totalRankBonusAchieved = useMemo(() => {
+    let sum = 0;
+    for (const t of DIAMOND_TIERS) {
+      sum += parseRankBonus(t.bonus);
+      if (t.rank === currentTier.rank) break;
+    }
+    return sum;
+  }, [currentTier]);
+
+  const totalMonthlyResidual = useMemo(() => {
+    let l1 = 0, l2 = 0, l3 = 0, totalRebate = 0;
+    partners.forEach(p => {
+      const months = monthsElapsed(p.startDate);
+      let pf = p.amount;
+      for (let m = 0; m < months; m++) pf += pf * 0.033 * 0.5;
+      const rebate = pf * 0.033 * 0.5;
+      totalRebate += rebate;
+      const lvl = p.level ?? 1;
+      if (lvl === 1)      l1 += rebate * 0.10;
+      else if (lvl === 2) l2 += rebate * 0.05;
+      else                l3 += rebate * 0.03;
+    });
+    return l1 + l2 + l3 + (totalRebate * parseInfPct(currentTier.infinity));
+  }, [partners, currentTier]);
   const compoundingReviewCount = useMemo(() =>
     partners.filter(p => {
       const months = monthsElapsed(p.startDate);
@@ -260,7 +303,7 @@ export default function AffiliateScreen() {
         <View style={S.partnerHeader}>
           <View style={{ flex: 1 }}>
             <Text style={S.partnerName}>{item.name}</Text>
-            <Text style={S.partnerMeta}>{item.country} · {t(language, "affMo")}{months} · {spLabel}</Text>
+            <Text style={S.partnerMeta}>{item.country} · L{item.level ?? 1} · {t(language, "affMo")}{months} · {spLabel}</Text>
           </View>
           <View style={S.partnerBadge}>
             <Text style={[S.partnerBadgeText, { color: GOLD }]}>{fmt(item.amount)}</Text>
@@ -387,6 +430,34 @@ export default function AffiliateScreen() {
                   {t(language, "affReviewNote").replace("{count}", String(compoundingReviewCount))}
                 </Text>
               )}
+
+              {/* ── Rank Advancement Tracker ── */}
+              <View style={S.rankTracker}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                  <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
+                    {currentTier.emoji} {currentTier.rank}
+                  </Text>
+                  {nextTier && (
+                    <Text style={{ color: "#64748b", fontSize: 10 }}>
+                      → {nextTier.emoji} {nextTier.rank} ({nextTier.teamVol})
+                    </Text>
+                  )}
+                </View>
+                <View style={S.rankProgressBg}>
+                  <View style={[S.rankProgressFill, { width: `${rankProgressPct.toFixed(0)}%` as any }]} />
+                </View>
+                {nextTier && (
+                  <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
+                    {fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))} more to {nextTier.rank}
+                    {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
+                  </Text>
+                )}
+                {totalRankBonusAchieved > 0 && (
+                  <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", marginTop: 3 }}>
+                    🏆 Total Rank Bonuses Achieved: {fmt(totalRankBonusAchieved)}
+                  </Text>
+                )}
+              </View>
             </View>
           )}
 
@@ -683,6 +754,20 @@ export default function AffiliateScreen() {
                 onChangeText={v => setForm(f => ({ ...f, amount: v }))}
                 keyboardType="numeric" placeholder={t(language, "affCustomAmount")} placeholderTextColor="#64748b" />
 
+              <Text style={S.inputLabel}>LEVEL</Text>
+              <View style={S.chipRow}>
+                {([
+                  { value: "1", label: "L1 — 10%" },
+                  { value: "2", label: "L2 — 5%"  },
+                  { value: "3", label: "L3 — 3%"  },
+                ] as { value: string; label: string }[]).map(l => (
+                  <Pressable key={l.value} onPress={() => setForm(f => ({ ...f, level: l.value }))}
+                    style={[S.chip, form.level === l.value && S.chipActive]}>
+                    <Text style={[S.chipText, form.level === l.value && S.chipTextActive]}>{l.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+
               {form.amount ? (
                 <View style={[S.poolCard, { borderLeftColor: GOLD, marginTop: 8 }]}>
                   <Text style={{ color: GOLD, fontSize: 12, fontWeight: "bold" }}>
@@ -799,4 +884,9 @@ const S = StyleSheet.create({
   chipActive:   { backgroundColor: GOLD, borderColor: GOLD },
   chipText:     { color: "#64748b", fontSize: 12 },
   chipTextActive:{ color: "#fff", fontWeight: "bold" },
+
+  // Rank tracker
+  rankTracker:     { backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 8, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" },
+  rankProgressBg:  { height: 6, backgroundColor: "#1e293b", borderRadius: 3, overflow: "hidden" },
+  rankProgressFill:{ height: 6, backgroundColor: BLUE, borderRadius: 3 },
 });
