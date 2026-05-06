@@ -99,13 +99,13 @@ function formatDDMMYYYY(d: Date): string {
     .map(v => String(v).padStart(2, "0")).join("/");
 }
 function getSPLabel(amount: number): string {
-  if (amount >= 100_000) return "SP7 (6.3%)";
-  if (amount >= 50_000)  return "SP6 (6.1%)";
-  if (amount >= 25_000)  return "SP5 (6.1%)";
-  if (amount >= 10_000)  return "SP4 (6.0%)";
-  if (amount >= 5_000)   return "SP3 (5.5%)";
-  if (amount >= 2_500)   return "SP2 (4.5%)";
-  return "SP1 (3.3%)";
+  if (amount >= 100_000) return "SP7 (3.3%)";
+  if (amount >= 50_000)  return "SP6 (3.2%)";
+  if (amount >= 10_000)  return "SP5 (3.1%)";
+  if (amount >= 5_000)   return "SP4 (3.0%)";
+  if (amount >= 2_500)   return "SP3 (2.7%)";
+  if (amount >= 1_000)   return "SP2 (2.45%)";
+  return "SP1 (2.2%)";
 }
 
 function getAlerts(p: Partner): string[] {

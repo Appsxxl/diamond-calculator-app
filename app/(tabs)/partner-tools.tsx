@@ -850,13 +850,13 @@ function getAlerts(partner: Partner, tx: typeof TX["en"]): string[] {
 }
 
 function getSPLabel(amount: number): string {
-  if (amount < 1000) return "SP1";
-  if (amount < 2500) return "SP2";
-  if (amount < 5000) return "SP3";
-  if (amount < 10000) return "SP4";
-  if (amount < 20000) return "SP5";
-  if (amount < 50000) return "SP6";
-  return "SP7";
+  if (amount >= 100_000) return "SP7 (3.3%)";
+  if (amount >= 50_000)  return "SP6 (3.2%)";
+  if (amount >= 10_000)  return "SP5 (3.1%)";
+  if (amount >= 5_000)   return "SP4 (3.0%)";
+  if (amount >= 2_500)   return "SP3 (2.7%)";
+  if (amount >= 1_000)   return "SP2 (2.45%)";
+  return "SP1 (2.2%)";
 }
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
@@ -1260,7 +1260,7 @@ export default function PartnerToolsScreen() {
         cap >= 10000  ? 3.1 :
         cap >= 5000   ? 3.0 :
         cap >= 2500   ? 2.7 :
-        cap >= 1000   ? 2.4 : 2.2;
+        cap >= 1000   ? 2.45 : 2.2;
       const totalRate = spRate + (vActive ? 3.0 : 0);
       const discount = Math.round(cap * (totalRate / 100));
       const vipEarnings = vActive ? 84 : 0;

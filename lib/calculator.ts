@@ -288,7 +288,7 @@ export function stratSimulate(
       cap >= 10000  ? 3.1 :
       cap >= 5000   ? 3.0 :
       cap >= 2500   ? 2.7 :
-      cap >= 1000   ? 2.4 : 2.2;
+      cap >= 1000   ? 2.45 : 2.2;
 
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));
@@ -346,7 +346,7 @@ export function stratFindMeetingMonth(
       cap >= 10000  ? 3.1 :
       cap >= 5000   ? 3.0 :
       cap >= 2500   ? 2.7 :
-      cap >= 1000   ? 2.4 : 2.2;
+      cap >= 1000   ? 2.45 : 2.2;
 
     const totalRate = spRate + (vActive ? 3.0 : 0);
     const discount = Math.round(cap * (totalRate / 100));

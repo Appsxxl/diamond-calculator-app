@@ -28,13 +28,18 @@ type PlanTier = {
   name: string;
   rate: string;
   color: string;
-  nextTier: { name: string; threshold: number } | null;
+  nextTier: { name: string; threshold: number; rate: number } | null;
 };
 
 function getPlanTier(amount: number, vipActive: boolean): PlanTier {
-  if (amount >= 15000) return { name: 'SP7 Plan', rate: vipActive ? '3.3% (+3% VIP)' : '3.3%', color: '#22d3ee', nextTier: null };
-  if (amount >= 3550)  return { name: 'SP4 Plan', rate: vipActive ? '3% (+3% VIP)' : '3%',     color: '#f59e0b', nextTier: { name: 'SP7 Plan', threshold: 15000 } };
-  return { name: 'Standard Plan', rate: '2.45%', color: '#64748b', nextTier: { name: 'SP4 Plan', threshold: 3550 } };
+  const v = vipActive ? ' (+3% VIP)' : '';
+  if (amount >= 100000) return { name: 'SP7', rate: '3.3%' + v, color: '#22d3ee', nextTier: null };
+  if (amount >= 50000)  return { name: 'SP6', rate: '3.2%' + v, color: '#a78bfa', nextTier: { name: 'SP7', threshold: 100000, rate: 3.3 } };
+  if (amount >= 10000)  return { name: 'SP5', rate: '3.1%' + v, color: '#22c55e', nextTier: { name: 'SP6', threshold: 50000,  rate: 3.2 } };
+  if (amount >= 5000)   return { name: 'SP4', rate: '3.0%' + v, color: '#f59e0b', nextTier: { name: 'SP5', threshold: 10000,  rate: 3.1 } };
+  if (amount >= 2500)   return { name: 'SP3', rate: '2.7%' + v, color: '#fb923c', nextTier: { name: 'SP4', threshold: 5000,   rate: 3.0 } };
+  if (amount >= 1000)   return { name: 'SP2', rate: '2.45%' + v, color: '#94a3b8', nextTier: { name: 'SP3', threshold: 2500,  rate: 2.7 } };
+  return                       { name: 'SP1', rate: '2.2%' + v,  color: '#64748b', nextTier: { name: 'SP2', threshold: 1000,  rate: 2.45 } };
 }
 
 export default function ScenarioToolScreen() {
@@ -381,9 +386,9 @@ export default function ScenarioToolScreen() {
                 borderColor: '#f59e0b',
               }}>
                 <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: 'bold', lineHeight: 15 }}>
-                  {planTier.nextTier!.name === 'SP4 Plan'
-                    ? t(language, 'upsellTipSp4').replace('{amount}', fmt(upsellGap))
-                    : t(language, 'upsellTipGeneric').replace('{amount}', fmt(upsellGap)).replace('{plan}', planTier.nextTier!.name)}
+                  {t(language, 'upsellTipGeneric')
+                    .replace('{amount}', fmt(upsellGap))
+                    .replace('{plan}', `${planTier.nextTier!.name} (${planTier.nextTier!.rate}%)`)}
                 </Text>
               </View>
             )}
@@ -792,7 +797,7 @@ export default function ScenarioToolScreen() {
                 ];
                 const nextSp = spTiers.find(t => result.finalCap < t.threshold && result.finalCap >= t.threshold * 0.8);
                 const spHint = nextSp
-                  ? `${fmt(nextSp.threshold - result.finalCap)} away from ${nextSp.name} — base rate → ${nextSp.rate}%`
+                  ? `Add ${fmt(nextSp.threshold - result.finalCap)} to unlock ${nextSp.name} (${nextSp.rate}% base/mo)`
                   : null;
                 const vipCountdownHint = vipEnabled && result.finalVipPot < 1000
                   ? t(language, 'vipRenewalHint')

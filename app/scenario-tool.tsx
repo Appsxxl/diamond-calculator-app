@@ -393,13 +393,13 @@ export default function ScenarioToolScreen() {
                   <table class="sp-table">
                     <thead><tr><th>Plan</th><th>Deposit Range</th><th>Base Rate / Month</th><th>With VIP / Month</th><th>12-Month Total (no VIP)</th><th>12-Month Total (VIP)</th></tr></thead>
                     <tbody>
-                      <tr><td>SP1</td><td>$100 – $999</td><td>2.2%</td><td>5.2%</td><td>26.4%</td><td>62.4%</td></tr>
+                      <tr><td>SP1</td><td>$0 – $999</td><td>2.2%</td><td>5.2%</td><td>26.4%</td><td>62.4%</td></tr>
                       <tr><td>SP2</td><td>$1,000 – $2,499</td><td>2.45%</td><td>5.45%</td><td>29.4%</td><td>65.4%</td></tr>
                       <tr><td>SP3</td><td>$2,500 – $4,999</td><td>2.7%</td><td>5.7%</td><td>32.4%</td><td>68.4%</td></tr>
                       <tr><td>SP4</td><td>$5,000 – $9,999</td><td>3.0%</td><td>6.0%</td><td>36.0%</td><td>72.0%</td></tr>
-                      <tr><td>SP5</td><td>$10,000 – $19,999</td><td>3.1%</td><td>6.1%</td><td>37.2%</td><td>73.2%</td></tr>
-                      <tr><td>SP6</td><td>$20,000 – $49,999</td><td>3.2%</td><td>6.2%</td><td>38.4%</td><td>74.4%</td></tr>
-                      <tr><td>SP7</td><td>$50,000+</td><td>3.3%</td><td>6.3%</td><td>39.6%</td><td>75.6%</td></tr>
+                      <tr><td>SP5</td><td>$10,000 – $49,999</td><td>3.1%</td><td>6.1%</td><td>37.2%</td><td>73.2%</td></tr>
+                      <tr><td>SP6</td><td>$50,000 – $99,999</td><td>3.2%</td><td>6.2%</td><td>38.4%</td><td>74.4%</td></tr>
+                      <tr><td>SP7</td><td>$100,000+</td><td>3.3%</td><td>6.3%</td><td>39.6%</td><td>75.6%</td></tr>
                     </tbody>
                   </table>
 
@@ -487,7 +487,7 @@ export default function ScenarioToolScreen() {
                 ];
                 const nextSp = spTiers.find(t => result.finalCap < t.threshold && result.finalCap >= t.threshold * 0.8);
                 const spHint = nextSp
-                  ? `${fmt(nextSp.threshold - result.finalCap)} away from ${nextSp.name} — base rate → ${nextSp.rate}%`
+                  ? `Add ${fmt(nextSp.threshold - result.finalCap)} to unlock ${nextSp.name} (${nextSp.rate}% base/mo)`
                   : null;
                 const vipCountdownHint = vipEnabled && result.finalVipPot < 1000
                   ? `~${Math.ceil((1000 - result.finalVipPot) / 84)} months until VP pot self-funds next renewal (${fmt(result.finalVipPot)} of $1,000)`
