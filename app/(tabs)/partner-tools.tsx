@@ -1534,6 +1534,17 @@ export default function PartnerToolsScreen() {
                 {t(language, "affReviewNote").replace("{count}", String(residualSummary.compoundingReviewCount))}
               </Text>
             )}
+            {/* Anti-Inflation Counter */}
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8, marginTop: 2 }}>
+              <View style={{ flex: 1, backgroundColor: "rgba(239,68,68,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(239,68,68,0.18)" }}>
+                <Text style={{ color: "#ef4444", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affInflationLoss")}</Text>
+                <Text style={{ color: "#f87171", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>−{fmtM(residualSummary.totalPortfolio * 0.04 / 12)}/mo</Text>
+              </View>
+              <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(34,197,94,0.18)" }}>
+                <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>💎 Diamond Stability</Text>
+                <Text style={{ color: GREEN, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>+{fmtM(residualSummary.totalMonthlyRebate)}/mo</Text>
+              </View>
+            </View>
             {/* Rank Advancement Tracker */}
             <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 4, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
@@ -1590,6 +1601,9 @@ export default function PartnerToolsScreen() {
                   <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
                     <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst1Yr")}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 14, fontWeight: "bold", marginTop: 2 }}>{fmtM(residualSummary.totalAgentResidual * 1.80)}/mo</Text>
+                    <Text style={{ color: GOLD, fontSize: 9, marginTop: 4, textAlign: "center", lineHeight: 13 }}>
+                      {t(language, "affLegacyScore").replace("{years}", String(Math.max(1, Math.floor(residualSummary.totalAgentResidual * 1.80 * 12 / 30000))))}
+                    </Text>
                   </View>
                 </View>
               )}
@@ -2040,7 +2054,13 @@ export default function PartnerToolsScreen() {
           </View>
 
         </View>
-                
+
+        {/* ── AR VAULT PLACEHOLDER ── */}
+        <View style={{ backgroundColor: "#0f2035", borderRadius: 12, padding: 14, marginBottom: 12, borderWidth: 1.5, borderColor: "#a78bfa44", alignItems: "center" }}>
+          <Text style={{ color: "#a78bfa", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 }}>{t(language, "affVaultComingSoon")}</Text>
+          <Text style={{ color: "#475569", fontSize: 10, marginTop: 4 }}>3D Diamond portfolio viewer · Scan & inspect your assets in AR</Text>
+        </View>
+
       </ScrollView>
 
       {/* ── Add/Edit Partner Modal ────────────────────────────────────────── */}
