@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -278,6 +278,44 @@ export default function ScenarioToolScreen() {
     };
     const res = runCalculation(params);
     setResult(res);
+  };
+
+  const vipShadow = useMemo(() => {
+    if (!result || vipEnabled || autoVip) return null;
+    if (result.goalReachedMonth !== null) return null;
+    const start = numVal(startAmount);
+    if (start < 1000) return null;
+    const shadow = runCalculation({
+      startAmount: start,
+      years: numVal(years, 5),
+      goal: numVal(goal, 3500),
+      vipEnabled: true,
+      manualVip: false,
+      monthData,
+    });
+    return shadow.maxMonthlyOut > result.maxMonthlyOut ? shadow : null;
+  }, [result, vipEnabled, autoVip, startAmount, years, goal, monthData]);
+
+  const vipRecoveryMonth = useMemo(() => {
+    if (!result || !vipShadow) return null;
+    let cumDiff = -1000;
+    for (let i = 0; i < Math.min(result.months.length, vipShadow.months.length); i++) {
+      cumDiff += vipShadow.months[i].grossYield - result.months[i].grossYield;
+      if (cumDiff >= 0) return i + 1;
+    }
+    return null;
+  }, [result, vipShadow]);
+
+  const handleCompareWithVip = () => {
+    setVipEnabled(true);
+    setResult(runCalculation({
+      startAmount: numVal(startAmount, 3000),
+      years: numVal(years, 5),
+      goal: numVal(goal, 3500),
+      vipEnabled: true,
+      manualVip: false,
+      monthData,
+    }));
   };
 
   const goalProgress = result ? result.goalProgress : 0;
@@ -765,6 +803,29 @@ export default function ScenarioToolScreen() {
                   </Text>
                 )}
               </View>
+
+              {/* ── VIP Opportunity Nudge ── */}
+              {vipShadow && (
+                <View style={{ backgroundColor: "rgba(245,158,11,0.12)", borderRadius: 10, padding: 14, marginBottom: 10, borderWidth: 1.5, borderColor: "#f59e0b" }}>
+                  <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "bold", marginBottom: 8 }}>
+                    {t(language, 'stratVipNudgeTitle')}
+                  </Text>
+                  <Text style={{ color: "#fbbf24", fontSize: 14, fontWeight: "bold", marginBottom: 4, lineHeight: 20 }}>
+                    {t(language, 'stratVipNudgeDesc')
+                      .replace('{currentResult}', fmt(result.maxMonthlyOut))
+                      .replace('{vipResult}', fmt(vipShadow.maxMonthlyOut))
+                      .replace('{diff}', fmt(vipShadow.maxMonthlyOut - result.maxMonthlyOut))}
+                  </Text>
+                  {vipRecoveryMonth && (
+                    <Text style={{ color: "#94a3b8", fontSize: 11, lineHeight: 16, marginBottom: 10 }}>
+                      {t(language, 'stratVipPotential').replace('{month}', String(vipRecoveryMonth))}
+                    </Text>
+                  )}
+                  <TouchableOpacity style={{ backgroundColor: "#f59e0b", borderRadius: 8, paddingVertical: 10, alignItems: "center" }} onPress={handleCompareWithVip} activeOpacity={0.85}>
+                    <Text style={{ color: "#0f172a", fontSize: 13, fontWeight: "bold" }}>{t(language, 'stratCompareVip')}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
 
               <View style={S.summaryGrid}>
                 <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
