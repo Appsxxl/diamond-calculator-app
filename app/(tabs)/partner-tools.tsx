@@ -314,8 +314,8 @@ const TX: Record<string, {
     alert11month: "📅 11-Month Decision Due — Choose: Home Delivery or 100% Buyback",
     alert30day: "⏰ 30 days to cycle end — confirm partner's decision",
     alert12month: "🔴 12-month cycle ended — action needed immediately",
-    savingsTitle: "💰 SAVINGS GOAL",
-    savingsDesc: "Enter your target monthly passive income. We find the deposit where 75% of the rebate covers your goal — protecting your capital.",
+    savingsTitle: "💸 LIFESTYLE CASH FLOW",
+    savingsDesc: "Passive income for cars, travel, and more. Enter your target monthly income and we find the deposit where 75% of the rebate covers your goal — protecting your capital.",
     savingsGoalLabel: "Target Monthly Income ($)",
     findSavingsBtn: "Find My Savings Plan",
     savingsNote: "75% of monthly rebate = your target income. Capital stays intact.",
@@ -388,8 +388,8 @@ const TX: Record<string, {
     alert11month: "📅 11-Maands Beslissing Vereist — Kies: Thuislevering of 100% Terugkoop",
     alert30day: "⏰ 30 dagen tot cycluseinde — bevestig beslissing partner",
     alert12month: "🔴 12-maandse cyclus beëindigd — onmiddellijke actie vereist",
-    savingsTitle: "💰 SPAARDOEL",
-    savingsDesc: "Voer uw gewenste maandelijkse passieve inkomen in. Wij vinden de storting waarbij 75% van de korting uw doel dekt — uw kapitaal blijft intact.",
+    savingsTitle: "💸 LIFESTYLE INKOMSTENSTROOM",
+    savingsDesc: "Passief inkomen voor auto's, reizen en meer. Voer uw gewenste maandinkomen in en wij vinden de storting waarbij 75% van de korting uw doel dekt — uw kapitaal blijft intact.",
     savingsGoalLabel: "Doel Maandinkomen ($)",
     findSavingsBtn: "Vind Mijn Spaarplan",
     savingsNote: "75% van maandelijkse korting = uw doelinkomen. Kapitaal blijft intact.",
@@ -462,8 +462,8 @@ const TX: Record<string, {
     alert11month: "📅 11-Monats-Entscheidung fällig — Wählen: Heimlieferung oder 100% Rückkauf",
     alert30day: "⏰ 30 Tage bis Zyklusende — Entscheidung des Partners bestätigen",
     alert12month: "🔴 12-Monats-Zyklus beendet — sofortiger Handlungsbedarf",
-    savingsTitle: "💰 SPARZIEL",
-    savingsDesc: "Geben Sie Ihr gewünschtes monatliches passives Einkommen ein. Wir finden die Einlage, bei der 75% der Vergütung Ihr Ziel deckt — Ihr Kapital bleibt erhalten.",
+    savingsTitle: "💸 LIFESTYLE-CASHFLOW",
+    savingsDesc: "Passives Einkommen für Autos, Reisen und mehr. Geben Sie Ihr gewünschtes Monatseinkommen ein und wir finden die Einlage, bei der 75% der Vergütung Ihr Ziel deckt — Ihr Kapital bleibt erhalten.",
     savingsGoalLabel: "Ziel Monatseinkommen ($)",
     findSavingsBtn: "Meinen Sparplan Finden",
     savingsNote: "75% der monatlichen Vergütung = Ihr Ziel. Kapital bleibt erhalten.",
@@ -536,8 +536,8 @@ const TX: Record<string, {
     alert11month: "📅 Décision 11 Mois Due — Choisir: Livraison à Domicile ou Rachat 100%",
     alert30day: "⏰ 30 jours avant fin de cycle — confirmer la décision du partenaire",
     alert12month: "🔴 Cycle 12 mois terminé — action immédiate requise",
-    savingsTitle: "💰 OBJECTIF ÉPARGNE",
-    savingsDesc: "Entrez votre revenu passif mensuel cible. Nous trouvons le dépôt où 75% de la remise couvre votre objectif — votre capital reste intact.",
+    savingsTitle: "💸 FLUX DE TRÉSORERIE LIFESTYLE",
+    savingsDesc: "Revenu passif pour voitures, voyages et plus. Entrez votre revenu mensuel cible et nous trouvons le dépôt où 75% de la remise couvre votre objectif — votre capital reste intact.",
     savingsGoalLabel: "Revenu Mensuel Cible ($)",
     findSavingsBtn: "Trouver Mon Plan Épargne",
     savingsNote: "75% de la remise mensuelle = votre objectif. Capital intact.",
@@ -610,8 +610,8 @@ const TX: Record<string, {
     alert11month: "📅 Decisión de 11 Meses — Elegir: Entrega a Domicilio o Recompra 100%",
     alert30day: "⏰ 30 días para fin de ciclo — confirmar decisión del socio",
     alert12month: "🔴 Ciclo de 12 meses terminado — acción inmediata requerida",
-    savingsTitle: "💰 META DE AHORRO",
-    savingsDesc: "Ingrese su ingreso pasivo mensual objetivo. Encontramos el depósito donde el 75% del descuento cubre su meta — su capital permanece intacto.",
+    savingsTitle: "💸 LIFESTYLE FLUJO DE CAJA",
+    savingsDesc: "Ingresos pasivos para autos, viajes y más. Ingrese su ingreso mensual objetivo y encontramos el depósito donde el 75% del descuento cubre su meta — su capital permanece intacto.",
     savingsGoalLabel: "Ingreso Mensual Objetivo ($)",
     findSavingsBtn: "Encontrar Mi Plan de Ahorro",
     savingsNote: "75% del descuento mensual = su objetivo. Capital intacto.",
@@ -1411,6 +1411,104 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
+        {/* ── RANK COMMAND CENTRE ── */}
+        {residualSummary && (
+          <View style={[S.section, { backgroundColor: "rgba(230,126,34,0.05)", borderRadius: 14, padding: 14, borderWidth: 2, borderColor: GOLD, marginBottom: 14 }]}>
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 6 }}>
+              {([
+                { label: t(language, "affMembers"),        value: String(partners.length),                          color: BLUE  },
+                { label: t(language, "affPortfolioValue"),  value: fmtM(residualSummary.totalPortfolio),            color: GOLD  },
+                { label: t(language, "affTotalEarnings"),    value: fmtM(residualSummary.totalAgentResidual),        color: GREEN },
+                { label: t(language, "affReviewCalls"),     value: String(residualSummary.compoundingReviewCount),  color: "#f97316" },
+              ] as { label: string; value: string; color: string }[]).map(s => (
+                <View key={s.label} style={{ flex: 1, alignItems: "center" }}>
+                  <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{s.label}</Text>
+                  <Text style={{ color: s.color, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{s.value}</Text>
+                </View>
+              ))}
+            </View>
+            {residualSummary.compoundingReviewCount > 0 && (
+              <Text style={{ color: "#f97316", fontSize: 11, lineHeight: 16, marginBottom: 6 }}>
+                {t(language, "affReviewNote").replace("{count}", String(residualSummary.compoundingReviewCount))}
+              </Text>
+            )}
+            {/* Anti-Inflation Counter */}
+            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8, marginTop: 2 }}>
+              <View style={{ flex: 1, backgroundColor: "rgba(239,68,68,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(239,68,68,0.18)" }}>
+                <Text style={{ color: "#ef4444", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affInflationLoss")}</Text>
+                <Text style={{ color: "#f87171", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>−{fmtM(residualSummary.totalPortfolio * 0.04 / 12)}/mo</Text>
+              </View>
+              <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(34,197,94,0.18)" }}>
+                <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>💎 Diamond Stability</Text>
+                <Text style={{ color: GREEN, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>+{fmtM(residualSummary.totalMonthlyRebate)}/mo</Text>
+              </View>
+            </View>
+            {/* Rank Advancement Tracker */}
+            <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 4, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
+                  {currentTier.emoji} {currentTier.rank}
+                </Text>
+                {nextTier && (
+                  <Text style={{ color: "#64748b", fontSize: 10 }}>
+                    → {nextTier.emoji} {nextTier.rank} ({nextTier.teamVol})
+                  </Text>
+                )}
+              </View>
+              <View style={{ height: 6, backgroundColor: "#1e293b", borderRadius: 3, overflow: "hidden" }}>
+                <View style={{ height: 6, borderRadius: 3, width: `${rankProgressPct.toFixed(0)}%` as any, backgroundColor: isBlueDiamondReached ? "#1d4ed8" : nextTier?.rank === "Blue Diamond" ? "#3b82f6" : BLUE }} />
+              </View>
+              {nextTier && (
+                <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
+                  {fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))} more to {nextTier.rank}
+                  {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
+                </Text>
+              )}
+              {isBlueDiamondReached && (
+                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6, backgroundColor: "rgba(29,78,216,0.15)", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(29,78,216,0.45)", alignSelf: "flex-start" }}>
+                  <Text style={{ color: "#60a5fa", fontSize: 11, fontWeight: "bold" }}>{t(language, "affGlobalPool")}</Text>
+                </View>
+              )}
+              {!isBlueDiamondReached && nextTier?.rank === "Blue Diamond" && (
+                <Text style={{ color: "#60a5fa", fontSize: 10, marginTop: 4, fontStyle: "italic" }}>
+                  {t(language, "affBlueDiamondGateway")}
+                </Text>
+              )}
+              {totalRankBonusAchieved > 0 && (
+                <View style={{ backgroundColor: "rgba(230,126,34,0.12)", borderRadius: 10, padding: 12, marginTop: 8, borderWidth: 1.5, borderColor: GOLD }}>
+                  <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>
+                    {t(language, "affTotalDiamondValue")}
+                  </Text>
+                  <Text style={{ color: GOLD, fontSize: 26, fontWeight: "bold" }}>${totalRankBonusAchieved.toLocaleString()}</Text>
+                  <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, lineHeight: 15 }}>
+                    {"💎"} <Text style={{ color: GREEN, fontWeight: "bold" }}>{t(language, "affRankPaidIn")}</Text>{t(language, "affRankPaidInDesc")}
+                  </Text>
+                  <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "bold", marginTop: 6 }}>
+                    {"✨"} On top of your monthly residual income
+                  </Text>
+                </View>
+              )}
+
+              {/* ── Income Projection (5% monthly team growth) ── */}
+              {residualSummary.totalAgentResidual > 0 && (
+                <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
+                  <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
+                    <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst6Mo")}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{fmtM(residualSummary.totalAgentResidual * 1.34)}/mo</Text>
+                  </View>
+                  <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
+                    <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst1Yr")}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 14, fontWeight: "bold", marginTop: 2 }}>{fmtM(residualSummary.totalAgentResidual * 1.80)}/mo</Text>
+                    <Text style={{ color: GOLD, fontSize: 9, marginTop: 4, textAlign: "center", lineHeight: 13 }}>
+                      {t(language, "affLegacyScore").replace("{years}", String(Math.max(1, Math.floor(residualSummary.totalAgentResidual * 1.80 * 12 / 30000))))}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+        )}
+
 {/* ── SECTION 0A: REFERRAL CODE — Pinned Header ── */}
         <View style={[S.section, { backgroundColor: "#0a1628", borderRadius: 14, padding: 16, borderWidth: 2, borderColor: BLUE, marginBottom: 14 }]}>
           <Text style={{ color: GOLD, fontSize: 13, fontWeight: "bold", letterSpacing: 0.8, marginBottom: 10, textTransform: "uppercase" }}>
@@ -1513,104 +1611,6 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── RESIDUAL STREAM SUMMARY ── */}
-        {residualSummary && (
-          <View style={[S.section, { backgroundColor: "rgba(34,197,94,0.06)", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "rgba(34,197,94,0.15)", marginBottom: 12 }]}>
-            <View style={{ flexDirection: "row", gap: 6, marginBottom: 6 }}>
-              {([
-                { label: t(language, "affMembers"),        value: String(partners.length),                          color: BLUE  },
-                { label: t(language, "affPortfolioValue"),  value: fmtM(residualSummary.totalPortfolio),            color: GOLD  },
-                { label: t(language, "affTotalEarnings"),    value: fmtM(residualSummary.totalAgentResidual),        color: GREEN },
-                { label: t(language, "affReviewCalls"),     value: String(residualSummary.compoundingReviewCount),  color: "#f97316" },
-              ] as { label: string; value: string; color: string }[]).map(s => (
-                <View key={s.label} style={{ flex: 1, alignItems: "center" }}>
-                  <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{s.label}</Text>
-                  <Text style={{ color: s.color, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{s.value}</Text>
-                </View>
-              ))}
-            </View>
-            {residualSummary.compoundingReviewCount > 0 && (
-              <Text style={{ color: "#f97316", fontSize: 11, lineHeight: 16, marginBottom: 6 }}>
-                {t(language, "affReviewNote").replace("{count}", String(residualSummary.compoundingReviewCount))}
-              </Text>
-            )}
-            {/* Anti-Inflation Counter */}
-            <View style={{ flexDirection: "row", gap: 6, marginBottom: 8, marginTop: 2 }}>
-              <View style={{ flex: 1, backgroundColor: "rgba(239,68,68,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(239,68,68,0.18)" }}>
-                <Text style={{ color: "#ef4444", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affInflationLoss")}</Text>
-                <Text style={{ color: "#f87171", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>−{fmtM(residualSummary.totalPortfolio * 0.04 / 12)}/mo</Text>
-              </View>
-              <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(34,197,94,0.18)" }}>
-                <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>💎 Diamond Stability</Text>
-                <Text style={{ color: GREEN, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>+{fmtM(residualSummary.totalMonthlyRebate)}/mo</Text>
-              </View>
-            </View>
-            {/* Rank Advancement Tracker */}
-            <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 4, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
-                  {currentTier.emoji} {currentTier.rank}
-                </Text>
-                {nextTier && (
-                  <Text style={{ color: "#64748b", fontSize: 10 }}>
-                    → {nextTier.emoji} {nextTier.rank} ({nextTier.teamVol})
-                  </Text>
-                )}
-              </View>
-              <View style={{ height: 6, backgroundColor: "#1e293b", borderRadius: 3, overflow: "hidden" }}>
-                <View style={{ height: 6, borderRadius: 3, width: `${rankProgressPct.toFixed(0)}%` as any, backgroundColor: isBlueDiamondReached ? "#1d4ed8" : nextTier?.rank === "Blue Diamond" ? "#3b82f6" : BLUE }} />
-              </View>
-              {nextTier && (
-                <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
-                  {fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))} more to {nextTier.rank}
-                  {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
-                </Text>
-              )}
-              {isBlueDiamondReached && (
-                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6, backgroundColor: "rgba(29,78,216,0.15)", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(29,78,216,0.45)", alignSelf: "flex-start" }}>
-                  <Text style={{ color: "#60a5fa", fontSize: 11, fontWeight: "bold" }}>{t(language, "affGlobalPool")}</Text>
-                </View>
-              )}
-              {!isBlueDiamondReached && nextTier?.rank === "Blue Diamond" && (
-                <Text style={{ color: "#60a5fa", fontSize: 10, marginTop: 4, fontStyle: "italic" }}>
-                  {t(language, "affBlueDiamondGateway")}
-                </Text>
-              )}
-              {totalRankBonusAchieved > 0 && (
-                <View style={{ backgroundColor: "rgba(230,126,34,0.12)", borderRadius: 10, padding: 12, marginTop: 8, borderWidth: 1.5, borderColor: GOLD }}>
-                  <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>
-                    {t(language, "affTotalDiamondValue")}
-                  </Text>
-                  <Text style={{ color: GOLD, fontSize: 26, fontWeight: "bold" }}>${totalRankBonusAchieved.toLocaleString()}</Text>
-                  <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, lineHeight: 15 }}>
-                    {"💎"} <Text style={{ color: GREEN, fontWeight: "bold" }}>{t(language, "affRankPaidIn")}</Text>{t(language, "affRankPaidInDesc")}
-                  </Text>
-                  <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "bold", marginTop: 6 }}>
-                    {"✨"} On top of your monthly residual income
-                  </Text>
-                </View>
-              )}
-
-              {/* ── Income Projection (5% monthly team growth) ── */}
-              {residualSummary.totalAgentResidual > 0 && (
-                <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
-                  <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
-                    <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst6Mo")}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{fmtM(residualSummary.totalAgentResidual * 1.34)}/mo</Text>
-                  </View>
-                  <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 7, padding: 8, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.2)" }}>
-                    <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{t(language, "affEst1Yr")}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 14, fontWeight: "bold", marginTop: 2 }}>{fmtM(residualSummary.totalAgentResidual * 1.80)}/mo</Text>
-                    <Text style={{ color: GOLD, fontSize: 9, marginTop: 4, textAlign: "center", lineHeight: 13 }}>
-                      {t(language, "affLegacyScore").replace("{years}", String(Math.max(1, Math.floor(residualSummary.totalAgentResidual * 1.80 * 12 / 30000))))}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            </View>
-          </View>
-        )}
-
         {/* ── SECURITY BADGE BAR ── */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
           {["💎 GIA Certified", "🔒 AES-256", "✅ 3DS2 Verified", "🛡️ Lloyd's Insured"].map(b => (
@@ -1700,6 +1700,9 @@ export default function PartnerToolsScreen() {
           <Text style={[S.sectionTitle, { color: GREEN }]}>{tx.savingsTitle}</Text>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
+            <View style={{ backgroundColor: "rgba(230,126,34,0.08)", borderRadius: 7, paddingHorizontal: 10, paddingVertical: 7, marginTop: 6, marginBottom: 2, borderLeftWidth: 2, borderLeftColor: GOLD }}>
+              <Text style={{ color: GOLD, fontSize: 11, lineHeight: 16 }}>🚗 Perfect for planning your monthly luxury car lease or premium lifestyle costs.</Text>
+            </View>
 
             <Text style={S.inputLabel}>{tx.savingsGoalLabel}</Text>
             <View style={S.chipRow}>
