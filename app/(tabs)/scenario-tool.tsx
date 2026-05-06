@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
 import * as IntentLauncher from "expo-intent-launcher";
 import { ScreenContainer } from "@/components/screen-container";
@@ -60,6 +61,8 @@ export default function ScenarioToolScreen() {
   const { language, officeLocation } = useCalculator();
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const [autosaved, setAutosaved] = useState(false);
 
   const [clientName, setClientName] = useState("");
   const [startAmount, setStartAmount] = useState("3000");
@@ -80,6 +83,36 @@ export default function ScenarioToolScreen() {
   const [bulkOpnPFrom, setBulkOpnPFrom] = useState("");
 
   const [manualVip, setManualVip] = useState(false);
+
+  // Load persisted backup on mount (runs once)
+  useEffect(() => {
+    AsyncStorage.getItem('plan_b_scenario_backup').then(raw => {
+      if (raw) {
+        try {
+          const s = JSON.parse(raw);
+          if (s.clientName   != null) setClientName(s.clientName);
+          if (s.startAmount  != null) setStartAmount(s.startAmount);
+          if (s.years        != null) setYears(s.years);
+          if (s.goal         != null) setGoal(s.goal);
+          if (s.vipEnabled   != null) setVipEnabled(s.vipEnabled);
+          if (s.manualVip    != null) setManualVip(s.manualVip);
+          if (s.monthData    != null) setMonthData(s.monthData);
+          if (s.bulkStortVal != null) setBulkStortVal(s.bulkStortVal);
+          if (s.bulkStortTo  != null) setBulkStortTo(s.bulkStortTo);
+          if (s.annualVal    != null) setAnnualVal(s.annualVal);
+          if (s.bulkOpnVal   != null) setBulkOpnVal(s.bulkOpnVal);
+          if (s.bulkOpnFrom  != null) setBulkOpnFrom(s.bulkOpnFrom);
+          if (s.bulkOpnPVal  != null) setBulkOpnPVal(s.bulkOpnPVal);
+          if (s.bulkOpnPFrom != null) setBulkOpnPFrom(s.bulkOpnPFrom);
+          if (s.bulkCompVal  != null) setBulkCompVal(s.bulkCompVal);
+          if (s.bulkCompFrom != null) setBulkCompFrom(s.bulkCompFrom);
+          if (s.bulkCompTo   != null) setBulkCompTo(s.bulkCompTo);
+        } catch {}
+      }
+      setHydrated(true);
+    }).catch(() => setHydrated(true));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Auto-trigger VIP when initial purchase >= $3,550
   const autoVip = numVal(startAmount) >= 3550;
@@ -260,6 +293,8 @@ export default function ScenarioToolScreen() {
 
 
   const handleReset = () => {
+    AsyncStorage.removeItem('plan_b_scenario_backup').catch(() => {});
+    setAutosaved(false);
     setClientName(""); setStartAmount("3000"); setYears("5"); setGoal("3500");
     setVipEnabled(false); setManualVip(false); setMonthData({}); setResult(null);
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
@@ -318,7 +353,28 @@ export default function ScenarioToolScreen() {
     }));
   };
 
+  // Autosave — debounced 600ms, skips before hydration is confirmed
+  useEffect(() => {
+    if (!hydrated) return;
+    const backup = {
+      clientName, startAmount, years, goal, vipEnabled, manualVip, monthData,
+      bulkStortVal, bulkStortTo, annualVal, bulkOpnVal, bulkOpnFrom,
+      bulkOpnPVal, bulkOpnPFrom, bulkCompVal, bulkCompFrom, bulkCompTo,
+    };
+    const timer = setTimeout(() => {
+      AsyncStorage.setItem('plan_b_scenario_backup', JSON.stringify(backup))
+        .then(() => { setAutosaved(true); setTimeout(() => setAutosaved(false), 2000); })
+        .catch(() => {});
+    }, 600);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, clientName, startAmount, years, goal, vipEnabled, manualVip, monthData,
+      bulkStortVal, bulkStortTo, annualVal, bulkOpnVal, bulkOpnFrom,
+      bulkOpnPVal, bulkOpnPFrom, bulkCompVal, bulkCompFrom, bulkCompTo]);
+
   const goalProgress = result ? result.goalProgress : 0;
+
+  if (!hydrated) return <ScreenContainer bgColor="#0f172a" edges={["top", "left", "right"]} />;
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} bgColor="#0f172a">
@@ -357,6 +413,9 @@ export default function ScenarioToolScreen() {
           </View>
           <View style={S.row}>
             <Text style={S.progressLabel}>{Math.round(goalProgress)}%</Text>
+            {autosaved && (
+              <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold", marginLeft: 6 }}>💾 Autosaved</Text>
+            )}
             {result?.goalReached && (
               <View style={S.goalBadge}><Text style={S.goalBadgeText}>{t(language, 'goalReached')}</Text></View>
             )}
