@@ -750,14 +750,18 @@ export default function ScenarioToolScreen() {
                       <div class="param-label">VIP Status</div>
                       <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? 'Active (+3% Monthly Discount)' : 'Standard'}</div>
                     </div>
+                    <div class="param-row">
+                      <div class="param-label">VIP Activation Fee</div>
+                      <div class="param-value" style="color:${vipEnabled ? '#f59e0b' : '#64748b'}">${vipEnabled ? '$1,000 (Paid Manually)' : 'None'}</div>
+                    </div>
                   </div>
 
                   <!-- STRATEGY SUMMARY -->
                   <div class="section-title">Strategy Summary — ${totalYears} Year Period</div>
                   <div class="summary-box">
                     <div class="stat">
-                      <div class="stat-label">Total Purchase Amount</div>
-                      <div class="stat-value">${fmt(result.totalIn)}</div>
+                      <div class="stat-label">Total Purchase Amount${result.totalVipCost > 0 ? ' *' : ''}</div>
+                      <div class="stat-value">${fmt(result.totalIn + result.totalVipCost)}</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Total Strategy Discounts</div>
@@ -769,7 +773,7 @@ export default function ScenarioToolScreen() {
                     </div>
                     <div class="stat">
                       <div class="stat-label">Net Strategy Value</div>
-                      <div class="stat-value green">${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)</div>
+                      <div class="stat-value green">${(() => { const adj = result.netResult - result.totalVipCost; const base = result.totalIn + result.totalVipCost; return fmt(adj) + ' (' + (base > 0 ? (adj / base * 100).toFixed(1) : '0.0') + '%)'; })()}</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Purchase Offset Point</div>
@@ -780,6 +784,7 @@ export default function ScenarioToolScreen() {
                       <div class="stat-value green">${fmt(result.maxMonthlyOut)}</div>
                     </div>
                   </div>
+                  ${result.totalVipCost > 0 ? '<p style="font-size:9px;color:#64748b;margin:4px 0 0 2px">* Total Purchase Amount includes the initial purchase, monthly contributions, and the manual $1,000 VIP activation fee.</p>' : ''}
 
                   <!-- MONTHLY DISCOUNT SCHEDULE -->
                   <div class="section-title">Monthly Discount Schedule ${totalYears > 5 ? '(Grouped by Year)' : ''}</div>
@@ -909,8 +914,14 @@ export default function ScenarioToolScreen() {
                 </View>
               )}
 
+              {(() => {
+                const vipFee = result.totalVipCost;
+                const displayTotalIn = result.totalIn + vipFee;
+                const displayNetResult = result.netResult - vipFee;
+                const displayNetPct = displayTotalIn > 0 ? (displayNetResult / displayTotalIn * 100).toFixed(1) : '0.0';
+                return (
               <View style={S.summaryGrid}>
-                <SummaryItem label={t(language,'totalIn')} value={fmt(result.totalIn)} />
+                <SummaryItem label={t(language,'totalIn')} value={vipFee > 0 ? `${fmt(displayTotalIn)} *` : fmt(result.totalIn)} />
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
                 <View style={{ backgroundColor: 'rgba(245,158,11,0.09)', borderRadius: 8, padding: 8, width: '48%', borderWidth: 1.5, borderColor: 'rgba(245,158,11,0.38)' }}>
                   <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{t(language, 'finalBalance')}</Text>
@@ -918,12 +929,12 @@ export default function ScenarioToolScreen() {
                 </View>
                 <SummaryItem
                   label={t(language, 'netResult')}
-                  value={`${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)`}
-                  green={result.netResult >= 0}
-                  red={result.netResult < 0}
+                  value={`${fmt(displayNetResult)} (${displayNetPct}%)`}
+                  green={displayNetResult >= 0}
+                  red={displayNetResult < 0}
                 />
                 <SummaryItem label={t(language, 'availableRebates')} value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label={t(language, 'totalVipCost')} value={result.totalVipPotPayments > 0 ? `-${fmt(result.totalVipPotPayments)}` : fmt(0)} red={result.totalVipPotPayments > 0} />
+                <SummaryItem label={t(language, 'totalVipCost')} value={vipFee > 0 ? `-${fmt(vipFee)}` : fmt(0)} red={vipFee > 0} />
                 <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.months.length))} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
@@ -932,6 +943,8 @@ export default function ScenarioToolScreen() {
                     : t(language,'waiting')}
                 />
               </View>
+                );
+              })()}
 
               {/* ── Brand Authority Row ── */}
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, marginBottom: 4 }}>
