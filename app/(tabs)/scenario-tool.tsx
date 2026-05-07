@@ -591,6 +591,11 @@ export default function ScenarioToolScreen() {
                   const totalYears = Math.round(result.months.length / 12);
                   const totalMonths = result.months.length;
                   const maxRebateMonth = result.months.reduce((best, r) => r.grossYield > best.grossYield ? r : best, result.months[0]);
+                  const firstDeposit = result.months[0]?.deposit ?? 0;
+                  const depositMonths = result.months.filter(m => m.deposit > 0).length;
+                  const depositLabel = firstDeposit > 0
+                    ? `${fmt(firstDeposit)}${depositMonths > 1 ? ` <span style="font-size:10px;color:#0369a1">(active ${depositMonths} months)</span>` : ''}`
+                    : 'None';
 
                   // Build monthly table rows — grouped by year if > 5 years
                   let tableBody = '';
@@ -599,32 +604,37 @@ export default function ScenarioToolScreen() {
                     tableBody = result.months.map(row => {
                       cumulative += row.grossYield;
                       const bg = row.month % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const depColor = row.deposit > 0 ? '#0369a1' : '#94a3b8';
                       return `<tr style="background:${bg}">
                         <td style="text-align:center;color:#1e293b">${row.month}</td>
-                        <td style="text-align:right;color:#16a34a;font-weight:600">$${fmt(row.grossYield)}</td>
-                        <td style="text-align:right;color:#16a34a">$${fmt(cumulative)}</td>
-                        <td style="text-align:right;color:#1e3a5f;font-weight:600">$${fmt(row.capEnd)}</td>
+                        <td style="text-align:right;color:${depColor};font-weight:${row.deposit > 0 ? '600' : '400'}">${row.deposit > 0 ? fmt(row.deposit) : '$0'}</td>
+                        <td style="text-align:right;color:#16a34a;font-weight:600">${fmt(row.grossYield)}</td>
+                        <td style="text-align:right;color:#16a34a">${fmt(cumulative)}</td>
+                        <td style="text-align:right;color:#1e3a5f;font-weight:600">${fmt(row.capEnd)}</td>
                       </tr>`;
                     }).join('');
                   } else {
                     // Group by year
                     let cumulative = 0;
-                    const years_map: Record<number, { rebates: number; finalVal: number; months: number }> = {};
+                    const years_map: Record<number, { rebates: number; deposits: number; finalVal: number; months: number }> = {};
                     result.months.forEach(row => {
                       const yr = Math.ceil(row.month / 12);
-                      if (!years_map[yr]) years_map[yr] = { rebates: 0, finalVal: 0, months: 0 };
+                      if (!years_map[yr]) years_map[yr] = { rebates: 0, deposits: 0, finalVal: 0, months: 0 };
                       years_map[yr].rebates += row.grossYield;
+                      years_map[yr].deposits += row.deposit;
                       years_map[yr].finalVal = row.capEnd;
                       years_map[yr].months = row.month;
                     });
                     tableBody = Object.entries(years_map).map(([yr, data]) => {
                       cumulative += data.rebates;
                       const bg = parseInt(yr) % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const depColor = data.deposits > 0 ? '#0369a1' : '#94a3b8';
                       return `<tr style="background:${bg}">
                         <td style="text-align:center;color:#1e293b;font-weight:600">Year ${yr} (Month ${(parseInt(yr)-1)*12+1}–${data.months})</td>
-                        <td style="text-align:right;color:#16a34a;font-weight:600">$${fmt(data.rebates)}</td>
-                        <td style="text-align:right;color:#16a34a">$${fmt(cumulative)}</td>
-                        <td style="text-align:right;color:#1e3a5f;font-weight:600">$${fmt(data.finalVal)}</td>
+                        <td style="text-align:right;color:${depColor};font-weight:${data.deposits > 0 ? '600' : '400'}">${data.deposits > 0 ? fmt(data.deposits) : '$0'}</td>
+                        <td style="text-align:right;color:#16a34a;font-weight:600">${fmt(data.rebates)}</td>
+                        <td style="text-align:right;color:#16a34a">${fmt(cumulative)}</td>
+                        <td style="text-align:right;color:#1e3a5f;font-weight:600">${fmt(data.finalVal)}</td>
                       </tr>`;
                     }).join('');
                   }
@@ -645,6 +655,10 @@ export default function ScenarioToolScreen() {
                     .doc-title { text-align: right; }
                     .doc-title-main { font-size: 14px; font-weight: 900; color: #1e3a5f; letter-spacing: 1px; text-transform: uppercase; }
                     .doc-meta { font-size: 10px; color: #64748b; margin-top: 3px; }
+                    .gia-seal { display:inline-flex; flex-direction:column; align-items:center; border:2px solid #0284c7; border-radius:8px; padding:6px 12px; background:#f0f9ff; margin-right: 12px; }
+                    .gia-seal-icon { font-size:14px; margin-bottom:2px; }
+                    .gia-seal-title { font-size:9px; font-weight:900; color:#0369a1; letter-spacing:1.2px; text-transform:uppercase; }
+                    .gia-seal-sub { font-size:7.5px; color:#64748b; margin-top:1px; }
 
                     /* Client block */
                     .client-block { background: #f1f5f9; border-left: 4px solid #33C5FF; border-radius: 6px; padding: 12px 16px; margin-bottom: 18px; }
@@ -697,10 +711,17 @@ export default function ScenarioToolScreen() {
                         <div class="logo-sub">Diamond Solution International</div>
                       </div>
                     </div>
-                    <div class="doc-title">
-                      <div class="doc-title-main">Personal Strategy Roadmap</div>
-                      <div class="doc-meta">Date: ${today}</div>
-                      <div class="doc-meta">${office.name}</div>
+                    <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
+                      <div class="gia-seal">
+                        <div class="gia-seal-icon">🔒</div>
+                        <div class="gia-seal-title">GIA Verified</div>
+                        <div class="gia-seal-sub">Plan B Integrity</div>
+                      </div>
+                      <div class="doc-title">
+                        <div class="doc-title-main">Personal Strategy Roadmap</div>
+                        <div class="doc-meta">Date: ${today}</div>
+                        <div class="doc-meta">${office.name}</div>
+                      </div>
                     </div>
                   </div>
 
@@ -715,7 +736,7 @@ export default function ScenarioToolScreen() {
                   <div class="params-box">
                     <div class="param-row">
                       <div class="param-label">Initial Diamond Purchase</div>
-                      <div class="param-value">$${fmt(numVal(startAmount))}</div>
+                      <div class="param-value">${fmt(numVal(startAmount))}</div>
                     </div>
                     <div class="param-row">
                       <div class="param-label">Strategy Duration</div>
@@ -723,7 +744,7 @@ export default function ScenarioToolScreen() {
                     </div>
                     <div class="param-row">
                       <div class="param-label">Monthly Diamond Purchases</div>
-                      <div class="param-value">${result.months[0]?.deposit > 0 ? '$'+fmt(result.months[0].deposit) : 'None'}</div>
+                      <div class="param-value" style="font-weight:700">${depositLabel}</div>
                     </div>
                     <div class="param-row">
                       <div class="param-label">VIP Status</div>
@@ -736,19 +757,19 @@ export default function ScenarioToolScreen() {
                   <div class="summary-box">
                     <div class="stat">
                       <div class="stat-label">Total Purchase Amount</div>
-                      <div class="stat-value">$${fmt(result.totalIn)}</div>
+                      <div class="stat-value">${fmt(result.totalIn)}</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Total Strategy Discounts</div>
-                      <div class="stat-value green">$${fmt(result.totalOut)}</div>
+                      <div class="stat-value green">${fmt(result.totalOut)}</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Total 💎 Assets</div>
-                      <div class="stat-value green">$${fmt(result.finalCap)}</div>
+                      <div class="stat-value green">${fmt(result.finalCap)}</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Net Strategy Value</div>
-                      <div class="stat-value green">$${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)</div>
+                      <div class="stat-value green">${fmt(result.netResult)} (${result.totalIn > 0 ? (result.netResult / result.totalIn * 100).toFixed(1) : '0.0'}%)</div>
                     </div>
                     <div class="stat">
                       <div class="stat-label">Purchase Offset Point</div>
@@ -756,7 +777,7 @@ export default function ScenarioToolScreen() {
                     </div>
                     <div class="stat">
                       <div class="stat-label">Max Monthly Discount (Month ${totalMonths})</div>
-                      <div class="stat-value green">$${fmt(result.maxMonthlyOut)}</div>
+                      <div class="stat-value green">${fmt(result.maxMonthlyOut)}</div>
                     </div>
                   </div>
 
@@ -766,6 +787,7 @@ export default function ScenarioToolScreen() {
                     <thead>
                       <tr>
                         <th>${totalYears > 5 ? 'Period' : 'Month'}</th>
+                        <th style="text-align:right">${totalYears > 5 ? 'Annual Deposits ($)' : 'Monthly Deposit ($)'}</th>
                         <th style="text-align:right">${totalYears > 5 ? 'Annual Discount Gained ($)' : 'Monthly Discount ($)'}</th>
                         <th style="text-align:right">Cumulative Discounts ($)</th>
                         <th style="text-align:right">Total Asset Value ($)</th>
