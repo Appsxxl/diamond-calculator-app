@@ -615,11 +615,16 @@ export default function ScenarioToolScreen() {
                     let cumulative = 0;
                     tableBody = result.months.map(row => {
                       cumulative += row.grossYield;
-                      const bg = row.month % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const isManualVipRow = row.isNewVip && !row.isVipSelfFunded;
+                      const bg = isManualVipRow ? '#fef3c7' : row.month % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const border = isManualVipRow ? ';border-top:2px solid #f59e0b;border-bottom:2px solid #f59e0b' : '';
                       const depColor = row.deposit > 0 ? '#0369a1' : '#94a3b8';
-                      return `<tr style="background:${bg}">
-                        <td style="text-align:center;color:#1e293b">${row.month}</td>
-                        <td style="text-align:right;color:${depColor};font-weight:${row.deposit > 0 ? '600' : '400'}">${row.deposit > 0 ? fmt(row.deposit) : '$0'}</td>
+                      const vipBadge = isManualVipRow
+                        ? '<br><span style="font-size:9px;color:#92400e;font-weight:700;background:#fde68a;padding:1px 5px;border-radius:3px;white-space:nowrap">+ $1,000 Manual VIP Fee</span>'
+                        : '';
+                      return `<tr style="background:${bg}${border}">
+                        <td style="text-align:center;color:#1e293b;font-weight:${isManualVipRow ? '700' : '400'}">${row.month}</td>
+                        <td style="text-align:right;color:${depColor};font-weight:${row.deposit > 0 ? '600' : '400'}">${row.deposit > 0 ? fmt(row.deposit) : '$0'}${vipBadge}</td>
                         <td style="text-align:right;color:#16a34a;font-weight:600">${fmt(row.grossYield)}</td>
                         <td style="text-align:right;color:#16a34a">${fmt(cumulative)}</td>
                         <td style="text-align:right;color:#1e3a5f;font-weight:600">${fmt(row.capEnd)}</td>
@@ -628,22 +633,27 @@ export default function ScenarioToolScreen() {
                   } else {
                     // Group by year
                     let cumulative = 0;
-                    const years_map: Record<number, { rebates: number; deposits: number; finalVal: number; months: number }> = {};
+                    const years_map: Record<number, { rebates: number; deposits: number; finalVal: number; months: number; hasManualVip: boolean }> = {};
                     result.months.forEach(row => {
                       const yr = Math.ceil(row.month / 12);
-                      if (!years_map[yr]) years_map[yr] = { rebates: 0, deposits: 0, finalVal: 0, months: 0 };
+                      if (!years_map[yr]) years_map[yr] = { rebates: 0, deposits: 0, finalVal: 0, months: 0, hasManualVip: false };
                       years_map[yr].rebates += row.grossYield;
                       years_map[yr].deposits += row.deposit;
                       years_map[yr].finalVal = row.capEnd;
                       years_map[yr].months = row.month;
+                      if (row.isNewVip && !row.isVipSelfFunded) years_map[yr].hasManualVip = true;
                     });
                     tableBody = Object.entries(years_map).map(([yr, data]) => {
                       cumulative += data.rebates;
-                      const bg = parseInt(yr) % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const bg = data.hasManualVip ? '#fef3c7' : parseInt(yr) % 2 === 0 ? '#f8fafc' : '#ffffff';
+                      const border = data.hasManualVip ? ';border-top:2px solid #f59e0b;border-bottom:2px solid #f59e0b' : '';
                       const depColor = data.deposits > 0 ? '#0369a1' : '#94a3b8';
-                      return `<tr style="background:${bg}">
+                      const vipBadge = data.hasManualVip
+                        ? '<br><span style="font-size:9px;color:#92400e;font-weight:700;background:#fde68a;padding:1px 5px;border-radius:3px;white-space:nowrap">+ $1,000 Manual VIP Fee</span>'
+                        : '';
+                      return `<tr style="background:${bg}${border}">
                         <td style="text-align:center;color:#1e293b;font-weight:600">Year ${yr} (Month ${(parseInt(yr)-1)*12+1}–${data.months})</td>
-                        <td style="text-align:right;color:${depColor};font-weight:${data.deposits > 0 ? '600' : '400'}">${data.deposits > 0 ? fmt(data.deposits) : '$0'}</td>
+                        <td style="text-align:right;color:${depColor};font-weight:${data.deposits > 0 ? '600' : '400'}">${data.deposits > 0 ? fmt(data.deposits) : '$0'}${vipBadge}</td>
                         <td style="text-align:right;color:#16a34a;font-weight:600">${fmt(data.rebates)}</td>
                         <td style="text-align:right;color:#16a34a">${fmt(cumulative)}</td>
                         <td style="text-align:right;color:#1e3a5f;font-weight:600">${fmt(data.finalVal)}</td>
