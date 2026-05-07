@@ -18,7 +18,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
 import { useCalculator } from "@/lib/calculator-context";
 import { t, Language } from "@/lib/translations";
-import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData } from "@/lib/calculator";
+import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit } from "@/lib/calculator";
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
@@ -441,6 +441,12 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
+            {numVal(startAmount) > 0 && numVal(startAmount) < 110
+              ? <Text style={{ color: '#ef4444', fontSize: 10, marginTop: 4, fontWeight: 'bold' }}>⚠️ SP1 Minimum is $110</Text>
+              : numVal(startAmount) >= 110
+                ? <Text style={{ color: '#475569', fontSize: 10, marginTop: 4 }}>${numVal(startAmount).toLocaleString()} → Net: ${getNetDeposit(numVal(startAmount)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                : null
+            }
 
             {/* Plan tier badge */}
             {(() => {
@@ -532,6 +538,12 @@ export default function ScenarioToolScreen() {
             <TextInput style={S.bulkSmall} value={bulkStortTo} onChangeText={setBulkStortTo} placeholder={t(language,'till')} placeholderTextColor="#555" keyboardType="numeric" />
             <TouchableOpacity style={S.btnBlue} onPress={applyBulkStort}><Text style={S.btnText}>{t(language,'ok')}</Text></TouchableOpacity>
           </View>
+          {numVal(bulkStortVal) > 0 && numVal(bulkStortVal) < 110
+            ? <Text style={{ color: '#ef4444', fontSize: 10, marginTop: 4, fontWeight: 'bold' }}>⚠️ SP1 Minimum is $110</Text>
+            : numVal(bulkStortVal) >= 110
+              ? <Text style={{ color: '#475569', fontSize: 10, marginTop: 4 }}>${numVal(bulkStortVal).toLocaleString()} → Net: ${getNetDeposit(numVal(bulkStortVal)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+              : null
+          }
           <Text style={S.sectionLabel}>{t(language,'extraAmounts').toUpperCase()} {t(language,'annual').toUpperCase()} {t(language,'oneTime').toUpperCase()}</Text>
           <View style={S.bulkRow}>
             <TextInput style={S.bulkInput} value={annualVal} onChangeText={setAnnualVal} placeholder={t(language,'extraAmounts')} placeholderTextColor="#555" keyboardType="numeric" />
@@ -753,6 +765,10 @@ export default function ScenarioToolScreen() {
                     <div class="param-row">
                       <div class="param-label">VIP Activation Fee</div>
                       <div class="param-value" style="color:${vipEnabled ? '#f59e0b' : '#64748b'}">${vipEnabled ? '$1,000 (Paid Manually)' : 'None'}</div>
+                    </div>
+                    <div class="param-row">
+                      <div class="param-label" style="font-weight:700">Transaction Fees</div>
+                      <div class="param-value" style="font-weight:700;color:#f59e0b">$5 flat + 1.25% applied to all deposits</div>
                     </div>
                   </div>
 

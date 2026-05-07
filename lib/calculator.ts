@@ -86,15 +86,21 @@ export function createDefaultMonthData(): MonthData {
   return { stort: 0, opn: 0, opnP: 0, comp: 100 };
 }
 
+// Deduct $5 flat fee + 1.25% variable fee from every deposit
+export function getNetDeposit(gross: number): number {
+  if (gross <= 0) return 0;
+  return Math.max(0, (gross - 5) * 0.9875);
+}
+
 export function runCalculation(params: CalculationParams): CalculationResult {
   const { startAmount, years, goal, vipEnabled, manualVip, monthData } = params;
   const maxMonths = years * 12;
 
-  let cap = startAmount;
+  let cap = getNetDeposit(startAmount);
   let wallet = 0;
   let vipPot = 0;
   let compPot = 0;
-  let tIn = startAmount;
+  let tIn = startAmount;  // track gross for display
   let tOut = 0;
   let tVip = 0;
   let tVipPot = 0;
@@ -112,8 +118,8 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     const mD: MonthData = monthData[m] ?? createDefaultMonthData();
     const capStart = cap;
 
-    // Step 1: Add deposit
-    cap += mD.stort;
+    // Step 1: Add deposit (net of fees; tIn tracks gross for display)
+    cap += getNetDeposit(mD.stort);
     tIn += mD.stort;
 
     // Step 2: VIP check
@@ -263,7 +269,7 @@ export function stratSimulate(
   opnP = 0,
   vipEnabled = true,
 ): number {
-  let cap = inleg;
+  let cap = getNetDeposit(inleg);
   let wallet = 0;
   let vipPot = 0;
   let vActive = false;
@@ -271,7 +277,7 @@ export function stratSimulate(
   let finalPayout = 0;
 
   for (let i = 1; i <= months; i++) {
-    cap += monthlyStort;
+    cap += getNetDeposit(monthlyStort);
 
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
@@ -322,14 +328,14 @@ export function stratFindMeetingMonth(
   goal: number,
   vipEnabled = true,
 ): number | null {
-  let cap = start;
+  let cap = getNetDeposit(start);
   let wallet = 0;
   let vipPot = 0;
   let vActive = false;
   let vMnd = 0;
 
   for (let i = 1; i <= maxMonths; i++) {
-    cap += monthlyStort;
+    cap += getNetDeposit(monthlyStort);
 
     if (vipEnabled) {
       if (cap >= 3550 && (!vActive || vMnd <= 0)) {
