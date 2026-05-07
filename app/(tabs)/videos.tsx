@@ -27,132 +27,45 @@ interface YouTubeVideo {
 interface VimeoVideo {
   id: string;
   title: string;
-  duration: string;
-  type: "invitation" | "presentation" | "compensation";
+  age: string;
 }
 
-interface VimeoLangTab {
-  code: string;
-  label: string;
-  native: boolean;
-}
-
-// ─── Vimeo JPP Data ───────────────────────────────────────────────────────────
-// Official Diamond Solution company presentation videos from vimeo.com/diamondsolution
-// Languages with native STIG videos: EN, DE, ES
-// All others use EN fallback + Coming Soon indicator
-const VIMEO_VIDEOS: Record<string, VimeoVideo[]> = {
-  en: [
-    { id: "1146526988", title: "JPP1 — Invitation",          duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Presentation",        duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Compensation Plan",   duration: "5:59", type: "compensation" },
-  ],
-  de: [
-    { id: "1146526795", title: "JPP1 — Einladung",           duration: "1:35", type: "invitation"   },
-    { id: "1146536856", title: "JPP2 — Präsentation",        duration: "4:23", type: "presentation" },
-    { id: "1150822555", title: "JPP3 — Vergütungsplan",      duration: "6:36", type: "compensation" },
-  ],
-  es: [
-    { id: "1146527199", title: "JPP1 — Invitación",          duration: "1:45", type: "invitation"   },
-    { id: "1149707800", title: "JPP2 — Presentación",        duration: "7:55", type: "presentation" },
-    { id: "1150834090", title: "JPP3 — Plan de Compensación",duration: "6:39", type: "compensation" },
-  ],
-  // Below: EN fallback until native version is published on vimeo.com/diamondsolution
-  nl: [
-    { id: "1146526988", title: "JPP1 — Uitnodiging",         duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Presentatie",         duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Compensatieplan",     duration: "5:59", type: "compensation" },
-  ],
-  fr: [
-    { id: "1146526988", title: "JPP1 — Invitation",          duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Présentation",        duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Plan de compensation",duration: "5:59", type: "compensation" },
-  ],
-  ru: [
-    { id: "1146526988", title: "JPP1 — Приглашение",         duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Презентация",         duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Компенсационный план",duration: "5:59", type: "compensation" },
-  ],
-  zh: [
-    { id: "1146526988", title: "JPP1 — 邀请",                duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — 演示",                duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — 薪酬计划",            duration: "5:59", type: "compensation" },
-  ],
-  // New languages — Coming Soon (EN fallback shown)
-  tl: [
-    { id: "1146526988", title: "JPP1 — Imbitasyon (EN)",     duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Presentasyon (EN)",   duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Compensation (EN)",   duration: "5:59", type: "compensation" },
-  ],
-  pt: [
-    { id: "1146526988", title: "JPP1 — Convite (EN)",        duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Apresentação (EN)",   duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Plano de Compen. (EN)",duration: "5:59", type: "compensation"},
-  ],
-  ar: [
-    { id: "1146526988", title: "JPP1 — دعوة (EN)",           duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — عرض تقديمي (EN)",    duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — خطة التعويض (EN)",   duration: "5:59", type: "compensation" },
-  ],
-  th: [
-    { id: "1146526988", title: "JPP1 — คำเชิญ (EN)",         duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — การนำเสนอ (EN)",     duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — แผนค่าตอบแทน (EN)", duration: "5:59", type: "compensation" },
-  ],
-  hi: [
-    { id: "1146526988", title: "JPP1 — आमंत्रण (EN)",       duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — प्रस्तुति (EN)",     duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — मुआवजा योजना (EN)", duration: "5:59", type: "compensation" },
-  ],
-  vi: [
-    { id: "1146526988", title: "JPP1 — Lời mời (EN)",        duration: "1:37", type: "invitation"   },
-    { id: "1146537304", title: "JPP2 — Thuyết trình (EN)",   duration: "7:00", type: "presentation" },
-    { id: "1150833840", title: "JPP3 — Kế hoạch bồi thường (EN)", duration: "5:59", type: "compensation" },
-  ],
-};
-
-// Native video languages (have dedicated STIG Vimeo content)
-const NATIVE_VIDEO_LANGS = new Set(["en", "de", "es"]);
-
-// All language tabs for Vimeo filter
-const VIMEO_LANG_TABS = [
-  { code: "en", label: "🇬🇧 EN",       native: true  },
-  { code: "de", label: "🇩🇪 DE",       native: true  },
-  { code: "es", label: "🇪🇸 ES",       native: true  },
-  { code: "nl", label: "🇳🇱 NL",       native: false },
-  { code: "fr", label: "🇫🇷 FR",       native: false },
-  { code: "ru", label: "🇷🇺 RU",       native: false },
-  { code: "zh", label: "🇨🇳 中文",     native: false },
-  { code: "tl", label: "🇵🇭 Filipino", native: false },
-  { code: "pt", label: "🇵🇹 PT",       native: false },
-  { code: "ar", label: "🇸🇦 عربي",     native: false },
-  { code: "th", label: "🇹🇭 ไทย",      native: false },
-  { code: "hi", label: "🇮🇳 हिंदी",    native: false },
-  { code: "vi", label: "🇻🇳 Việt",     native: false },
+// ─── Vimeo fallback (shown if live fetch fails) ──────────────────────────────
+const VIMEO_FALLBACK: VimeoVideo[] = [
+  { id: "1146526988", title: "JPP1 — Invitation",        age: "" },
+  { id: "1146537304", title: "JPP2 — Presentation",      age: "" },
+  { id: "1150833840", title: "JPP3 — Compensation Plan", age: "" },
 ];
-
-// Type badge colors
-const TYPE_COLORS: Record<VimeoVideo["type"], string> = {
-  invitation:   "#22c55e",
-  presentation: "#0ea5e9",
-  compensation: "#f59e0b",
-};
 
 // ─── Static YouTube fallback (shown while API loads) ─────────────────────────
 const YOUTUBE_FALLBACK: YouTubeVideo[] = [
+  {
+    id: "HJv57bZsyus",
+    title: "Mike Lang beantwortet die wichtigsten Diamanten-Fragen",
+    duration: "",
+    views: "",
+    age: "",
+  },
+  {
+    id: "gzK_3CmirAI",
+    title: "Alle Antworten zu STIG International Diamonds | Patrick Stöger CEO",
+    duration: "",
+    views: "",
+    age: "",
+  },
   {
     id: "cP7iNzX1bTo",
     title: "Luxury Assets Home Ownership Diamond Plan",
     duration: "0:41",
     views: "31",
-    age: "8 days ago",
+    age: "",
   },
   {
     id: "3FZkUEDsSkQ",
-    title: "PLAN B ↓ Save a Job! 🔥 Residual plan A",
+    title: "Ai is there! Do you have a PLAN B ↓ Save a Job! 🔥 Residual plan A",
     duration: "1:40",
     views: "20",
-    age: "1 month ago",
+    age: "",
   },
 ];
 
@@ -175,7 +88,6 @@ const TEXT: Record<string, {
   companyDesc: string;
   openError: string;
   vimeoChannelBtn: string;
-  typeBadge: Record<VimeoVideo["type"], string>;
 }> = {
   en: {
     title: "📺 VIDEOS",
@@ -191,7 +103,6 @@ const TEXT: Record<string, {
     companyDesc: "Official company videos from Diamond Solution. Share these with prospects to explain the plan.",
     openError: "Could not open video. Please try again.",
     vimeoChannelBtn: "🎬 View All on Vimeo",
-    typeBadge: { invitation: "Invitation", presentation: "Presentation", compensation: "Compensation Plan" },
   },
   nl: {
     title: "📺 VIDEO'S",
@@ -207,7 +118,6 @@ const TEXT: Record<string, {
     companyDesc: "Officiële bedrijfsvideo's van Diamond Solution. Deel deze met prospects om het plan uit te leggen.",
     openError: "Kon video niet openen. Probeer het opnieuw.",
     vimeoChannelBtn: "🎬 Alles bekijken op Vimeo",
-    typeBadge: { invitation: "Uitnodiging", presentation: "Presentatie", compensation: "Compensatieplan" },
   },
   de: {
     title: "📺 VIDEOS",
@@ -223,7 +133,6 @@ const TEXT: Record<string, {
     companyDesc: "Offizielle Unternehmensvideos von Diamond Solution. Teilen Sie diese mit Interessenten.",
     openError: "Video konnte nicht geöffnet werden. Bitte versuchen Sie es erneut.",
     vimeoChannelBtn: "🎬 Alle auf Vimeo ansehen",
-    typeBadge: { invitation: "Einladung", presentation: "Präsentation", compensation: "Vergütungsplan" },
   },
   fr: {
     title: "📺 VIDÉOS",
@@ -239,7 +148,6 @@ const TEXT: Record<string, {
     companyDesc: "Vidéos officielles de Diamond Solution. Partagez-les avec vos prospects pour expliquer le plan.",
     openError: "Impossible d'ouvrir la vidéo. Veuillez réessayer.",
     vimeoChannelBtn: "🎬 Tout voir sur Vimeo",
-    typeBadge: { invitation: "Invitation", presentation: "Présentation", compensation: "Plan de compensation" },
   },
   es: {
     title: "📺 VIDEOS",
@@ -255,7 +163,6 @@ const TEXT: Record<string, {
     companyDesc: "Videos oficiales de Diamond Solution. Compártalos con prospectos para explicar el plan.",
     openError: "No se pudo abrir el video. Por favor, inténtelo de nuevo.",
     vimeoChannelBtn: "🎬 Ver todo en Vimeo",
-    typeBadge: { invitation: "Invitación", presentation: "Presentación", compensation: "Plan de compensación" },
   },
   ru: {
     title: "📺 ВИДЕО",
@@ -271,7 +178,6 @@ const TEXT: Record<string, {
     companyDesc: "Официальные видео Diamond Solution. Делитесь ими с потенциальными партнёрами.",
     openError: "Не удалось открыть видео. Пожалуйста, попробуйте снова.",
     vimeoChannelBtn: "🎬 Смотреть всё на Vimeo",
-    typeBadge: { invitation: "Приглашение", presentation: "Презентация", compensation: "Компенсационный план" },
   },
   zh: {
     title: "📺 视频",
@@ -287,7 +193,6 @@ const TEXT: Record<string, {
     companyDesc: "Diamond Solution的官方视频。与潜在合作伙伴分享以解释计划。",
     openError: "无法打开视频，请重试。",
     vimeoChannelBtn: "🎬 在Vimeo上查看全部",
-    typeBadge: { invitation: "邀请", presentation: "演示", compensation: "薪酬计划" },
   },
 };
 
@@ -398,16 +303,78 @@ function useYouTubeVideos() {
   return { videos, loading };
 }
 
+// Auto-fetches all public videos from vimeo.com/diamondsolution on every load.
+// No API key needed — uses the public RSS feed.
+function useVimeoVideos() {
+  const [videos, setVideos] = useState<VimeoVideo[]>(VIMEO_FALLBACK);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchFeed() {
+      setLoading(true);
+      try {
+        const RSS_URL = "https://vimeo.com/diamondsolution/videos/rss";
+        const fetchUrl = Platform.OS === "web"
+          ? `https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`
+          : RSS_URL;
+
+        const res = await fetch(fetchUrl, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) throw new Error("RSS fetch failed");
+
+        let xmlText: string;
+        if (Platform.OS === "web") {
+          const json = await res.json();
+          xmlText = json.contents as string;
+        } else {
+          xmlText = await res.text();
+        }
+
+        const parsed: VimeoVideo[] = [];
+        const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+        let match: RegExpExecArray | null;
+        while ((match = itemRegex.exec(xmlText)) !== null) {
+          const item = match[1];
+          const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
+          const linkMatch = item.match(/vimeo\.com\/(\d+)/);
+          const pubMatch = item.match(/<pubDate>([^<]+)<\/pubDate>/);
+          if (!titleMatch || !linkMatch) continue;
+
+          const pubDate = pubMatch ? new Date(pubMatch[1]) : new Date();
+          const diffDays = Math.floor((Date.now() - pubDate.getTime()) / 86400000);
+          const age = diffDays === 0 ? "Today"
+            : diffDays < 7  ? `${diffDays}d ago`
+            : diffDays < 30 ? `${Math.floor(diffDays / 7)}w ago`
+            : diffDays < 365 ? `${Math.floor(diffDays / 30)}mo ago`
+            : `${Math.floor(diffDays / 365)}y ago`;
+
+          parsed.push({
+            id: linkMatch[1],
+            title: titleMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim(),
+            age,
+          });
+        }
+
+        if (!cancelled) setVideos(parsed.length > 0 ? parsed : VIMEO_FALLBACK);
+      } catch {
+        if (!cancelled) setVideos(VIMEO_FALLBACK);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    fetchFeed();
+    return () => { cancelled = true; };
+  }, []);
+
+  return { videos, loading };
+}
+
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function VideosScreen() {
   const { language } = useCalculator();
   const tx = TEXT[language] ?? TEXT.en;
   const { videos: ytVideos, loading: ytLoading } = useYouTubeVideos();
-
-  // Vimeo language filter — default to app language, fall back to EN
-  const defaultVimeoLang = VIMEO_LANG_TABS.find(l => l.code === language)?.code ?? "en";
-  const [vimeoLang, setVimeoLang] = useState(defaultVimeoLang);
-  const vimeoVideos = VIMEO_VIDEOS[vimeoLang] ?? VIMEO_VIDEOS.en;
+  const { videos: vimeoVideos, loading: vimeoLoading } = useVimeoVideos();
 
   const handleYouTubePress = useCallback((videoId: string) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -451,61 +418,37 @@ export default function VideosScreen() {
             </View>
           </View>
 
-          {/* Language filter tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={S.langTabScroll} contentContainerStyle={S.langTabRow}>
-            {VIMEO_LANG_TABS.map((tab: VimeoLangTab) => (
+          {/* Vimeo video cards — live from vimeo.com/diamondsolution */}
+          {vimeoLoading ? (
+            <ActivityIndicator color="#0ea5e9" style={{ marginVertical: 20 }} />
+          ) : (
+            vimeoVideos.map((video) => (
               <TouchableOpacity
-                key={tab.code}
-                style={[S.langTab, vimeoLang === tab.code && S.langTabActive, !tab.native && { borderStyle: "dashed" }]}
-                onPress={() => setVimeoLang(tab.code)}
-                activeOpacity={0.75}
+                key={video.id}
+                style={S.vimeoCard}
+                onPress={() => handleVimeoPress(video.id)}
+                activeOpacity={0.85}
               >
-                <Text style={[S.langTabText, vimeoLang === tab.code && S.langTabTextActive]}>
-                  {tab.label}
-                </Text>
-                {!tab.native && (
-                  <Text style={{ fontSize: 7, color: "#f59e0b", textAlign: "center", marginTop: 1 }}>EN</Text>
-                )}
+                <View style={S.vimeoThumbWrap}>
+                  <Image
+                    source={{ uri: getVimeoThumbUrl(video.id) }}
+                    style={S.vimeoThumb}
+                    resizeMode="cover"
+                  />
+                  <View style={S.playOverlay}>
+                    <View style={[S.playBtn, { backgroundColor: "rgba(26,35,126,0.9)" }]}>
+                      <Text style={S.playIcon}>▶</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={S.vimeoInfo}>
+                  <Text style={S.vimeoTitle}>{video.title}</Text>
+                  {video.age ? <Text style={S.watchVimeoText}>{video.age}</Text> : null}
+                  <Text style={[S.watchVimeoText, { color: "#0ea5e9" }]}>{tx.watchVimeo}</Text>
+                </View>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          {/* Vimeo video cards */}
-          {vimeoVideos.map((video) => (
-            <TouchableOpacity
-              key={video.id}
-              style={S.vimeoCard}
-              onPress={() => handleVimeoPress(video.id)}
-              activeOpacity={0.85}
-            >
-              <View style={S.vimeoThumbWrap}>
-                <Image
-                  source={{ uri: getVimeoThumbUrl(video.id) }}
-                  style={S.vimeoThumb}
-                  resizeMode="cover"
-                />
-                <View style={S.durationBadge}>
-                  <Text style={S.durationText}>{video.duration}</Text>
-                </View>
-                <View style={S.playOverlay}>
-                  <View style={[S.playBtn, { backgroundColor: "rgba(26,35,126,0.9)" }]}>
-                    <Text style={S.playIcon}>▶</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={S.vimeoInfo}>
-                <View style={S.vimeoTitleRow}>
-                  <View style={[S.typeBadge, { backgroundColor: TYPE_COLORS[video.type] + "22", borderColor: TYPE_COLORS[video.type] }]}>
-                    <Text style={[S.typeBadgeText, { color: TYPE_COLORS[video.type] }]}>
-                      {tx.typeBadge[video.type]}
-                    </Text>
-                  </View>
-                </View>
-                <Text style={S.vimeoTitle}>{video.title}</Text>
-                <Text style={S.watchVimeoText}>{tx.watchVimeo}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+            ))
+          )}
 
           {/* Vimeo channel link */}
           <TouchableOpacity style={S.vimeoChannelBtn} onPress={handleVimeoChannel} activeOpacity={0.85}>
@@ -685,13 +628,6 @@ const S = StyleSheet.create({
   vimeoThumb: { width: "100%", height: "100%" },
   vimeoInfo: { padding: 12, gap: 6 },
   vimeoTitleRow: { flexDirection: "row", alignItems: "center" },
-  typeBadge: {
-    borderRadius: 6,
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    alignSelf: "flex-start",
-  },
   typeBadgeText: { fontSize: 11, fontWeight: "700", letterSpacing: 0.3 },
   vimeoTitle: {
     fontSize: 15,
