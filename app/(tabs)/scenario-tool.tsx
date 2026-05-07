@@ -1133,6 +1133,11 @@ export default function ScenarioToolScreen() {
                               <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>{t(language, 'goalReachedInTable').replace('{month}', String(row.month))}</Text>
                             </View>
                           )}
+                          {row.isNewVip && !row.isVipSelfFunded && (
+                            <View style={{ backgroundColor: "rgba(245,158,11,0.18)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
+                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>💳 Month {row.month} — Manual VIP Activation Fee: $1,000</Text>
+                            </View>
+                          )}
                           <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
                           {yearSummary}
                         </React.Fragment>
@@ -1181,6 +1186,7 @@ function colWidth(h: string) {
 }
 
 function getRowStyle(row: MonthResult) {
+  if (row.isNewVip && !row.isVipSelfFunded) return S.tableRowManualVip;
   if (row.vipStatus && row.vipStatus.includes('VIP')) return S.tableRowVip;
   if (row.withdrawal > 0) return S.tableRowWithdrawal;
   if (row.capEnd > row.capStart) return S.tableRowGrowing;
@@ -1211,6 +1217,11 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
         {row.vipStatus ? (
           <View style={{ backgroundColor: row.isNewVip ? "#7f1d1d" : "#1e3a5f", borderRadius: 4, paddingHorizontal: 3, paddingVertical: 1, marginBottom: 2, alignSelf: "center" }}>
             <Text style={{ color: row.isNewVip ? "#fca5a5" : "#fde68a", fontSize: 9, fontWeight: "bold", textAlign: "center" }}>{row.vipStatus}</Text>
+          </View>
+        ) : null}
+        {row.isNewVip && !row.isVipSelfFunded ? (
+          <View style={{ backgroundColor: "#fde68a", borderRadius: 3, paddingHorizontal: 3, paddingVertical: 1, marginBottom: 2, alignSelf: "center" }}>
+            <Text style={{ color: "#92400e", fontSize: 8, fontWeight: "bold", textAlign: "center" }}>+$1,000 Manual</Text>
           </View>
         ) : null}
         <Text style={[S.td, { color: "#94a3b8", fontSize: 9 }]}>W:{fmt(row.wallet)}</Text>
@@ -1353,6 +1364,7 @@ const S = StyleSheet.create({
   th: { color: "#f59e0b", fontSize: 12, fontWeight: "bold", paddingHorizontal: 3, textAlign: "center" },
   tableRow: { flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: "#0f172a", paddingVertical: 3, backgroundColor: "#0f172a" },
   tableRowAlt: { backgroundColor: "#1a2744" },
+  tableRowManualVip: { backgroundColor: "rgba(245,158,11,0.12)", borderLeftWidth: 2, borderLeftColor: "#f59e0b" },
   tableRowVip: { backgroundColor: "#0f1e3d" },
   tableRowWithdrawal: { backgroundColor: "#0f172a" },
   tableRowGrowing: { backgroundColor: "#0a1f0a" },
