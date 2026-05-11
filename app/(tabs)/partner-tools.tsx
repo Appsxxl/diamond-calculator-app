@@ -19,7 +19,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
-import { stratSimulate, getSPLevel } from "@/lib/calculator";
+import { stratSimulate, getSPLevel, getNetDeposit } from "@/lib/calculator";
 import * as Haptics from "expo-haptics";
 import * as Notifications from "expo-notifications";
 import {
@@ -1183,8 +1183,9 @@ export default function PartnerToolsScreen() {
         else low = mid;
       }
       const deposit = Math.ceil(high);
-      const sp = getSPLevel(deposit);
-      const fullRebate = deposit * (sp.baseRate + (vip ? 3.0 : 0)) / 100;
+      const netDep = getNetDeposit(deposit);
+      const sp = getSPLevel(netDep);
+      const fullRebate = netDep * (sp.baseRate + (vip ? 3.0 : 0)) / 100;
       const payout75 = Math.round(fullRebate * 0.75);
       const baseRate = sp.baseRate + (vip ? 3.0 : 0);
       return {
@@ -1238,7 +1239,7 @@ export default function PartnerToolsScreen() {
   // ── Asset Goal Planner: lump-sum accumulation (25% reinvested) ─────────────
   // Simulate N months with 80% out% and return the TOTAL accumulated withdrawals
   const simulateTotalOut = (inleg: number, months: number, vipEnabled: boolean): number => {
-    let cap = inleg;
+    let cap = getNetDeposit(inleg);
     let wallet = 0;
     let vipPot = 0;
     let vActive = false;
