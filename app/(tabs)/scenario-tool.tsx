@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  useWindowDimensions,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -59,6 +60,21 @@ export default function ScenarioToolScreen() {
     propWithdrawalFrom?: string;
   }>();
   const { language, officeLocation } = useCalculator();
+  const { width: screenWidth } = useWindowDimensions();
+  // Compute table column widths: fill the screen on wide displays, min 788px for mobile horizontal scroll
+  const TW = Math.max(Math.round(Math.min(screenWidth * 0.98, 1450) - 32), 788);
+  const cw = {
+    num:      Math.round(TW * 0.036),
+    avail:    Math.round(TW * 0.134),
+    disc:     Math.round(TW * 0.102),
+    diamonds: Math.round(TW * 0.115),
+    status:   Math.round(TW * 0.128),
+    comp:     Math.round(TW * 0.092),
+    plan:     Math.round(TW * 0.102),
+    strat:    Math.round(TW * 0.092),
+    monthly:  Math.round(TW * 0.092),
+    total:    Math.round(TW * 0.115),
+  };
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -172,6 +188,9 @@ export default function ScenarioToolScreen() {
       for (let m = 1; m <= totalM; m++) {
         newMonthData[m] = { stort: dep, opn: 0, opnP: 0, comp: 100 };
       }
+      // Mirror into the visible "Monthly Diamond Purchases" input fields
+      setBulkStortVal(String(dep));
+      setBulkStortTo(String(totalM));
     }
     // Apply out% to month 1 for Plan D
     const outP = parseFloat(params.outP ?? "0") || 0;
@@ -179,7 +198,17 @@ export default function ScenarioToolScreen() {
       newMonthData[1] = { ...(newMonthData[1] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
     }
     setMonthData(newMonthData);
-    setResult(null);
+    // Auto-run calculation immediately with the new plan data
+    const vipOn = params.vip === "1";
+    const startAmt = parseFloat(params.startAmount ?? "3000") || 3000;
+    setResult(runCalculation({
+      startAmount: startAmt,
+      years: yrs,
+      goal: parseFloat(params.goalAmount ?? "3500") || 3500,
+      vipEnabled: vipOn || startAmt >= 3550,
+      manualVip: false,
+      monthData: newMonthData,
+    }));
     const planLabels: Record<string, string> = {
       A: "Plan A — Monthly Top-Up Strategy",
       B: "Plan B — Wait & Grow Strategy",
@@ -947,7 +976,24 @@ export default function ScenarioToolScreen() {
                 const displayNetPct = displayTotalIn > 0 ? (displayNetResult / displayTotalIn * 100).toFixed(1) : '0.0';
                 return (
               <View style={S.summaryGrid}>
-                <SummaryItem label={t(language,'totalIn')} value={vipFee > 0 ? `${fmt(displayTotalIn)} *` : fmt(result.totalIn)} />
+                {/* Total Purchase Amount — 3-line breakdown */}
+                <View style={{ backgroundColor: 'rgba(245,158,11,0.09)', borderRadius: 8, padding: 9, width: '48%', borderWidth: 1.5, borderColor: 'rgba(245,158,11,0.38)' }}>
+                  <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 7 }}>{t(language, 'totalIn')}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+                    <Text style={{ color: '#94a3b8', fontSize: 11 }}>{t(language, 'assetCapital')}</Text>
+                    <Text style={{ color: '#e2e8f0', fontSize: 11, fontWeight: 'bold' }}>{fmt(result.totalIn)}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                    <Text style={{ color: '#94a3b8', fontSize: 11 }}>{t(language, 'vipAccessFeeLabel')}</Text>
+                    <Text style={{ color: vipFee > 0 ? '#f87171' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>
+                      {vipFee > 0 ? `-${fmt(vipFee)}` : '—'}
+                    </Text>
+                  </View>
+                  <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(245,158,11,0.35)', paddingTop: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'totalOutlayLabel')}</Text>
+                    <Text style={{ color: '#f59e0b', fontSize: 14, fontWeight: 'bold' }}>{fmt(displayTotalIn)}</Text>
+                  </View>
+                </View>
                 <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
                 <View style={{ backgroundColor: 'rgba(245,158,11,0.09)', borderRadius: 8, padding: 8, width: '48%', borderWidth: 1.5, borderColor: 'rgba(245,158,11,0.38)' }}>
                   <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{t(language, 'finalBalance')}</Text>
@@ -960,7 +1006,6 @@ export default function ScenarioToolScreen() {
                   red={displayNetResult < 0}
                 />
                 <SummaryItem label={t(language, 'availableRebates')} value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label={t(language, 'totalVipCost')} value={vipFee > 0 ? `-${fmt(vipFee)}` : fmt(0)} red={vipFee > 0} />
                 <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.months.length))} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
@@ -1034,8 +1079,11 @@ export default function ScenarioToolScreen() {
               </Text>
             </View>
 
+            {/* Company Margin Mechanics */}
+            <CompanyMarginMechanics language={language} />
+
             {/* Monthly / Yearly Table */}
-            <View style={[S.card, { overflow: 'visible' }]}>
+            <View style={[S.card, { overflow: 'visible', flexGrow: 1, flexShrink: 1 }]}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                 <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -1061,24 +1109,24 @@ export default function ScenarioToolScreen() {
                     scrollEnabled={false}
                     ref={tableHeaderScrollRef}
                     style={Platform.select({
-                      web: { position: 'sticky' as any, top: 0, zIndex: 10, backgroundColor: '#0f172a' } as any,
-                      default: { backgroundColor: '#0f172a', zIndex: 10 },
+                      web: { position: 'sticky' as any, top: 0, zIndex: 10, backgroundColor: '#1a2744' } as any,
+                      default: { backgroundColor: '#1a2744', zIndex: 10 },
                     })}
                   >
-                    <View style={S.tableHead}>
+                    <View style={[S.tableHead, { width: TW }]}>
                       {([
-                        { colKey: "M",                    tKey: "monthHeader" },
-                        { colKey: "Available Value",      tKey: "withdrawal" },
-                        { colKey: "Discount Applied",     tKey: "discountApplied" },
-                        { colKey: "Diamonds",             tKey: "startDiamonds" },
-                        { colKey: "Status",               tKey: "vipStatus" },
-                        { colKey: "Active Comp.",         tKey: "activeCompAbbr" },
-                        { colKey: "Plan",                 tKey: "planPrefix" },
-                        { colKey: "Strategy Discount %",  tKey: "outPercentage" },
-                        { colKey: "Monthly Purchase",     tKey: "deposit" },
-                        { colKey: "Total 💎 Assets",      tKey: "finalBalance" },
-                      ] as { colKey: string; tKey: string }[]).map(h => (
-                        <Text key={h.colKey} style={[S.th, colWidth(h.colKey)]}>{t(language, h.tKey)}</Text>
+                        { tKey: "monthHeader",   w: cw.num      },
+                        { tKey: "withdrawal",    w: cw.avail    },
+                        { tKey: "discountApplied", w: cw.disc   },
+                        { tKey: "startDiamonds", w: cw.diamonds },
+                        { tKey: "vipStatus",     w: cw.status   },
+                        { tKey: "activeCompAbbr", w: cw.comp    },
+                        { tKey: "planPrefix",    w: cw.plan     },
+                        { tKey: "outPercentage", w: cw.strat    },
+                        { tKey: "deposit",       w: cw.monthly  },
+                        { tKey: "finalBalance",  w: cw.total    },
+                      ]).map(h => (
+                        <Text key={h.tKey} style={[S.th, { width: h.w }]}>{t(language, h.tKey)}</Text>
                       ))}
                     </View>
                   </ScrollView>
@@ -1090,8 +1138,10 @@ export default function ScenarioToolScreen() {
                       tableHeaderScrollRef.current?.scrollTo({ x: e.nativeEvent.contentOffset.x, animated: false });
                     }}
                     scrollEventThrottle={16}
+                    style={{ width: '100%' as any }}
+                    contentContainerStyle={{ minWidth: TW }}
                   >
-                  <View>
+                  <View style={{ width: TW }}>
                     {result.months.map((row) => {
                       const isLastOfYear = row.month % 12 === 0;
                       let yearSummary = null;
@@ -1103,16 +1153,16 @@ export default function ScenarioToolScreen() {
                         const yearDeposits = yearMonths.reduce((s, r) => s + r.deposit, 0);
                         yearSummary = (
                           <View style={{ backgroundColor: "#0f1e35", flexDirection: "row", paddingVertical: 6, paddingHorizontal: 4, borderTopWidth: 1, borderBottomWidth: 2, borderColor: "#f59e0b" }}>
-                            <Text style={{ width: 28,  color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
-                            <Text style={{ width: 104, color: "#facc15", fontSize: 10, fontWeight: "bold" }}>{fmt(yearPayout)}</Text>
-                            <Text style={{ width: 80,  color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
-                            <Text style={{ width: 90,  color: "#e2e8f0", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
-                            <Text style={{ width: 100, color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'yearTotal').replace('{year}', String(row.yearNumber))}</Text>
-                            <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
-                            <Text style={{ width: 80,  color: "#94a3b8", fontSize: 10 }}>—</Text>
-                            <Text style={{ width: 72,  color: "#94a3b8", fontSize: 10 }}>—</Text>
-                            <Text style={{ width: 72,  color: "#60a5fa", fontSize: 10 }}>{fmt(yearDeposits)}</Text>
-                            <Text style={{ width: 90,  color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(row.capEnd)}</Text>
+                            <Text style={{ width: cw.num,      color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
+                            <Text style={{ width: cw.avail,    color: "#facc15", fontSize: 10, fontWeight: "bold" }}>{fmt(yearPayout)}</Text>
+                            <Text style={{ width: cw.disc,     color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(yearRebates)}</Text>
+                            <Text style={{ width: cw.diamonds, color: "#e2e8f0", fontSize: 10 }}>{fmt(row.capEnd)}</Text>
+                            <Text style={{ width: cw.status,   color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'yearTotal').replace('{year}', String(row.yearNumber))}</Text>
+                            <Text style={{ width: cw.comp,     color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: cw.plan,     color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: cw.strat,    color: "#94a3b8", fontSize: 10 }}>—</Text>
+                            <Text style={{ width: cw.monthly,  color: "#60a5fa", fontSize: 10 }}>{fmt(yearDeposits)}</Text>
+                            <Text style={{ width: cw.total,    color: "#4ade80", fontSize: 10, fontWeight: "bold" }}>{fmt(row.capEnd)}</Text>
                           </View>
                         );
                       }
@@ -1135,10 +1185,10 @@ export default function ScenarioToolScreen() {
                           )}
                           {row.isNewVip && !row.isVipSelfFunded && (
                             <View style={{ backgroundColor: "rgba(245,158,11,0.18)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
-                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>💳 Month {row.month} — Manual VIP Activation Fee: $1,000</Text>
+                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'manualVipBanner').replace('{month}', String(row.month))}</Text>
                             </View>
                           )}
-                          <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} />
+                          <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} cw={cw} />
                           {yearSummary}
                         </React.Fragment>
                       );
@@ -1160,30 +1210,24 @@ export default function ScenarioToolScreen() {
   );
 }
 
-function ActiveCompoundingCell({ grossYield, withdrawal, vipFee = 0 }: { grossYield: number; withdrawal: number; vipFee?: number }) {
+function ActiveCompoundingCell({ grossYield, withdrawal, vipFee = 0, colW = 72 }: { grossYield: number; withdrawal: number; vipFee?: number; colW?: number }) {
   const pct = grossYield > 0
     ? Math.max(0, Math.round((grossYield - withdrawal - vipFee) / grossYield * 100))
     : 100;
   const color = pct === 100 ? '#4ade80' : pct >= 75 ? '#a3e635' : pct >= 50 ? '#fbbf24' : pct >= 25 ? '#f97316' : '#f87171';
-  const fillW = Math.max(0, Math.round((pct / 100) * 40));
+  const barW = Math.max(20, Math.round(colW * 0.55));
+  const fillW = Math.max(0, Math.round((pct / 100) * barW));
   return (
-    <View style={{ width: 72, alignItems: 'center', justifyContent: 'center', paddingVertical: 2 }}>
+    <View style={{ width: colW, alignItems: 'center', justifyContent: 'center', paddingVertical: 2 }}>
       <Text style={{ color, fontWeight: 'bold', fontSize: 11 }}>{pct}%</Text>
-      <View style={{ width: 40, height: 3, backgroundColor: '#1e3a5f', borderRadius: 2, marginTop: 2 }}>
+      <View style={{ width: barW, height: 3, backgroundColor: '#1e3a5f', borderRadius: 2, marginTop: 2 }}>
         <View style={{ width: fillW, height: 3, backgroundColor: color, borderRadius: 2 }} />
       </View>
     </View>
   );
 }
 
-function colWidth(h: string) {
-  if (h === "M" || h === "Year") return { width: 28 };
-  if (h === "Available Value") return { width: 104 };
-  if (h === "Diamonds" || h === "Total 💎 Assets") return { width: 90 };
-  if (h === "Status") return { width: 100 };
-  if (h === "Discount Applied" || h === "Plan") return { width: 80 };
-  return { width: 72 };
-}
+// colWidth kept as no-op; header now uses inline cw widths
 
 function getRowStyle(row: MonthResult) {
   if (row.isNewVip && !row.isVipSelfFunded) return S.tableRowManualVip;
@@ -1193,53 +1237,52 @@ function getRowStyle(row: MonthResult) {
   return row.month % 2 === 0 ? S.tableRowAlt : S.tableRow;
 }
 
-function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData; onUpdate: (m: number, f: keyof MonthData, v: number) => void }) {
+type CW = { num: number; avail: number; disc: number; diamonds: number; status: number; comp: number; plan: number; strat: number; monthly: number; total: number };
+
+function TableRow({ row, mData, onUpdate, cw }: { row: MonthResult; mData: MonthData; onUpdate: (m: number, f: keyof MonthData, v: number) => void; cw: CW }) {
   const rowStyle = getRowStyle(row);
   return (
     <View style={[S.tableRow, rowStyle]}>
-      {/* M */}
-      <View style={{ width: 28, alignItems: 'center' }}>
+      {/* # */}
+      <View style={{ width: cw.num, alignItems: 'center' }}>
         <Text style={[S.td, { color: "#94a3b8" }]}>{row.month}</Text>
         {row.isYearStart && (
           <Text style={{ color: "#f59e0b", fontSize: 7, fontWeight: "bold" }}>Y{row.yearNumber}</Text>
         )}
       </View>
-      {/* Available Value — primary focus */}
-      <View style={{ width: 104 }}>
+      {/* Available Value */}
+      <View style={{ width: cw.avail }}>
         <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
       {/* Discount Applied */}
-      <Text style={[S.td, { width: 80, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
+      <Text style={[S.td, { width: cw.disc, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
       {/* Diamonds */}
-      <Text style={[S.td, { width: 90, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
-      {/* Status */}
-      <View style={{ width: 100 }}>
+      <Text style={[S.td, { width: cw.diamonds, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
+      {/* VIP Status */}
+      <View style={{ width: cw.status, alignItems: "center", justifyContent: "center", gap: 2 }}>
         {row.vipStatus ? (
-          <View style={{ backgroundColor: row.isNewVip ? "#7f1d1d" : "#1e3a5f", borderRadius: 4, paddingHorizontal: 3, paddingVertical: 1, marginBottom: 2, alignSelf: "center" }}>
+          <View style={{ backgroundColor: row.isNewVip ? "#7f1d1d" : "#1e3a5f", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, borderWidth: 1, borderColor: row.isNewVip ? "#ef4444" : "#3b82f6" }}>
             <Text style={{ color: row.isNewVip ? "#fca5a5" : "#fde68a", fontSize: 9, fontWeight: "bold", textAlign: "center" }}>{row.vipStatus}</Text>
           </View>
+        ) : (
+          <Text style={{ color: "#334155", fontSize: 9 }}>—</Text>
+        )}
+        {row.vipPot > 0 ? (
+          <Text style={{ color: "#fbbf24", fontSize: 8, textAlign: "center" }}>💰 {fmt(row.vipPot)}</Text>
         ) : null}
-        {row.isNewVip && !row.isVipSelfFunded ? (
-          <View style={{ backgroundColor: "#fde68a", borderRadius: 3, paddingHorizontal: 3, paddingVertical: 1, marginBottom: 2, alignSelf: "center" }}>
-            <Text style={{ color: "#92400e", fontSize: 8, fontWeight: "bold", textAlign: "center" }}>+$1,000 Manual</Text>
-          </View>
-        ) : null}
-        <Text style={[S.td, { color: "#94a3b8", fontSize: 9 }]}>W:{fmt(row.wallet)}</Text>
-        <Text style={[S.td, { color: "#fbbf24", fontSize: 9 }]}>VIP:{fmt(row.vipPot)}</Text>
-        <Text style={[S.td, { color: "#c4b5fd", fontSize: 9 }]}>VIP:{fmt(row.compPot)}</Text>
       </View>
       {/* Active Compounding */}
-      <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} vipFee={row.isVipActive ? 84 : 0} />
+      <ActiveCompoundingCell grossYield={row.grossYield} withdrawal={row.withdrawal} vipFee={row.isVipActive ? 84 : 0} colW={cw.comp} />
       {/* Plan */}
-      <View style={{ width: 80, alignItems: 'center' }}>
+      <View style={{ width: cw.plan, alignItems: 'center' }}>
         <Text style={[S.td, { color: row.isNewVip ? "#ef4444" : "#22c55e", fontSize: 10, fontWeight: "bold" }]}>
           {row.spName} ({row.totalRate.toFixed(1)}%)
         </Text>
       </View>
       {/* Strategy Discount % */}
-      <View style={{ width: 72, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ width: cw.strat, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
         <TextInput
-          style={[S.tdInput, { width: 52, color: "#f59e0b" }]}
+          style={[S.tdInput, { width: Math.round(cw.strat * 0.72), color: "#f59e0b" }]}
           value={String(mData.opnP)}
           onChangeText={v => onUpdate(row.month, "opnP", parseFloat(v) || 0)}
           keyboardType="numeric"
@@ -1247,14 +1290,16 @@ function TableRow({ row, mData, onUpdate }: { row: MonthResult; mData: MonthData
         <Text style={{ color: '#f59e0b', fontSize: 11, marginLeft: 2 }}>%</Text>
       </View>
       {/* Monthly Purchase */}
-      <TextInput
-        style={[S.tdInput, { width: 72, color: "#60a5fa" }]}
-        value={String(mData.stort)}
-        onChangeText={v => onUpdate(row.month, "stort", parseFloat(v) || 0)}
-        keyboardType="numeric"
-      />
-      {/* Total */}
-      <Text style={[S.td, { width: 90, color: row.capEnd >= row.capStart ? "#4ade80" : "#f87171", fontWeight: "bold" }]}>{fmt(row.capEnd)}</Text>
+      <View style={{ width: cw.monthly, alignItems: 'center' }}>
+        <TextInput
+          style={[S.tdInput, { width: Math.round(cw.monthly * 0.85), color: "#60a5fa" }]}
+          value={String(mData.stort)}
+          onChangeText={v => onUpdate(row.month, "stort", parseFloat(v) || 0)}
+          keyboardType="numeric"
+        />
+      </View>
+      {/* Total Assets */}
+      <Text style={[S.td, { width: cw.total, color: row.capEnd >= row.capStart ? "#4ade80" : "#f87171", fontWeight: "bold" }]}>{fmt(row.capEnd)}</Text>
     </View>
   );
 }
@@ -1271,7 +1316,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
       year: y,
       rebatePayout: yearMonths.reduce((s, m) => s + m.withdrawal, 0),
       rebate: yearMonths.reduce((s, m) => s + m.grossYield, 0),
-      diamonds: last.capEnd,
+      deposits: yearMonths.reduce((s, m) => s + m.deposit, 0),
       selfFunded,
       firstActivation,
       total: last.capEnd,
@@ -1283,16 +1328,16 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
         <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
         <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'withdrawal')}</Text>
         <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualDiscountGained')}</Text>
-        <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'startDiamonds')}</Text>
+        <Text style={{ flex: 1, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualAssetGrowth')}</Text>
         <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'vipStatus')}</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'totalLabel')}</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total Assets</Text>
       </View>
       {rows.map(r => (
         <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
           <Text style={{ width: 36, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
           <Text style={{ flex: 1.2, color: '#facc15', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
           <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
-          <Text style={{ flex: 1, color: '#e2e8f0', fontSize: 13, textAlign: 'right' }}>{fmt(r.diamonds)}</Text>
+          <Text style={{ flex: 1, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             {r.selfFunded ? (
               <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
@@ -1313,6 +1358,243 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
   );
 }
 
+function CompanyMarginMechanics({ language }: { language: Language }) {
+  const GOLD       = '#D4AF37';
+  const GOLD_DIM   = 'rgba(212,175,55,0.5)';
+  const GOLD_GLOW  = 'rgba(212,175,55,0.18)';
+  const GOLD_FAINT = 'rgba(212,175,55,0.07)';
+  const ONYX       = '#0D0D0D';
+  const ff         = Platform.OS === 'web' ? 'Trebuchet MS, sans-serif' : undefined;
+
+  const flowSteps = [
+    { icon: '⛏',  topLine: t(language, 'directRoughTopLine'), label: t(language, 'sourcingLabel'),  sub: t(language, 'ofSalePrice'),    value: '~10%', highlight: true  },
+    { icon: '✂️', topLine: t(language, 'internalCutTopLine'), label: t(language, 'giaCertLabel'),   sub: t(language, 'processingCost'), value: '~15%', highlight: false },
+    { icon: '💼',  topLine: t(language, 'b2bGlobalTopLine'),   label: t(language, 'b2bSaleCardLabel'), sub: t(language, 'realizedValue'), value: '100%', highlight: true  },
+  ];
+
+  return (
+    <View style={{ backgroundColor: ONYX, borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: GOLD_DIM, overflow: 'hidden' }}>
+
+      {/* ── Header ── */}
+      <View style={{ borderBottomWidth: 0.5, borderBottomColor: GOLD, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: GOLD, fontSize: 13, fontWeight: 'bold', letterSpacing: 1.5, fontFamily: ff, flex: 1 }}>
+          {t(language, 'companyMarginTitle')}
+        </Text>
+        <Text style={{ color: GOLD_DIM, fontSize: 11, fontFamily: ff }}>{t(language, 'b2bSupplyChainLabel')}</Text>
+      </View>
+
+      <View style={{ padding: 16 }}>
+
+        {/* ── 1. Side-by-side comparison ── */}
+        <View style={{ flexDirection: 'row', alignItems: 'stretch', marginBottom: 18, gap: 8 }}>
+
+          {/* LEFT: Traditional Chain */}
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1.5, borderColor: 'rgba(239,68,68,0.4)', backgroundColor: 'rgba(239,68,68,0.04)', overflow: 'hidden' }}>
+            <View style={{ backgroundColor: 'rgba(239,68,68,0.12)', paddingHorizontal: 8, paddingVertical: 6 }}>
+              <Text style={{ color: '#f87171', fontSize: 10, fontWeight: 'bold', letterSpacing: 0.8, textAlign: 'center', fontFamily: ff }}>
+                {t(language, 'traditionalMarket').toUpperCase()}
+              </Text>
+            </View>
+            <View style={{ padding: 10, position: 'relative', minHeight: 76 }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 4, opacity: 0.36 }}>
+                {[
+                  { icon: '🏛️', label: t(language, 'nodeDealer') },
+                  { icon: '📈', label: t(language, 'nodeExchange') },
+                  { icon: '🏭', label: t(language, 'nodeWholesale') },
+                  { icon: '🚛', label: t(language, 'nodeDist') },
+                  { icon: '🏪', label: t(language, 'nodeRetail') },
+                  { icon: '🏬', label: t(language, 'nodeStore') },
+                  { icon: '👤', label: t(language, 'nodeClient') },
+                ].map((node, i) => (
+                  <View key={i} style={{ alignItems: 'center', width: 30 }}>
+                    <Text style={{ fontSize: 15 }}>{node.icon}</Text>
+                    <Text style={{ color: '#64748b', fontSize: 7, textAlign: 'center', fontFamily: ff }}>{node.label}</Text>
+                  </View>
+                ))}
+              </View>
+              {/* Red dashed overlay */}
+              <View style={[{
+                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: 'rgba(239,68,68,0.07)',
+                alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+              }, Platform.OS === 'web' ? { borderStyle: 'dashed', borderWidth: 1, borderColor: 'rgba(239,68,68,0.5)' } as any : { borderWidth: 1, borderColor: 'rgba(239,68,68,0.5)' }]}>
+                <Text style={{ color: '#f87171', fontSize: 18, fontWeight: 'bold' }}>✕</Text>
+                <Text style={{ color: '#f87171', fontSize: 10, fontWeight: 'bold', letterSpacing: 0.5, fontFamily: ff, textAlign: 'center', lineHeight: 14, marginTop: 1 }}>
+                  700%{'\n'}{t(language, 'priceBloatLabel')}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* VS divider */}
+          <View style={{ width: 26, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 1, flex: 1, backgroundColor: GOLD_DIM }} />
+            <Text style={{ color: GOLD, fontSize: 10, fontWeight: 'bold', fontFamily: ff, paddingVertical: 4 }}>VS</Text>
+            <View style={{ width: 1, flex: 1, backgroundColor: GOLD_DIM }} />
+          </View>
+
+          {/* RIGHT: Direct model quick view */}
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1.5, borderColor: GOLD, backgroundColor: GOLD_FAINT, overflow: 'hidden' }}>
+            <View style={{ backgroundColor: 'rgba(212,175,55,0.15)', paddingHorizontal: 8, paddingVertical: 6 }}>
+              <Text style={{ color: GOLD, fontSize: 10, fontWeight: 'bold', letterSpacing: 0.8, textAlign: 'center', fontFamily: ff }}>
+                {t(language, 'ourDirectModel')}
+              </Text>
+            </View>
+            <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', flex: 1 }}>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 22 }}>⛏</Text>
+                <Text style={{ color: GOLD_DIM, fontSize: 8, fontFamily: ff }}>{t(language, 'roughLabel')}</Text>
+                <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: ff }}>~10%</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <View style={[{ backgroundColor: '#22c55e', borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, marginBottom: 3 }, Platform.OS === 'web' ? { boxShadow: '0 0 8px rgba(34,197,94,0.5)' } as any : {}]}>
+                  <Text style={{ color: '#0f172a', fontSize: 9, fontWeight: 'bold', fontFamily: ff }}>~75%</Text>
+                </View>
+                <Text style={{ color: '#22c55e', fontSize: 7, fontWeight: 'bold', fontFamily: ff, marginBottom: 2 }}>{t(language, 'netMarginLabel')}</Text>
+                <Text style={{ color: GOLD, fontSize: 18 }}>→</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 22 }}>💼</Text>
+                <Text style={{ color: GOLD_DIM, fontSize: 8, fontFamily: ff }}>B2B</Text>
+                <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: ff }}>100%</Text>
+              </View>
+            </View>
+          </View>
+
+        </View>
+
+        {/* ── 2. Mine-to-Market detailed flow ── */}
+        <Text style={{ color: GOLD, fontSize: 12, fontWeight: 'bold', letterSpacing: 1.2, marginBottom: 10, fontFamily: ff }}>
+          {t(language, 'mineToMarketEff').toUpperCase()}
+        </Text>
+
+        {/* 3-step flow — $9K badge on connector before B2B Sale */}
+        <View style={{ flexDirection: 'row', alignItems: 'stretch', marginBottom: 12, justifyContent: 'space-between', gap: 6 }}>
+          {flowSteps.map((step, i) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+              <View style={{
+                flex: 1, alignItems: 'center',
+                backgroundColor: step.highlight ? GOLD_GLOW : GOLD_FAINT,
+                borderRadius: 10,
+                borderWidth: step.highlight ? 1 : 0.5,
+                borderColor: step.highlight ? GOLD : GOLD_DIM,
+                paddingHorizontal: 10, paddingVertical: 16,
+              }}>
+                <Text style={{ fontSize: 29, marginBottom: 6 }}>{step.icon}</Text>
+                <Text style={{ color: step.highlight ? GOLD : '#94a3b8', fontSize: 12, fontWeight: 'bold', textAlign: 'center', fontFamily: ff, letterSpacing: 0.3 }}>
+                  {step.topLine}
+                </Text>
+                <Text style={{ color: step.highlight ? GOLD : '#94a3b8', fontSize: 12, fontWeight: 'bold', textAlign: 'center', fontFamily: ff, letterSpacing: 0.3 }}>
+                  {step.label}
+                </Text>
+                <Text style={{ color: GOLD_DIM, fontSize: 11, textAlign: 'center', fontFamily: ff, marginTop: 3 }}>{step.sub}</Text>
+                {step.value && (
+                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: 'bold', marginTop: 6, textAlign: 'center', fontFamily: ff }}>
+                    {step.value}
+                  </Text>
+                )}
+              </View>
+              {i < flowSteps.length - 1 && (
+                i === 1 ? (
+                  <View style={{ alignItems: 'center', paddingHorizontal: 2 }}>
+                    <View style={[{ backgroundColor: '#22c55e', borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2, marginBottom: 1 }, Platform.OS === 'web' ? { boxShadow: '0 0 8px rgba(34,197,94,0.45)' } as any : {}]}>
+                      <Text style={{ color: '#0f172a', fontSize: 9, fontWeight: 'bold', fontFamily: ff }}>~75%</Text>
+                    </View>
+                    <Text style={{ color: '#22c55e', fontSize: 7, fontWeight: 'bold', fontFamily: ff, marginBottom: 2 }}>{t(language, 'marginLabel')}</Text>
+                    <Text style={{ color: GOLD, fontSize: 20 }}>›</Text>
+                  </View>
+                ) : (
+                  <Text style={{ color: GOLD, fontSize: 22, paddingHorizontal: 2, alignSelf: 'center' }}>›</Text>
+                )
+              )}
+            </View>
+          ))}
+        </View>
+
+        {/* Margin Pool equation */}
+        <View style={{ backgroundColor: GOLD_GLOW, borderRadius: 8, borderWidth: 0.5, borderColor: GOLD, padding: 12, marginBottom: 12 }}>
+          <Text style={{ color: GOLD, fontSize: 11, fontWeight: 'bold', letterSpacing: 1, marginBottom: 7, textAlign: 'center', fontFamily: ff }}>
+            {t(language, 'operationalMarginPool').toUpperCase()}
+          </Text>
+          <Text style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 19, textAlign: 'center', fontFamily: ff }}>
+            {t(language, 'b2bBulkRevenue')} {t(language, 'minusOpCosts')}
+          </Text>
+          <Text style={{ color: '#94a3b8', fontSize: 12, lineHeight: 18, textAlign: 'center', marginTop: 6, fontFamily: ff }}>
+            {t(language, 'resultingMarginFunds') + '  '}
+            <Text style={{ color: GOLD, fontWeight: 'bold' }}>[1] {t(language, 'operationalProfitLabel')}</Text>
+            {'   '}
+            <Text style={{ color: '#60a5fa', fontWeight: 'bold' }}>[2] {t(language, 'b2bTradingLabel')}</Text>
+            {'   '}
+            <Text style={{ color: '#4ade80', fontWeight: 'bold' }}>[3] {t(language, 'customerDiscountsLabel')}</Text>
+          </Text>
+        </View>
+
+        {/* ── 3. Margin breakdown + Yield bridge ── */}
+        <View style={[{ borderRadius: 8, padding: 14, marginBottom: 18 }, Platform.OS === 'web' ? { borderStyle: 'dashed', borderWidth: 1, borderColor: GOLD } as any : { borderWidth: 1, borderColor: GOLD }]}>
+          {/* Cost breakdown table */}
+          <View style={{ marginBottom: 10 }}>
+            {[
+              { icon: '⛏', label: t(language, 'roughCostRow'),  pct: '~10%', color: '#94a3b8' },
+              { icon: '✂️', label: t(language, 'cutGiaRow'),     pct: '~15%', color: '#94a3b8' },
+              { icon: '💼', label: t(language, 'b2bSaleRow'),    pct: '100%', color: '#e2e8f0' },
+            ].map((row, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+                <Text style={{ fontSize: 14, width: 22 }}>{row.icon}</Text>
+                <Text style={{ color: row.color, fontSize: 12, flex: 1, fontFamily: ff }}>{row.label}</Text>
+                <Text style={{ color: row.color, fontSize: 12, fontWeight: 'bold', fontFamily: ff }}>{row.pct}</Text>
+              </View>
+            ))}
+            <View style={{ height: 1, backgroundColor: GOLD_DIM, marginVertical: 6 }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ fontSize: 14, width: 22 }}>💰</Text>
+              <Text style={{ color: '#22c55e', fontSize: 13, fontWeight: 'bold', flex: 1, fontFamily: ff }}>{t(language, 'netOperatingMargin')}</Text>
+              <Text style={{ color: '#22c55e', fontSize: 16, fontWeight: 'bold', fontFamily: ff }}>~75%</Text>
+            </View>
+          </View>
+          {/* Bridge sentence */}
+          <View style={{ borderTopWidth: 0.5, borderTopColor: GOLD_DIM, paddingTop: 10 }}>
+            <Text style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 19, fontFamily: ff }}>
+              {t(language, 'marginBridgeIntro') + ' '}
+              <Text style={{ color: GOLD, fontWeight: 'bold' }}>{t(language, 'marginBridgeHL')}</Text>
+              {'. ' + t(language, 'marginBridgeOutro')}
+            </Text>
+          </View>
+        </View>
+
+        {/* ── 4. Capital Velocity bold stat (replaces Q1–Q4 bar) ── */}
+        <View style={{ backgroundColor: GOLD_GLOW, borderRadius: 10, borderWidth: 1, borderColor: GOLD_DIM, padding: 16, marginBottom: 18, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+          <View style={{ alignItems: 'center', minWidth: 60 }}>
+            <Text style={{ color: GOLD, fontSize: 42, fontWeight: 'bold', fontFamily: ff, lineHeight: 46 }}>4×</Text>
+            <Text style={{ color: GOLD_DIM, fontSize: 9, fontWeight: 'bold', letterSpacing: 1, fontFamily: ff, textAlign: 'center' }}>{t(language, 'annualRotationLabel')}</Text>
+          </View>
+          <View style={{ width: 1, height: 52, backgroundColor: GOLD_DIM }} />
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 'bold', fontFamily: ff, marginBottom: 4 }}>
+              {t(language, 'capitalRotationStat')}
+            </Text>
+            <Text style={{ color: '#94a3b8', fontSize: 12, lineHeight: 17, fontFamily: ff }}>
+              {t(language, 'capitalRotationDesc')}{' '}
+              <Text style={{ color: '#4ade80', fontWeight: 'bold' }}>{t(language, 'consistentRebates')}</Text>
+              {' ' + t(language, 'regardlessCycle')}
+            </Text>
+          </View>
+        </View>
+
+        {/* ── 5. Transparency Note (fontSize 15) ── */}
+        <View style={{ borderTopWidth: 0.5, borderTopColor: GOLD_DIM, paddingTop: 13 }}>
+          <Text style={{ color: GOLD, fontSize: 11, fontWeight: 'bold', letterSpacing: 1, marginBottom: 6, fontFamily: ff }}>
+            {t(language, 'transparencyNoteTitle')}
+          </Text>
+          <Text style={{ color: '#94a3b8', fontSize: 15, lineHeight: 22, fontStyle: 'italic', fontFamily: ff }}>
+            {t(language, 'transparencyNoteBody')}
+          </Text>
+        </View>
+
+      </View>
+    </View>
+  );
+}
+
 function SummaryItem({ label, value, green, red }: { label: string; value: string; green?: boolean; red?: boolean }) {
   return (
     <View style={S.summaryItem}>
@@ -1323,17 +1605,17 @@ function SummaryItem({ label, value, green, red }: { label: string; value: strin
 }
 
 const S = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: "#0f172a" },
-  content: { padding: 12 },
+  scroll: { flex: 1, backgroundColor: "#0f172a", width: '100%' as any },
+  content: { padding: 16, width: '100%' as any, ...Platform.select({ web: { width: '98%' as any, maxWidth: 1450, alignSelf: 'center' as const } }) },
   header: { marginBottom: 10, alignItems: "center" },
   backBtn: { alignSelf: "flex-start", marginBottom: 6 },
   backText: { color: "#60a5fa", fontSize: 16 },
   title: { fontSize: 22, fontWeight: "bold", color: "#fff" },
   subtitle: { fontSize: 14, color: "#94a3b8", marginTop: 2 },
-  card: { backgroundColor: "#1e293b", borderRadius: 12, padding: 12, marginBottom: 8 },
+  card: { backgroundColor: "#1e293b", borderRadius: 12, padding: 12, marginBottom: 12 },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
   flex1: { flex: 1 },
-  label: { color: "#f59e0b", fontSize: 13, fontWeight: "bold", marginBottom: 3, letterSpacing: 0.5 },
+  label: { color: "#f59e0b", fontSize: 15, fontWeight: "bold", marginBottom: 3, letterSpacing: 0.5 },
   input: { backgroundColor: "#0f172a", color: "#fff", borderRadius: 8, padding: 10, fontSize: 16, borderWidth: 1, borderColor: "#334155" },
   bigInput: { backgroundColor: "#0f172a", color: "#fff", borderRadius: 8, padding: 8, fontSize: 20, fontWeight: "bold", borderWidth: 1, borderColor: "#334155" },
   goalInput: { flex: 1, backgroundColor: "#0f172a", color: "#f59e0b", borderRadius: 8, padding: 8, fontSize: 18, fontWeight: "bold", borderWidth: 1, borderColor: "#f59e0b" },
@@ -1345,7 +1627,7 @@ const S = StyleSheet.create({
   goalBadge: { backgroundColor: "#22c55e", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 3, marginLeft: 8 },
   goalBadgeText: { color: "#0f172a", fontWeight: "bold", fontSize: 13 },
   vipBox: { alignItems: "center", marginLeft: 12 },
-  sectionLabel: { color: "#f59e0b", fontSize: 13, fontWeight: "bold", marginBottom: 5, marginTop: 4, letterSpacing: 0.5 },
+  sectionLabel: { color: "#f59e0b", fontSize: 15, fontWeight: "bold", marginBottom: 5, marginTop: 4, letterSpacing: 0.5 },
   bulkRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 4 },
   bulkInput: { flex: 1, backgroundColor: "#0f172a", color: "#fff", borderRadius: 6, padding: 7, fontSize: 15, borderWidth: 1, borderColor: "#334155" },
   bulkSmall: { width: 64, backgroundColor: "#0f172a", color: "#fff", borderRadius: 6, padding: 7, fontSize: 15, borderWidth: 1, borderColor: "#334155" },
@@ -1360,8 +1642,8 @@ const S = StyleSheet.create({
   summaryItem: { backgroundColor: "#0f172a", borderRadius: 8, padding: 8, width: "48%" },
   summaryLabel: { color: "#94a3b8", fontSize: 13, marginBottom: 2 },
   summaryValue: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  tableHead: { flexDirection: "row", backgroundColor: "#0f172a", paddingVertical: 5 },
-  th: { color: "#f59e0b", fontSize: 12, fontWeight: "bold", paddingHorizontal: 3, textAlign: "center" },
+  tableHead: { flexDirection: "row", backgroundColor: "#1a2744", paddingVertical: 7, borderBottomWidth: 1.5, borderBottomColor: "#f59e0b" },
+  th: { color: "#f59e0b", fontSize: 10, fontWeight: "bold", paddingHorizontal: 3, textAlign: "center", letterSpacing: 0.3 },
   tableRow: { flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: "#0f172a", paddingVertical: 3, backgroundColor: "#0f172a" },
   tableRowAlt: { backgroundColor: "#1a2744" },
   tableRowManualVip: { backgroundColor: "rgba(245,158,11,0.12)", borderLeftWidth: 2, borderLeftColor: "#f59e0b" },
