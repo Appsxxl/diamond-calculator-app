@@ -149,6 +149,7 @@ export default function ScenarioToolScreen() {
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
+  const [showMarginMechanics, setShowMarginMechanics] = useState(true);
 
   // Auto-recalculate when startAmount changes so Goal Reached updates immediately
   useEffect(() => {
@@ -1085,8 +1086,25 @@ export default function ScenarioToolScreen() {
               </Text>
             </View>
 
-            {/* Company Margin Mechanics */}
-            <CompanyMarginMechanics language={language} />
+            {/* Company Margin Mechanics — toggle */}
+            <TouchableOpacity
+              onPress={() => setShowMarginMechanics(v => !v)}
+              style={{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                marginHorizontal: 16, marginBottom: showMarginMechanics ? 0 : 8, marginTop: 4,
+                paddingHorizontal: 14, paddingVertical: 10,
+                backgroundColor: '#0D0D0D', borderRadius: 10,
+                borderWidth: 1, borderColor: 'rgba(212,175,55,0.4)',
+              }}
+            >
+              <Text style={{ color: '#D4AF37', fontSize: 12, fontWeight: 'bold', letterSpacing: 1.2 }}>
+                {t(language, 'companyMarginTitle')}
+              </Text>
+              <Text style={{ color: 'rgba(212,175,55,0.7)', fontSize: 16 }}>
+                {showMarginMechanics ? '▲' : '▼'}
+              </Text>
+            </TouchableOpacity>
+            {showMarginMechanics && <CompanyMarginMechanics language={language} />}
 
             {/* Monthly / Yearly Table */}
             <View style={[S.card, { overflow: 'visible', flexGrow: 1, flexShrink: 1 }]}>

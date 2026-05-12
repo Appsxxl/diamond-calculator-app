@@ -88,6 +88,7 @@ const TEXT: Record<string, {
   companyDesc: string;
   openError: string;
   vimeoChannelBtn: string;
+  refreshBtn: string;
 }> = {
   en: {
     title: "📺 VIDEOS",
@@ -103,6 +104,7 @@ const TEXT: Record<string, {
     companyDesc: "Official company videos from Diamond Solution. Share these with prospects to explain the plan.",
     openError: "Could not open video. Please try again.",
     vimeoChannelBtn: "🎬 View All on Vimeo",
+    refreshBtn: "↻ Refresh Videos",
   },
   nl: {
     title: "📺 VIDEO'S",
@@ -118,6 +120,7 @@ const TEXT: Record<string, {
     companyDesc: "Officiële bedrijfsvideo's van Diamond Solution. Deel deze met prospects om het plan uit te leggen.",
     openError: "Kon video niet openen. Probeer het opnieuw.",
     vimeoChannelBtn: "🎬 Alles bekijken op Vimeo",
+    refreshBtn: "↻ Video's vernieuwen",
   },
   de: {
     title: "📺 VIDEOS",
@@ -133,6 +136,7 @@ const TEXT: Record<string, {
     companyDesc: "Offizielle Unternehmensvideos von Diamond Solution. Teilen Sie diese mit Interessenten.",
     openError: "Video konnte nicht geöffnet werden. Bitte versuchen Sie es erneut.",
     vimeoChannelBtn: "🎬 Alle auf Vimeo ansehen",
+    refreshBtn: "↻ Videos aktualisieren",
   },
   fr: {
     title: "📺 VIDÉOS",
@@ -148,6 +152,7 @@ const TEXT: Record<string, {
     companyDesc: "Vidéos officielles de Diamond Solution. Partagez-les avec vos prospects pour expliquer le plan.",
     openError: "Impossible d'ouvrir la vidéo. Veuillez réessayer.",
     vimeoChannelBtn: "🎬 Tout voir sur Vimeo",
+    refreshBtn: "↻ Actualiser les vidéos",
   },
   es: {
     title: "📺 VIDEOS",
@@ -163,6 +168,7 @@ const TEXT: Record<string, {
     companyDesc: "Videos oficiales de Diamond Solution. Compártalos con prospectos para explicar el plan.",
     openError: "No se pudo abrir el video. Por favor, inténtelo de nuevo.",
     vimeoChannelBtn: "🎬 Ver todo en Vimeo",
+    refreshBtn: "↻ Actualizar videos",
   },
   ru: {
     title: "📺 ВИДЕО",
@@ -178,6 +184,7 @@ const TEXT: Record<string, {
     companyDesc: "Официальные видео Diamond Solution. Делитесь ими с потенциальными партнёрами.",
     openError: "Не удалось открыть видео. Пожалуйста, попробуйте снова.",
     vimeoChannelBtn: "🎬 Смотреть всё на Vimeo",
+    refreshBtn: "↻ Обновить видео",
   },
   zh: {
     title: "📺 视频",
@@ -193,6 +200,103 @@ const TEXT: Record<string, {
     companyDesc: "Diamond Solution的官方视频。与潜在合作伙伴分享以解释计划。",
     openError: "无法打开视频，请重试。",
     vimeoChannelBtn: "🎬 在Vimeo上查看全部",
+    refreshBtn: "↻ 刷新视频",
+  },
+  tl: {
+    title: "📺 MGA VIDEO",
+    subtitle: "Pang-edukasyong nilalaman at opisyal na presentasyon ng kumpanya.",
+    watchVideo: "▶ Panoorin sa YouTube",
+    watchVimeo: "▶ Panoorin sa Vimeo",
+    subscribeBtn: "🔔 Mag-subscribe sa Channel",
+    channelName: "Wealth Preservation",
+    channelDesc: "Ang iyong pangunahing destinasyon para sa sining ng pangangalaga ng kayamanan at advanced na estratehiya sa pananalapi.",
+    views: "mga panonood",
+    latestVideos: "YOUTUBE — PINAKABAGONG MGA VIDEO",
+    companyVideos: "DIAMOND SOLUTION — OPISYAL NA MGA PRESENTASYON",
+    companyDesc: "Opisyal na mga video ng Diamond Solution. Ibahagi ito sa mga prospect upang ipaliwanag ang plano.",
+    openError: "Hindi mabuksan ang video. Pakisubukan muli.",
+    vimeoChannelBtn: "🎬 Tingnan Lahat sa Vimeo",
+    refreshBtn: "↻ I-refresh ang Mga Video",
+  },
+  pt: {
+    title: "📺 VÍDEOS",
+    subtitle: "Conteúdo educativo e apresentações oficiais da empresa.",
+    watchVideo: "▶ Assistir no YouTube",
+    watchVimeo: "▶ Assistir no Vimeo",
+    subscribeBtn: "🔔 Inscrever-se no Canal",
+    channelName: "Wealth Preservation",
+    channelDesc: "O seu destino principal para dominar a arte da preservação de riqueza e estratégia financeira avançada.",
+    views: "visualizações",
+    latestVideos: "YOUTUBE — ÚLTIMOS VÍDEOS",
+    companyVideos: "DIAMOND SOLUTION — APRESENTAÇÕES OFICIAIS",
+    companyDesc: "Vídeos oficiais da Diamond Solution. Partilhe com potenciais clientes para explicar o plano.",
+    openError: "Não foi possível abrir o vídeo. Por favor, tente novamente.",
+    vimeoChannelBtn: "🎬 Ver Tudo no Vimeo",
+    refreshBtn: "↻ Actualizar Vídeos",
+  },
+  ar: {
+    title: "📺 مقاطع الفيديو",
+    subtitle: "محتوى تعليمي وعروض تقديمية رسمية للشركة.",
+    watchVideo: "▶ شاهد على YouTube",
+    watchVimeo: "▶ شاهد على Vimeo",
+    subscribeBtn: "🔔 اشترك في القناة",
+    channelName: "Wealth Preservation",
+    channelDesc: "وجهتك المثالية لإتقان فن الحفاظ على الثروة والاستراتيجية المالية المتقدمة.",
+    views: "مشاهدات",
+    latestVideos: "يوتيوب — أحدث الفيديوهات",
+    companyVideos: "DIAMOND SOLUTION — العروض الرسمية",
+    companyDesc: "مقاطع فيديو رسمية من Diamond Solution. شاركها مع العملاء المحتملين لشرح الخطة.",
+    openError: "تعذر فتح الفيديو. يرجى المحاولة مجدداً.",
+    vimeoChannelBtn: "🎬 عرض الكل على Vimeo",
+    refreshBtn: "↻ تحديث الفيديوهات",
+  },
+  th: {
+    title: "📺 วิดีโอ",
+    subtitle: "เนื้อหาด้านการศึกษาและการนำเสนออย่างเป็นทางการของบริษัท",
+    watchVideo: "▶ ดูบน YouTube",
+    watchVimeo: "▶ ดูบน Vimeo",
+    subscribeBtn: "🔔 สมัครสมาชิกช่อง",
+    channelName: "Wealth Preservation",
+    channelDesc: "จุดหมายปลายทางชั้นนำของคุณสำหรับการเรียนรู้ศิลปะการรักษาความมั่งคั่งและกลยุทธ์ทางการเงินขั้นสูง",
+    views: "ครั้งที่ดู",
+    latestVideos: "YOUTUBE — วิดีโอล่าสุด",
+    companyVideos: "DIAMOND SOLUTION — การนำเสนออย่างเป็นทางการ",
+    companyDesc: "วิดีโอทางการของ Diamond Solution แชร์กับผู้มีโอกาสเป็นลูกค้าเพื่ออธิบายแผน",
+    openError: "ไม่สามารถเปิดวิดีโอได้ กรุณาลองอีกครั้ง",
+    vimeoChannelBtn: "🎬 ดูทั้งหมดบน Vimeo",
+    refreshBtn: "↻ รีเฟรชวิดีโอ",
+  },
+  hi: {
+    title: "📺 वीडियो",
+    subtitle: "धन संरक्षण पर शैक्षिक सामग्री और आधिकारिक कंपनी प्रस्तुतियाँ।",
+    watchVideo: "▶ YouTube पर देखें",
+    watchVimeo: "▶ Vimeo पर देखें",
+    subscribeBtn: "🔔 चैनल सब्सक्राइब करें",
+    channelName: "Wealth Preservation",
+    channelDesc: "धन संरक्षण की कला और उन्नत वित्तीय रणनीति में महारत हासिल करने के लिए आपका प्रमुख गंतव्य।",
+    views: "व्यूज़",
+    latestVideos: "YOUTUBE — नवीनतम वीडियो",
+    companyVideos: "DIAMOND SOLUTION — आधिकारिक प्रस्तुतियाँ",
+    companyDesc: "Diamond Solution के आधिकारिक वीडियो। योजना समझाने के लिए इन्हें संभावित ग्राहकों के साथ साझा करें।",
+    openError: "वीडियो खोला नहीं जा सका। कृपया पुनः प्रयास करें।",
+    vimeoChannelBtn: "🎬 Vimeo पर सभी देखें",
+    refreshBtn: "↻ वीडियो अपडेट करें",
+  },
+  vi: {
+    title: "📺 VIDEO",
+    subtitle: "Nội dung giáo dục về bảo toàn tài sản và các bài thuyết trình chính thức của công ty.",
+    watchVideo: "▶ Xem trên YouTube",
+    watchVimeo: "▶ Xem trên Vimeo",
+    subscribeBtn: "🔔 Đăng ký Kênh",
+    channelName: "Wealth Preservation",
+    channelDesc: "Điểm đến hàng đầu của bạn để nắm vững nghệ thuật bảo toàn tài sản và chiến lược tài chính nâng cao.",
+    views: "lượt xem",
+    latestVideos: "YOUTUBE — VIDEO MỚI NHẤT",
+    companyVideos: "DIAMOND SOLUTION — THUYẾT TRÌNH CHÍNH THỨC",
+    companyDesc: "Video chính thức của Diamond Solution. Chia sẻ với khách hàng tiềm năng để giải thích kế hoạch.",
+    openError: "Không thể mở video. Vui lòng thử lại.",
+    vimeoChannelBtn: "🎬 Xem Tất Cả trên Vimeo",
+    refreshBtn: "↻ Cập Nhật Video",
   },
 };
 
@@ -233,6 +337,8 @@ async function openUrl(url: string, errorMsg: string) {
 function useYouTubeVideos() {
   const [videos, setVideos] = useState<YouTubeVideo[]>(YOUTUBE_FALLBACK);
   const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -298,9 +404,9 @@ function useYouTubeVideos() {
     }
     fetchFeed();
     return () => { cancelled = true; };
-  }, []);
+  }, [refreshKey]);
 
-  return { videos, loading };
+  return { videos, loading, refresh };
 }
 
 // Auto-fetches all public videos from vimeo.com/diamondsolution on every load.
@@ -308,6 +414,8 @@ function useYouTubeVideos() {
 function useVimeoVideos() {
   const [videos, setVideos] = useState<VimeoVideo[]>(VIMEO_FALLBACK);
   const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -364,17 +472,17 @@ function useVimeoVideos() {
     }
     fetchFeed();
     return () => { cancelled = true; };
-  }, []);
+  }, [refreshKey]);
 
-  return { videos, loading };
+  return { videos, loading, refresh };
 }
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function VideosScreen() {
   const { language } = useCalculator();
   const tx = TEXT[language] ?? TEXT.en;
-  const { videos: ytVideos, loading: ytLoading } = useYouTubeVideos();
-  const { videos: vimeoVideos, loading: vimeoLoading } = useVimeoVideos();
+  const { videos: ytVideos, loading: ytLoading, refresh: refreshYT } = useYouTubeVideos();
+  const { videos: vimeoVideos, loading: vimeoLoading, refresh: refreshVimeo } = useVimeoVideos();
 
   const handleYouTubePress = useCallback((videoId: string) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -395,6 +503,16 @@ export default function VideosScreen() {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     openUrl(VIMEO_CHANNEL_URL, tx.openError);
   }, [tx.openError]);
+
+  const handleRefreshYT = useCallback(() => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    refreshYT();
+  }, [refreshYT]);
+
+  const handleRefreshVimeo = useCallback(() => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    refreshVimeo();
+  }, [refreshVimeo]);
 
   return (
     <ScreenContainer bgColor="#0f172a">
@@ -454,6 +572,11 @@ export default function VideosScreen() {
           <TouchableOpacity style={S.vimeoChannelBtn} onPress={handleVimeoChannel} activeOpacity={0.85}>
             <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
           </TouchableOpacity>
+
+          {/* Refresh Vimeo */}
+          <TouchableOpacity style={S.refreshBtn} onPress={handleRefreshVimeo} activeOpacity={0.8} disabled={vimeoLoading}>
+            <Text style={S.refreshBtnText}>{vimeoLoading ? "..." : tx.refreshBtn}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* ── SECTION 2: YouTube Channel ── */}
@@ -476,7 +599,12 @@ export default function VideosScreen() {
           </TouchableOpacity>
 
           {/* YouTube Videos */}
-          <Text style={[S.sectionLabel, { marginTop: 20, marginBottom: 12 }]}>{tx.latestVideos}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20, marginBottom: 12 }}>
+            <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{tx.latestVideos}</Text>
+            <TouchableOpacity style={S.refreshBtn} onPress={handleRefreshYT} activeOpacity={0.8} disabled={ytLoading}>
+              <Text style={S.refreshBtnText}>{ytLoading ? "..." : tx.refreshBtn}</Text>
+            </TouchableOpacity>
+          </View>
 
           {ytLoading ? (
             <ActivityIndicator color="#f59e0b" style={{ marginVertical: 20 }} />
@@ -760,5 +888,22 @@ const S = StyleSheet.create({
     color: "#f59e0b",
     fontWeight: "bold",
     marginTop: 4,
+  },
+
+  // Refresh button
+  refreshBtn: {
+    backgroundColor: "#1e293b",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "#334155",
+    marginTop: 8,
+    alignSelf: "flex-end",
+  },
+  refreshBtnText: {
+    color: "#64748b",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
