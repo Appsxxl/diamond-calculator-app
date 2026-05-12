@@ -27,6 +27,7 @@ export interface MonthResult {
   isNewVip: boolean;
   isVipActive: boolean;
   isVipSelfFunded: boolean; // true when renewal was paid from vipPot
+  isManualVip: boolean;     // true when VIP was paid as a fresh deposit (manualVip=true)
   isYearStart: boolean;
   yearNumber: number;
   isSpUpgrade: boolean;
@@ -112,6 +113,9 @@ export function runCalculation(params: CalculationParams): CalculationResult {
   let finalMaxVal = 0;
   let finalMaxMonth = 0;
 
+  // Initial SP is locked for the first 12-month contract period
+  const contractSP = getSPLevel(cap);
+
   const results: MonthResult[] = [];
 
   for (let m = 1; m <= maxMonths; m++) {
@@ -126,17 +130,22 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     let vipLabel = '';
     let isNewVip = false;
     let isVipSelfFunded = false;
+    let isManualVip = false;
 
     if (vipEnabled) {
-      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
+      // VIP triggers if net cap >= 3550, OR in month 1 when gross startAmount >= 3550
+      const vipThresholdMet = cap >= 3550 || (m === 1 && startAmount >= 3550);
+      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
         const cost = 1000;
         if (vipPot >= cost) {
-          vipPot -= cost;      // renewal: funded by accumulated vipPot
+          vipPot -= cost;       // renewal: funded by accumulated vipPot
           isVipSelfFunded = true;
-        } else if (!manualVip) {
-          cap -= cost;         // first activation: deduct from capital
+        } else if (manualVip) {
+          // manual VIP: user pays $1,000 out-of-pocket — NOT a diamond deposit, cap unchanged
+          isManualVip = true;
+        } else {
+          cap -= cost;          // auto-VIP: $1,000 deducted from diamond capital
         }
-        // when manualVip=true: user pays $1,000 out-of-pocket, no cap reduction
         tVip += cost;
         vActive = true;
         vMnd = 12;
@@ -147,8 +156,8 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       }
     }
 
-    // Step 3: SP level
-    const sp = getSPLevel(cap);
+    // Step 3: SP level — locked to initial contract SP for first 12 months
+    const sp = m <= 12 ? contractSP : getSPLevel(cap);
 
     // Step 4: Total rate
     const totalRate = sp.baseRate + (vActive ? 3.0 : 0);
@@ -213,6 +222,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       isNewVip,
       isVipActive: vActive,
       isVipSelfFunded,
+      isManualVip,
       isYearStart: m > 1 && (m - 1) % 12 === 0,
       yearNumber: Math.ceil(m / 12),
       isSpUpgrade: sp.name !== prevSpName,
@@ -280,7 +290,8 @@ export function stratSimulate(
     cap += getNetDeposit(monthlyStort);
 
     if (vipEnabled) {
-      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
+      const vipThresholdMet = cap >= 3550 || (i === 1 && inleg >= 3550);
+      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
         if (vipPot >= 1000) vipPot -= 1000;
         else cap -= 1000;
         vActive = true;
@@ -338,7 +349,8 @@ export function stratFindMeetingMonth(
     cap += getNetDeposit(monthlyStort);
 
     if (vipEnabled) {
-      if (cap >= 3550 && (!vActive || vMnd <= 0)) {
+      const vipThresholdMet = cap >= 3550 || (i === 1 && start >= 3550);
+      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
         if (vipPot >= 1000) vipPot -= 1000;
         else cap -= 1000;
         vActive = true;

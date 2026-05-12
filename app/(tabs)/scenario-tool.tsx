@@ -19,7 +19,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
 import { useCalculator } from "@/lib/calculator-context";
 import { t, Language } from "@/lib/translations";
-import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit } from "@/lib/calculator";
+import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit, getSPLevel } from "@/lib/calculator";
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
@@ -99,6 +99,7 @@ export default function ScenarioToolScreen() {
   const [bulkOpnPFrom, setBulkOpnPFrom] = useState("");
 
   const [manualVip, setManualVip] = useState(false);
+  const vipExplicitlyOff = useRef(false);
 
   // Load persisted backup on mount (runs once)
   useEffect(() => {
@@ -130,13 +131,14 @@ export default function ScenarioToolScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-trigger VIP when initial purchase >= $3,550
-  const autoVip = numVal(startAmount) >= 3550;
+  // Auto-trigger VIP when initial purchase >= $3,550 (only if user hasn't explicitly turned it off)
+  const autoVip = numVal(startAmount) >= 3550 && vipEnabled;
   useEffect(() => {
-    if (numVal(startAmount) >= 3550) {
+    if (numVal(startAmount) >= 3550 && !vipExplicitlyOff.current) {
       setVipEnabled(true);
       setManualVip(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startAmount]);
 
   // Plan Coach: tier detection & upsell
@@ -152,13 +154,12 @@ export default function ScenarioToolScreen() {
   useEffect(() => {
     const start = numVal(startAmount);
     if (start <= 0) return;
-    const effectiveVip = start >= 3550;
     setResult(runCalculation({
       startAmount: start,
       years: numVal(years, 5),
       goal: numVal(goal, 3500),
-      vipEnabled: effectiveVip ? true : vipEnabled,
-      manualVip: effectiveVip ? false : manualVip,
+      vipEnabled,
+      manualVip,
       monthData,
     }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -460,7 +461,12 @@ export default function ScenarioToolScreen() {
             </View>
             <View style={S.vipBox}>
               <Text style={S.label}>{t(language, 'vipStatus').toUpperCase()}</Text>
-              <Switch value={vipEnabled} onValueChange={setVipEnabled} trackColor={{ false: "#333", true: "#f59e0b" }} thumbColor="#fff" />
+              <Switch
+                value={vipEnabled}
+                onValueChange={(v) => { vipExplicitlyOff.current = !v; setVipEnabled(v); }}
+                trackColor={{ false: "#333", true: "#f59e0b" }}
+                thumbColor="#fff"
+              />
             </View>
           </View>
         </View>
@@ -1184,12 +1190,55 @@ export default function ScenarioToolScreen() {
                             </View>
                           )}
                           {row.isNewVip && !row.isVipSelfFunded && (
-                            <View style={{ backgroundColor: "rgba(245,158,11,0.18)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: "#f59e0b" }}>
-                              <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>{t(language, 'manualVipBanner').replace('{month}', String(row.month))}</Text>
+                            <View style={{ backgroundColor: row.isManualVip ? "rgba(51,197,255,0.15)" : "rgba(245,158,11,0.18)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: row.isManualVip ? "#33C5FF" : "#f59e0b" }}>
+                              <Text style={{ color: row.isManualVip ? "#33C5FF" : "#f59e0b", fontSize: 10, fontWeight: "bold" }}>
+                                {row.isManualVip
+                                  ? `💳 Month ${row.month} — VIP Activation: $1,000 paid manually (external fee — deposit ~$1,016 gross to cover)`
+                                  : `⚠️ Month ${row.month} — VIP Activation: $1,000 deducted from diamond assets`}
+                              </Text>
                             </View>
                           )}
                           <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} cw={cw} />
                           {yearSummary}
+                          {isLastOfYear && (() => {
+                            const contractStartCap = result.months[row.month - 12]?.capStart ?? result.months[0].capStart;
+                            const alreadySet = getMonthData(row.month).opn === Math.round(contractStartCap);
+                            return (
+                              <View style={{ backgroundColor: "rgba(34,197,94,0.10)", flexDirection: "row", alignItems: "center", paddingVertical: 6, paddingHorizontal: 8, borderLeftWidth: 3, borderLeftColor: "#22c55e", gap: 8, minWidth: TW }}>
+                                <View style={{ flex: 1 }}>
+                                  <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>
+                                    ↩ Contract End Y{row.yearNumber} — Principal: {fmt(contractStartCap)}
+                                  </Text>
+                                  <Text style={{ color: "#64748b", fontSize: 9, marginTop: 1 }}>
+                                    Diamond delivery: take out initial → total assets deducted
+                                  </Text>
+                                </View>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    const newOpn = Math.round(contractStartCap);
+                                    const newMonthData = {
+                                      ...monthData,
+                                      [row.month]: { ...(monthData[row.month] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opn: newOpn },
+                                    };
+                                    setMonthData(newMonthData);
+                                    setResult(runCalculation({
+                                      startAmount: numVal(startAmount, 3000),
+                                      years: numVal(years, 5),
+                                      goal: numVal(goal, 3500),
+                                      vipEnabled,
+                                      manualVip,
+                                      monthData: newMonthData,
+                                    }));
+                                  }}
+                                  style={{ backgroundColor: alreadySet ? "#14532d" : "#166534", borderRadius: 5, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: alreadySet ? "#4ade80" : "#22c55e" }}
+                                >
+                                  <Text style={{ color: alreadySet ? "#4ade80" : "#bbf7d0", fontSize: 10, fontWeight: "bold" }}>
+                                    {alreadySet ? "✓ Set" : "Take Out"}
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            );
+                          })()}
                         </React.Fragment>
                       );
                     })}
@@ -1255,7 +1304,12 @@ function TableRow({ row, mData, onUpdate, cw }: { row: MonthResult; mData: Month
         <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
       {/* Discount Applied */}
-      <Text style={[S.td, { width: cw.disc, color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
+      <View style={{ width: cw.disc, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={[S.td, { color: "#4ade80" }]}>{fmt(row.grossYield)}</Text>
+        <Text style={{ color: row.isVipActive ? "#fbbf24" : "#64748b", fontSize: 8 }}>
+          {getSPLevel(row.grossYield).name}{row.isVipActive ? ' +VIP' : ''}
+        </Text>
+      </View>
       {/* Diamonds */}
       <Text style={[S.td, { width: cw.diamonds, color: "#e2e8f0" }]}>{fmt(row.capStart)}</Text>
       {/* VIP Status */}

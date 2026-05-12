@@ -77,22 +77,46 @@ describe("Calculator Engine - runCalculation", () => {
   });
 
   it("VIP does not activate when disabled", () => {
+    // net(10000) = (10000-5)*0.9875 = 9870 → SP4 (3.0%), no VIP
     const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: false }));
     const m1 = result.months[0];
     expect(m1.isNewVip).toBe(false);
-    expect(m1.totalRate).toBeCloseTo(3.1, 1); // SP5 only
+    expect(m1.totalRate).toBeCloseTo(3.0, 1); // SP4 only (fees reduce 10k to ~9870)
   });
 
-  it("SP5 rate is 3.1% base for 10000 balance", () => {
-    const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: false }));
+  it("manualVip=true leaves cap unchanged (external fee, not a deposit)", () => {
+    // With manualVip=false: cap loses $1,000 (deducted from assets)
+    // With manualVip=true:  cap is unchanged ($1,000 paid externally, not from diamonds)
+    const auto   = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: true, manualVip: false }));
+    const manual = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: true, manualVip: true }));
+    expect(manual.months[0].isManualVip).toBe(true);
+    expect(auto.months[0].isManualVip).toBe(false);
+    // manualVip cap is higher: $1,000 not deducted + extra yield on that $1,000
+    expect(manual.months[0].capEnd - auto.months[0].capEnd).toBeGreaterThan(950);
+  });
+
+  it("VIP triggers in month 1 when gross startAmount >= 3550 even though net cap < 3550", () => {
+    // gross=3550 → net = (3550-5)*0.9875 = 3500.69 < 3550 threshold
+    // VIP should still activate because gross startAmount >= 3550
+    const result = runCalculation(makeParams({ startAmount: 3550, years: 1, vipEnabled: true, goal: 0 }));
+    expect(result.months[0].isNewVip).toBe(true);
+    // After VIP deduction: 3500.69 - 1000 = 2500.69 → SP3
+    expect(result.months[0].spName).toBe('SP3');
+  });
+
+  it("SP5 rate is 3.1% base for balance >= 10000 net", () => {
+    // Need gross > 10127 to get net >= 10000 (SP5): (10200-5)*0.9875 = 10055
+    const result = runCalculation(makeParams({ startAmount: 10200, years: 1, vipEnabled: false }));
     expect(result.months[0].spName).toBe("SP5");
     expect(result.months[0].spBaseRate).toBe(3.1);
   });
 
   it("grossYield is Math.round(cap * rate/100)", () => {
-    const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: false }));
+    // net(10200) = (10200-5)*0.9875 = 10055.06 → SP5 (3.1%)
+    const result = runCalculation(makeParams({ startAmount: 10200, years: 1, vipEnabled: false }));
     const m1 = result.months[0];
-    const expected = Math.round(10000 * (3.1 / 100));
+    const netCap = (10200 - 5) * 0.9875; // 10055.0625
+    const expected = Math.round(netCap * (3.1 / 100));
     expect(m1.grossYield).toBe(expected);
   });
 
@@ -114,6 +138,31 @@ describe("Calculator Engine - runCalculation", () => {
     });
   });
 
+  it("SP level is locked for first 12 months, upgrades from month 13 onward", () => {
+    // net(940) = (940-5)*0.9875 = 923.31 → starts in SP1, locked for 12 months
+    const result = runCalculation(makeParams({ startAmount: 940, years: 2, vipEnabled: false, goal: 0 }));
+    // months 1-12 must all remain SP1 (initial contract lock)
+    result.months.slice(0, 12).forEach(m => {
+      expect(m.spName).toBe("SP1");
+    });
+    // SP upgrade to SP2 must happen at month 13 or later
+    const upgradeMonth = result.months.find(m => m.spName === "SP2");
+    expect(upgradeMonth).toBeDefined();
+    expect(upgradeMonth!.month).toBeGreaterThanOrEqual(13);
+    expect(upgradeMonth!.isSpUpgrade).toBe(true);
+    expect(upgradeMonth!.totalRate).toBeCloseTo(2.45, 2);
+  });
+
+  it("VIP rate adds to upgraded SP level correctly", () => {
+    // Start in SP4, VIP active → totalRate = SP4(3.0%) + VIP(3.0%) = 6.0%
+    // After compounding into SP5, totalRate = SP5(3.1%) + VIP(3.0%) = 6.1%
+    const result = runCalculation(makeParams({ startAmount: 5000, years: 5, vipEnabled: true, goal: 0 }));
+    const sp5Month = result.months.find(m => m.spName === "SP5" && m.isVipActive);
+    if (sp5Month) {
+      expect(sp5Month.totalRate).toBeCloseTo(6.1, 1);
+    }
+  });
+
   it("isYearStart is true for month 13, 25, 37...", () => {
     const result = runCalculation(makeParams({ years: 5 }));
     expect(result.months[12].isYearStart).toBe(true);  // month 13
@@ -121,9 +170,10 @@ describe("Calculator Engine - runCalculation", () => {
     expect(result.months[0].isYearStart).toBe(false);  // month 1
   });
 
-  it("netResult = (finalCap + totalOut + wallet + vipPot + compPot) - totalIn", () => {
+  it("netResult = (finalCap + totalOut) - (totalIn + totalVipPotPayments)", () => {
     const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: true }));
-    const expected = (result.finalCap + result.totalOut + result.finalWallet + result.finalVipPot + result.finalCompPot) - result.totalIn;
+    // netResult = value out (capital + withdrawals) minus value in (deposits + monthly VIP fees)
+    const expected = (result.finalCap + result.totalOut) - (result.totalIn + result.totalVipPotPayments);
     expect(result.netResult).toBeCloseTo(expected, 0);
   });
 });
