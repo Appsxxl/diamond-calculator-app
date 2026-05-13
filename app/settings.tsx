@@ -40,6 +40,7 @@ export default function SettingsScreen() {
     { code: "de" as const, label: "DE" },
     { code: "fr" as const, label: "FR" },
     { code: "es" as const, label: "ES" },
+    { code: "it" as const, label: "IT" },
     { code: "ru" as const, label: "RU" },
     { code: "zh" as const, label: "中文" },
   ];

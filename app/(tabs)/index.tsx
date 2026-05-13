@@ -128,6 +128,10 @@ export default function HomeScreen() {
       tool1: "Simule su crecimiento de riqueza mes a mes. Configure depósitos, retiros, porcentajes compuestos y estado VIP.",
       tool2: "Calculadora de planificación de objetivos. Ingrese su depósito inicial y el objetivo de ingresos mensuales — obtenga 4 planes estratégicos (A/B/C/D).",
     },
+    it: {
+      tool1: "Simula la crescita del tuo patrimonio mese per mese. Configura depositi, prelievi, percentuali di capitalizzazione e stato VIP.",
+      tool2: "Calcolatore di pianificazione obiettivi. Inserisci il deposito iniziale e l'obiettivo mensile — ottieni 4 piani strategici (A/B/C/D).",
+    },
     ru: {
       tool1: "Симулируйте рост капитала помесячно. Настройте депозиты, выводы, реинвестирование и VIP-статус.",
       tool2: "Калькулятор планирования целей. Введите начальный депозит и ежемесячную цель — получите 4 стратегических плана (A/B/C/D).",

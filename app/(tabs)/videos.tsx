@@ -10,6 +10,7 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
@@ -28,14 +29,59 @@ interface VimeoVideo {
   id: string;
   title: string;
   age: string;
+  thumbnail?: string;
 }
 
-// ─── Vimeo fallback (shown if live fetch fails) ──────────────────────────────
-const VIMEO_FALLBACK: VimeoVideo[] = [
-  { id: "1146526988", title: "JPP1 — Invitation",        age: "" },
-  { id: "1146537304", title: "JPP2 — Presentation",      age: "" },
-  { id: "1150833840", title: "JPP3 — Compensation Plan", age: "" },
-];
+// ─── Vimeo fallback (empty — avoids showing wrong-language content when fetch fails) ──
+const VIMEO_FALLBACK: VimeoVideo[] = [];
+
+// Keywords matched against video titles to select the right language version.
+// Title format on Vimeo: "JPP1 - deutsch - Invitation DE"
+// Word-boundary regex prevents short codes like "EN" matching inside other words.
+const VIMEO_LANG_KEYWORDS: Record<string, string[]> = {
+  en: ["english", "EN"],
+  nl: ["nederlands", "dutch", "NL"],
+  de: ["deutsch", "german", "DE"],
+  fr: ["francais", "français", "french", "FR"],
+  es: ["espanol", "español", "spanish", "ES"],
+  it: ["italiano", "italian", "IT"],
+  ru: ["русский", "russian", "RU"],
+  zh: ["中文", "chinese", "mandarin", "ZH"],
+  tl: ["filipino", "tagalog", "TL"],
+  pt: ["portugues", "português", "portuguese", "PT"],
+  ar: ["العربية", "arabic", "AR"],
+  th: ["ไทย", "thai", "TH"],
+  hi: ["हिंदी", "hindi", "HI"],
+  vi: ["tiếng việt", "vietnamese", "VI"],
+  sr: ["srpski", "serbian", "SRB"],
+  hu: ["magyar", "hungarian", "HU"],
+  ro: ["romanesc", "română", "romanian", "RO"],
+  cs: ["cesky", "česky", "czech", "CZ"],
+  sk: ["slovenský", "slovensky", "slovak", "SK"],
+};
+
+function matchKeywords(videos: VimeoVideo[], keywords: string[]): VimeoVideo[] {
+  return videos.filter((v) =>
+    keywords.some((kw) => {
+      const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp(`\\b${escaped}\\b`, "i").test(v.title);
+    })
+  );
+}
+
+function filterByLanguage(videos: VimeoVideo[], language: string): VimeoVideo[] {
+  const keywords = VIMEO_LANG_KEYWORDS[language];
+  if (keywords) {
+    const matched = matchKeywords(videos, keywords);
+    if (matched.length > 0) return matched;
+  }
+  // Fallback to English if no videos in the selected language
+  if (language !== "en") {
+    const enMatched = matchKeywords(videos, VIMEO_LANG_KEYWORDS["en"]);
+    if (enMatched.length > 0) return enMatched;
+  }
+  return [];
+}
 
 // ─── Static YouTube fallback (shown while API loads) ─────────────────────────
 const YOUTUBE_FALLBACK: YouTubeVideo[] = [
@@ -89,6 +135,8 @@ const TEXT: Record<string, {
   openError: string;
   vimeoChannelBtn: string;
   refreshBtn: string;
+  comingSoonTitle: string;
+  comingSoonDesc: string;
 }> = {
   en: {
     title: "📺 VIDEOS",
@@ -105,6 +153,8 @@ const TEXT: Record<string, {
     openError: "Could not open video. Please try again.",
     vimeoChannelBtn: "🎬 View All on Vimeo",
     refreshBtn: "↻ Refresh Videos",
+    comingSoonTitle: "Videos Coming Soon",
+    comingSoonDesc: "Presentations in your language are being prepared. Use the button below to view all available videos on Vimeo.",
   },
   nl: {
     title: "📺 VIDEO'S",
@@ -121,6 +171,8 @@ const TEXT: Record<string, {
     openError: "Kon video niet openen. Probeer het opnieuw.",
     vimeoChannelBtn: "🎬 Alles bekijken op Vimeo",
     refreshBtn: "↻ Video's vernieuwen",
+    comingSoonTitle: "Video's binnenkort beschikbaar",
+    comingSoonDesc: "Presentaties in uw taal worden voorbereid. Gebruik de knop hieronder om alle beschikbare video's op Vimeo te bekijken.",
   },
   de: {
     title: "📺 VIDEOS",
@@ -137,6 +189,8 @@ const TEXT: Record<string, {
     openError: "Video konnte nicht geöffnet werden. Bitte versuchen Sie es erneut.",
     vimeoChannelBtn: "🎬 Alle auf Vimeo ansehen",
     refreshBtn: "↻ Videos aktualisieren",
+    comingSoonTitle: "Videos kommen bald",
+    comingSoonDesc: "Präsentationen in Ihrer Sprache werden vorbereitet. Klicken Sie unten, um alle verfügbaren Videos auf Vimeo anzusehen.",
   },
   fr: {
     title: "📺 VIDÉOS",
@@ -153,6 +207,26 @@ const TEXT: Record<string, {
     openError: "Impossible d'ouvrir la vidéo. Veuillez réessayer.",
     vimeoChannelBtn: "🎬 Tout voir sur Vimeo",
     refreshBtn: "↻ Actualiser les vidéos",
+    comingSoonTitle: "Vidéos bientôt disponibles",
+    comingSoonDesc: "Des présentations dans votre langue sont en cours de préparation. Utilisez le bouton ci-dessous pour voir toutes les vidéos disponibles sur Vimeo.",
+  },
+  it: {
+    title: "📺 VIDEO",
+    subtitle: "Contenuti educativi e presentazioni ufficiali dell'azienda.",
+    watchVideo: "▶ Guarda su YouTube",
+    watchVimeo: "▶ Guarda su Vimeo",
+    subscribeBtn: "🔔 Iscriviti al Canale",
+    channelName: "Wealth Preservation",
+    channelDesc: "La tua destinazione principale per padroneggiare l'arte della preservazione del patrimonio e la strategia finanziaria avanzata.",
+    views: "visualizzazioni",
+    latestVideos: "YOUTUBE — ULTIMI VIDEO",
+    companyVideos: "DIAMOND SOLUTION — PRESENTAZIONI UFFICIALI",
+    companyDesc: "Video ufficiali di Diamond Solution. Condividili con i prospect per spiegare il piano.",
+    openError: "Impossibile aprire il video. Per favore riprova.",
+    vimeoChannelBtn: "🎬 Visualizza Tutto su Vimeo",
+    refreshBtn: "↻ Aggiorna Video",
+    comingSoonTitle: "Video in arrivo",
+    comingSoonDesc: "Le presentazioni nella tua lingua sono in preparazione. Usa il pulsante qui sotto per vedere tutti i video disponibili su Vimeo.",
   },
   es: {
     title: "📺 VIDEOS",
@@ -169,6 +243,8 @@ const TEXT: Record<string, {
     openError: "No se pudo abrir el video. Por favor, inténtelo de nuevo.",
     vimeoChannelBtn: "🎬 Ver todo en Vimeo",
     refreshBtn: "↻ Actualizar videos",
+    comingSoonTitle: "Vídeos próximamente",
+    comingSoonDesc: "Las presentaciones en su idioma están siendo preparadas. Use el botón de abajo para ver todos los vídeos disponibles en Vimeo.",
   },
   ru: {
     title: "📺 ВИДЕО",
@@ -185,6 +261,8 @@ const TEXT: Record<string, {
     openError: "Не удалось открыть видео. Пожалуйста, попробуйте снова.",
     vimeoChannelBtn: "🎬 Смотреть всё на Vimeo",
     refreshBtn: "↻ Обновить видео",
+    comingSoonTitle: "Видео скоро появятся",
+    comingSoonDesc: "Презентации на вашем языке готовятся. Нажмите кнопку ниже, чтобы посмотреть все доступные видео на Vimeo.",
   },
   zh: {
     title: "📺 视频",
@@ -201,6 +279,8 @@ const TEXT: Record<string, {
     openError: "无法打开视频，请重试。",
     vimeoChannelBtn: "🎬 在Vimeo上查看全部",
     refreshBtn: "↻ 刷新视频",
+    comingSoonTitle: "视频即将推出",
+    comingSoonDesc: "您语言的演示文稿正在准备中。使用下方按钮查看Vimeo上的所有可用视频。",
   },
   tl: {
     title: "📺 MGA VIDEO",
@@ -217,6 +297,8 @@ const TEXT: Record<string, {
     openError: "Hindi mabuksan ang video. Pakisubukan muli.",
     vimeoChannelBtn: "🎬 Tingnan Lahat sa Vimeo",
     refreshBtn: "↻ I-refresh ang Mga Video",
+    comingSoonTitle: "Mga Video — Paparating Na",
+    comingSoonDesc: "Ang mga presentasyon sa iyong wika ay inihahanda. Gamitin ang button sa ibaba para makita lahat ng available na video sa Vimeo.",
   },
   pt: {
     title: "📺 VÍDEOS",
@@ -233,6 +315,8 @@ const TEXT: Record<string, {
     openError: "Não foi possível abrir o vídeo. Por favor, tente novamente.",
     vimeoChannelBtn: "🎬 Ver Tudo no Vimeo",
     refreshBtn: "↻ Actualizar Vídeos",
+    comingSoonTitle: "Vídeos em Breve",
+    comingSoonDesc: "As apresentações no seu idioma estão a ser preparadas. Use o botão abaixo para ver todos os vídeos disponíveis no Vimeo.",
   },
   ar: {
     title: "📺 مقاطع الفيديو",
@@ -249,6 +333,8 @@ const TEXT: Record<string, {
     openError: "تعذر فتح الفيديو. يرجى المحاولة مجدداً.",
     vimeoChannelBtn: "🎬 عرض الكل على Vimeo",
     refreshBtn: "↻ تحديث الفيديوهات",
+    comingSoonTitle: "قريباً — مقاطع الفيديو",
+    comingSoonDesc: "يتم إعداد العروض التقديمية بلغتك. استخدم الزر أدناه لمشاهدة جميع مقاطع الفيديو المتاحة على Vimeo.",
   },
   th: {
     title: "📺 วิดีโอ",
@@ -265,6 +351,8 @@ const TEXT: Record<string, {
     openError: "ไม่สามารถเปิดวิดีโอได้ กรุณาลองอีกครั้ง",
     vimeoChannelBtn: "🎬 ดูทั้งหมดบน Vimeo",
     refreshBtn: "↻ รีเฟรชวิดีโอ",
+    comingSoonTitle: "วิดีโอกำลังจะมาเร็วๆ นี้",
+    comingSoonDesc: "การนำเสนอในภาษาของคุณกำลังอยู่ระหว่างการเตรียม ใช้ปุ่มด้านล่างเพื่อดูวิดีโอทั้งหมดที่มีบน Vimeo",
   },
   hi: {
     title: "📺 वीडियो",
@@ -281,6 +369,8 @@ const TEXT: Record<string, {
     openError: "वीडियो खोला नहीं जा सका। कृपया पुनः प्रयास करें।",
     vimeoChannelBtn: "🎬 Vimeo पर सभी देखें",
     refreshBtn: "↻ वीडियो अपडेट करें",
+    comingSoonTitle: "वीडियो जल्द आ रहे हैं",
+    comingSoonDesc: "आपकी भाषा में प्रस्तुतियाँ तैयार की जा रही हैं। Vimeo पर सभी उपलब्ध वीडियो देखने के लिए नीचे दिए बटन का उपयोग करें।",
   },
   vi: {
     title: "📺 VIDEO",
@@ -297,6 +387,8 @@ const TEXT: Record<string, {
     openError: "Không thể mở video. Vui lòng thử lại.",
     vimeoChannelBtn: "🎬 Xem Tất Cả trên Vimeo",
     refreshBtn: "↻ Cập Nhật Video",
+    comingSoonTitle: "Video Sắp Ra Mắt",
+    comingSoonDesc: "Các bài thuyết trình bằng ngôn ngữ của bạn đang được chuẩn bị. Sử dụng nút bên dưới để xem tất cả video có sẵn trên Vimeo.",
   },
 };
 
@@ -305,9 +397,33 @@ function getThumbUrl(videoId: string) {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 }
 
-// Vimeo thumbnail via oEmbed (no API key needed)
-function getVimeoThumbUrl(videoId: string) {
-  return `https://vumbnail.com/${videoId}.jpg`;
+function getVimeoThumbUrl(video: VimeoVideo) {
+  return video.thumbnail ?? `https://vumbnail.com/${video.id}.jpg`;
+}
+
+// Fetches one page from Vimeo's simple JSON API (no auth needed, 20 items/page).
+async function fetchVimeoApiPage(page: number): Promise<any[]> {
+  const url = `https://vimeo.com/api/v2/diamondsolution/videos.json?page=${page}`;
+  if (Platform.OS !== "web") {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) return [];
+      return res.json();
+    } catch { return []; }
+  }
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  ];
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    } catch { /* try next */ }
+  }
+  return [];
 }
 
 async function openUrl(url: string, errorMsg: string) {
@@ -409,80 +525,66 @@ function useYouTubeVideos() {
   return { videos, loading, refresh };
 }
 
-// Auto-fetches all public videos from vimeo.com/diamondsolution on every load.
-// No API key needed — uses the public RSS feed.
-function useVimeoVideos() {
-  const [videos, setVideos] = useState<VimeoVideo[]>(VIMEO_FALLBACK);
+// Fetches ALL videos from the channel by paginating the Vimeo v2 JSON API
+// (20 items/page, no auth required). Filters to the active language.
+function useVimeoVideos(language: string) {
+  const [allVideos, setAllVideos] = useState<VimeoVideo[]>(VIMEO_FALLBACK);
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchFeed() {
+    async function fetchAll() {
       setLoading(true);
       try {
-        const RSS_URL = "https://vimeo.com/diamondsolution/videos/rss";
-        const fetchUrl = Platform.OS === "web"
-          ? `https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`
-          : RSS_URL;
+        const collected: VimeoVideo[] = [];
+        for (let page = 1; page <= 20; page++) {
+          const items = await fetchVimeoApiPage(page);
+          if (cancelled) return;
+          if (!Array.isArray(items) || items.length === 0) break;
 
-        const res = await fetch(fetchUrl, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok) throw new Error("RSS fetch failed");
+          for (const item of items) {
+            const pubDate = item.upload_date ? new Date(item.upload_date) : new Date();
+            const diffDays = Math.floor((Date.now() - pubDate.getTime()) / 86400000);
+            const age = diffDays === 0 ? "Today"
+              : diffDays < 7  ? `${diffDays}d ago`
+              : diffDays < 30 ? `${Math.floor(diffDays / 7)}w ago`
+              : diffDays < 365 ? `${Math.floor(diffDays / 30)}mo ago`
+              : `${Math.floor(diffDays / 365)}y ago`;
 
-        let xmlText: string;
-        if (Platform.OS === "web") {
-          const json = await res.json();
-          xmlText = json.contents as string;
-        } else {
-          xmlText = await res.text();
+            collected.push({
+              id: String(item.id),
+              title: item.title ?? "",
+              age,
+              thumbnail: item.thumbnail_large ?? item.thumbnail_medium ?? undefined,
+            });
+          }
+
+          if (items.length < 20) break; // last page
         }
 
-        const parsed: VimeoVideo[] = [];
-        const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-        let match: RegExpExecArray | null;
-        while ((match = itemRegex.exec(xmlText)) !== null) {
-          const item = match[1];
-          const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
-          const linkMatch = item.match(/vimeo\.com\/(\d+)/);
-          const pubMatch = item.match(/<pubDate>([^<]+)<\/pubDate>/);
-          if (!titleMatch || !linkMatch) continue;
-
-          const pubDate = pubMatch ? new Date(pubMatch[1]) : new Date();
-          const diffDays = Math.floor((Date.now() - pubDate.getTime()) / 86400000);
-          const age = diffDays === 0 ? "Today"
-            : diffDays < 7  ? `${diffDays}d ago`
-            : diffDays < 30 ? `${Math.floor(diffDays / 7)}w ago`
-            : diffDays < 365 ? `${Math.floor(diffDays / 30)}mo ago`
-            : `${Math.floor(diffDays / 365)}y ago`;
-
-          parsed.push({
-            id: linkMatch[1],
-            title: titleMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim(),
-            age,
-          });
-        }
-
-        if (!cancelled) setVideos(parsed.length > 0 ? parsed : VIMEO_FALLBACK);
+        if (!cancelled) setAllVideos(collected.length > 0 ? collected : VIMEO_FALLBACK);
       } catch {
-        if (!cancelled) setVideos(VIMEO_FALLBACK);
+        if (!cancelled) setAllVideos(VIMEO_FALLBACK);
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
-    fetchFeed();
+    fetchAll();
     return () => { cancelled = true; };
   }, [refreshKey]);
 
+  const videos = filterByLanguage(allVideos, language);
   return { videos, loading, refresh };
 }
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function VideosScreen() {
-  const { language } = useCalculator();
+  const { language, partnerMode } = useCalculator();
   const tx = TEXT[language] ?? TEXT.en;
   const { videos: ytVideos, loading: ytLoading, refresh: refreshYT } = useYouTubeVideos();
-  const { videos: vimeoVideos, loading: vimeoLoading, refresh: refreshVimeo } = useVimeoVideos();
+  const { videos: vimeoVideos, loading: vimeoLoading, refresh: refreshVimeo } = useVimeoVideos(language);
 
   const handleYouTubePress = useCallback((videoId: string) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -514,9 +616,13 @@ export default function VideosScreen() {
     refreshVimeo();
   }, [refreshVimeo]);
 
+  const { width } = useWindowDimensions();
+  const isLargeScreen = width >= 768;
+
   return (
     <ScreenContainer bgColor="#0f172a">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+        <View style={[S.contentWrap, isLargeScreen && S.contentWrapLarge]}>
 
         {/* Header */}
         <View style={S.header}>
@@ -524,62 +630,7 @@ export default function VideosScreen() {
           <Text style={S.headerSub}>{tx.subtitle}</Text>
         </View>
 
-        {/* ── SECTION 1: Diamond Solution Official Vimeo Videos ── */}
-        <View style={S.sectionBlock}>
-          <View style={S.sectionHeaderRow}>
-            <View style={S.vimeoLogoWrap}>
-              <Text style={S.vimeoLogoText}>💎</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={S.sectionLabel}>{tx.companyVideos}</Text>
-              <Text style={S.sectionDesc}>{tx.companyDesc}</Text>
-            </View>
-          </View>
-
-          {/* Vimeo video cards — live from vimeo.com/diamondsolution */}
-          {vimeoLoading ? (
-            <ActivityIndicator color="#0ea5e9" style={{ marginVertical: 20 }} />
-          ) : (
-            vimeoVideos.map((video) => (
-              <TouchableOpacity
-                key={video.id}
-                style={S.vimeoCard}
-                onPress={() => handleVimeoPress(video.id)}
-                activeOpacity={0.85}
-              >
-                <View style={S.vimeoThumbWrap}>
-                  <Image
-                    source={{ uri: getVimeoThumbUrl(video.id) }}
-                    style={S.vimeoThumb}
-                    resizeMode="cover"
-                  />
-                  <View style={S.playOverlay}>
-                    <View style={[S.playBtn, { backgroundColor: "rgba(26,35,126,0.9)" }]}>
-                      <Text style={S.playIcon}>▶</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={S.vimeoInfo}>
-                  <Text style={S.vimeoTitle}>{video.title}</Text>
-                  {video.age ? <Text style={S.watchVimeoText}>{video.age}</Text> : null}
-                  <Text style={[S.watchVimeoText, { color: "#0ea5e9" }]}>{tx.watchVimeo}</Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          )}
-
-          {/* Vimeo channel link */}
-          <TouchableOpacity style={S.vimeoChannelBtn} onPress={handleVimeoChannel} activeOpacity={0.85}>
-            <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
-          </TouchableOpacity>
-
-          {/* Refresh Vimeo */}
-          <TouchableOpacity style={S.refreshBtn} onPress={handleRefreshVimeo} activeOpacity={0.8} disabled={vimeoLoading}>
-            <Text style={S.refreshBtnText}>{vimeoLoading ? "..." : tx.refreshBtn}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* ── SECTION 2: YouTube Channel ── */}
+        {/* ── SECTION 1: YouTube Channel (always visible) ── */}
         <View style={S.sectionBlock}>
           {/* Channel Card */}
           <View style={S.channelCard}>
@@ -645,6 +696,67 @@ export default function VideosScreen() {
           )}
         </View>
 
+        {/* ── SECTION 2: Diamond Solution Official Vimeo Videos (adviser mode only) ── */}
+        {partnerMode && (
+          <View style={S.sectionBlock}>
+            <View style={S.sectionHeaderRow}>
+              <View style={S.vimeoLogoWrap}>
+                <Text style={S.vimeoLogoText}>💎</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={S.sectionLabel}>{tx.companyVideos}</Text>
+                <Text style={S.sectionDesc}>{tx.companyDesc}</Text>
+              </View>
+            </View>
+
+            {vimeoLoading ? (
+              <ActivityIndicator color="#0ea5e9" style={{ marginVertical: 20 }} />
+            ) : vimeoVideos.length === 0 ? (
+              <View style={S.comingSoonBox}>
+                <Text style={S.comingSoonIcon}>🎬</Text>
+                <Text style={S.comingSoonTitle}>{tx.comingSoonTitle}</Text>
+                <Text style={S.comingSoonDesc}>{tx.comingSoonDesc}</Text>
+              </View>
+            ) : (
+              vimeoVideos.map((video) => (
+                <TouchableOpacity
+                  key={video.id}
+                  style={S.vimeoCard}
+                  onPress={() => handleVimeoPress(video.id)}
+                  activeOpacity={0.85}
+                >
+                  <View style={S.vimeoThumbWrap}>
+                    <Image
+                      source={{ uri: getVimeoThumbUrl(video) }}
+                      style={S.vimeoThumb}
+                      resizeMode="cover"
+                    />
+                    <View style={S.playOverlay}>
+                      <View style={[S.playBtn, { backgroundColor: "rgba(26,35,126,0.9)" }]}>
+                        <Text style={S.playIcon}>▶</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={S.vimeoInfo}>
+                    <Text style={S.vimeoTitle}>{video.title}</Text>
+                    {video.age ? <Text style={S.watchVimeoText}>{video.age}</Text> : null}
+                    <Text style={[S.watchVimeoText, { color: "#0ea5e9" }]}>{tx.watchVimeo}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            )}
+
+            <TouchableOpacity style={S.vimeoChannelBtn} onPress={handleVimeoChannel} activeOpacity={0.85}>
+              <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={S.refreshBtn} onPress={handleRefreshVimeo} activeOpacity={0.8} disabled={vimeoLoading}>
+              <Text style={S.refreshBtnText}>{vimeoLoading ? "..." : tx.refreshBtn}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        </View>
       </ScrollView>
     </ScreenContainer>
   );
@@ -652,6 +764,14 @@ export default function VideosScreen() {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const S = StyleSheet.create({
+  contentWrap: {
+    width: "100%",
+  },
+  contentWrapLarge: {
+    maxWidth: 720,
+    alignSelf: "center",
+    width: "100%",
+  },
   header: {
     paddingHorizontal: 20,
     paddingTop: 20,
@@ -749,7 +869,7 @@ const S = StyleSheet.create({
   },
   vimeoThumbWrap: {
     width: "100%",
-    height: 180,
+    aspectRatio: 16 / 9,
     backgroundColor: "#0f172a",
     position: "relative",
   },
@@ -768,6 +888,31 @@ const S = StyleSheet.create({
     color: "#5c6bc0",
     fontWeight: "bold",
     marginTop: 2,
+  },
+
+  // Coming soon empty state
+  comingSoonBox: {
+    alignItems: "center",
+    paddingVertical: 28,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  comingSoonIcon: {
+    fontSize: 36,
+    marginBottom: 10,
+  },
+  comingSoonTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#94a3b8",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  comingSoonDesc: {
+    fontSize: 13,
+    color: "#475569",
+    textAlign: "center",
+    lineHeight: 19,
   },
 
   // Vimeo channel button
@@ -839,7 +984,7 @@ const S = StyleSheet.create({
   },
   thumbWrap: {
     width: "100%",
-    height: 200,
+    aspectRatio: 16 / 9,
     backgroundColor: "#0f172a",
     position: "relative",
   },

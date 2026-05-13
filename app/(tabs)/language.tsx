@@ -17,6 +17,7 @@ const LANGUAGES: { code: Language; label: string; flag: string; native: string }
   { code: "de", label: "German",     flag: "🇩🇪", native: "Deutsch"    },
   { code: "fr", label: "French",     flag: "🇫🇷", native: "Français"   },
   { code: "es", label: "Spanish",    flag: "🇪🇸", native: "Español"    },
+  { code: "it", label: "Italian",    flag: "🇮🇹", native: "Italiano"   },
   { code: "ru", label: "Russian",    flag: "🇷🇺", native: "Русский"    },
   { code: "zh", label: "Chinese",    flag: "🇨🇳", native: "中文"        },
   { code: "tl", label: "Filipino",   flag: "🇵🇭", native: "Filipino"   },

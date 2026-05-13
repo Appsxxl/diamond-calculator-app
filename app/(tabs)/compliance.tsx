@@ -35,6 +35,13 @@ const COMPLIANCE_TEXT: Record<string, {
   regGia: string;
   viewDoc: string;
   footerText: string;
+  securityOverview: {
+    title: string;
+    escrowLabel: string;
+    escrowText: string;
+    securityLabel: string;
+    securityText: string;
+  };
   docs: {
     dmcc: { title: string; subtitle: string; detail: string; badge: string };
     sira: { title: string; subtitle: string; detail: string; badge: string };
@@ -53,6 +60,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "GIA Certified",
     viewDoc: "📄 View Document",
     footerText: "All documents are official and unaltered. Diamond Solution International operates under the regulatory frameworks of the UAE (DMCC/SIRA) and the Philippines (SEC). GIA certificates are issued independently by the Gemological Institute of America.",
+    securityOverview: {
+      title: "🔐 Security & Trust Structure",
+      escrowLabel: "Escrow Partner",
+      escrowText: "The escrow partner is a core component of the security and trust structure. It supports a traceable process, adds further clarity, and together with ownership certification helps ensure that assignment, communication, and protection are transparent for the client.",
+      securityLabel: "Security Model",
+      securityText: "Security at Diamond Solution is based on a combination of legal structure, escrow integration, legal oversight, reviews by experts and auditors, plus additional security and insurance mechanisms. These components are designed to provide a high level of traceability and protection.",
+    },
     docs: {
       dmcc: {
         title: "DMCC Business License",
@@ -107,6 +121,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "GIA Gecertificeerd",
     viewDoc: "📄 Document Bekijken",
     footerText: "Alle documenten zijn officieel en ongewijzigd. Diamond Solution International opereert onder de regelgevende kaders van de VAE (DMCC/SIRA) en de Filipijnen (SEC). GIA-certificaten worden onafhankelijk uitgegeven door het Gemological Institute of America.",
+    securityOverview: {
+      title: "🔐 Beveiligings- en Vertrouwensstructuur",
+      escrowLabel: "Escrow-partner",
+      escrowText: "De escrow-partner is een kerncomponent van de beveiligings- en vertrouwensstructuur. Het ondersteunt een traceerbaar proces, voegt verdere duidelijkheid toe en helpt samen met eigendomscertificering ervoor te zorgen dat toewijzing, communicatie en bescherming transparant zijn voor de klant.",
+      securityLabel: "Beveiligingsmodel",
+      securityText: "De beveiliging bij Diamond Solution is gebaseerd op een combinatie van juridische structuur, escrow-integratie, juridisch toezicht, beoordelingen door experts en auditors, plus aanvullende beveiligings- en verzekeringmechanismen. Deze componenten zijn ontworpen om een hoog niveau van traceerbaarheid en bescherming te bieden.",
+    },
     docs: {
       dmcc: {
         title: "DMCC Bedrijfslicentie",
@@ -161,6 +182,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "GIA Zertifiziert",
     viewDoc: "📄 Dokument Anzeigen",
     footerText: "Alle Dokumente sind offiziell und unverändert. Diamond Solution International operiert unter den Regulierungsrahmen der VAE (DMCC/SIRA) und der Philippinen (SEC). GIA-Zertifikate werden unabhängig vom Gemological Institute of America ausgestellt.",
+    securityOverview: {
+      title: "🔐 Sicherheits- und Vertrauensstruktur",
+      escrowLabel: "Treuhandpartner",
+      escrowText: "Der Treuhandpartner ist ein Kernbestandteil der Sicherheits- und Vertrauensstruktur. Er unterstützt einen nachvollziehbaren Prozess, schafft weitere Klarheit und sorgt zusammen mit der Eigentumszertifizierung dafür, dass Übertragung, Kommunikation und Schutz für den Kunden transparent sind.",
+      securityLabel: "Sicherheitsmodell",
+      securityText: "Die Sicherheit bei Diamond Solution basiert auf einer Kombination aus rechtlicher Struktur, Treuhandintegration, rechtlicher Aufsicht, Überprüfungen durch Experten und Prüfer sowie zusätzlichen Sicherheits- und Versicherungsmechanismen. Diese Komponenten sind darauf ausgelegt, ein hohes Maß an Nachvollziehbarkeit und Schutz zu bieten.",
+    },
     docs: {
       dmcc: {
         title: "DMCC Geschäftslizenz",
@@ -215,6 +243,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "Certifié GIA",
     viewDoc: "📄 Voir le Document",
     footerText: "Tous les documents sont officiels et non modifiés. Diamond Solution International opère sous les cadres réglementaires des EAU (DMCC/SIRA) et des Philippines (SEC). Les certificats GIA sont délivrés indépendamment par le Gemological Institute of America.",
+    securityOverview: {
+      title: "🔐 Structure de Sécurité et de Confiance",
+      escrowLabel: "Partenaire d'Entiercement",
+      escrowText: "Le partenaire d'entiercement est un composant essentiel de la structure de sécurité et de confiance. Il soutient un processus traçable, apporte davantage de clarté et, conjointement avec la certification de propriété, contribue à garantir que l'attribution, la communication et la protection sont transparentes pour le client.",
+      securityLabel: "Modèle de Sécurité",
+      securityText: "La sécurité chez Diamond Solution repose sur une combinaison de structure juridique, d'intégration de l'entiercement, de surveillance juridique, de révisions par des experts et des auditeurs, ainsi que de mécanismes de sécurité et d'assurance supplémentaires. Ces composants sont conçus pour offrir un niveau élevé de traçabilité et de protection.",
+    },
     docs: {
       dmcc: {
         title: "Licence Commerciale DMCC",
@@ -261,6 +296,67 @@ const COMPLIANCE_TEXT: Record<string, {
       },
     },
   },
+  it: {
+    headerTitle: "🛡️ CONFORMITÀ",
+    headerSub: "Diamond Solution è un'azienda completamente autorizzata e regolamentata. Tutti i certificati e i documenti legali sono disponibili di seguito per la tua revisione.",
+    regDubai: "Dubai DMCC",
+    regSec: "SEC Filippine",
+    regGia: "Certificato GIA",
+    viewDoc: "📄 Visualizza Documento",
+    footerText: "Tutti i documenti sono ufficiali e non alterati. Diamond Solution International opera nell'ambito dei quadri normativi degli EAU (DMCC/SIRA) e delle Filippine (SEC). I certificati GIA sono rilasciati in modo indipendente dall'Istituto Gemologico d'America.",
+    securityOverview: {
+      title: "🔐 Struttura di Sicurezza e Fiducia",
+      escrowLabel: "Partner di Deposito a Garanzia",
+      escrowText: "Il partner di deposito a garanzia è un componente fondamentale della struttura di sicurezza e fiducia. Supporta un processo tracciabile, aggiunge ulteriore chiarezza e, insieme alla certificazione di proprietà, contribuisce a garantire che l'assegnazione, la comunicazione e la protezione siano trasparenti per il cliente.",
+      securityLabel: "Modello di Sicurezza",
+      securityText: "La sicurezza presso Diamond Solution si basa su una combinazione di struttura legale, integrazione del deposito a garanzia, supervisione legale, revisioni da parte di esperti e revisori contabili, più ulteriori meccanismi di sicurezza e assicurazione. Questi componenti sono progettati per fornire un alto livello di tracciabilità e protezione.",
+    },
+    docs: {
+      dmcc: {
+        title: "Licenza Commerciale DMCC",
+        subtitle: "Dubai Multi Commodities Centre",
+        detail: "Licenza commerciale ufficiale rilasciata da DMCC — la più grande autorità di zona di libero scambio al mondo a Dubai, EAU. Autorizza Diamond Solution ad operare come azienda di materie prime registrata all'interno della Dubai Freezone.",
+        badge: "ATTIVA",
+      },
+      sira: {
+        title: "Certificazione di Sicurezza SIRA",
+        subtitle: "Security Industry Regulatory Agency",
+        detail: "Certificazione dall'Agenzia di Regolamentazione dell'Industria della Sicurezza (SIRA) di Dubai. Conferma che Diamond Solution soddisfa gli standard normativi per la gestione sicura degli asset e le operazioni di stoccaggio negli EAU.",
+        badge: "CERTIFICATA",
+      },
+      sec: {
+        title: "Registrazione SEC Filippine",
+        subtitle: "Securities and Exchange Commission",
+        detail: "Certificato di registrazione aziendale rilasciato dalla Securities and Exchange Commission delle Filippine. Conferma lo status legale aziendale di Diamond Solution e il diritto di operare nella giurisdizione filippina.",
+        badge: "REGISTRATA",
+      },
+      gia: {
+        title: "Certificato Diamante GIA",
+        subtitle: "Istituto Gemologico d'America",
+        detail: "Rapporto di classificazione GIA campione per un diamante rotondo brillante (0,71ct, colore E, purezza VVS1, taglio eccellente). Tutti i diamanti nel programma Plan B sono certificati in modo indipendente da GIA — il gold standard mondiale per la valutazione della qualità dei diamanti.",
+        badge: "CERTIFICATO",
+        qrNote: "💡 Puoi verificare questo certificato direttamente sul sito GIA scansionando il codice QR sul documento o inserendo il numero di rapporto 3405502857 su gia.edu/report-check.",
+      },
+      legal: {
+        title: "Memorandum Informativo Legale",
+        subtitle: "Dichiarazione di Sicurezza (EN)",
+        detail: "Memorandum informativo legale ufficiale e dichiarazione di sicurezza. Copre il quadro contrattuale, i diritti di proprietà, i termini della garanzia di riacquisto, le condizioni di stoccaggio e le protezioni per gli investitori del programma di investimento in diamanti Plan B.",
+        badge: "UFFICIALE",
+      },
+      purchase: {
+        title: "Diamond Solution Plan – Contratto di Acquisto",
+        subtitle: "STIG International Gemstone FZCO",
+        detail: "Modello di contratto di acquisto ufficiale per il Diamond Solution Plan. Copre il prezzo di acquisto, la struttura di sconto mensile, l'opzione di riacquisto al 100% dopo 12 mesi, le opzioni di consegna, il trasferimento di proprietà e la certificazione Kimberley Process. Regolato dalla legge degli EAU/Dubai.",
+        badge: "MODELLO",
+      },
+      stig: {
+        title: "STIG International — Società Madre",
+        subtitle: "STIG International Gemstone FZCO",
+        detail: "STIG International Gemstone FZCO è la società madre di Diamond Solution. Si occupano di reperire, certificare e distribuire diamanti fisici certificati GIA a livello globale attraverso la zona franca DMCC di Dubai. Questa pagina mostra la gamma completa di prodotti di investimento in diamanti certificati — garantendo piena trasparenza sugli asset sottostanti.",
+        badge: "UFFICIALE",
+      },
+    },
+  },
   es: {
     headerTitle: "🛡️ CUMPLIMIENTO",
     headerSub: "Diamond Solution es una empresa completamente licenciada y regulada. Todos los certificados y documentos legales están disponibles a continuación para su revisión.",
@@ -269,6 +365,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "Certificado GIA",
     viewDoc: "📄 Ver Documento",
     footerText: "Todos los documentos son oficiales y sin alteraciones. Diamond Solution International opera bajo los marcos regulatorios de los EAU (DMCC/SIRA) y Filipinas (SEC). Los certificados GIA son emitidos independientemente por el Instituto Gemológico de América.",
+    securityOverview: {
+      title: "🔐 Estructura de Seguridad y Confianza",
+      escrowLabel: "Socio de Custodia",
+      escrowText: "El socio de custodia es un componente fundamental de la estructura de seguridad y confianza. Apoya un proceso trazable, agrega mayor claridad y, junto con la certificación de propiedad, ayuda a garantizar que la asignación, la comunicación y la protección sean transparentes para el cliente.",
+      securityLabel: "Modelo de Seguridad",
+      securityText: "La seguridad en Diamond Solution se basa en una combinación de estructura legal, integración de custodia, supervisión legal, revisiones por expertos y auditores, más mecanismos adicionales de seguridad y seguro. Estos componentes están diseñados para proporcionar un alto nivel de trazabilidad y protección.",
+    },
     docs: {
       dmcc: {
         title: "Licencia Comercial DMCC",
@@ -323,6 +426,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "Сертификат GIA",
     viewDoc: "📄 Просмотреть Документ",
     footerText: "Все документы являются официальными и неизменёнными. Diamond Solution International работает в соответствии с нормативными базами ОАЭ (DMCC/SIRA) и Филиппин (SEC). Сертификаты GIA выдаются независимо Геммологическим институтом Америки.",
+    securityOverview: {
+      title: "🔐 Структура Безопасности и Доверия",
+      escrowLabel: "Эскроу-партнёр",
+      escrowText: "Эскроу-партнёр является ключевым компонентом структуры безопасности и доверия. Он обеспечивает отслеживаемый процесс, добавляет дополнительную ясность и вместе с сертификацией права собственности помогает обеспечить прозрачность назначения, коммуникации и защиты для клиента.",
+      securityLabel: "Модель Безопасности",
+      securityText: "Безопасность в Diamond Solution основана на сочетании правовой структуры, интеграции эскроу, юридического надзора, проверок экспертами и аудиторами, а также дополнительных механизмов безопасности и страхования. Эти компоненты предназначены для обеспечения высокого уровня отслеживаемости и защиты.",
+    },
     docs: {
       dmcc: {
         title: "Бизнес-лицензия DMCC",
@@ -377,6 +487,13 @@ const COMPLIANCE_TEXT: Record<string, {
     regGia: "GIA认证",
     viewDoc: "📄 查看文件",
     footerText: "所有文件均为官方原件，未经修改。Diamond Solution International在阿联酋（DMCC/SIRA）和菲律宾（SEC）的监管框架下运营。GIA证书由美国宝石学院独立颁发。",
+    securityOverview: {
+      title: "🔐 安全与信任结构",
+      escrowLabel: "托管合作伙伴",
+      escrowText: "托管合作伙伴是安全与信任结构的核心组成部分。它支持可追溯的流程，增添了进一步的清晰度，并与所有权认证共同帮助确保转让、沟通和保护对客户透明。",
+      securityLabel: "安全模型",
+      securityText: "Diamond Solution的安全性基于法律结构、托管整合、法律监督、专家和审计师审查以及额外的安全和保险机制的综合体。这些组成部分旨在提供高水平的可追溯性和保护。",
+    },
     docs: {
       dmcc: {
         title: "DMCC营业执照",
@@ -516,6 +633,20 @@ export default function ComplianceScreen() {
           </View>
         </View>
 
+        {/* Security & Trust Overview */}
+        <View style={S.secPanel}>
+          <Text style={S.secTitle}>{tx.securityOverview.title}</Text>
+          <View style={S.secBlock}>
+            <Text style={S.secLabel}>{tx.securityOverview.escrowLabel}</Text>
+            <Text style={S.secBody}>{tx.securityOverview.escrowText}</Text>
+          </View>
+          <View style={S.secDivider} />
+          <View style={S.secBlock}>
+            <Text style={S.secLabel}>{tx.securityOverview.securityLabel}</Text>
+            <Text style={S.secBody}>{tx.securityOverview.securityText}</Text>
+          </View>
+        </View>
+
         {/* Document cards */}
         {DOC_ORDER.map((id) => {
           const docTx = tx.docs[id as keyof typeof tx.docs];
@@ -643,4 +774,42 @@ const S = StyleSheet.create({
     borderLeftColor: "#334155",
   },
   footerText: { fontSize: 13, color: "#e2e8f0", lineHeight: 19 },
+  secPanel: {
+    backgroundColor: "#0f172a",
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#1e3a2f",
+    borderLeftWidth: 3,
+    borderLeftColor: "#22c55e",
+  },
+  secTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#22c55e",
+    marginBottom: 14,
+    letterSpacing: 0.5,
+  },
+  secBlock: {
+    marginBottom: 4,
+  },
+  secLabel: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#4ade80",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 5,
+  },
+  secBody: {
+    fontSize: 14,
+    color: "#cbd5e1",
+    lineHeight: 21,
+  },
+  secDivider: {
+    height: 1,
+    backgroundColor: "#1e3a2f",
+    marginVertical: 12,
+  },
 });

@@ -63,7 +63,7 @@ export function CalculatorProvider({ children }: { children: ReactNode }) {
   const loadPreferences = async () => {
     try {
       const saved = await AsyncStorage.getItem("calculator_language");
-      if (saved && ["en", "nl", "de", "fr", "es", "ru", "zh"].includes(saved)) {
+      if (saved && ["en", "nl", "de", "fr", "es", "it", "ru", "zh", "tl", "pt", "ar", "th", "hi", "vi"].includes(saved)) {
         setLanguageState(saved as Language);
       }
       const savedPartner = await AsyncStorage.getItem("partner_mode");
