@@ -253,6 +253,62 @@ const TX: Record<string, {
   alert11month: string;
   alert30day: string;
   alert12month: string;
+  clientLetterTitle: string;
+  clientLetterDesc: string;
+  alertsCount: string;
+  diamondStability: string;
+  onTopOfResidual: string;
+  rankMoreTo: string;
+  rankUnlocksInfinity: string;
+  placeholderCustomAmount: string;
+  placeholderTargetAmount: string;
+  placeholderYears: string;
+  carTip: string;
+  targetPrefix: string;
+  depositLabel: string;
+  totalOutLabel: string;
+  avgMoLabel: string;
+  fullLabel: string;
+  pct75Label: string;
+  projRevTitle: string;
+  projRevDesc: string;
+  projRevDbSize: string;
+  projRevConv: string;
+  projRevAvgPurchase: string;
+  projRevRebateReuse: string;
+  projRevMyParts: string;
+  projRevCalcBtn: string;
+  projRevEstClients: string;
+  projRevTeamVol: string;
+  projRevYr5: string;
+  projRevTimeline: string;
+  projRevPeriod: string;
+  projRevResidualCol: string;
+  projRevPortfolioCol: string;
+  projRevCumulativeCol: string;
+  globalPoolTitle: string;
+  globalPoolDesc: string;
+  yourTeamVol: string;
+  blueDiamondGateLabel: string;
+  blueDiamondUnlocked: string;
+  remainingToBlue: string;
+  pool1Title: string;
+  pool2Title: string;
+  pool3Title: string;
+  poolMinRankP1: string;
+  poolMinRankP2: string;
+  poolMinRankP3: string;
+  activePoolTotal: string;
+  totalQualUsers: string;
+  myPartsLabel: string;
+  yourPayoutLabel: string;
+  fromBackOffice: string;
+  noMembersYet: string;
+  totalPoolPayoutLabel: string;
+  poolFormulaNote: string;
+  levelLabel: string;
+  arVaultDesc: string;
+  okBtn: string;
 }> = {
   en: {
     title: "🤝 Partner Tools",
@@ -327,6 +383,62 @@ const TX: Record<string, {
     assetNote: "Compound rebates build your lump sum. 25% reinvested monthly.",
     assetApplyNoVip: "📊 Apply (No VIP)",
     assetApplyWithVip: "📊 Apply (With VIP)",
+    clientLetterTitle: "Client Letter Generator",
+    clientLetterDesc: "Create a professional introduction letter in your language — ready to copy or share instantly.",
+    alertsCount: "{count} alerts",
+    diamondStability: "💎 Diamond Stability",
+    onTopOfResidual: "✨ On top of your monthly residual income",
+    rankMoreTo: "{amount} more to {rank}",
+    rankUnlocksInfinity: "(Unlocks {pct} Infinity)",
+    placeholderCustomAmount: "Custom amount",
+    placeholderTargetAmount: "Target amount",
+    placeholderYears: "Years",
+    carTip: "🚗 Perfect for planning your monthly luxury car lease or premium lifestyle costs.",
+    targetPrefix: "Target:",
+    depositLabel: "Deposit:",
+    totalOutLabel: "Total Out:",
+    avgMoLabel: "/mo avg",
+    fullLabel: "Full:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 PROJECTED REVENUE MODEL",
+    projRevDesc: "10% Direct Residual on every monthly diamond purchase your clients make.",
+    projRevDbSize: "Database Size",
+    projRevConv: "Conversion %",
+    projRevAvgPurchase: "Avg Purchase ($)",
+    projRevRebateReuse: "Rebate Re-Use %",
+    projRevMyParts: "My Pool Parts",
+    projRevCalcBtn: "⚡ CALCULATE PROJECTED REVENUE",
+    projRevEstClients: "Est. Clients",
+    projRevTeamVol: "Team Volume",
+    projRevYr5: "Yr.5 Residual/mo",
+    projRevTimeline: "📈 5-YEAR GROWTH TIMELINE",
+    projRevPeriod: "Period",
+    projRevResidualCol: "10% Residual",
+    projRevPortfolioCol: "Client Portfolio",
+    projRevCumulativeCol: "Cumulative",
+    globalPoolTitle: "🌍 GLOBAL POOL BONUS PATH",
+    globalPoolDesc: "Three pools of Global Bonus with different rank requirements. Enter your back office values for an accurate real-time payout.",
+    yourTeamVol: "Your Team Volume",
+    blueDiamondGateLabel: "/ $1M Blue Diamond Gate",
+    blueDiamondUnlocked: "🔵 BLUE DIAMOND — Pool 1 Unlocked!",
+    remainingToBlue: "{amount} remaining to Blue Diamond",
+    pool1Title: "Pool 1 — Blue Diamond 🔵",
+    pool2Title: "Pool 2 — Purple Diamond 💜",
+    pool3Title: "Pool 3 — Double Diamond Elite 👑",
+    poolMinRankP1: "Min Rank: Blue Diamond · Max 6 parts",
+    poolMinRankP2: "Min Rank: Purple Diamond · Max 4 parts",
+    poolMinRankP3: "Min Rank: Double Diamond Elite · Max 2 parts",
+    activePoolTotal: "Active Pool Total ($)",
+    totalQualUsers: "Total Qualified Users",
+    myPartsLabel: "My Parts",
+    yourPayoutLabel: "Your Payout:",
+    fromBackOffice: "From back office",
+    noMembersYet: "No members yet",
+    totalPoolPayoutLabel: "Total Pool Payout (All 3 Pools)",
+    poolFormulaNote: "Formula: Pool Total ÷ Total Qualified Users × Your Parts · Enter values from your back office for accuracy.",
+    levelLabel: "LEVEL",
+    arVaultDesc: "3D Diamond portfolio viewer · Scan & inspect your assets in AR",
+    okBtn: "OK",
   },
   nl: {
     title: "🤝 Partner Tools",
@@ -401,6 +513,62 @@ const TX: Record<string, {
     assetNote: "Samengestelde kortingen bouwen uw bedrag op. 25% maandelijks herbelegd.",
     assetApplyNoVip: "📊 Toepassen (Geen VIP)",
     assetApplyWithVip: "📊 Toepassen (Met VIP)",
+    clientLetterTitle: "Klantbriefgenerator",
+    clientLetterDesc: "Maak een professionele introductiebrief in uw taal — klaar om te kopiëren of direct te delen.",
+    alertsCount: "{count} meldingen",
+    diamondStability: "💎 Diamant Stabiliteit",
+    onTopOfResidual: "✨ Bovenop uw maandelijks residueel inkomen",
+    rankMoreTo: "{amount} meer naar {rank}",
+    rankUnlocksInfinity: "(Ontgrendelt {pct} Infinity)",
+    placeholderCustomAmount: "Aangepast bedrag",
+    placeholderTargetAmount: "Doelbedrag",
+    placeholderYears: "Jaren",
+    carTip: "🚗 Perfect voor het plannen van uw maandelijkse luxe autolease of premium levensstijlkosten.",
+    targetPrefix: "Doel:",
+    depositLabel: "Storting:",
+    totalOutLabel: "Totaal Uitbetaald:",
+    avgMoLabel: "/mo gem.",
+    fullLabel: "Volledig:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 GEPROJECTEERD INKOMSTENMODEL",
+    projRevDesc: "10% Directe Residu op elke maandelijkse diamantaankoop van uw klanten.",
+    projRevDbSize: "Databasegrootte",
+    projRevConv: "Conversie %",
+    projRevAvgPurchase: "Gem. Aankoop ($)",
+    projRevRebateReuse: "Korting Hergebruik %",
+    projRevMyParts: "Mijn Pool Delen",
+    projRevCalcBtn: "⚡ BEREKEN GEPROJECTEERDE INKOMSTEN",
+    projRevEstClients: "Gesch. Klanten",
+    projRevTeamVol: "Teamvolume",
+    projRevYr5: "Jr.5 Residu/mo",
+    projRevTimeline: "📈 5-JAAR GROEITIJDLIJN",
+    projRevPeriod: "Periode",
+    projRevResidualCol: "10% Residu",
+    projRevPortfolioCol: "Klantportfolio",
+    projRevCumulativeCol: "Cumulatief",
+    globalPoolTitle: "🌍 GLOBAAL POOL BONUS PAD",
+    globalPoolDesc: "Drie pools van Globale Bonus met verschillende rangvereisten. Voer uw backofficewaarden in voor een nauwkeurige realtime uitbetaling.",
+    yourTeamVol: "Uw Teamvolume",
+    blueDiamondGateLabel: "/ $1M Blauwe Diamant Drempel",
+    blueDiamondUnlocked: "🔵 BLAUWE DIAMANT — Pool 1 Ontgrendeld!",
+    remainingToBlue: "{amount} resterend naar Blauwe Diamant",
+    pool1Title: "Pool 1 — Blauwe Diamant 🔵",
+    pool2Title: "Pool 2 — Paarse Diamant 💜",
+    pool3Title: "Pool 3 — Dubbele Diamant Elite 👑",
+    poolMinRankP1: "Min Rang: Blauwe Diamant · Max 6 delen",
+    poolMinRankP2: "Min Rang: Paarse Diamant · Max 4 delen",
+    poolMinRankP3: "Min Rang: Dubbele Diamant Elite · Max 2 delen",
+    activePoolTotal: "Actief Pool Totaal ($)",
+    totalQualUsers: "Totaal Gekwalificeerde Gebruikers",
+    myPartsLabel: "Mijn Delen",
+    yourPayoutLabel: "Uw Uitbetaling:",
+    fromBackOffice: "Uit backoffice",
+    noMembersYet: "Nog geen leden",
+    totalPoolPayoutLabel: "Totale Pool Uitbetaling (Alle 3 Pools)",
+    poolFormulaNote: "Formule: Pool Totaal ÷ Totaal Gekwalificeerde Gebruikers × Mijn Delen · Voer waarden uit uw backoffice in voor nauwkeurigheid.",
+    levelLabel: "NIVEAU",
+    arVaultDesc: "3D Diamant portfolio viewer · Scan & inspecteer uw activa in AR",
+    okBtn: "OK",
   },
   de: {
     title: "🤝 Partner-Tools",
@@ -475,6 +643,62 @@ const TX: Record<string, {
     assetNote: "Zinseszins-Vergütungen bauen Ihren Betrag auf. 25% monatlich reinvestiert.",
     assetApplyNoVip: "📊 Anwenden (Kein VIP)",
     assetApplyWithVip: "📊 Anwenden (Mit VIP)",
+    clientLetterTitle: "Kundenbriefgenerator",
+    clientLetterDesc: "Erstellen Sie einen professionellen Einführungsbrief in Ihrer Sprache — fertig zum Kopieren oder sofortigen Teilen.",
+    alertsCount: "{count} Benachrichtigungen",
+    diamondStability: "💎 Diamant-Stabilität",
+    onTopOfResidual: "✨ Zusätzlich zu Ihrem monatlichen Residualeinkommen",
+    rankMoreTo: "{amount} mehr bis {rank}",
+    rankUnlocksInfinity: "(Entsperrt {pct} Infinity)",
+    placeholderCustomAmount: "Benutzerdefinierter Betrag",
+    placeholderTargetAmount: "Zielbetrag",
+    placeholderYears: "Jahre",
+    carTip: "🚗 Perfekt für die Planung Ihres monatlichen Luxus-Autoleasings oder Premium-Lifestyle-Kosten.",
+    targetPrefix: "Ziel:",
+    depositLabel: "Einzahlung:",
+    totalOutLabel: "Gesamt Ausgezahlt:",
+    avgMoLabel: "/Mo Durchschn.",
+    fullLabel: "Vollständig:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 PROGNOSEEINNAHMENMODELL",
+    projRevDesc: "10% Direktresidual auf jeden monatlichen Diamantkauf Ihrer Kunden.",
+    projRevDbSize: "Datenbankgröße",
+    projRevConv: "Konversionsrate %",
+    projRevAvgPurchase: "Durchschnittl. Kauf ($)",
+    projRevRebateReuse: "Rabatt-Wiederverwendung %",
+    projRevMyParts: "Meine Pool-Anteile",
+    projRevCalcBtn: "⚡ PROGNOSE BERECHNEN",
+    projRevEstClients: "Gesch. Kunden",
+    projRevTeamVol: "Teamvolumen",
+    projRevYr5: "J.5 Residual/Mo",
+    projRevTimeline: "📈 5-JAHRES-WACHSTUMSZEITPLAN",
+    projRevPeriod: "Zeitraum",
+    projRevResidualCol: "10% Residual",
+    projRevPortfolioCol: "Kundenportfolio",
+    projRevCumulativeCol: "Kumulativ",
+    globalPoolTitle: "🌍 GLOBALER POOL-BONUSPFAD",
+    globalPoolDesc: "Drei Pools des globalen Bonus mit unterschiedlichen Ranganforderungen. Geben Sie Ihre Backoffice-Werte für eine genaue Echtzeit-Auszahlung ein.",
+    yourTeamVol: "Ihr Teamvolumen",
+    blueDiamondGateLabel: "/ $1M Blauer Diamant Schwelle",
+    blueDiamondUnlocked: "🔵 BLAUER DIAMANT — Pool 1 Entsperrt!",
+    remainingToBlue: "{amount} verbleibend bis Blauer Diamant",
+    pool1Title: "Pool 1 — Blauer Diamant 🔵",
+    pool2Title: "Pool 2 — Lila Diamant 💜",
+    pool3Title: "Pool 3 — Doppelter Diamant Elite 👑",
+    poolMinRankP1: "Min. Rang: Blauer Diamant · Max. 6 Anteile",
+    poolMinRankP2: "Min. Rang: Lila Diamant · Max. 4 Anteile",
+    poolMinRankP3: "Min. Rang: Doppelter Diamant Elite · Max. 2 Anteile",
+    activePoolTotal: "Aktiver Pool Gesamt ($)",
+    totalQualUsers: "Gesamt Qualifizierte Nutzer",
+    myPartsLabel: "Meine Anteile",
+    yourPayoutLabel: "Ihre Auszahlung:",
+    fromBackOffice: "Aus Backoffice",
+    noMembersYet: "Noch keine Mitglieder",
+    totalPoolPayoutLabel: "Gesamte Pool-Auszahlung (Alle 3 Pools)",
+    poolFormulaNote: "Formel: Pool Gesamt ÷ Gesamt Qualifizierte Nutzer × Meine Anteile · Geben Sie Werte aus Ihrem Backoffice ein.",
+    levelLabel: "STUFE",
+    arVaultDesc: "3D Diamant-Portfolio-Viewer · Scannen & inspizieren Sie Ihre Assets in AR",
+    okBtn: "OK",
   },
   fr: {
     title: "🤝 Outils Partenaire",
@@ -549,6 +773,62 @@ const TX: Record<string, {
     assetNote: "Les remises composées construisent votre somme. 25% réinvesti mensuellement.",
     assetApplyNoVip: "📊 Appliquer (Sans VIP)",
     assetApplyWithVip: "📊 Appliquer (Avec VIP)",
+    clientLetterTitle: "Générateur de lettre client",
+    clientLetterDesc: "Créez une lettre d'introduction professionnelle dans votre langue — prête à copier ou partager instantanément.",
+    alertsCount: "{count} alertes",
+    diamondStability: "💎 Stabilité Diamant",
+    onTopOfResidual: "✨ En plus de votre revenu résiduel mensuel",
+    rankMoreTo: "{amount} de plus vers {rank}",
+    rankUnlocksInfinity: "(Débloque {pct} Infinity)",
+    placeholderCustomAmount: "Montant personnalisé",
+    placeholderTargetAmount: "Montant cible",
+    placeholderYears: "Années",
+    carTip: "🚗 Parfait pour planifier votre location de voiture de luxe mensuelle ou vos coûts de style de vie premium.",
+    targetPrefix: "Cible:",
+    depositLabel: "Dépôt:",
+    totalOutLabel: "Total Versé:",
+    avgMoLabel: "/mo moy.",
+    fullLabel: "Complet:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 MODÈLE DE REVENUS PROJETÉS",
+    projRevDesc: "10% de résiduel direct sur chaque achat mensuel de diamants de vos clients.",
+    projRevDbSize: "Taille de la base",
+    projRevConv: "Taux de conversion %",
+    projRevAvgPurchase: "Achat moyen ($)",
+    projRevRebateReuse: "Réutilisation remise %",
+    projRevMyParts: "Mes parts de pool",
+    projRevCalcBtn: "⚡ CALCULER LES REVENUS PROJETÉS",
+    projRevEstClients: "Clients est.",
+    projRevTeamVol: "Volume équipe",
+    projRevYr5: "An.5 Résiduel/mo",
+    projRevTimeline: "📈 CALENDRIER DE CROISSANCE 5 ANS",
+    projRevPeriod: "Période",
+    projRevResidualCol: "Résiduel 10%",
+    projRevPortfolioCol: "Portfolio client",
+    projRevCumulativeCol: "Cumulatif",
+    globalPoolTitle: "🌍 CHEMIN DU BONUS POOL GLOBAL",
+    globalPoolDesc: "Trois pools de Bonus Global avec différentes exigences de rang. Entrez vos valeurs de back-office pour un paiement précis en temps réel.",
+    yourTeamVol: "Votre Volume d'Équipe",
+    blueDiamondGateLabel: "/ $1M Seuil Diamant Bleu",
+    blueDiamondUnlocked: "🔵 DIAMANT BLEU — Pool 1 Débloqué!",
+    remainingToBlue: "{amount} restant vers Diamant Bleu",
+    pool1Title: "Pool 1 — Diamant Bleu 🔵",
+    pool2Title: "Pool 2 — Diamant Violet 💜",
+    pool3Title: "Pool 3 — Diamant Élite Double 👑",
+    poolMinRankP1: "Rang min: Diamant Bleu · Max 6 parts",
+    poolMinRankP2: "Rang min: Diamant Violet · Max 4 parts",
+    poolMinRankP3: "Rang min: Diamant Élite Double · Max 2 parts",
+    activePoolTotal: "Total Pool Actif ($)",
+    totalQualUsers: "Total Utilisateurs Qualifiés",
+    myPartsLabel: "Mes Parts",
+    yourPayoutLabel: "Votre Paiement:",
+    fromBackOffice: "Du back-office",
+    noMembersYet: "Pas encore de membres",
+    totalPoolPayoutLabel: "Paiement Total Pool (3 Pools)",
+    poolFormulaNote: "Formule: Total Pool ÷ Total Utilisateurs Qualifiés × Mes Parts · Entrez les valeurs de votre back-office.",
+    levelLabel: "NIVEAU",
+    arVaultDesc: "Visionneuse 3D portfolio diamant · Scanner & inspecter vos actifs en AR",
+    okBtn: "OK",
   },
   es: {
     title: "🤝 Herramientas de Socio",
@@ -623,6 +903,62 @@ const TX: Record<string, {
     assetNote: "Los descuentos compuestos construyen su suma. 25% reinvertido mensualmente.",
     assetApplyNoVip: "📊 Aplicar (Sin VIP)",
     assetApplyWithVip: "📊 Aplicar (Con VIP)",
+    clientLetterTitle: "Generador de carta de cliente",
+    clientLetterDesc: "Crea una carta de presentación profesional en tu idioma — lista para copiar o compartir al instante.",
+    alertsCount: "{count} alertas",
+    diamondStability: "💎 Estabilidad Diamante",
+    onTopOfResidual: "✨ Además de sus ingresos residuales mensuales",
+    rankMoreTo: "{amount} más para {rank}",
+    rankUnlocksInfinity: "(Desbloquea {pct} Infinity)",
+    placeholderCustomAmount: "Monto personalizado",
+    placeholderTargetAmount: "Monto objetivo",
+    placeholderYears: "Años",
+    carTip: "🚗 Perfecto para planificar su arrendamiento mensual de auto de lujo o costos de estilo de vida premium.",
+    targetPrefix: "Objetivo:",
+    depositLabel: "Depósito:",
+    totalOutLabel: "Total Pagado:",
+    avgMoLabel: "/mo prom.",
+    fullLabel: "Completo:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 MODELO DE INGRESOS PROYECTADOS",
+    projRevDesc: "10% de residual directo en cada compra mensual de diamantes de sus clientes.",
+    projRevDbSize: "Tamaño de base",
+    projRevConv: "Tasa conversión %",
+    projRevAvgPurchase: "Compra prom. ($)",
+    projRevRebateReuse: "Reuso descuento %",
+    projRevMyParts: "Mis partes de pool",
+    projRevCalcBtn: "⚡ CALCULAR INGRESOS PROYECTADOS",
+    projRevEstClients: "Clientes est.",
+    projRevTeamVol: "Volumen equipo",
+    projRevYr5: "Año 5 Residual/mo",
+    projRevTimeline: "📈 CRONOGRAMA DE CRECIMIENTO 5 AÑOS",
+    projRevPeriod: "Período",
+    projRevResidualCol: "Residual 10%",
+    projRevPortfolioCol: "Portfolio cliente",
+    projRevCumulativeCol: "Acumulado",
+    globalPoolTitle: "🌍 CAMINO DEL BONO POOL GLOBAL",
+    globalPoolDesc: "Tres pools de Bono Global con diferentes requisitos de rango. Ingrese sus valores de back office para un pago preciso en tiempo real.",
+    yourTeamVol: "Su Volumen de Equipo",
+    blueDiamondGateLabel: "/ $1M Umbral Diamante Azul",
+    blueDiamondUnlocked: "🔵 DIAMANTE AZUL — ¡Pool 1 Desbloqueado!",
+    remainingToBlue: "{amount} restante para Diamante Azul",
+    pool1Title: "Pool 1 — Diamante Azul 🔵",
+    pool2Title: "Pool 2 — Diamante Púrpura 💜",
+    pool3Title: "Pool 3 — Diamante Elite Doble 👑",
+    poolMinRankP1: "Rango mín: Diamante Azul · Máx 6 partes",
+    poolMinRankP2: "Rango mín: Diamante Púrpura · Máx 4 partes",
+    poolMinRankP3: "Rango mín: Diamante Elite Doble · Máx 2 partes",
+    activePoolTotal: "Total Pool Activo ($)",
+    totalQualUsers: "Total Usuarios Calificados",
+    myPartsLabel: "Mis Partes",
+    yourPayoutLabel: "Su Pago:",
+    fromBackOffice: "Del back office",
+    noMembersYet: "Aún sin miembros",
+    totalPoolPayoutLabel: "Pago Total Pool (3 Pools)",
+    poolFormulaNote: "Fórmula: Total Pool ÷ Total Usuarios Calificados × Mis Partes · Ingrese valores de su back office para mayor precisión.",
+    levelLabel: "NIVEL",
+    arVaultDesc: "Visor 3D de portfolio de diamantes · Escanee e inspeccione sus activos en AR",
+    okBtn: "OK",
   },
   ru: {
     title: "🤝 Инструменты Партнёра",
@@ -697,6 +1033,62 @@ const TX: Record<string, {
     assetNote: "Сложные скидки формируют вашу сумму. 25% реинвестируется ежемесячно.",
     assetApplyNoVip: "📊 Применить (Без VIP)",
     assetApplyWithVip: "📊 Применить (С VIP)",
+    clientLetterTitle: "Генератор письма клиенту",
+    clientLetterDesc: "Создайте профессиональное вводное письмо на вашем языке — готово к копированию или мгновенному обмену.",
+    alertsCount: "{count} уведомлений",
+    diamondStability: "💎 Стабильность Алмаза",
+    onTopOfResidual: "✨ В дополнение к вашему ежемесячному остаточному доходу",
+    rankMoreTo: "{amount} до {rank}",
+    rankUnlocksInfinity: "(Открывает {pct} Infinity)",
+    placeholderCustomAmount: "Произвольная сумма",
+    placeholderTargetAmount: "Целевая сумма",
+    placeholderYears: "Лет",
+    carTip: "🚗 Идеально для планирования ежемесячной аренды роскошного автомобиля или премиальных расходов.",
+    targetPrefix: "Цель:",
+    depositLabel: "Депозит:",
+    totalOutLabel: "Всего выплачено:",
+    avgMoLabel: "/мес. средн.",
+    fullLabel: "Полностью:",
+    pct75Label: "75%:",
+    projRevTitle: "📊 ПРОГНОЗИРУЕМАЯ МОДЕЛЬ ДОХОДОВ",
+    projRevDesc: "10% прямого остаточного с каждой ежемесячной покупки алмазов ваших клиентов.",
+    projRevDbSize: "Размер базы",
+    projRevConv: "Конверсия %",
+    projRevAvgPurchase: "Средняя покупка ($)",
+    projRevRebateReuse: "Реинвестирование скидки %",
+    projRevMyParts: "Мои доли пула",
+    projRevCalcBtn: "⚡ РАССЧИТАТЬ ПРОГНОЗИРУЕМЫЙ ДОХОД",
+    projRevEstClients: "Ожид. клиенты",
+    projRevTeamVol: "Объём команды",
+    projRevYr5: "Год 5 Остаток/мес",
+    projRevTimeline: "📈 ВРЕМЕННАЯ ШКАЛА 5-ЛЕТНЕГО РОСТА",
+    projRevPeriod: "Период",
+    projRevResidualCol: "10% Остаток",
+    projRevPortfolioCol: "Портфель клиента",
+    projRevCumulativeCol: "Накопительно",
+    globalPoolTitle: "🌍 ПУТЬ ГЛОБАЛЬНОГО ПУЛА БОНУСОВ",
+    globalPoolDesc: "Три пула глобального бонуса с разными требованиями к рангу. Введите значения из бэк-офиса для точной выплаты в реальном времени.",
+    yourTeamVol: "Ваш Объём Команды",
+    blueDiamondGateLabel: "/ $1M Порог Голубого Алмаза",
+    blueDiamondUnlocked: "🔵 ГОЛУБОЙ АЛМАЗ — Пул 1 Разблокирован!",
+    remainingToBlue: "{amount} до Голубого Алмаза",
+    pool1Title: "Пул 1 — Голубой Алмаз 🔵",
+    pool2Title: "Пул 2 — Фиолетовый Алмаз 💜",
+    pool3Title: "Пул 3 — Двойной Алмаз Элита 👑",
+    poolMinRankP1: "Мин. ранг: Голубой Алмаз · Макс. 6 долей",
+    poolMinRankP2: "Мин. ранг: Фиолетовый Алмаз · Макс. 4 доли",
+    poolMinRankP3: "Мин. ранг: Двойной Алмаз Элита · Макс. 2 доли",
+    activePoolTotal: "Активный Пул Всего ($)",
+    totalQualUsers: "Всего Квалиф. Пользователей",
+    myPartsLabel: "Мои Доли",
+    yourPayoutLabel: "Ваша Выплата:",
+    fromBackOffice: "Из бэк-офиса",
+    noMembersYet: "Участников пока нет",
+    totalPoolPayoutLabel: "Общая Выплата Пула (3 Пула)",
+    poolFormulaNote: "Формула: Пул Всего ÷ Квалиф. Пользователей × Мои Доли · Введите значения из бэк-офиса.",
+    levelLabel: "УРОВЕНЬ",
+    arVaultDesc: "3D-просмотрщик портфеля алмазов · Сканируйте и проверяйте ваши активы в AR",
+    okBtn: "ОК",
   },
   zh: {
     title: "🤝 合作伙伴工具",
@@ -771,6 +1163,62 @@ const TX: Record<string, {
     assetNote: "复利回扣积累您的金额。每月25%再投资。",
     assetApplyNoVip: "📊 应用（无VIP）",
     assetApplyWithVip: "📊 应用（含VIP）",
+    clientLetterTitle: "客户信函生成器",
+    clientLetterDesc: "用您的语言创建一封专业的介绍信——随时可复制或分享。",
+    alertsCount: "{count} 条提醒",
+    diamondStability: "💎 钻石稳定性",
+    onTopOfResidual: "✨ 除您的月度被动收入之外",
+    rankMoreTo: "再需 {amount} 到 {rank}",
+    rankUnlocksInfinity: "（解锁 {pct} Infinity）",
+    placeholderCustomAmount: "自定义金额",
+    placeholderTargetAmount: "目标金额",
+    placeholderYears: "年",
+    carTip: "🚗 完美规划您的每月豪华汽车租赁或高端生活方式费用。",
+    targetPrefix: "目标：",
+    depositLabel: "存款：",
+    totalOutLabel: "总支付：",
+    avgMoLabel: "/月 均",
+    fullLabel: "全额：",
+    pct75Label: "75%：",
+    projRevTitle: "📊 预计收入模型",
+    projRevDesc: "每次客户每月购买钻石可获得10%直接被动收入。",
+    projRevDbSize: "数据库大小",
+    projRevConv: "转化率 %",
+    projRevAvgPurchase: "平均购买额 ($)",
+    projRevRebateReuse: "回扣再投资 %",
+    projRevMyParts: "我的池份额",
+    projRevCalcBtn: "⚡ 计算预计收入",
+    projRevEstClients: "预计客户",
+    projRevTeamVol: "团队交易量",
+    projRevYr5: "第5年 被动/月",
+    projRevTimeline: "📈 5年增长时间线",
+    projRevPeriod: "时间段",
+    projRevResidualCol: "10% 被动收入",
+    projRevPortfolioCol: "客户投资组合",
+    projRevCumulativeCol: "累计",
+    globalPoolTitle: "🌍 全球奖金池路径",
+    globalPoolDesc: "三个不同级别要求的全球奖金池。输入您的后台数值以获得准确的实时支付。",
+    yourTeamVol: "您的团队交易量",
+    blueDiamondGateLabel: "/ $1M 蓝钻门槛",
+    blueDiamondUnlocked: "🔵 蓝钻 — 池1已解锁！",
+    remainingToBlue: "距蓝钻还需 {amount}",
+    pool1Title: "池1 — 蓝钻 🔵",
+    pool2Title: "池2 — 紫钻 💜",
+    pool3Title: "池3 — 双钻精英 👑",
+    poolMinRankP1: "最低等级：蓝钻 · 最多6份",
+    poolMinRankP2: "最低等级：紫钻 · 最多4份",
+    poolMinRankP3: "最低等级：双钻精英 · 最多2份",
+    activePoolTotal: "活跃池总额 ($)",
+    totalQualUsers: "合格用户总数",
+    myPartsLabel: "我的份额",
+    yourPayoutLabel: "您的收益：",
+    fromBackOffice: "来自后台",
+    noMembersYet: "暂无成员",
+    totalPoolPayoutLabel: "总池支付（全部3个池）",
+    poolFormulaNote: "公式：池总额 ÷ 合格用户总数 × 我的份额 · 请输入后台数值以确保准确性。",
+    levelLabel: "级别",
+    arVaultDesc: "3D钻石投资组合查看器 · 在AR中扫描并检查您的资产",
+    okBtn: "确定",
   },
 };
 
@@ -1407,10 +1855,32 @@ export default function PartnerToolsScreen() {
           <Text style={{ color: "#64748b", fontSize: 12, textAlign: "center", marginTop: 4 }}>{t(language, "affPageSub")}</Text>
           {alertCount > 0 && (
             <View style={[S.alertBadge, { marginTop: 8 }]}>
-              <Text style={S.alertBadgeText}>{alertCount} alerts</Text>
+              <Text style={S.alertBadgeText}>{tx.alertsCount.replace("{count}", String(alertCount))}</Text>
             </View>
           )}
         </View>
+
+        {/* ── CLIENT LETTER GENERATOR ── */}
+        <TouchableOpacity
+          style={{
+            marginHorizontal: 16, marginBottom: 14,
+            backgroundColor: "rgba(230,126,34,0.08)",
+            borderRadius: 14, padding: 16,
+            borderWidth: 1.5, borderColor: GOLD,
+            flexDirection: "row", alignItems: "center", gap: 14,
+          }}
+          onPress={() => router.push("/client-letter")}
+          activeOpacity={0.85}
+        >
+          <Text style={{ fontSize: 30 }}>✉️</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: GOLD, fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.clientLetterTitle}</Text>
+            <Text style={{ color: "#94a3b8", fontSize: 12, marginTop: 3, lineHeight: 17 }}>
+              {tx.clientLetterDesc}
+            </Text>
+          </View>
+          <Text style={{ color: GOLD, fontSize: 18 }}>›</Text>
+        </TouchableOpacity>
 
         {/* ── RANK COMMAND CENTRE ── */}
         {residualSummary && (
@@ -1440,7 +1910,7 @@ export default function PartnerToolsScreen() {
                 <Text style={{ color: "#f87171", fontSize: 13, fontWeight: "bold", marginTop: 2 }}>−{fmtM(residualSummary.totalPortfolio * 0.04 / 12)}/mo</Text>
               </View>
               <View style={{ flex: 1, backgroundColor: "rgba(34,197,94,0.07)", borderRadius: 7, padding: 8, borderWidth: 1, borderColor: "rgba(34,197,94,0.18)" }}>
-                <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>💎 Diamond Stability</Text>
+                <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3 }}>{tx.diamondStability}</Text>
                 <Text style={{ color: GREEN, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>+{fmtM(residualSummary.totalMonthlyRebate)}/mo</Text>
               </View>
             </View>
@@ -1461,8 +1931,8 @@ export default function PartnerToolsScreen() {
               </View>
               {nextTier && (
                 <Text style={{ color: "#94a3b8", fontSize: 10, marginTop: 4 }}>
-                  {fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))} more to {nextTier.rank}
-                  {parseInfPct(nextTier.infinity) > 0 ? ` (Unlocks ${nextTier.infinity} Infinity)` : ""}
+                  {tx.rankMoreTo.replace("{amount}", fmtM(Math.max(0, parseVol(nextTier.teamVol) - rankVolume))).replace("{rank}", nextTier.rank)}
+                  {parseInfPct(nextTier.infinity) > 0 ? ` ${tx.rankUnlocksInfinity.replace("{pct}", nextTier.infinity)}` : ""}
                 </Text>
               )}
               {isBlueDiamondReached && (
@@ -1485,7 +1955,7 @@ export default function PartnerToolsScreen() {
                     {"💎"} <Text style={{ color: GREEN, fontWeight: "bold" }}>{t(language, "affRankPaidIn")}</Text>{t(language, "affRankPaidInDesc")}
                   </Text>
                   <Text style={{ color: "#f59e0b", fontSize: 11, fontWeight: "bold", marginTop: 6 }}>
-                    {"✨"} On top of your monthly residual income
+                    {tx.onTopOfResidual}
                   </Text>
                 </View>
               )}
@@ -1647,7 +2117,7 @@ export default function PartnerToolsScreen() {
               keyboardType="numeric"
               returnKeyType="done"
               placeholderTextColor="#64748b"
-              placeholder="Custom amount"
+              placeholder={tx.placeholderCustomAmount}
             />
 
             <TouchableOpacity style={S.calcBtn} onPress={calculateProperty} activeOpacity={0.8}>
@@ -1657,7 +2127,7 @@ export default function PartnerToolsScreen() {
             {propResult && (
               <View style={S.resultBox}>
                 <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Target: ${propResult.targetCost.toLocaleString()}/mo — {tx.propNote}
+                  {tx.targetPrefix} ${propResult.targetCost.toLocaleString()}/mo — {tx.propNote}
                 </Text>
 
                 {/* Side-by-side comparison */}
@@ -1702,7 +2172,7 @@ export default function PartnerToolsScreen() {
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.savingsDesc}</Text>
             <View style={{ backgroundColor: "rgba(230,126,34,0.08)", borderRadius: 7, paddingHorizontal: 10, paddingVertical: 7, marginTop: 6, marginBottom: 2, borderLeftWidth: 2, borderLeftColor: GOLD }}>
-              <Text style={{ color: GOLD, fontSize: 11, lineHeight: 16 }}>🚗 Perfect for planning your monthly luxury car lease or premium lifestyle costs.</Text>
+              <Text style={{ color: GOLD, fontSize: 11, lineHeight: 16 }}>{tx.carTip}</Text>
             </View>
 
             <Text style={S.inputLabel}>{tx.savingsGoalLabel}</Text>
@@ -1724,7 +2194,7 @@ export default function PartnerToolsScreen() {
               keyboardType="numeric"
               returnKeyType="done"
               placeholderTextColor="#64748b"
-              placeholder="Custom amount"
+              placeholder={tx.placeholderCustomAmount}
             />
 
             <TouchableOpacity style={S.calcBtn} onPress={calculateSavings} activeOpacity={0.8}>
@@ -1734,7 +2204,7 @@ export default function PartnerToolsScreen() {
             {savingsResult && (
               <View style={S.resultBox}>
                 <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Target: ${savingsResult.targetIncome.toLocaleString()}/mo — {tx.savingsNote}
+                  {tx.targetPrefix} ${savingsResult.targetIncome.toLocaleString()}/mo — {tx.savingsNote}
                 </Text>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
@@ -1742,8 +2212,8 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.noVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.noVip.deposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.noVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.noVip.payout75.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>{tx.fullLabel} ${savingsResult.noVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>{tx.pct75Label} ${savingsResult.noVip.payout75.toLocaleString()}/mo</Text>
                     <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.noVip.payout75 * 12).toLocaleString()}/yr</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleSavingsApplyNoVip} activeOpacity={0.85}>
                       <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
@@ -1754,8 +2224,8 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{savingsResult.withVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>${savingsResult.withVip.deposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{savingsResult.withVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>Full: ${savingsResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>75%: ${savingsResult.withVip.payout75.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center" }}>{tx.fullLabel} ${savingsResult.withVip.monthlyRebate.toLocaleString()}/mo</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center" }}>{tx.pct75Label} ${savingsResult.withVip.payout75.toLocaleString()}/mo</Text>
                     <Text style={{ color: "#64748b", fontSize: 11, textAlign: "center" }}>${(savingsResult.withVip.payout75 * 12).toLocaleString()}/yr</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleSavingsApplyWithVip} activeOpacity={0.85}>
                       <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
@@ -1794,7 +2264,7 @@ export default function PartnerToolsScreen() {
               keyboardType="numeric"
               returnKeyType="next"
               placeholderTextColor="#64748b"
-              placeholder="Target amount"
+              placeholder={tx.placeholderTargetAmount}
             />
 
             <Text style={S.inputLabel}>{tx.assetYearsLabel}</Text>
@@ -1816,7 +2286,7 @@ export default function PartnerToolsScreen() {
               keyboardType="numeric"
               returnKeyType="done"
               placeholderTextColor="#64748b"
-              placeholder="Years"
+              placeholder={tx.placeholderYears}
             />
 
             <TouchableOpacity style={S.calcBtn} onPress={calculateAsset} activeOpacity={0.8}>
@@ -1826,16 +2296,16 @@ export default function PartnerToolsScreen() {
             {assetResult && (
               <View style={S.resultBox}>
                 <Text style={[S.resultLabel, { color: "#94a3b8", marginBottom: 10, textAlign: "center" }]}>
-                  Total Out ${assetResult.targetAmount.toLocaleString()} in {assetResult.years}y @ 80% — {tx.assetNote}
+                  {tx.totalOutLabel} ${assetResult.targetAmount.toLocaleString()} in {assetResult.years}y @ 80% — {tx.assetNote}
                 </Text>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b" }]}>
                     <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.noVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.noVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.noVip.deposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.noVip.totalOut.toLocaleString()}</Text>
-                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}/mo avg</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.noVip.totalOut.toLocaleString()}</Text>
+                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleAssetApplyNoVip} activeOpacity={0.85}>
                       <Text style={S.applyBtnText}>{tx.assetApplyNoVip}</Text>
                     </TouchableOpacity>
@@ -1843,10 +2313,10 @@ export default function PartnerToolsScreen() {
                   <View style={[S.resultBox, { flex: 1, margin: 0, backgroundColor: "#1e293b", borderColor: "#f59e0b" }]}>
                     <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.withVip.sp}</Text>
-                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>Deposit: ${assetResult.withVip.deposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.withVip.deposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
-                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>Total Out: ${assetResult.withVip.totalOut.toLocaleString()}</Text>
-                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}/mo avg</Text>
+                    <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.withVip.totalOut.toLocaleString()}</Text>
+                    <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleAssetApplyWithVip} activeOpacity={0.85}>
                       <Text style={S.applyBtnText}>{tx.assetApplyWithVip}</Text>
                     </TouchableOpacity>
@@ -1861,17 +2331,17 @@ export default function PartnerToolsScreen() {
 
         {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>📊 PROJECTED REVENUE MODEL</Text>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.projRevTitle}</Text>
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
-            10% Direct Residual on every monthly diamond purchase your clients make.
+            {tx.projRevDesc}
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
             {[
-              { label: "Database Size", val: revenueDb, set: setRevenueDb },
-              { label: "Conversion %", val: revenueConv, set: setRevenueConv },
-              { label: "Avg Purchase ($)", val: revenueAvg, set: setRevenueAvg },
-              { label: "Rebate Re-Use %", val: revenueReuse, set: setRevenueReuse },
-              { label: "My Pool Parts", val: revenueParts, set: setRevenueParts },
+              { label: tx.projRevDbSize, val: revenueDb, set: setRevenueDb },
+              { label: tx.projRevConv, val: revenueConv, set: setRevenueConv },
+              { label: tx.projRevAvgPurchase, val: revenueAvg, set: setRevenueAvg },
+              { label: tx.projRevRebateReuse, val: revenueReuse, set: setRevenueReuse },
+              { label: tx.projRevMyParts, val: revenueParts, set: setRevenueParts },
             ].map(item => (
               <View key={item.label} style={{ minWidth: "45%", flex: 1 }}>
                 <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", marginBottom: 3, textTransform: "uppercase" }}>{item.label}</Text>
@@ -1881,15 +2351,15 @@ export default function PartnerToolsScreen() {
             ))}
           </View>
           <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
-            <Text style={S.calcBtnText}>⚡ CALCULATE PROJECTED REVENUE</Text>
+            <Text style={S.calcBtnText}>{tx.projRevCalcBtn}</Text>
           </TouchableOpacity>
           {revenueResult && (
             <>
               <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 12 }}>
                 {[
-                  { label: "Est. Clients", value: String(revenueResult.clients), color: BLUE },
-                  { label: "Team Volume", value: fmtM(revenueResult.teamVolume), color: GOLD },
-                  { label: "Yr.5 Residual/mo", value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
+                  { label: tx.projRevEstClients, value: String(revenueResult.clients), color: BLUE },
+                  { label: tx.projRevTeamVol, value: fmtM(revenueResult.teamVolume), color: GOLD },
+                  { label: tx.projRevYr5, value: fmtM(revenueResult.timeline[revenueResult.timeline.length-1]?.agentResidual ?? 0), color: GREEN },
                 ].map(s => (
                   <View key={s.label} style={{ flex: 1, backgroundColor: "#0d1a2a", borderRadius: 8, padding: 8, alignItems: "center" }}>
                     <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase" }}>{s.label}</Text>
@@ -1897,13 +2367,13 @@ export default function PartnerToolsScreen() {
                   </View>
                 ))}
               </View>
-              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>📈 5-YEAR GROWTH TIMELINE</Text>
+              <Text style={[S.sectionTitle, { color: GOLD, fontSize: 12 }]}>{tx.projRevTimeline}</Text>
               <View style={{ borderRadius: 8, overflow: "hidden" }}>
                 <View style={{ flexDirection: "row", backgroundColor: "#0d1a2a", paddingVertical: 7, paddingHorizontal: 10 }}>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Period</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>10% Residual</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Client Portfolio</Text>
-                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>Cumulative</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold" }}>{tx.projRevPeriod}</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>{tx.projRevResidualCol}</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>{tx.projRevPortfolioCol}</Text>
+                  <Text style={{ flex: 1, color: "#64748b", fontSize: 11, fontWeight: "bold", textAlign: "right" }}>{tx.projRevCumulativeCol}</Text>
                 </View>
                 {revenueResult.timeline.map(row => (
                   <View key={row.month} style={{ flexDirection: "row", paddingVertical: 7, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
@@ -1921,53 +2391,53 @@ export default function PartnerToolsScreen() {
 
         {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>🌍 GLOBAL POOL BONUS PATH</Text>
+          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.globalPoolTitle}</Text>
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
-            Three pools of Global Bonus with different rank requirements. Enter your back office values for an accurate real-time payout.
+            {tx.globalPoolDesc}
           </Text>
 
           {/* Progress toward Blue Diamond */}
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
-            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>Your Team Volume</Text>
+            <Text style={{ color: "#64748b", fontSize: 11, fontWeight: "bold" }}>{tx.yourTeamVol}</Text>
             <Text style={{ color: poolProgress >= 1 ? GREEN : GOLD, fontSize: 11, fontWeight: "bold" }}>
-              {fmtM(poolTeamVolume)} / $1M Blue Diamond Gate
+              {fmtM(poolTeamVolume)} {tx.blueDiamondGateLabel}
             </Text>
           </View>
           <View style={{ height: 8, backgroundColor: "#0d1a2a", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
             <View style={{ height: "100%", width: `${Math.round(poolProgress * 100)}%` as any, backgroundColor: poolProgress >= 1 ? GREEN : BLUE, borderRadius: 4 }} />
           </View>
           <Text style={{ color: poolProgress >= 1 ? GREEN : "#64748b", fontSize: 11, textAlign: "center", marginBottom: 14 }}>
-            {poolProgress >= 1 ? "🔵 BLUE DIAMOND — Pool 1 Unlocked!" : `${fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume)} remaining to Blue Diamond`}
+            {poolProgress >= 1 ? tx.blueDiamondUnlocked : tx.remainingToBlue.replace("{amount}", fmtM(BLUE_DIAMOND_THRESHOLD - poolTeamVolume))}
           </Text>
 
           {/* Pool 1 — Blue Diamond */}
           <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 10, borderLeftWidth: 3, borderLeftColor: BLUE }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <Text style={{ color: BLUE, fontSize: 13, fontWeight: "bold" }}>Pool 1 — Blue Diamond 🔵</Text>
-              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Blue Diamond · Max 6 parts</Text>
+              <Text style={{ color: BLUE, fontSize: 13, fontWeight: "bold" }}>{tx.pool1Title}</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>{tx.poolMinRankP1}</Text>
             </View>
             <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.activePoolTotal}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Total}
                   onChangeText={setPool1Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.totalQualUsers}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Users}
                   onChangeText={setPool1Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.myPartsLabel}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool1Parts}
                   onChangeText={setPool1Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
                   placeholder="1–6" />
               </View>
             </View>
             <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>{tx.yourPayoutLabel}</Text>
               <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
                 {fmtM((parseFloat(pool1Total)||0) / Math.max(parseFloat(pool1Users)||1, 1) * (parseFloat(pool1Parts)||1))}/mo
               </Text>
@@ -1977,31 +2447,31 @@ export default function PartnerToolsScreen() {
           {/* Pool 2 — Purple Diamond */}
           <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 10, borderLeftWidth: 3, borderLeftColor: "#a855f7" }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <Text style={{ color: "#a855f7", fontSize: 13, fontWeight: "bold" }}>Pool 2 — Purple Diamond 💜</Text>
-              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Purple Diamond · Max 4 parts</Text>
+              <Text style={{ color: "#a855f7", fontSize: 13, fontWeight: "bold" }}>{tx.pool2Title}</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>{tx.poolMinRankP2}</Text>
             </View>
             <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.activePoolTotal}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Total}
                   onChangeText={setPool2Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.totalQualUsers}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Users}
                   onChangeText={setPool2Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.myPartsLabel}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool2Parts}
                   onChangeText={setPool2Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
                   placeholder="1–4" />
               </View>
             </View>
             <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>{tx.yourPayoutLabel}</Text>
               <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
                 {fmtM((parseFloat(pool2Total)||0) / Math.max(parseFloat(pool2Users)||1, 1) * (parseFloat(pool2Parts)||1))}/mo
               </Text>
@@ -2011,40 +2481,40 @@ export default function PartnerToolsScreen() {
           {/* Pool 3 — Double Diamond Elite */}
           <View style={{ backgroundColor: "#0d1a2a", borderRadius: 10, padding: 12, marginBottom: 12, borderLeftWidth: 3, borderLeftColor: "#f59e0b" }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "bold" }}>Pool 3 — Double Diamond Elite 👑</Text>
-              <Text style={{ color: "#64748b", fontSize: 10 }}>Min Rank: Double Diamond Elite · Max 2 parts</Text>
+              <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "bold" }}>{tx.pool3Title}</Text>
+              <Text style={{ color: "#64748b", fontSize: 10 }}>{tx.poolMinRankP3}</Text>
             </View>
             <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Active Pool Total ($)</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.activePoolTotal}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Total}
                   onChangeText={setPool3Total} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>Total Qualified Users</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.totalQualUsers}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Users}
                   onChangeText={setPool3Users} keyboardType="numeric" placeholderTextColor="#2a4a6a"
-                  placeholder="From back office" />
+                  placeholder={tx.fromBackOffice} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>My Parts</Text>
+                <Text style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", marginBottom: 3 }}>{tx.myPartsLabel}</Text>
                 <TextInput style={[S.input, { padding: 8, fontSize: 13 }]} value={pool3Parts}
                   onChangeText={setPool3Parts} keyboardType="numeric" placeholderTextColor="#2a4a6a"
                   placeholder="1–2" />
               </View>
             </View>
             <View style={{ backgroundColor: "#0f2035", borderRadius: 6, padding: 10, flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ color: "#64748b", fontSize: 12 }}>Your Payout:</Text>
+              <Text style={{ color: "#64748b", fontSize: 12 }}>{tx.yourPayoutLabel}</Text>
               <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold" }}>
-                {(parseFloat(pool3Users)||0) === 0 ? "No members yet" : fmtM((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1, 1) * (parseFloat(pool3Parts)||1)) + "/mo"}
+                {(parseFloat(pool3Users)||0) === 0 ? tx.noMembersYet : fmtM((parseFloat(pool3Total)||0) / Math.max(parseFloat(pool3Users)||1, 1) * (parseFloat(pool3Parts)||1)) + "/mo"}
               </Text>
             </View>
           </View>
 
           {/* Total Pool Payout */}
           <View style={{ backgroundColor: "rgba(34,197,94,0.08)", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "rgba(34,197,94,0.25)", marginBottom: 10 }}>
-            <Text style={{ color: "#64748b", fontSize: 11, textTransform: "uppercase", letterSpacing: 0.5 }}>Total Pool Payout (All 3 Pools)</Text>
+            <Text style={{ color: "#64748b", fontSize: 11, textTransform: "uppercase", letterSpacing: 0.5 }}>{tx.totalPoolPayoutLabel}</Text>
             <Text style={{ color: GREEN, fontSize: 20, fontWeight: "bold", marginTop: 4 }}>
               {fmtM(
                 ((parseFloat(pool1Total)||0) / Math.max(parseFloat(pool1Users)||1,1) * (parseFloat(pool1Parts)||1)) +
@@ -2053,7 +2523,7 @@ export default function PartnerToolsScreen() {
               )}/mo
             </Text>
             <Text style={{ color: "#64748b", fontSize: 10, marginTop: 3 }}>
-              Formula: Pool Total ÷ Total Qualified Users × Your Parts · Enter values from your back office for accuracy.
+              {tx.poolFormulaNote}
             </Text>
           </View>
 
@@ -2062,7 +2532,7 @@ export default function PartnerToolsScreen() {
         {/* ── AR VAULT PLACEHOLDER ── */}
         <View style={{ backgroundColor: "#0f2035", borderRadius: 12, padding: 14, marginBottom: 12, borderWidth: 1.5, borderColor: "#a78bfa44", alignItems: "center" }}>
           <Text style={{ color: "#a78bfa", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 }}>{t(language, "affVaultComingSoon")}</Text>
-          <Text style={{ color: "#475569", fontSize: 10, marginTop: 4 }}>3D Diamond portfolio viewer · Scan & inspect your assets in AR</Text>
+          <Text style={{ color: "#475569", fontSize: 10, marginTop: 4 }}>{tx.arVaultDesc}</Text>
         </View>
 
       </ScrollView>
@@ -2087,7 +2557,7 @@ export default function PartnerToolsScreen() {
                 style={S.input}
                 value={form.name}
                 onChangeText={(v) => setForm((f) => ({ ...f, name: v }))}
-                placeholder="Full name"
+                placeholder={tx.nameLabel.replace(" *", "")}
                 placeholderTextColor="#64748b"
                 returnKeyType="next"
               />
@@ -2136,7 +2606,7 @@ export default function PartnerToolsScreen() {
               />
 
               {/* Level Selector */}
-              <Text style={S.inputLabel}>LEVEL</Text>
+              <Text style={S.inputLabel}>{tx.levelLabel}</Text>
               <View style={S.chipRow}>
                 {([
                   { value: "1", label: "L1 — 10%" },
@@ -2213,7 +2683,7 @@ export default function PartnerToolsScreen() {
               onPress={() => setInAppAlert(null)}
               activeOpacity={0.8}
             >
-              <Text style={S.alertBoxBtnText}>OK</Text>
+              <Text style={S.alertBoxBtnText}>{tx.okBtn}</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
