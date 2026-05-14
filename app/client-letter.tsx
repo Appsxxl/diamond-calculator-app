@@ -882,46 +882,73 @@ async function loadLogoBase64(): Promise<string> {
   }
 }
 
-function buildHtml(letter: string, logoDataUri: string): string {
+function buildHtml(letter: string, logoDataUri: string, customerName: string, date: string): string {
   const escaped = letter
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/\n/g, "<br/>");
 
+  const safeCust = customerName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const safeDate = date.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
   return `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Letter — ${safeCust} — ${safeDate}</title>
 <style>
+  @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT', Arial, sans-serif; color: #1e293b; background: #fff; }
+  body { font-family: Arial, Helvetica, sans-serif; color: #1e293b; background: #fff; }
   .letterhead {
     background: #0a1628;
     padding: 28px 48px;
     display: flex;
     align-items: center;
     gap: 18px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   .letterhead img { width: 60px; height: 60px; border-radius: 12px; }
-  .brand-title { color: #f1f5f9; font-size: 20px; letter-spacing: 1.5px; font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT', Arial, sans-serif; }
-  .brand-sub   { color: #64748b; font-size: 11px; margin-top: 5px; letter-spacing: 1px; font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT', Arial, sans-serif; text-transform: uppercase; }
-  .gold-bar    { height: 3px; background: linear-gradient(90deg, #e67e22, #f59e0b 60%, transparent); }
-  .body        { padding: 48px 48px 32px; font-size: 14px; line-height: 1.85; color: #1e293b; font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT', Arial, sans-serif; }
-  .footer      { margin: 0 48px; padding: 18px 0; border-top: 1px solid #e2e8f0;
-                 font-size: 10px; color: #94a3b8; font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT', Arial, sans-serif; }
+  .brand-block { flex: 1; }
+  .brand-title { color: #f1f5f9; font-size: 18px; letter-spacing: 1.2px; font-weight: bold; }
+  .brand-sub   { color: #94a3b8; font-size: 10px; margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; }
+  .doc-meta    { text-align: right; }
+  .doc-name    { color: #f1f5f9; font-size: 15px; font-weight: bold; }
+  .doc-date    { color: #94a3b8; font-size: 11px; margin-top: 4px; }
+  .gold-bar    {
+    height: 4px;
+    background: linear-gradient(90deg, #e67e22 0%, #f59e0b 60%, #e67e22 100%);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .letter-body { padding: 48px 48px 32px; font-size: 14px; line-height: 1.9; color: #1e293b; }
+  .footer      {
+    margin: 0 48px;
+    padding: 18px 0;
+    border-top: 1px solid #e2e8f0;
+    font-size: 10px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
   <div class="letterhead">
-    ${logoDataUri ? `<img src="${logoDataUri}" />` : `<div style="width:60px;height:60px;background:#1e293b;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;">💎</div>`}
-    <div>
-      <div class="brand-title">PLAN B · DIAMOND SOLUTION</div>
+    ${logoDataUri ? `<img src="${logoDataUri}" alt="logo"/>` : `<div style="width:60px;height:60px;background:#1e293b;border-radius:12px;text-align:center;line-height:60px;font-size:32px;">💎</div>`}
+    <div class="brand-block">
+      <div class="brand-title">PLAN B &middot; DIAMOND SOLUTION</div>
       <div class="brand-sub">Strategic Wealth Preservation</div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-name">${safeCust}</div>
+      <div class="doc-date">${safeDate}</div>
     </div>
   </div>
   <div class="gold-bar"></div>
-  <div class="body">${escaped}</div>
+  <div class="letter-body">${escaped}</div>
   <div class="footer">
     This letter is a professional introduction tool and does not constitute financial advice.
     Always comply with the regulations applicable in your jurisdiction.
@@ -992,11 +1019,29 @@ export default function ClientLetterScreen() {
     saveAdviserInfo();
     setPdfLoading(true);
     try {
-      const html = buildHtml(letter, logoBase64);
+      const docCustomer = customerName.trim() || "———";
+      const docDate = formatDate(language);
+      const html = buildHtml(letter, logoBase64, docCustomer, docDate);
       if (Platform.OS === "web") {
-        // Web: open print dialog
-        const win = window.open("", "_blank");
-        if (win) { win.document.write(html); win.document.close(); win.print(); }
+        // Inject an invisible iframe so the print dialog opens over the current page
+        // instead of showing a blank "about:blank" popup tab.
+        const iframe = document.createElement("iframe");
+        iframe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:0;";
+        document.body.appendChild(iframe);
+        const iDoc = iframe.contentDocument ?? (iframe.contentWindow as any)?.document;
+        if (iDoc) {
+          iDoc.open();
+          iDoc.write(html);
+          iDoc.close();
+          // Brief delay so the browser fully applies styles before printing
+          setTimeout(() => {
+            (iframe.contentWindow as any)?.focus();
+            (iframe.contentWindow as any)?.print();
+            setTimeout(() => {
+              if (document.body.contains(iframe)) document.body.removeChild(iframe);
+            }, 1000);
+          }, 300);
+        }
       } else {
         const { uri } = await Print.printToFileAsync({ html, base64: false });
         const safeName = customerName.trim().replace(/[^a-zA-Z0-9]/g, "_") || "Client";
@@ -1011,7 +1056,7 @@ export default function ClientLetterScreen() {
       }
     } catch { /* cancelled */ }
     finally { setPdfLoading(false); }
-  }, [letter, logoBase64, saveAdviserInfo]);
+  }, [letter, logoBase64, saveAdviserInfo, customerName, language]);
 
   const TYPE_OPTIONS: { key: LetterType; label: string; icon: string; sub: string }[] = [
     { key: "invitation",   label: tx.typeInvitation,   icon: "✉️", sub: tx.typeInvitationSub },
@@ -1118,9 +1163,13 @@ export default function ClientLetterScreen() {
                   style={S.previewLogo}
                   resizeMode="cover"
                 />
-                <View style={{ marginLeft: 12 }}>
+                <View style={{ marginLeft: 12, flex: 1 }}>
                   <Text style={S.previewBrandTitle}>PLAN B · DIAMOND SOLUTION</Text>
                   <Text style={S.previewBrandSub}>Strategic Wealth Preservation</Text>
+                </View>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={S.previewDocName}>{customerName.trim() || "———"}</Text>
+                  <Text style={S.previewDocDate}>{formatDate(language)}</Text>
                 </View>
               </View>
               <View style={S.previewGoldBar} />
@@ -1285,6 +1334,18 @@ const S = StyleSheet.create({
     fontSize: 10,
     marginTop: 3,
     letterSpacing: 0.5,
+  },
+  previewDocName: {
+    color: "#f1f5f9",
+    fontFamily: FONT,
+    fontSize: 13,
+    letterSpacing: 0.3,
+  },
+  previewDocDate: {
+    color: "#64748b",
+    fontFamily: FONT,
+    fontSize: 10,
+    marginTop: 3,
   },
   previewGoldBar: {
     height: 3,

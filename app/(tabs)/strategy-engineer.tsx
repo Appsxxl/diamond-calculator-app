@@ -249,6 +249,24 @@ export default function StrategyEngineerScreen() {
                   {planBTimeStr(result)}
                 </Text>
               </View>
+              {(() => {
+                const template = t(language, "sePlanBSummary");
+                const parts = template
+                  .replace('{goal}', '\x00GOAL\x00')
+                  .replace('{years}', '\x00YEARS\x00')
+                  .split('\x00');
+                return (
+                  <View style={{ backgroundColor: 'rgba(34,197,94,0.08)', borderRadius: 8, padding: 10, marginTop: 8, borderLeftWidth: 2, borderLeftColor: '#22c55e' }}>
+                    <Text style={{ color: '#e2e8f0', fontSize: 14, lineHeight: 22 }}>
+                      {parts.map((seg, i) => {
+                        if (seg === 'GOAL') return <Text key={i} style={{ color: '#22c55e', fontWeight: 'bold' }}>{fmt(numVal(monthlyGoal))}</Text>;
+                        if (seg === 'YEARS') return <Text key={i} style={{ color: '#f59e0b', fontWeight: 'bold' }}>{targetYears}</Text>;
+                        return <React.Fragment key={i}>{seg}</React.Fragment>;
+                      })}
+                    </Text>
+                  </View>
+                );
+              })()}
               <TouchableOpacity style={[S.applyBtn, { borderColor: "#22c55e" }]} onPress={() => applyPlan("B")}>
                 <Text style={[S.applyBtnText, { color: "#22c55e" }]}>
                   {t(language, "seApplyPlan")} B {t(language, "seApplyToScenario")}
@@ -271,6 +289,24 @@ export default function StrategyEngineerScreen() {
                   {fmt(result.planC_lumpSum)}
                 </Text>
               </View>
+              {(() => {
+                const template = t(language, "sePlanCSummary");
+                const parts = template
+                  .replace('{goal}', '\x00GOAL\x00')
+                  .replace('{years}', '\x00YEARS\x00')
+                  .split('\x00');
+                return (
+                  <View style={{ backgroundColor: 'rgba(245,158,11,0.08)', borderRadius: 8, padding: 10, marginTop: 8, borderLeftWidth: 2, borderLeftColor: '#f59e0b' }}>
+                    <Text style={{ color: '#e2e8f0', fontSize: 14, lineHeight: 22 }}>
+                      {parts.map((seg, i) => {
+                        if (seg === 'GOAL') return <Text key={i} style={{ color: '#f59e0b', fontWeight: 'bold' }}>{fmt(numVal(monthlyGoal))}</Text>;
+                        if (seg === 'YEARS') return <Text key={i} style={{ color: '#f59e0b', fontWeight: 'bold' }}>{targetYears}</Text>;
+                        return <React.Fragment key={i}>{seg}</React.Fragment>;
+                      })}
+                    </Text>
+                  </View>
+                );
+              })()}
               <TouchableOpacity style={[S.applyBtn, { borderColor: "#f59e0b" }]} onPress={() => applyPlan("C")}>
                 <Text style={[S.applyBtnText, { color: "#f59e0b" }]}>
                   {t(language, "seApplyPlan")} C {t(language, "seApplyToScenario")}
@@ -293,6 +329,24 @@ export default function StrategyEngineerScreen() {
                   {fmt(result.planD_lumpSum)}
                 </Text>
               </View>
+              {(() => {
+                const template = t(language, "sePlanDSummary");
+                const parts = template
+                  .replace('{goal}', '\x00GOAL\x00')
+                  .replace('{years}', '\x00YEARS\x00')
+                  .split('\x00');
+                return (
+                  <View style={{ backgroundColor: 'rgba(167,139,250,0.08)', borderRadius: 8, padding: 10, marginTop: 8, borderLeftWidth: 2, borderLeftColor: '#a78bfa' }}>
+                    <Text style={{ color: '#e2e8f0', fontSize: 14, lineHeight: 22 }}>
+                      {parts.map((seg, i) => {
+                        if (seg === 'GOAL') return <Text key={i} style={{ color: '#a78bfa', fontWeight: 'bold' }}>{fmt(numVal(monthlyGoal))}</Text>;
+                        if (seg === 'YEARS') return <Text key={i} style={{ color: '#f59e0b', fontWeight: 'bold' }}>{targetYears}</Text>;
+                        return <React.Fragment key={i}>{seg}</React.Fragment>;
+                      })}
+                    </Text>
+                  </View>
+                );
+              })()}
               <TouchableOpacity style={[S.applyBtn, { borderColor: "#a78bfa" }]} onPress={() => applyPlan("D")}>
                 <Text style={[S.applyBtnText, { color: "#a78bfa" }]}>
                   {t(language, "seApplyPlan")} D {t(language, "seApplyToScenario")}
