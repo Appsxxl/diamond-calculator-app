@@ -73,16 +73,17 @@ describe("Calculator Engine - runCalculation", () => {
     const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: true }));
     const m1 = result.months[0];
     expect(m1.isNewVip).toBe(true);
-    // After VIP cost ($1000) is deducted: cap = 9000 => SP4 (3.0%) + VIP (3.0%) = 6.0%
-    expect(m1.totalRate).toBeCloseTo(6.0, 1); // SP4 3.0 + VIP 3.0
+    // $10,000 opens at SP5 (3.1%); VIP deducts $1,000 from principal (→ $9,000) but SP tier
+    // is fixed at opening lump. SP5 (3.1%) + VIP (3.0%) = 6.1%
+    expect(m1.totalRate).toBeCloseTo(6.1, 1); // SP5 3.1 + VIP 3.0
   });
 
   it("VIP does not activate when disabled", () => {
-    // net(10000) = (10000-5)*0.9875 = 9870 → SP4 (3.0%), no VIP
+    // $10,000 (no fees on internal start capital) → SP5 (3.1%), no VIP bonus
     const result = runCalculation(makeParams({ startAmount: 10000, years: 1, vipEnabled: false }));
     const m1 = result.months[0];
     expect(m1.isNewVip).toBe(false);
-    expect(m1.totalRate).toBeCloseTo(3.0, 1); // SP4 only (fees reduce 10k to ~9870)
+    expect(m1.totalRate).toBeCloseTo(3.1, 1); // SP5 only
   });
 
   it("manualVip=true leaves cap unchanged (external fee, not a deposit)", () => {
@@ -113,11 +114,10 @@ describe("Calculator Engine - runCalculation", () => {
   });
 
   it("grossYield is Math.round(cap * rate/100)", () => {
-    // net(10200) = (10200-5)*0.9875 = 10055.06 → SP5 (3.1%)
+    // $10,200 (no fees on start capital) → SP5 (3.1%), yield = round(10200 * 0.031)
     const result = runCalculation(makeParams({ startAmount: 10200, years: 1, vipEnabled: false }));
     const m1 = result.months[0];
-    const netCap = (10200 - 5) * 0.9875; // 10055.0625
-    const expected = Math.round(netCap * (3.1 / 100));
+    const expected = Math.round(10200 * (3.1 / 100));
     expect(m1.grossYield).toBe(expected);
   });
 

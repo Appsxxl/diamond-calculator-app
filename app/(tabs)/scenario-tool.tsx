@@ -1290,9 +1290,9 @@ export default function ScenarioToolScreen() {
                                       monthData: newMonthData,
                                     }));
                                   }}
-                                  style={{ backgroundColor: alreadySet ? "#14532d" : "#166534", borderRadius: 5, paddingHorizontal: 9, paddingVertical: 4, borderWidth: 1, borderColor: alreadySet ? "#4ade80" : "#22c55e", flexShrink: 0 }}
+                                  style={{ backgroundColor: alreadySet ? "#78350f" : "#166534", borderRadius: 5, paddingHorizontal: 9, paddingVertical: 4, borderWidth: 1, borderColor: alreadySet ? "#f59e0b" : "#22c55e", flexShrink: 0 }}
                                 >
-                                  <Text style={{ color: alreadySet ? "#4ade80" : "#bbf7d0", fontSize: 10, fontWeight: "bold" }}>
+                                  <Text style={{ color: alreadySet ? "#fef3c7" : "#bbf7d0", fontSize: 10, fontWeight: "bold" }}>
                                     {alreadySet ? t(language, 'undoTakeOut') : t(language, 'takeOut')}
                                   </Text>
                                 </TouchableOpacity>

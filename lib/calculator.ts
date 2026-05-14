@@ -150,7 +150,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // so we use the net deposit as the display value to show what was invested.
     const capStartRaw = tranches.reduce((s, t) => s + t.principal, 0);
     const depositNetM1 = m === 1
-      ? getNetDeposit(startAmount) + getNetDeposit(monthData[1]?.stort ?? 0)
+      ? startAmount + getNetDeposit(monthData[1]?.stort ?? 0)
       : 0;
     const capStart = m === 1 ? depositNetM1 : capStartRaw;
 
@@ -165,7 +165,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // Month 1 includes the startAmount as an additional deposit.
     const depositGross = mD.stort + (m === 1 ? startAmount : 0);
     // Fees are applied per transaction — startAmount and monthly deposit are separate.
-    const depositNet = getNetDeposit(mD.stort) + (m === 1 ? getNetDeposit(startAmount) : 0);
+    const depositNet = getNetDeposit(mD.stort) + (m === 1 ? startAmount : 0);
     if (m > 1) tIn += mD.stort;  // startAmount already counted in tIn initialiser
 
     // ── 3. Combine matured principal + new deposit → one new contract ────────
@@ -174,7 +174,59 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     const principalTakeout = maturedSum > 0 ? Math.min(mD.opn, maturedSum) : 0;
     if (principalTakeout > 0) { tOut += principalTakeout; runningWithdrawals += principalTakeout; }
 
-    const newLump = (maturedSum - principalTakeout) + depositNet;
+    // When a contract matures with full auto-rebuy (no principal withdrawal),
+    // run the VIP check BEFORE creating the rebuy tranche so we can fold the
+    // compound tranches' yield (minus VIP reservation) into the new contract,
+    // ensuring the combined amount qualifies for the correct SP tier.
+    // In all other months VIP runs after the new tranche is created (step 4).
+    let vipLabel = '';
+    let isNewVip = false;
+    let isVipSelfFunded = false;
+    let isManualVip_ = false;
+    let preRebuyYield = 0;
+    let nVFolded = 0;
+
+    if (maturedSum > 0 && principalTakeout === 0) {
+      // ── 3a. Early VIP check (maturity rebuy months only) ─────────────────
+      const compoundCapNow = tranches.reduce((s, t) => s + t.principal, 0);
+      const totalCapForVip = compoundCapNow + maturedSum + depositNet;
+      if (vipEnabled) {
+        const vipThresholdMet = totalCapForVip >= 3550;
+        if (vipThresholdMet && (!vActive || vMnd <= 0)) {
+          const cost = 1000;
+          if (vipPot >= cost) {
+            vipPot -= cost;
+            isVipSelfFunded = true;
+          } else if (manualVip) {
+            isManualVip_ = true;
+          } else {
+            if (compoundCapNow > 0) {
+              const factor = Math.max(0, (compoundCapNow - cost) / compoundCapNow);
+              for (const t of tranches) t.principal *= factor;
+            }
+          }
+          tVip += cost;
+          vActive = true;
+          vMnd = 12;
+          vipLabel = 'NEW VIP';
+          isNewVip = true;
+        } else if (vActive) {
+          vipLabel = `VIP (${vMnd}m)`;
+        }
+      }
+
+      // ── 3b. Fold compound yield into rebuy ────────────────────────────────
+      const vipBonusNow = vActive ? 3.0 : 0;
+      preRebuyYield = tranches.reduce(
+        (s, t) => s + Math.round(t.principal * ((t.baseRate + vipBonusNow) / 100)), 0
+      );
+      const nV84 = vActive ? 84 : 0;
+      nVFolded = Math.min(preRebuyYield, nV84);
+    }
+
+    const yieldFolded = preRebuyYield - nVFolded;
+
+    const newLump = (maturedSum - principalTakeout) + depositNet + yieldFolded;
     let newSpName = '';
     let newBaseRate = 0;
 
@@ -192,36 +244,34 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       });
     }
 
-    // ── 4. VIP check ─────────────────────────────────────────────────────────
-    const totalCapNow = tranches.reduce((s, t) => s + t.principal, 0);
-    let vipLabel = '';
-    let isNewVip = false;
-    let isVipSelfFunded = false;
-    let isManualVip_ = false;
-
-    if (vipEnabled) {
-      const vipThresholdMet = totalCapNow >= 3550 || (m === 1 && startAmount >= 3550);
-      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
-        const cost = 1000;
-        if (vipPot >= cost) {
-          vipPot -= cost;
-          isVipSelfFunded = true;
-        } else if (manualVip) {
-          isManualVip_ = true;
-        } else {
-          // Deduct proportionally from all active tranches
-          if (totalCapNow > 0) {
-            const factor = Math.max(0, (totalCapNow - cost) / totalCapNow);
-            for (const t of tranches) t.principal *= factor;
+    // ── 4. VIP check (non-maturity months) ───────────────────────────────────
+    // For months without a maturing contract, VIP check runs after the new
+    // tranche is created so the deduction proportionally includes it.
+    if (maturedSum === 0 || principalTakeout > 0) {
+      const totalCapNow = tranches.reduce((s, t) => s + t.principal, 0);
+      if (vipEnabled) {
+        const vipThresholdMet = totalCapNow >= 3550 || (m === 1 && startAmount >= 3550);
+        if (vipThresholdMet && (!vActive || vMnd <= 0)) {
+          const cost = 1000;
+          if (vipPot >= cost) {
+            vipPot -= cost;
+            isVipSelfFunded = true;
+          } else if (manualVip) {
+            isManualVip_ = true;
+          } else {
+            if (totalCapNow > 0) {
+              const factor = Math.max(0, (totalCapNow - cost) / totalCapNow);
+              for (const t of tranches) t.principal *= factor;
+            }
           }
+          tVip += cost;
+          vActive = true;
+          vMnd = 12;
+          vipLabel = 'NEW VIP';
+          isNewVip = true;
+        } else if (vActive) {
+          vipLabel = `VIP (${vMnd}m)`;
         }
-        tVip += cost;
-        vActive = true;
-        vMnd = 12;
-        vipLabel = 'NEW VIP';
-        isNewVip = true;
-      } else if (vActive) {
-        vipLabel = `VIP (${vMnd}m)`;
       }
     }
 
@@ -238,7 +288,11 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     if (vipEnabled) { vipPot += nV; tVipPot += nV; }
 
     // ── 7. Available to withdraw or reinvest ─────────────────────────────────
-    const available = (totalYield - nV) + wallet;
+    // When yield was folded into the rebuy (preRebuyYield > 0), subtract it
+    // from available to avoid double-counting; nVFolded covered the VIP pot
+    // reservation so effectiveNV is the remainder still owed from yield.
+    const effectiveNV = nV - nVFolded;
+    const available = (totalYield - preRebuyYield) - effectiveNV + wallet;
     // maxOut includes freed principal so goal/display correctly reflects total accessible value
     const totalAvailable = principalTakeout + Math.max(0, available);
     if (totalAvailable > finalMaxVal) { finalMaxVal = totalAvailable; finalMaxMonth = m; }
@@ -368,8 +422,6 @@ export function stratSimulate(
   let wallet = 0;
   let finalAvailable = 0;
 
-  const startNet = getNetDeposit(inleg);
-
   for (let i = 1; i <= months; i++) {
     // 1. Collect maturing tranches
     const maturing = tranches.filter(t => t.maturityMonth === i);
@@ -377,7 +429,9 @@ export function stratSimulate(
     const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
 
     // 2. New deposit (inleg in month 1 only, monthlyStort every month)
-    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? startNet : 0);
+    // Internal amounts (start capital, matured principal) are fee-free; only
+    // external monthly deposits pay the $5 + 1.25% transaction fee.
+    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? inleg : 0);
 
     // 3. New contract from matured + deposit
     const newLump = maturedSum + depositNet;
@@ -453,14 +507,12 @@ export function stratFindMeetingMonth(
   let vipPot = 0;
   let wallet = 0;
 
-  const startNet = getNetDeposit(start);
-
   for (let i = 1; i <= maxMonths; i++) {
     const maturing = tranches.filter(t => t.maturityMonth === i);
     tranches = tranches.filter(t => t.maturityMonth !== i);
     const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
 
-    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? startNet : 0);
+    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? start : 0);
     const newLump = maturedSum + depositNet;
     if (newLump > 0) {
       const sp = getSPLevel(newLump);
