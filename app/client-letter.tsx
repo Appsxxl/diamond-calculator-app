@@ -1023,8 +1023,6 @@ export default function ClientLetterScreen() {
       const docDate = formatDate(language);
       const html = buildHtml(letter, logoBase64, docCustomer, docDate);
       if (Platform.OS === "web") {
-        // Inject an invisible iframe so the print dialog opens over the current page
-        // instead of showing a blank "about:blank" popup tab.
         const iframe = document.createElement("iframe");
         iframe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:0;";
         document.body.appendChild(iframe);
@@ -1033,11 +1031,15 @@ export default function ClientLetterScreen() {
           iDoc.open();
           iDoc.write(html);
           iDoc.close();
-          // Brief delay so the browser fully applies styles before printing
+          // Temporarily override the parent page title — the browser uses it as the suggested PDF filename.
+          const originalTitle = document.title;
+          const safeName = docCustomer.replace(/[^\w\s-]/g, "").trim() || "Client";
+          document.title = `Letter - ${safeName} - ${docDate}`;
           setTimeout(() => {
             (iframe.contentWindow as any)?.focus();
             (iframe.contentWindow as any)?.print();
             setTimeout(() => {
+              document.title = originalTitle;
               if (document.body.contains(iframe)) document.body.removeChild(iframe);
             }, 1000);
           }, 300);
