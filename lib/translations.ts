@@ -365,6 +365,18 @@ export const translations: Record<Language, Record<string, string>> = {
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 TARGET MONTHLY DISCOUNT REACHED — Month {month}",
 
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contract matured · Freed: {amount}",
+    contractsMatured: "📦 M{month} — Contracts matured · Freed: {amount}",
+    diamondDeliveryHint: "Take out → principal deducted from total assets · discount still earned",
+    takeOut: "Take Out",
+    undoTakeOut: "✓ Undo",
+    hideBanners: "Hide Banners",
+    showBanners: "Show Banners",
+    grossDeposit: "Gross deposit",
+    accessFee: "Access fee ($5 + 1.25%)",
+    netInvestedDiamonds: "Net invested in diamonds",
+
     // Hints
     vipRenewalLabel: "♦ VIP Renewal:",
     vipRenewalHint: "~{months} months until VIP self-funds next renewal ({amount} of $1,000)",
@@ -862,6 +874,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Maand {month} — Handmatige VIP Activeringskosten: $1.000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% basis)",
     goalReachedInTable: "🎯 MAANDELIJKS KORTINGSDOEL BEREIKT — Maand {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contract vervallen · Vrijgekomen: {amount}",
+    contractsMatured: "📦 M{month} — Contracten vervallen · Vrijgekomen: {amount}",
+    diamondDeliveryHint: "Uitnemen → kapitaal afgetrokken van totale activa · korting blijft lopen",
+    takeOut: "Neem Uit",
+    undoTakeOut: "✓ Ongedaan",
+    hideBanners: "Verberg Meldingen",
+    showBanners: "Toon Meldingen",
+    grossDeposit: "Bruto storting",
+    accessFee: "Toegangspremie ($5 + 1,25%)",
+    netInvestedDiamonds: "Netto geïnvesteerd in diamanten",
+
     vipRenewalLabel: "♦ VIP Verlenging:",
     vipRenewalHint: "~{months} maanden tot VIP zichzelf financiert ({amount} van $1.000)",
     withdrawalHintText: "Hoge opnames houden het kapitaal stabiel — verlaag uw kortingspercentage om sneller naar het volgende SP-niveau te groeien.",
@@ -1356,6 +1381,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Monat {month} — Manuelle VIP Aktivierungsgebühr: $1.000",
     spUpgradeRow: "⬆️ SP-UPGRADE → {plan} ({rate}% Basis)",
     goalReachedInTable: "🎯 MONATL. RABATTZIEL ERREICHT — Monat {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Vertrag fällig · Freigegeben: {amount}",
+    contractsMatured: "📦 M{month} — Verträge fällig · Freigegeben: {amount}",
+    diamondDeliveryHint: "Auszahlen → Kapital von Gesamtvermögen abgezogen · Rabatt läuft weiter",
+    takeOut: "Auszahlen",
+    undoTakeOut: "✓ Rückgängig",
+    hideBanners: "Meldungen ausblenden",
+    showBanners: "Meldungen anzeigen",
+    grossDeposit: "Bruttobetrag",
+    accessFee: "Zugangsprovision ($5 + 1,25%)",
+    netInvestedDiamonds: "Netto in Diamanten investiert",
+
     vipRenewalLabel: "♦ VIP-Verlängerung:",
     vipRenewalHint: "~{months} Monate bis VIP sich selbst finanziert ({amount} von $1.000)",
     withdrawalHintText: "Hohe Auszahlungen halten das Kapital flach — senken Sie den Rabattprozentsatz für schnelleres SP-Wachstum.",
@@ -1850,6 +1888,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Mois {month} — Frais d'Activation VIP Manuelle : $1 000",
     spUpgradeRow: "⬆️ UPGRADE SP → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 OBJECTIF MENSUEL ATTEINT — Mois {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contrat échu · Libéré: {amount}",
+    contractsMatured: "📦 M{month} — Contrats échus · Libéré: {amount}",
+    diamondDeliveryHint: "Retirer → capital déduit des actifs totaux · remise toujours active",
+    takeOut: "Retirer",
+    undoTakeOut: "✓ Annuler",
+    hideBanners: "Masquer les alertes",
+    showBanners: "Afficher les alertes",
+    grossDeposit: "Dépôt brut",
+    accessFee: "Frais d'accès ($5 + 1,25%)",
+    netInvestedDiamonds: "Net investi en diamants",
+
     vipRenewalLabel: "♦ Renouvellement VIP :",
     vipRenewalHint: "~{months} mois avant auto-financement VIP ({amount} sur 1 000 $)",
     withdrawalHintText: "Les retraits élevés maintiennent le capital stable — réduisez le % de remise pour progresser vers le prochain niveau SP.",
@@ -2344,6 +2395,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Mes {month} — Tarifa de Activación VIP Manual: $1.000",
     spUpgradeRow: "⬆️ ACTUALIZ. SP → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 META MENSUAL ALCANZADA — Mes {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contrato vencido · Liberado: {amount}",
+    contractsMatured: "📦 M{month} — Contratos vencidos · Liberado: {amount}",
+    diamondDeliveryHint: "Retirar → capital deducido de activos totales · descuento sigue activo",
+    takeOut: "Retirar",
+    undoTakeOut: "✓ Deshacer",
+    hideBanners: "Ocultar alertas",
+    showBanners: "Mostrar alertas",
+    grossDeposit: "Depósito bruto",
+    accessFee: "Comisión de acceso ($5 + 1,25%)",
+    netInvestedDiamonds: "Neto invertido en diamantes",
+
     vipRenewalLabel: "♦ Renovación VIP:",
     vipRenewalHint: "~{months} meses hasta autofinanciamiento VIP ({amount} de $1,000)",
     withdrawalHintText: "Los retiros altos mantienen el capital plano — reduzca el % de descuento para crecer al siguiente nivel SP.",
@@ -2831,6 +2895,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Месяц {month} — Ручная плата за активацию VIP: $1.000",
     spUpgradeRow: "⬆️ ОБНОВЛЕНИЕ SP → {plan} ({rate}% базовая)",
     goalReachedInTable: "🎯 ЕЖЕМЕС. ЦЕЛЬ СКИДКИ ДОСТИГНУТА — Месяц {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 М{month} — Контракт истёк · Освобождено: {amount}",
+    contractsMatured: "📦 М{month} — Контракты истекли · Освобождено: {amount}",
+    diamondDeliveryHint: "Вывести → капитал вычтен из общих активов · скидка сохраняется",
+    takeOut: "Вывести",
+    undoTakeOut: "✓ Отмена",
+    hideBanners: "Скрыть уведомления",
+    showBanners: "Показать уведомления",
+    grossDeposit: "Сумма брутто",
+    accessFee: "Плата за доступ ($5 + 1,25%)",
+    netInvestedDiamonds: "Нетто инвестировано в алмазы",
+
     vipRenewalLabel: "♦ Продление VIP:",
     vipRenewalHint: "~{months} мес. до самофинансирования VIP ({amount} из $1 000)",
     withdrawalHintText: "Высокие выводы удерживают капитал на месте — снизьте % скидки для роста к следующему SP-уровню.",
@@ -3321,6 +3398,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 第{month}月 — 手动VIP激活费: $1,000",
     spUpgradeRow: "⬆️ SP升级 → {plan}（{rate}%基础）",
     goalReachedInTable: "🎯 月度折扣目标已达成 — 第{month}个月",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 第{month}月 — 合约到期 · 释放: {amount}",
+    contractsMatured: "📦 第{month}月 — 合约到期 · 释放: {amount}",
+    diamondDeliveryHint: "取出 → 本金从总资产中扣除 · 折扣仍然有效",
+    takeOut: "取出",
+    undoTakeOut: "✓ 撤销",
+    hideBanners: "隐藏通知",
+    showBanners: "显示通知",
+    grossDeposit: "税前存款",
+    accessFee: "访问费 ($5 + 1.25%)",
+    netInvestedDiamonds: "净投资于钻石",
+
     vipRenewalLabel: "♦ VIP续费：",
     vipRenewalHint: "~{months}个月后VIP自筹资金（{amount} / $1,000）",
     withdrawalHintText: "高额提取使资本保持不变 — 降低折扣%以更快升入下一SP等级。",
@@ -3812,6 +3902,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Buwan {month} — Bayad sa Manu-manong VIP Activation: $1,000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% batayan)",
     goalReachedInTable: "🎯 NAABOT NA ANG TARGET NA BUWANANG DISKWENTO — Buwan {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Natapos ang kontrata · Na-release: {amount}",
+    contractsMatured: "📦 M{month} — Natapos ang mga kontrata · Na-release: {amount}",
+    diamondDeliveryHint: "Kunin → kapital ibabawas mula sa kabuuang assets · diskwento patuloy",
+    takeOut: "Kunin",
+    undoTakeOut: "✓ I-undo",
+    hideBanners: "Itago ang mga alerto",
+    showBanners: "Ipakita ang mga alerto",
+    grossDeposit: "Gross na deposito",
+    accessFee: "Bayad sa access ($5 + 1.25%)",
+    netInvestedDiamonds: "Net na nai-invest sa mga diyamante",
+
     vipRenewalLabel: "♦ Pag-renew ng VIP:",
     vipRenewalHint: "~{months} buwan hanggang sa self-fund ng VIP ang susunod na pag-renew ({amount} ng $1,000)",
     withdrawalHintText: "Ang mataas na withdrawal ay nagpapanatiling pantay ng kapital — ibaba ang iyong % ng diskwento upang lumago patungo sa susunod na antas ng SP nang mas mabilis.",
@@ -4274,6 +4377,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Mês {month} — Taxa de Ativação VIP Manual: $1.000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 DESCONTO MENSAL ALVO ATINGIDO — Mês {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contrato vencido · Libertado: {amount}",
+    contractsMatured: "📦 M{month} — Contratos vencidos · Libertado: {amount}",
+    diamondDeliveryHint: "Retirar → capital deduzido dos ativos totais · desconto continua ativo",
+    takeOut: "Retirar",
+    undoTakeOut: "✓ Desfazer",
+    hideBanners: "Ocultar alertas",
+    showBanners: "Mostrar alertas",
+    grossDeposit: "Depósito bruto",
+    accessFee: "Taxa de acesso ($5 + 1,25%)",
+    netInvestedDiamonds: "Líquido investido em diamantes",
+
     vipRenewalLabel: "♦ Renovação VIP:",
     vipRenewalHint: "~{months} meses até o VIP se autofinanciar na próxima renovação ({amount} de $1.000)",
     withdrawalHintText: "Os levantamentos elevados estão a manter o capital estável — reduza o seu % de desconto para crescer para o próximo nível SP mais rapidamente.",
@@ -4736,6 +4852,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 الشهر {month} — رسوم تفعيل VIP اليدوي: $1,000",
     spUpgradeRow: "⬆️ ترقية SP → {plan} ({rate}% أساس)",
     goalReachedInTable: "🎯 تم تحقيق الخصم الشهري المستهدف — الشهر {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 ش{month} — انتهى العقد · محرر: {amount}",
+    contractsMatured: "📦 ش{month} — انتهت العقود · محرر: {amount}",
+    diamondDeliveryHint: "سحب → رأس المال مخصوم من الأصول الإجمالية · الخصم لا يزال نشطاً",
+    takeOut: "سحب",
+    undoTakeOut: "✓ تراجع",
+    hideBanners: "إخفاء التنبيهات",
+    showBanners: "إظهار التنبيهات",
+    grossDeposit: "الإيداع الإجمالي",
+    accessFee: "رسوم الوصول ($5 + 1.25%)",
+    netInvestedDiamonds: "صافي الاستثمار في الماس",
+
     vipRenewalLabel: "♦ تجديد VIP:",
     vipRenewalHint: "~{months} شهراً حتى يموّل VIP نفسه في التجديد التالي ({amount} من $1,000)",
     withdrawalHintText: "السحوبات العالية تُبقي رأس المال ثابتاً — اخفض % الخصم للنمو إلى المستوى التالي من SP بشكل أسرع.",
@@ -5198,6 +5327,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 เดือน {month} — ค่าธรรมเนียมเปิดใช้งาน VIP ด้วยตนเอง: $1,000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% ฐาน)",
     goalReachedInTable: "🎯 บรรลุส่วนลดรายเดือนเป้าหมายแล้ว — เดือน {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 เดือน{month} — สัญญาครบกำหนด · ปล่อย: {amount}",
+    contractsMatured: "📦 เดือน{month} — สัญญาครบกำหนด · ปล่อย: {amount}",
+    diamondDeliveryHint: "ถอนออก → ต้นทุนถูกหักจากสินทรัพย์รวม · ส่วนลดยังคงมีผล",
+    takeOut: "ถอนออก",
+    undoTakeOut: "✓ เลิกทำ",
+    hideBanners: "ซ่อนการแจ้งเตือน",
+    showBanners: "แสดงการแจ้งเตือน",
+    grossDeposit: "เงินฝากรวม",
+    accessFee: "ค่าธรรมเนียมการเข้าถึง ($5 + 1.25%)",
+    netInvestedDiamonds: "ลงทุนสุทธิในเพชร",
+
     vipRenewalLabel: "♦ การต่ออายุ VIP:",
     vipRenewalHint: "~{months} เดือนจนกว่า VIP จะระดมทุนเองต่ออายุครั้งถัดไป ({amount} จาก $1,000)",
     withdrawalHintText: "การถอนสูงทำให้เงินทุนคงที่ — ลด % ส่วนลดของคุณเพื่อเติบโตไปสู่ระดับ SP ถัดไปเร็วขึ้น",
@@ -5660,6 +5802,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 माह {month} — मैनुअल VIP सक्रियण शुल्क: $1,000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% आधार)",
     goalReachedInTable: "🎯 लक्षित मासिक छूट प्राप्त — महीना {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 माह{month} — अनुबंध परिपक्व · मुक्त: {amount}",
+    contractsMatured: "📦 माह{month} — अनुबंध परिपक्व · मुक्त: {amount}",
+    diamondDeliveryHint: "निकालें → मूलधन कुल संपत्ति से काटा गया · छूट अभी भी जारी",
+    takeOut: "निकालें",
+    undoTakeOut: "✓ पूर्ववत",
+    hideBanners: "सूचनाएं छुपाएं",
+    showBanners: "सूचनाएं दिखाएं",
+    grossDeposit: "सकल जमा",
+    accessFee: "एक्सेस शुल्क ($5 + 1.25%)",
+    netInvestedDiamonds: "हीरे में शुद्ध निवेश",
+
     vipRenewalLabel: "♦ VIP नवीनीकरण:",
     vipRenewalHint: "~{months} महीने जब तक VIP अगले नवीनीकरण को स्व-वित्तपोषित न करे ({amount} $1,000 में से)",
     withdrawalHintText: "उच्च निकासी पूंजी को सपाट रख रही है — अगले SP स्तर में तेजी से बढ़ने के लिए अपना छूट % कम करें।",
@@ -6084,6 +6239,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Mese {month} — Tariffa Attivazione VIP Manuale: $1.000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 SCONTO MENSILE TARGET RAGGIUNTO — Mese {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 M{month} — Contratto scaduto · Liberato: {amount}",
+    contractsMatured: "📦 M{month} — Contratti scaduti · Liberato: {amount}",
+    diamondDeliveryHint: "Prelevare → capitale dedotto dagli asset totali · sconto ancora attivo",
+    takeOut: "Preleva",
+    undoTakeOut: "✓ Annulla",
+    hideBanners: "Nascondi notifiche",
+    showBanners: "Mostra notifiche",
+    grossDeposit: "Deposito lordo",
+    accessFee: "Costo di accesso ($5 + 1,25%)",
+    netInvestedDiamonds: "Netto investito in diamanti",
+
     vipRenewalLabel: "♦ Rinnovo VIP:",
     vipRenewalHint: "~{months} mesi prima che il VIP si auto-finanzi il prossimo rinnovo ({amount} di $1.000)",
     withdrawalHintText: "I prelievi elevati mantengono il capitale piatto — abbassa il tuo % di sconto per crescere più velocemente verso il prossimo livello SP.",
@@ -6582,6 +6750,19 @@ export const translations: Record<Language, Record<string, string>> = {
     manualVipBanner: "💳 Tháng {month} — Phí Kích Hoạt VIP Thủ Công: $1.000",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% cơ bản)",
     goalReachedInTable: "🎯 ĐÃ ĐẠT CHIẾT KHẤU HÀNG THÁNG MỤC TIÊU — Tháng {month}",
+
+    // Maturity banner & fee breakdown
+    contractMatured: "📦 T{month} — Hợp đồng đáo hạn · Giải phóng: {amount}",
+    contractsMatured: "📦 T{month} — Các hợp đồng đáo hạn · Giải phóng: {amount}",
+    diamondDeliveryHint: "Rút ra → vốn gốc khấu trừ khỏi tổng tài sản · chiết khấu vẫn hoạt động",
+    takeOut: "Rút ra",
+    undoTakeOut: "✓ Hoàn tác",
+    hideBanners: "Ẩn thông báo",
+    showBanners: "Hiện thông báo",
+    grossDeposit: "Tiền gửi gộp",
+    accessFee: "Phí truy cập ($5 + 1,25%)",
+    netInvestedDiamonds: "Đầu tư ròng vào kim cương",
+
     vipRenewalLabel: "♦ Gia Hạn VIP:",
     vipRenewalHint: "~{months} tháng cho đến khi VIP tự tài trợ lần gia hạn tiếp theo ({amount} trong $1.000)",
     withdrawalHintText: "Rút tiền cao đang giữ vốn ổn định — giảm % chiết khấu để tăng trưởng vào cấp SP tiếp theo nhanh hơn.",

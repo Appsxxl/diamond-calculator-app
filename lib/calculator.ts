@@ -1,5 +1,14 @@
-// Plan B Calculator Engine
-// Exact port of the original HTML calculator logic
+// Plan B Calculator Engine – Tranche-based SP contract model
+//
+// Rules:
+//  • Every deposit starts its own independent 12-month SP contract (tranche).
+//  • No external money can be added to a running contract.
+//  • Each month: collect ALL tranches maturing this month + this month's deposit
+//    → combine into ONE new lump → determine SP tier → start ONE new 12-month contract.
+//  • The SP tier is locked for the full 12 months at the rate matching the opening lump.
+//  • SP7 (3.3%) requires the opening lump to be ≥ $100,000 in that single moment.
+//  • Compound gains stay inside each tranche (growing its principal at the locked rate).
+//  • VIP (+3%) applies globally to all active tranches in the months it is active.
 
 export interface MonthData {
   stort: number;   // deposit for this month
@@ -8,30 +17,43 @@ export interface MonthData {
   comp: number;    // compound reinvestment percentage (0-100, default 100)
 }
 
+export interface Tranche {
+  id: number;
+  principal: number;   // grows each month when compound % > 0
+  spName: string;
+  baseRate: number;    // locked at creation — never changes
+  startMonth: number;
+  maturityMonth: number; // startMonth + 12; freed at beginning of this month
+}
+
 export interface MonthResult {
   month: number;
   capStart: number;
   deposit: number;
-  maxOut: number;         // maximum available withdrawal (b)
-  withdrawal: number;     // actual withdrawal taken (rO)
-  grossYield: number;     // discount/gross yield (k)
-  compoundAdded: number;  // amount added to compPot (nC)
+  maxOut: number;          // maximum available withdrawal
+  withdrawal: number;
+  grossYield: number;
+  compoundAdded: number;
   wallet: number;
   vipPot: number;
-  compPot: number;
+  compPot: number;         // always 0 in tranche model (kept for UI compatibility)
   capEnd: number;
-  spName: string;
+  spName: string;          // SP of the newest active tranche
   spBaseRate: number;
   totalRate: number;
-  vipStatus: string;      // "NEW VIP" | "VIP (Xm)" | ""
+  vipStatus: string;       // "NEW VIP" | "VIP (Xm)" | ""
   isNewVip: boolean;
   isVipActive: boolean;
-  isVipSelfFunded: boolean; // true when renewal was paid from vipPot
-  isManualVip: boolean;     // true when VIP was paid as a fresh deposit (manualVip=true)
+  isVipSelfFunded: boolean;
+  isManualVip: boolean;
   isYearStart: boolean;
   yearNumber: number;
   isSpUpgrade: boolean;
   isGoalReached: boolean;
+  // Tranche summary (extra info for advanced display)
+  activeTranchesCount: number;
+  maturedCount: number;
+  maturedSum: number;   // total principal freed from maturing contracts this month
 }
 
 export interface CalculationResult {
@@ -64,22 +86,24 @@ export interface CalculationParams {
 }
 
 export const SP_LEVELS = [
-  { name: 'SP1', minBalance: 0,      maxBalance: 999,      baseRate: 2.2, vipBonus: 3.0, totalWithVip: 5.2 },
+  { name: 'SP1', minBalance: 0,      maxBalance: 999,      baseRate: 2.2,  vipBonus: 3.0, totalWithVip: 5.2  },
   { name: 'SP2', minBalance: 1000,   maxBalance: 2499,     baseRate: 2.45, vipBonus: 3.0, totalWithVip: 5.45 },
-  { name: 'SP3', minBalance: 2500,   maxBalance: 4999,     baseRate: 2.7, vipBonus: 3.0, totalWithVip: 5.7 },
-  { name: 'SP4', minBalance: 5000,   maxBalance: 9999,     baseRate: 3.0, vipBonus: 3.0, totalWithVip: 6.0 },
-  { name: 'SP5', minBalance: 10000,  maxBalance: 49999,    baseRate: 3.1, vipBonus: 3.0, totalWithVip: 6.1 },
-  { name: 'SP6', minBalance: 50000,  maxBalance: 99999,    baseRate: 3.2, vipBonus: 3.0, totalWithVip: 6.2 },
-  { name: 'SP7', minBalance: 100000, maxBalance: Infinity, baseRate: 3.3, vipBonus: 3.0, totalWithVip: 6.3 },
+  { name: 'SP3', minBalance: 2500,   maxBalance: 4999,     baseRate: 2.7,  vipBonus: 3.0, totalWithVip: 5.7  },
+  { name: 'SP4', minBalance: 5000,   maxBalance: 9999,     baseRate: 3.0,  vipBonus: 3.0, totalWithVip: 6.0  },
+  { name: 'SP5', minBalance: 10000,  maxBalance: 49999,    baseRate: 3.1,  vipBonus: 3.0, totalWithVip: 6.1  },
+  { name: 'SP6', minBalance: 50000,  maxBalance: 99999,    baseRate: 3.2,  vipBonus: 3.0, totalWithVip: 6.2  },
+  { name: 'SP7', minBalance: 100000, maxBalance: Infinity, baseRate: 3.3,  vipBonus: 3.0, totalWithVip: 6.3  },
 ];
 
-export function getSPLevel(cap: number): { name: string; baseRate: number } {
-  if (cap >= 100000) return { name: 'SP7', baseRate: 3.3 };
-  if (cap >= 50000)  return { name: 'SP6', baseRate: 3.2 };
-  if (cap >= 10000)  return { name: 'SP5', baseRate: 3.1 };
-  if (cap >= 5000)   return { name: 'SP4', baseRate: 3.0 };
-  if (cap >= 2500)   return { name: 'SP3', baseRate: 2.7 };
-  if (cap >= 1000)   return { name: 'SP2', baseRate: 2.45 };
+// getSPLevel is called on the one-time opening lump of a contract.
+// SP7 is therefore only reachable when ≥ $100,000 is deployed in a single moment.
+export function getSPLevel(lump: number): { name: string; baseRate: number } {
+  if (lump >= 100000) return { name: 'SP7', baseRate: 3.3 };
+  if (lump >= 50000)  return { name: 'SP6', baseRate: 3.2 };
+  if (lump >= 10000)  return { name: 'SP5', baseRate: 3.1 };
+  if (lump >= 5000)   return { name: 'SP4', baseRate: 3.0 };
+  if (lump >= 2500)   return { name: 'SP3', baseRate: 2.7 };
+  if (lump >= 1000)   return { name: 'SP2', baseRate: 2.45 };
   return { name: 'SP1', baseRate: 2.2 };
 }
 
@@ -87,64 +111,109 @@ export function createDefaultMonthData(): MonthData {
   return { stort: 0, opn: 0, opnP: 0, comp: 100 };
 }
 
-// Deduct $5 flat fee + 1.25% variable fee from every deposit
+// Deduct $5 flat fee + 1.25% variable fee from every deposit transaction.
 export function getNetDeposit(gross: number): number {
   if (gross <= 0) return 0;
   return Math.max(0, (gross - 5) * 0.9875);
 }
 
+// ─── Main Calculator ──────────────────────────────────────────────────────────
+
 export function runCalculation(params: CalculationParams): CalculationResult {
   const { startAmount, years, goal, vipEnabled, manualVip, monthData } = params;
   const maxMonths = years * 12;
 
-  let cap = getNetDeposit(startAmount);
-  let wallet = 0;
+  let tranches: Tranche[] = [];
+  let nextId = 1;
+
+  let vActive = false;
+  let vMnd = 0;
   let vipPot = 0;
-  let compPot = 0;
-  let tIn = startAmount;  // track gross for display
+  let wallet = 0;  // carry-over from yield not reinvested and not withdrawn
+
+  let tIn = startAmount;  // gross deposits (for ROC / net-result tracking)
   let tOut = 0;
   let tVip = 0;
   let tVipPot = 0;
-  let vActive = false;
-  let vMnd = 0;
-  let activeWithdrawalMonths = 0;
   let runningWithdrawals = 0;
   let rocMonth: number | null = null;
   let finalMaxVal = 0;
   let finalMaxMonth = 0;
-
-  // Initial SP is locked for the first 12-month contract period
-  const contractSP = getSPLevel(cap);
+  let activeWithdrawalMonths = 0;
 
   const results: MonthResult[] = [];
 
   for (let m = 1; m <= maxMonths; m++) {
     const mD: MonthData = monthData[m] ?? createDefaultMonthData();
-    const capStart = cap;
 
-    // Step 1: Add deposit (net of fees; tIn tracks gross for display)
-    cap += getNetDeposit(mD.stort);
-    tIn += mD.stort;
+    // Capital at start of month. For month 1 this is 0 (tranches created during the month),
+    // so we use the net deposit as the display value to show what was invested.
+    const capStartRaw = tranches.reduce((s, t) => s + t.principal, 0);
+    const depositNetM1 = m === 1
+      ? getNetDeposit(startAmount) + getNetDeposit(monthData[1]?.stort ?? 0)
+      : 0;
+    const capStart = m === 1 ? depositNetM1 : capStartRaw;
 
-    // Step 2: VIP check
+    // ── 1. Collect maturing tranches ────────────────────────────────────────
+    // A tranche with maturityMonth === m has completed its 12-month run.
+    const maturing = tranches.filter(t => t.maturityMonth === m);
+    tranches = tranches.filter(t => t.maturityMonth !== m);
+    const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
+    const maturedCount = maturing.length;
+
+    // ── 2. New deposit for this month ────────────────────────────────────────
+    // Month 1 includes the startAmount as an additional deposit.
+    const depositGross = mD.stort + (m === 1 ? startAmount : 0);
+    // Fees are applied per transaction — startAmount and monthly deposit are separate.
+    const depositNet = getNetDeposit(mD.stort) + (m === 1 ? getNetDeposit(startAmount) : 0);
+    if (m > 1) tIn += mD.stort;  // startAmount already counted in tIn initialiser
+
+    // ── 3. Combine matured principal + new deposit → one new contract ────────
+    // When opn is set in a maturity month, that amount is taken from the freed
+    // principal first (before reinvestment). This implements "take out initial".
+    const principalTakeout = maturedSum > 0 ? Math.min(mD.opn, maturedSum) : 0;
+    if (principalTakeout > 0) { tOut += principalTakeout; runningWithdrawals += principalTakeout; }
+
+    const newLump = (maturedSum - principalTakeout) + depositNet;
+    let newSpName = '';
+    let newBaseRate = 0;
+
+    if (newLump > 0) {
+      const sp = getSPLevel(newLump);
+      newSpName = sp.name;
+      newBaseRate = sp.baseRate;
+      tranches.push({
+        id: nextId++,
+        principal: newLump,
+        spName: sp.name,
+        baseRate: sp.baseRate,
+        startMonth: m,
+        maturityMonth: m + 12,
+      });
+    }
+
+    // ── 4. VIP check ─────────────────────────────────────────────────────────
+    const totalCapNow = tranches.reduce((s, t) => s + t.principal, 0);
     let vipLabel = '';
     let isNewVip = false;
     let isVipSelfFunded = false;
-    let isManualVip = false;
+    let isManualVip_ = false;
 
     if (vipEnabled) {
-      // VIP triggers if net cap >= 3550, OR in month 1 when gross startAmount >= 3550
-      const vipThresholdMet = cap >= 3550 || (m === 1 && startAmount >= 3550);
+      const vipThresholdMet = totalCapNow >= 3550 || (m === 1 && startAmount >= 3550);
       if (vipThresholdMet && (!vActive || vMnd <= 0)) {
         const cost = 1000;
         if (vipPot >= cost) {
-          vipPot -= cost;       // renewal: funded by accumulated vipPot
+          vipPot -= cost;
           isVipSelfFunded = true;
         } else if (manualVip) {
-          // manual VIP: user pays $1,000 out-of-pocket — NOT a diamond deposit, cap unchanged
-          isManualVip = true;
+          isManualVip_ = true;
         } else {
-          cap -= cost;          // auto-VIP: $1,000 deducted from diamond capital
+          // Deduct proportionally from all active tranches
+          if (totalCapNow > 0) {
+            const factor = Math.max(0, (totalCapNow - cost) / totalCapNow);
+            for (const t of tranches) t.principal *= factor;
+          }
         }
         tVip += cost;
         vActive = true;
@@ -156,97 +225,109 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       }
     }
 
-    // Step 3: SP level — locked to initial contract SP for first 12 months
-    const sp = m <= 12 ? contractSP : getSPLevel(cap);
+    // ── 5. Monthly yield from all active tranches ────────────────────────────
+    // VIP bonus applies globally to all tranches in the months it is active.
+    const vipBonus = vActive ? 3.0 : 0;
+    const trancheYields = tranches.map(t =>
+      Math.round(t.principal * ((t.baseRate + vipBonus) / 100))
+    );
+    const totalYield = trancheYields.reduce((s, y) => s + y, 0);
 
-    // Step 4: Total rate
-    const totalRate = sp.baseRate + (vActive ? 3.0 : 0);
-
-    // Step 5: Gross yield
-    const k = Math.round(cap * (totalRate / 100));
-
-    // Step 6: $84/month accumulates in vipPot to fund future renewals
+    // ── 6. VIP monthly pot accumulation ($84/month saved toward next renewal) ─
     const nV = vActive ? 84 : 0;
     if (vipEnabled) { vipPot += nV; tVipPot += nV; }
 
-    // Step 7: Available to withdraw = (grossYield - vipCost) + wallet
-    const b = (k - nV) + wallet;
-    if (b > finalMaxVal) {
-      finalMaxVal = b;
-      finalMaxMonth = m;
-    }
+    // ── 7. Available to withdraw or reinvest ─────────────────────────────────
+    const available = (totalYield - nV) + wallet;
+    // maxOut includes freed principal so goal/display correctly reflects total accessible value
+    const totalAvailable = principalTakeout + Math.max(0, available);
+    if (totalAvailable > finalMaxVal) { finalMaxVal = totalAvailable; finalMaxMonth = m; }
 
-    // Step 8: Withdrawal = min(fixedOpn + percentageOfGross, available)
-    const pO = k * (mD.opnP / 100);
-    const rO = Math.min(mD.opn + pO, b);
+    // ── 8. Withdrawal from yield (principal takeout already counted in step 3) ─
+    const pO = totalYield * (mD.opnP / 100);
+    const remainingOpn = Math.max(0, mD.opn - principalTakeout);
+    const rO = Math.min(remainingOpn + pO, Math.max(0, available));
     tOut += rO;
     runningWithdrawals += rO;
+    if (principalTakeout > 0 || rO > 0) activeWithdrawalMonths++;
 
-    // Step 9: ROC check
-    if (rocMonth === null && runningWithdrawals >= tIn && tIn > 0) {
-      rocMonth = m;
+    // ── 9. ROC (return-of-capital) check ─────────────────────────────────────
+    if (rocMonth === null && runningWithdrawals >= tIn && tIn > 0) rocMonth = m;
+
+    // ── 10. Compound – start a fresh contract with this month's reinvested gains ─
+    // Contract principals are FIXED for their entire 12-month life.
+    // Compound gains are never folded back into the source tranche; instead they
+    // immediately open a new independent 12-month contract (earning from next month).
+    const leftover = Math.max(0, available - rO);
+    const nC = Math.round(leftover * (mD.comp / 100));
+    wallet = leftover - nC;
+
+    if (nC > 0) {
+      const cSp = getSPLevel(nC);
+      tranches.push({
+        id: nextId++,
+        principal: nC,
+        spName: cSp.name,
+        baseRate: cSp.baseRate,
+        startMonth: m + 1,    // earns from next month
+        maturityMonth: m + 13, // 12 full months of earning
+      });
     }
-    if (rO > 0) activeWithdrawalMonths++;
 
-    // Step 10: Compound
-    const o = b - rO;
-    const nC = Math.round(o * (mD.comp / 100));
-    wallet = o - nC;
-    compPot += nC;
-
-    // Step 11: Flush compPot to cap every month so capEnd always advances
-    cap += compPot;
-    compPot = 0;
-
-    // Step 12: VIP countdown
+    // ── 11. VIP countdown ────────────────────────────────────────────────────
     if (vMnd > 0) vMnd--;
     if (vMnd === 0) vActive = false;
 
-    const prevSpName = results.length > 0 ? results[results.length - 1].spName : sp.name;
+    const capEnd = tranches.reduce((s, t) => s + t.principal, 0);
+
+    // Representative SP for display = newest tranche (just created or most recent)
+    const displaySp = newLump > 0
+      ? { name: newSpName, baseRate: newBaseRate }
+      : tranches.length > 0
+        ? { name: tranches[tranches.length - 1].spName, baseRate: tranches[tranches.length - 1].baseRate }
+        : { name: 'SP1', baseRate: 2.2 };
+
+    const totalRate = displaySp.baseRate + vipBonus;
+    const prevSpName = results.length > 0 ? results[results.length - 1].spName : displaySp.name;
+
     results.push({
       month: m,
-      capStart,
-      deposit: mD.stort,
-      maxOut: b,
-      withdrawal: rO,
-      grossYield: k,
+      // M1: show the earning capital after VIP deduction (capEnd minus compound gains added this month).
+      // For all other months capStart is the running total at the start of the month.
+      capStart: m === 1 ? capEnd - nC : capStart,
+      deposit: depositGross,
+      maxOut: totalAvailable,
+      withdrawal: principalTakeout + rO,
+      grossYield: totalYield,
       compoundAdded: nC,
       wallet,
-      vipPot: vipPot,
-      compPot,
-      capEnd: cap,
-      spName: sp.name,
-      spBaseRate: sp.baseRate,
+      vipPot,
+      compPot: 0,
+      capEnd,
+      spName: displaySp.name,
+      spBaseRate: displaySp.baseRate,
       totalRate,
       vipStatus: vipLabel,
       isNewVip,
       isVipActive: vActive,
       isVipSelfFunded,
-      isManualVip,
+      isManualVip: isManualVip_,
       isYearStart: m > 1 && (m - 1) % 12 === 0,
       yearNumber: Math.ceil(m / 12),
-      isSpUpgrade: sp.name !== prevSpName,
-      isGoalReached: goal > 0 && b >= goal && (results.length === 0 || !results[results.length - 1].isGoalReached),
+      isSpUpgrade: newLump > 0 && newSpName !== '' && newSpName !== prevSpName,
+      isGoalReached:
+        goal > 0 &&
+        totalAvailable >= goal &&
+        (results.length === 0 || !results[results.length - 1].isGoalReached),
+      activeTranchesCount: tranches.length,
+      maturedCount,
+      maturedSum,
     });
   }
 
-  // Find the month goal was first reached
-  let goalReachedMonth: number | null = null;
-  for (const r of results) {
-    if (goal > 0 && r.maxOut >= goal && goalReachedMonth === null) {
-      goalReachedMonth = r.month;
-    }
-  }
-
-  // Find SP upgrade months
-  const spUpgradeMonths = new Set<number>();
-  let prevSP = '';
-  for (const r of results) {
-    if (prevSP && r.spName !== prevSP) spUpgradeMonths.add(r.month);
-    prevSP = r.spName;
-  }
-
-  const netResult = (cap + tOut) - (tIn + tVipPot);
+  const goalReachedMonth = results.find(r => r.isGoalReached)?.month ?? null;
+  const finalCap = tranches.reduce((s, t) => s + t.principal, 0);
+  const netResult = (finalCap + tOut) - (tIn + tVipPot);
   const goalProgress = goal > 0 ? Math.min((finalMaxVal / goal) * 100, 100) : 0;
 
   return {
@@ -255,22 +336,22 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     totalOut: tOut,
     totalVipCost: tVip,
     totalVipPotPayments: tVipPot,
-    finalCap: cap,
+    finalCap,
     finalWallet: wallet,
     finalVipPot: vipPot,
-    finalCompPot: compPot,
+    finalCompPot: 0,
     netResult,
     rocMonth,
     maxMonthlyOut: finalMaxVal,
     maxMonthlyOutMonth: finalMaxMonth,
     activeWithdrawalMonths,
-    goalReached: finalMaxVal >= goal,
+    goalReached: goal > 0 ? finalMaxVal >= goal : false,
     goalProgress,
     goalReachedMonth,
   };
 }
 
-// ─── Strategy Engineer ───────────────────────────────────────────────────────
+// ─── Strategy Engine (tranche-based) ─────────────────────────────────────────
 
 export function stratSimulate(
   inleg: number,
@@ -279,49 +360,75 @@ export function stratSimulate(
   opnP = 0,
   vipEnabled = true,
 ): number {
-  let cap = getNetDeposit(inleg);
-  let wallet = 0;
-  let vipPot = 0;
+  let tranches: Tranche[] = [];
+  let nextId = 1;
   let vActive = false;
   let vMnd = 0;
-  let finalPayout = 0;
+  let vipPot = 0;
+  let wallet = 0;
+  let finalAvailable = 0;
+
+  const startNet = getNetDeposit(inleg);
 
   for (let i = 1; i <= months; i++) {
-    cap += getNetDeposit(monthlyStort);
+    // 1. Collect maturing tranches
+    const maturing = tranches.filter(t => t.maturityMonth === i);
+    tranches = tranches.filter(t => t.maturityMonth !== i);
+    const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
 
+    // 2. New deposit (inleg in month 1 only, monthlyStort every month)
+    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? startNet : 0);
+
+    // 3. New contract from matured + deposit
+    const newLump = maturedSum + depositNet;
+    if (newLump > 0) {
+      const sp = getSPLevel(newLump);
+      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12 });
+    }
+
+    // 4. VIP check
+    const totalCap = tranches.reduce((s, t) => s + t.principal, 0);
     if (vipEnabled) {
-      const vipThresholdMet = cap >= 3550 || (i === 1 && inleg >= 3550);
-      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
-        if (vipPot >= 1000) vipPot -= 1000;
-        else cap -= 1000;
+      const threshold = totalCap >= 3550 || (i === 1 && inleg >= 3550);
+      if (threshold && (!vActive || vMnd <= 0)) {
+        const cost = 1000;
+        if (vipPot >= cost) {
+          vipPot -= cost;
+        } else {
+          const factor = Math.max(0, (totalCap - cost) / totalCap);
+          for (const t of tranches) t.principal *= factor;
+        }
         vActive = true;
         vMnd = 12;
       }
     }
 
-    const spRate =
-      cap >= 100000 ? 3.3 :
-      cap >= 50000  ? 3.2 :
-      cap >= 10000  ? 3.1 :
-      cap >= 5000   ? 3.0 :
-      cap >= 2500   ? 2.7 :
-      cap >= 1000   ? 2.45 : 2.2;
+    // 5. Yield
+    const vipBonus = vActive ? 3.0 : 0;
+    const trancheYields = tranches.map(t => Math.round(t.principal * ((t.baseRate + vipBonus) / 100)));
+    const totalYield = trancheYields.reduce((s, y) => s + y, 0);
 
-    const totalRate = spRate + (vActive ? 3.0 : 0);
-    const discount = Math.round(cap * (totalRate / 100));
-    const vipCost = vActive ? 84 : 0;
-    if (vipEnabled) vipPot += vipCost;
+    const nV = vActive ? 84 : 0;
+    if (vipEnabled) vipPot += nV;
 
-    const available = (discount - vipCost) + wallet;
+    const available = (totalYield - nV) + wallet;
 
     if (opnP > 0) {
-      const actualOut = available * (opnP / 100);
-      finalPayout = actualOut;
-      cap += available - actualOut;
+      const out = available * (opnP / 100);
+      finalAvailable = out;
+      const reinvest = Math.round(available - out);
+      if (reinvest > 0) {
+        const cSp = getSPLevel(reinvest);
+        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+      }
       wallet = 0;
     } else {
-      finalPayout = available;
-      cap += available;
+      finalAvailable = available;
+      const reinvest = Math.round(available);
+      if (reinvest > 0) {
+        const cSp = getSPLevel(reinvest);
+        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+      }
       wallet = 0;
     }
 
@@ -329,7 +436,7 @@ export function stratSimulate(
     if (vMnd === 0) vActive = false;
   }
 
-  return finalPayout;
+  return finalAvailable;
 }
 
 export function stratFindMeetingMonth(
@@ -339,42 +446,57 @@ export function stratFindMeetingMonth(
   goal: number,
   vipEnabled = true,
 ): number | null {
-  let cap = getNetDeposit(start);
-  let wallet = 0;
-  let vipPot = 0;
+  let tranches: Tranche[] = [];
+  let nextId = 1;
   let vActive = false;
   let vMnd = 0;
+  let vipPot = 0;
+  let wallet = 0;
+
+  const startNet = getNetDeposit(start);
 
   for (let i = 1; i <= maxMonths; i++) {
-    cap += getNetDeposit(monthlyStort);
+    const maturing = tranches.filter(t => t.maturityMonth === i);
+    tranches = tranches.filter(t => t.maturityMonth !== i);
+    const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
 
+    const depositNet = getNetDeposit(monthlyStort) + (i === 1 ? startNet : 0);
+    const newLump = maturedSum + depositNet;
+    if (newLump > 0) {
+      const sp = getSPLevel(newLump);
+      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12 });
+    }
+
+    const totalCap = tranches.reduce((s, t) => s + t.principal, 0);
     if (vipEnabled) {
-      const vipThresholdMet = cap >= 3550 || (i === 1 && start >= 3550);
-      if (vipThresholdMet && (!vActive || vMnd <= 0)) {
-        if (vipPot >= 1000) vipPot -= 1000;
-        else cap -= 1000;
+      const threshold = totalCap >= 3550 || (i === 1 && start >= 3550);
+      if (threshold && (!vActive || vMnd <= 0)) {
+        const cost = 1000;
+        if (vipPot >= cost) {
+          vipPot -= cost;
+        } else {
+          const factor = Math.max(0, (totalCap - cost) / totalCap);
+          for (const t of tranches) t.principal *= factor;
+        }
         vActive = true;
         vMnd = 12;
       }
     }
 
-    const spRate =
-      cap >= 100000 ? 3.3 :
-      cap >= 50000  ? 3.2 :
-      cap >= 10000  ? 3.1 :
-      cap >= 5000   ? 3.0 :
-      cap >= 2500   ? 2.7 :
-      cap >= 1000   ? 2.45 : 2.2;
+    const vipBonus = vActive ? 3.0 : 0;
+    const trancheYields = tranches.map(t => Math.round(t.principal * ((t.baseRate + vipBonus) / 100)));
+    const totalYield = trancheYields.reduce((s, y) => s + y, 0);
+    const nV = vActive ? 84 : 0;
+    if (vipEnabled) vipPot += nV;
 
-    const totalRate = spRate + (vActive ? 3.0 : 0);
-    const discount = Math.round(cap * (totalRate / 100));
-    const vipCost = vActive ? 84 : 0;
-    if (vipEnabled) vipPot += vipCost;
-
-    const available = (discount - vipCost) + wallet;
+    const available = (totalYield - nV) + wallet;
     if (available >= goal) return i;
 
-    cap += available;
+    const reinvest = Math.round(available);
+    if (reinvest > 0) {
+      const cSp = getSPLevel(reinvest);
+      tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+    }
     wallet = 0;
 
     if (vMnd > 0) vMnd--;
@@ -407,8 +529,7 @@ export function calculateStrategy(
 
   // Plan A
   let planA_deposit: number | 'MET';
-  const atZero = stratSimulate(startDeposit, months, 0, 0, vipEnabled);
-  if (atZero >= monthlyGoal) {
+  if (stratSimulate(startDeposit, months, 0, 0, vipEnabled) >= monthlyGoal) {
     planA_deposit = 'MET';
   } else {
     let low = 1, high = 1000000;
@@ -427,7 +548,7 @@ export function calculateStrategy(
   const planB_years = monthFound !== null ? Math.floor(monthFound / 12) : 0;
   const planB_remainingMonths = monthFound !== null ? monthFound % 12 : 0;
 
-  // Plan C
+  // Plan C — lump sum needed to meet goal within 12 months (compound mode)
   let sLow = 0, sHigh = 5000000;
   for (let k = 0; k < 25; k++) {
     const sMid = (sLow + sHigh) / 2;
@@ -435,7 +556,7 @@ export function calculateStrategy(
     else sLow = sMid;
   }
 
-  // Plan D
+  // Plan D — lump sum needed to meet goal in 1 month (75% payout mode)
   let lLow = 0, lHigh = 5000000;
   for (let l = 0; l < 25; l++) {
     const lMid = (lLow + lHigh) / 2;

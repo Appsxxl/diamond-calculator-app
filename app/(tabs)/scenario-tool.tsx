@@ -61,8 +61,8 @@ export default function ScenarioToolScreen() {
   }>();
   const { language, officeLocation } = useCalculator();
   const { width: screenWidth } = useWindowDimensions();
-  // Compute table column widths: fill the screen on wide displays, min 788px for mobile horizontal scroll
-  const TW = Math.max(Math.round(Math.min(screenWidth * 0.98, 1450) - 32), 788);
+  // Compute table column widths: 96% of screen, minus outer content padding (32) and card padding (24)
+  const TW = Math.max(Math.round(Math.min(screenWidth * 0.96, 1450) - 56), 788);
   const cw = {
     num:      Math.round(TW * 0.036),
     avail:    Math.round(TW * 0.134),
@@ -170,6 +170,12 @@ export default function ScenarioToolScreen() {
   const [bulkCompVal, setBulkCompVal] = useState("");
   const [bulkCompFrom, setBulkCompFrom] = useState("");
   const [bulkCompTo, setBulkCompTo] = useState("");
+
+  // Tracks which maturity banners the user has dismissed
+  const [hiddenMaturityMonths, setHiddenMaturityMonths] = useState<Set<number>>(new Set());
+  const [allBannersHidden, setAllBannersHidden] = useState(false);
+  const hideMaturityBanner = useCallback((month: number) =>
+    setHiddenMaturityMonths(prev => new Set([...prev, month])), []);
 
   const tableHeaderScrollRef = useRef<ScrollView>(null);
   const tableBodyScrollRef = useRef<ScrollView>(null);
@@ -480,7 +486,27 @@ export default function ScenarioToolScreen() {
             {numVal(startAmount) > 0 && numVal(startAmount) < 110
               ? <Text style={{ color: '#ef4444', fontSize: 10, marginTop: 4, fontWeight: 'bold' }}>⚠️ SP1 Minimum is $110</Text>
               : numVal(startAmount) >= 110
-                ? <Text style={{ color: '#475569', fontSize: 10, marginTop: 4 }}>${numVal(startAmount).toLocaleString()} → Net: ${getNetDeposit(numVal(startAmount)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                ? (() => {
+                    const gross = numVal(startAmount);
+                    const net = getNetDeposit(gross);
+                    const fee = gross - net;
+                    return (
+                      <View style={{ marginTop: 6, backgroundColor: 'rgba(30,41,59,0.8)', borderRadius: 6, padding: 7, borderWidth: 1, borderColor: '#334155' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'grossDeposit')}</Text>
+                          <Text style={{ color: '#e2e8f0', fontSize: 10, fontWeight: 'bold' }}>${gross.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
+                          <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'accessFee')}</Text>
+                          <Text style={{ color: '#ef4444', fontSize: 10 }}>−${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3, borderTopWidth: 1, borderTopColor: '#334155', paddingTop: 3 }}>
+                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>{t(language, 'netInvestedDiamonds')}</Text>
+                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>${net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        </View>
+                      </View>
+                    );
+                  })()
                 : null
             }
 
@@ -1108,8 +1134,24 @@ export default function ScenarioToolScreen() {
 
             {/* Monthly / Yearly Table */}
             <View style={[S.card, { overflow: 'visible', flexGrow: 1, flexShrink: 1 }]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 8 }}>
                 <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+                {(() => {
+                  const bannerCount = result?.months.filter(m => m.maturedSum > 0).length ?? 0;
+                  return bannerCount > 0 ? (
+                    <TouchableOpacity
+                      onPress={() => setAllBannersHidden(v => !v)}
+                      style={{ backgroundColor: allBannersHidden ? '#1e293b' : 'rgba(34,197,94,0.12)', borderRadius: 5, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: allBannersHidden ? '#334155' : '#22c55e', flexDirection: 'row', alignItems: 'center', gap: 5 }}
+                    >
+                      <Text style={{ color: allBannersHidden ? '#64748b' : '#22c55e', fontSize: 10, fontWeight: 'bold' }}>
+                        {allBannersHidden ? t(language, 'showBanners') : t(language, 'hideBanners')}
+                      </Text>
+                      <View style={{ backgroundColor: allBannersHidden ? '#334155' : '#22c55e', borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
+                        <Text style={{ color: allBannersHidden ? '#94a3b8' : '#052e16', fontSize: 9, fontWeight: 'bold' }}>{bannerCount}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null;
+                })()}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <Text style={{ color: viewMode === 'monthly' ? '#f59e0b' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'monthly')}</Text>
                   <Switch
@@ -1216,24 +1258,24 @@ export default function ScenarioToolScreen() {
                               </Text>
                             </View>
                           )}
-                          <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} cw={cw} />
-                          {yearSummary}
-                          {isLastOfYear && (() => {
-                            const contractStartCap = result.months[row.month - 12]?.capStart ?? result.months[0].capStart;
-                            const alreadySet = getMonthData(row.month).opn === Math.round(contractStartCap);
+                          {/* Maturity banner — shown in the month contracts actually expire */}
+                          {row.maturedSum > 0 && !allBannersHidden && !hiddenMaturityMonths.has(row.month) && (() => {
+                            const freed = Math.round(row.maturedSum);
+                            const alreadySet = getMonthData(row.month).opn === freed;
+                            const bannerKey = row.maturedCount > 1 ? 'contractsMatured' : 'contractMatured';
                             return (
-                              <View style={{ backgroundColor: "rgba(34,197,94,0.10)", flexDirection: "row", alignItems: "center", paddingVertical: 6, paddingHorizontal: 8, borderLeftWidth: 3, borderLeftColor: "#22c55e", gap: 8, minWidth: TW }}>
-                                <View style={{ flex: 1 }}>
-                                  <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }}>
-                                    ↩ Contract End Y{row.yearNumber} — Principal: {fmt(contractStartCap)}
+                              <View style={{ width: TW, backgroundColor: "rgba(34,197,94,0.12)", flexDirection: "row", alignItems: "center", paddingVertical: 5, paddingHorizontal: 8, borderLeftWidth: 3, borderLeftColor: "#22c55e", gap: 6 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                  <Text style={{ color: "#22c55e", fontSize: 10, fontWeight: "bold" }} numberOfLines={1}>
+                                    {t(language, bannerKey).replace('{month}', String(row.month)).replace('{amount}', fmt(freed))}
                                   </Text>
-                                  <Text style={{ color: "#64748b", fontSize: 9, marginTop: 1 }}>
-                                    Diamond delivery: take out initial → total assets deducted
+                                  <Text style={{ color: "#64748b", fontSize: 9, marginTop: 1 }} numberOfLines={1}>
+                                    {t(language, 'diamondDeliveryHint')}
                                   </Text>
                                 </View>
                                 <TouchableOpacity
                                   onPress={() => {
-                                    const newOpn = Math.round(contractStartCap);
+                                    const newOpn = alreadySet ? 0 : freed;
                                     const newMonthData = {
                                       ...monthData,
                                       [row.month]: { ...(monthData[row.month] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opn: newOpn },
@@ -1248,15 +1290,17 @@ export default function ScenarioToolScreen() {
                                       monthData: newMonthData,
                                     }));
                                   }}
-                                  style={{ backgroundColor: alreadySet ? "#14532d" : "#166534", borderRadius: 5, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: alreadySet ? "#4ade80" : "#22c55e" }}
+                                  style={{ backgroundColor: alreadySet ? "#14532d" : "#166534", borderRadius: 5, paddingHorizontal: 9, paddingVertical: 4, borderWidth: 1, borderColor: alreadySet ? "#4ade80" : "#22c55e", flexShrink: 0 }}
                                 >
                                   <Text style={{ color: alreadySet ? "#4ade80" : "#bbf7d0", fontSize: 10, fontWeight: "bold" }}>
-                                    {alreadySet ? "✓ Set" : "Take Out"}
+                                    {alreadySet ? t(language, 'undoTakeOut') : t(language, 'takeOut')}
                                   </Text>
                                 </TouchableOpacity>
                               </View>
                             );
                           })()}
+                          <TableRow row={row} mData={getMonthData(row.month)} onUpdate={setMonthField} cw={cw} />
+                          {yearSummary}
                         </React.Fragment>
                       );
                     })}
@@ -1678,7 +1722,7 @@ function SummaryItem({ label, value, green, red }: { label: string; value: strin
 
 const S = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: "#0f172a", width: '100%' as any },
-  content: { padding: 16, width: '100%' as any, ...Platform.select({ web: { width: '98%' as any, maxWidth: 1450, alignSelf: 'center' as const } }) },
+  content: { padding: 16, width: '100%' as any, ...Platform.select({ web: { width: '96%' as any, maxWidth: 1450, alignSelf: 'center' as const } }) },
   header: { marginBottom: 10, alignItems: "center" },
   backBtn: { alignSelf: "flex-start", marginBottom: 6 },
   backText: { color: "#60a5fa", fontSize: 16 },

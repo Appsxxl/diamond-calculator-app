@@ -5,6 +5,7 @@ import {
   getSPLevel,
   createDefaultMonthData,
   CalculationParams,
+  MonthData,
 } from "./calculator";
 
 function makeParams(overrides: Partial<CalculationParams> = {}): CalculationParams {
@@ -138,17 +139,20 @@ describe("Calculator Engine - runCalculation", () => {
     });
   });
 
-  it("SP level is locked for first 12 months, upgrades from month 13 onward", () => {
-    // net(940) = (940-5)*0.9875 = 923.31 → starts in SP1, locked for 12 months
-    const result = runCalculation(makeParams({ startAmount: 940, years: 2, vipEnabled: false, goal: 0 }));
-    // months 1-12 must all remain SP1 (initial contract lock)
+  it("SP level is locked for first 12 months; SP2 reached when combined matured+deposit >= $1,000", () => {
+    // In the tranche model each contract's principal is fixed.
+    // net(900) ≈ $884 → SP1. A $200 deposit in month 13 pushes the combined
+    // matured lump to $884 + net($200) ≈ $1,077 → first SP2 contract.
+    const monthData: Record<number, MonthData> = { 13: { stort: 200, opn: 0, opnP: 0, comp: 100 } };
+    const result = runCalculation(makeParams({ startAmount: 900, years: 2, vipEnabled: false, goal: 0, monthData }));
+    // months 1-12: original SP1 contract is active
     result.months.slice(0, 12).forEach(m => {
       expect(m.spName).toBe("SP1");
     });
-    // SP upgrade to SP2 must happen at month 13 or later
+    // SP2 upgrade must appear at month 13 (matured $884 + new deposit $193 = $1,077 ≥ $1,000)
     const upgradeMonth = result.months.find(m => m.spName === "SP2");
     expect(upgradeMonth).toBeDefined();
-    expect(upgradeMonth!.month).toBeGreaterThanOrEqual(13);
+    expect(upgradeMonth!.month).toBe(13);
     expect(upgradeMonth!.isSpUpgrade).toBe(true);
     expect(upgradeMonth!.totalRate).toBeCloseTo(2.45, 2);
   });
