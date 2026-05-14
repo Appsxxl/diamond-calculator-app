@@ -375,6 +375,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Show Banners",
     grossDeposit: "Gross deposit",
     accessFee: "Access fee ($5 + 1.25%)",
+    vipActivationFee: "VIP activation (Month 1)",
     netInvestedDiamonds: "Net invested in diamonds",
 
     // Hints
@@ -885,6 +886,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Toon Meldingen",
     grossDeposit: "Bruto storting",
     accessFee: "Toegangspremie ($5 + 1,25%)",
+    vipActivationFee: "VIP-activering (Maand 1)",
     netInvestedDiamonds: "Netto geïnvesteerd in diamanten",
 
     vipRenewalLabel: "♦ VIP Verlenging:",
@@ -1392,6 +1394,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Meldungen anzeigen",
     grossDeposit: "Bruttobetrag",
     accessFee: "Zugangsprovision ($5 + 1,25%)",
+    vipActivationFee: "VIP-Aktivierung (Monat 1)",
     netInvestedDiamonds: "Netto in Diamanten investiert",
 
     vipRenewalLabel: "♦ VIP-Verlängerung:",
@@ -1899,6 +1902,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Afficher les alertes",
     grossDeposit: "Dépôt brut",
     accessFee: "Frais d'accès ($5 + 1,25%)",
+    vipActivationFee: "Activation VIP (Mois 1)",
     netInvestedDiamonds: "Net investi en diamants",
 
     vipRenewalLabel: "♦ Renouvellement VIP :",
@@ -2406,6 +2410,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Mostrar alertas",
     grossDeposit: "Depósito bruto",
     accessFee: "Comisión de acceso ($5 + 1,25%)",
+    vipActivationFee: "Activación VIP (Mes 1)",
     netInvestedDiamonds: "Neto invertido en diamantes",
 
     vipRenewalLabel: "♦ Renovación VIP:",
@@ -2906,6 +2911,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Показать уведомления",
     grossDeposit: "Сумма брутто",
     accessFee: "Плата за доступ ($5 + 1,25%)",
+    vipActivationFee: "Активация VIP (Месяц 1)",
     netInvestedDiamonds: "Нетто инвестировано в алмазы",
 
     vipRenewalLabel: "♦ Продление VIP:",
@@ -3409,6 +3415,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "显示通知",
     grossDeposit: "税前存款",
     accessFee: "访问费 ($5 + 1.25%)",
+    vipActivationFee: "VIP激活（第1月）",
     netInvestedDiamonds: "净投资于钻石",
 
     vipRenewalLabel: "♦ VIP续费：",
@@ -3913,6 +3920,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Ipakita ang mga alerto",
     grossDeposit: "Gross na deposito",
     accessFee: "Bayad sa access ($5 + 1.25%)",
+    vipActivationFee: "VIP activation (Buwan 1)",
     netInvestedDiamonds: "Net na nai-invest sa mga diyamante",
 
     vipRenewalLabel: "♦ Pag-renew ng VIP:",
@@ -4388,6 +4396,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Mostrar alertas",
     grossDeposit: "Depósito bruto",
     accessFee: "Taxa de acesso ($5 + 1,25%)",
+    vipActivationFee: "Ativação VIP (Mês 1)",
     netInvestedDiamonds: "Líquido investido em diamantes",
 
     vipRenewalLabel: "♦ Renovação VIP:",
@@ -4863,6 +4872,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "إظهار التنبيهات",
     grossDeposit: "الإيداع الإجمالي",
     accessFee: "رسوم الوصول ($5 + 1.25%)",
+    vipActivationFee: "تفعيل VIP (الشهر 1)",
     netInvestedDiamonds: "صافي الاستثمار في الماس",
 
     vipRenewalLabel: "♦ تجديد VIP:",
@@ -5338,6 +5348,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "แสดงการแจ้งเตือน",
     grossDeposit: "เงินฝากรวม",
     accessFee: "ค่าธรรมเนียมการเข้าถึง ($5 + 1.25%)",
+    vipActivationFee: "การเปิดใช้งาน VIP (เดือน 1)",
     netInvestedDiamonds: "ลงทุนสุทธิในเพชร",
 
     vipRenewalLabel: "♦ การต่ออายุ VIP:",
@@ -5813,6 +5824,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "सूचनाएं दिखाएं",
     grossDeposit: "सकल जमा",
     accessFee: "एक्सेस शुल्क ($5 + 1.25%)",
+    vipActivationFee: "VIP सक्रियण (माह 1)",
     netInvestedDiamonds: "हीरे में शुद्ध निवेश",
 
     vipRenewalLabel: "♦ VIP नवीनीकरण:",
@@ -6250,6 +6262,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Mostra notifiche",
     grossDeposit: "Deposito lordo",
     accessFee: "Costo di accesso ($5 + 1,25%)",
+    vipActivationFee: "Attivazione VIP (Mese 1)",
     netInvestedDiamonds: "Netto investito in diamanti",
 
     vipRenewalLabel: "♦ Rinnovo VIP:",
@@ -6761,6 +6774,7 @@ export const translations: Record<Language, Record<string, string>> = {
     showBanners: "Hiện thông báo",
     grossDeposit: "Tiền gửi gộp",
     accessFee: "Phí truy cập ($5 + 1,25%)",
+    vipActivationFee: "Kích hoạt VIP (Tháng 1)",
     netInvestedDiamonds: "Đầu tư ròng vào kim cương",
 
     vipRenewalLabel: "♦ Gia Hạn VIP:",

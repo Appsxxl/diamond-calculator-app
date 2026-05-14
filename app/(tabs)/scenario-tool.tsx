@@ -156,7 +156,7 @@ export default function ScenarioToolScreen() {
     const start = numVal(startAmount);
     if (start <= 0) return;
     setResult(runCalculation({
-      startAmount: start,
+      startAmount: getNetDeposit(start),
       years: numVal(years, 5),
       goal: numVal(goal, 3500),
       vipEnabled,
@@ -210,7 +210,7 @@ export default function ScenarioToolScreen() {
     const vipOn = params.vip === "1";
     const startAmt = parseFloat(params.startAmount ?? "3000") || 3000;
     setResult(runCalculation({
-      startAmount: startAmt,
+      startAmount: getNetDeposit(startAmt),
       years: yrs,
       goal: parseFloat(params.goalAmount ?? "3500") || 3500,
       vipEnabled: vipOn || startAmt >= 3550,
@@ -341,7 +341,7 @@ export default function ScenarioToolScreen() {
 
   const handleCalculate = () => {
     const params: CalculationParams = {
-      startAmount: numVal(startAmount, 3000),
+      startAmount: getNetDeposit(numVal(startAmount, 3000)),
       years: numVal(years, 5),
       goal: numVal(goal, 3500),
       vipEnabled,
@@ -358,7 +358,7 @@ export default function ScenarioToolScreen() {
     const start = numVal(startAmount);
     if (start < 1000) return null;
     const shadow = runCalculation({
-      startAmount: start,
+      startAmount: getNetDeposit(start),
       years: numVal(years, 5),
       goal: numVal(goal, 3500),
       vipEnabled: true,
@@ -381,7 +381,7 @@ export default function ScenarioToolScreen() {
   const handleCompareWithVip = () => {
     setVipEnabled(true);
     setResult(runCalculation({
-      startAmount: numVal(startAmount, 3000),
+      startAmount: getNetDeposit(numVal(startAmount, 3000)),
       years: numVal(years, 5),
       goal: numVal(goal, 3500),
       vipEnabled: true,
@@ -490,6 +490,8 @@ export default function ScenarioToolScreen() {
                     const gross = numVal(startAmount);
                     const net = getNetDeposit(gross);
                     const fee = gross - net;
+                    const vipFee = autoVip ? 1000 : 0;
+                    const netDiamonds = net - vipFee;
                     return (
                       <View style={{ marginTop: 6, backgroundColor: 'rgba(30,41,59,0.8)', borderRadius: 6, padding: 7, borderWidth: 1, borderColor: '#334155' }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -500,9 +502,15 @@ export default function ScenarioToolScreen() {
                           <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'accessFee')}</Text>
                           <Text style={{ color: '#ef4444', fontSize: 10 }}>−${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
+                        {autoVip && (
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
+                            <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'vipActivationFee')}</Text>
+                            <Text style={{ color: '#ef4444', fontSize: 10 }}>−$1,000.00</Text>
+                          </View>
+                        )}
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3, borderTopWidth: 1, borderTopColor: '#334155', paddingTop: 3 }}>
                           <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>{t(language, 'netInvestedDiamonds')}</Text>
-                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>${net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>${netDiamonds.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
                       </View>
                     );
@@ -1254,7 +1262,7 @@ export default function ScenarioToolScreen() {
                               <Text style={{ color: row.isManualVip ? "#33C5FF" : "#f59e0b", fontSize: 10, fontWeight: "bold" }}>
                                 {row.isManualVip
                                   ? `💳 Month ${row.month} — VIP Activation: $1,000 paid manually (external fee — deposit ~$1,016 gross to cover)`
-                                  : `⚠️ Month ${row.month} — VIP Activation: $1,000 deducted from diamond assets`}
+                                  : `⚠️ Month ${row.month} — VIP Activation: $1,000 deducted from deposit`}
                               </Text>
                             </View>
                           )}
@@ -1282,7 +1290,7 @@ export default function ScenarioToolScreen() {
                                     };
                                     setMonthData(newMonthData);
                                     setResult(runCalculation({
-                                      startAmount: numVal(startAmount, 3000),
+                                      startAmount: getNetDeposit(numVal(startAmount, 3000)),
                                       years: numVal(years, 5),
                                       goal: numVal(goal, 3500),
                                       vipEnabled,
