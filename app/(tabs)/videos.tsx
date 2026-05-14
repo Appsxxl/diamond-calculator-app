@@ -432,18 +432,9 @@ async function openUrl(url: string, errorMsg: string) {
       window.open(url, "_blank");
       return;
     }
-    const canOpen = await Linking.canOpenURL(url);
-    if (canOpen) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert("Error", errorMsg);
-    }
+    await Linking.openURL(url);
   } catch {
-    if (Platform.OS === "web") {
-      window.open(url, "_blank");
-    } else {
-      Alert.alert("Error", errorMsg);
-    }
+    Alert.alert("Error", errorMsg);
   }
 }
 
@@ -716,6 +707,9 @@ export default function VideosScreen() {
                 <Text style={S.comingSoonIcon}>🎬</Text>
                 <Text style={S.comingSoonTitle}>{tx.comingSoonTitle}</Text>
                 <Text style={S.comingSoonDesc}>{tx.comingSoonDesc}</Text>
+                <TouchableOpacity style={[S.vimeoChannelBtn, { marginTop: 18, width: "100%" }]} onPress={handleVimeoChannel} activeOpacity={0.85}>
+                  <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
+                </TouchableOpacity>
               </View>
             ) : (
               vimeoVideos.map((video) => (
