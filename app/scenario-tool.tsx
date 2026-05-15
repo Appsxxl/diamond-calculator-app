@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -60,16 +60,30 @@ export default function ScenarioToolScreen() {
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
 
+  // Stores the last state applied from navigation (Asset Goal Planner / Strategy Engineer)
+  // so that RESET restores these values instead of factory defaults.
+  const navSnapshot = useRef<{
+    startAmount: string;
+    years: string;
+    goal: string;
+    vip: boolean;
+    monthData: Record<number, MonthData>;
+  } | null>(null);
+
   // Auto-fill from Strategy Engineer when navigated with plan params
   useEffect(() => {
     if (!params.plan) return;
     const newMonthData: Record<number, MonthData> = {};
     const yrs = parseFloat(params.years ?? "5") || 5;
     const totalM = yrs * 12;
+    const newStart = params.startAmount ?? "10000";
+    const newYears = String(yrs);
+    const newGoal = params.goalAmount ?? "2000";
+    const newVip = params.vip !== undefined ? params.vip === "1" : true;
     if (params.startAmount) setStartAmount(params.startAmount);
     if (params.years) setYears(String(yrs));
     if (params.goalAmount) setGoal(params.goalAmount);
-    if (params.vip !== undefined) setVipEnabled(params.vip === "1");
+    if (params.vip !== undefined) setVipEnabled(newVip);
     // Apply monthly deposit to all months
     const dep = parseFloat(params.monthlyDeposit ?? "0") || 0;
     if (dep > 0) {
@@ -77,11 +91,19 @@ export default function ScenarioToolScreen() {
         newMonthData[m] = { stort: dep, opn: 0, opnP: 0, comp: 100 };
       }
     }
-    // Apply out% to month 1 for Plan D
     const outP = parseFloat(params.outP ?? "0") || 0;
     if (outP > 0) {
-      newMonthData[1] = { ...(newMonthData[1] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
+      if (params.plan === "property") {
+        // Asset Goal Planner: apply out% to every month
+        for (let m = 1; m <= totalM; m++) {
+          newMonthData[m] = { ...(newMonthData[m] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
+        }
+      } else {
+        // Plan D: apply out% to month 1 only
+        newMonthData[1] = { ...(newMonthData[1] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
+      }
     }
+    navSnapshot.current = { startAmount: newStart, years: newYears, goal: newGoal, vip: newVip, monthData: newMonthData };
     setMonthData(newMonthData);
     setResult(null);
     const planLabels: Record<string, string> = {
@@ -89,6 +111,7 @@ export default function ScenarioToolScreen() {
       B: "Plan B — Wait & Grow Strategy",
       C: "Plan C — One-Year Lump Sum Strategy",
       D: "Plan D — Instant Payout Strategy",
+      property: "Asset Goal Plan",
     };
     setAppliedBanner(`✅ ${t(language, 'appliedFromStrategy')}: ${planLabels[params.plan ?? ""] ?? params.plan}`);
     // Auto-dismiss banner after 5 seconds
@@ -159,10 +182,21 @@ export default function ScenarioToolScreen() {
 
 
   const handleReset = () => {
-    setClientName(""); setStartAmount("10000"); setYears("5"); setGoal("2000");
-    setVipEnabled(true); setMonthData({}); setResult(null);
+    const snap = navSnapshot.current;
+    setClientName("");
+    setResult(null);
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
     setBulkOpnVal(""); setBulkOpnFrom(""); setBulkOpnPVal(""); setBulkOpnPFrom("");
+    if (snap) {
+      setStartAmount(snap.startAmount);
+      setYears(snap.years);
+      setGoal(snap.goal);
+      setVipEnabled(snap.vip);
+      setMonthData(snap.monthData);
+    } else {
+      setStartAmount("10000"); setYears("5"); setGoal("2000");
+      setVipEnabled(true); setMonthData({});
+    }
   };
 
   const handleCalculate = () => {

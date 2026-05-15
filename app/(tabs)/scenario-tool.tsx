@@ -200,10 +200,17 @@ export default function ScenarioToolScreen() {
       setBulkStortVal(String(dep));
       setBulkStortTo(String(totalM));
     }
-    // Apply out% to month 1 for Plan D
+    // Apply out%: all months for Asset Goal Planner, month 1 only for Plan D
     const outP = parseFloat(params.outP ?? "0") || 0;
     if (outP > 0) {
-      newMonthData[1] = { ...(newMonthData[1] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
+      const applyTo = params.plan === 'property' ? totalM : 1;
+      for (let m = 1; m <= applyTo; m++) {
+        newMonthData[m] = { ...(newMonthData[m] ?? { stort: 0, opn: 0, opnP: 0, comp: 100 }), opnP: outP };
+      }
+      if (params.plan === 'property') {
+        setBulkOpnPVal(String(outP));
+        setBulkOpnPFrom("1");
+      }
     }
     setMonthData(newMonthData);
     // Auto-run calculation immediately with the new plan data
@@ -222,6 +229,7 @@ export default function ScenarioToolScreen() {
       B: "Plan B — Wait & Grow Strategy",
       C: "Plan C — One-Year Lump Sum Strategy",
       D: "Plan D — Instant Payout Strategy",
+      property: "Asset Goal Planner",
     };
     setAppliedBanner(`✅ ${t(language, 'appliedFromStrategy')}: ${planLabels[params.plan ?? ""] ?? params.plan}`);
     // Auto-dismiss banner after 5 seconds

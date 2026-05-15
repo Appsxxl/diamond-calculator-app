@@ -46,6 +46,15 @@ const config: ExpoConfig = {
   description: "Plan B — Strategic Wealth Optimization",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
+  updates: {
+    url: "https://u.expo.dev/YOUR_PROJECT_ID",
+    enabled: true,
+    fallbackToCacheTimeout: 0,
+    checkAutomatically: "ON_LOAD",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,

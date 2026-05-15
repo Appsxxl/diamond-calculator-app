@@ -24,6 +24,7 @@ export interface Tranche {
   baseRate: number;    // locked at creation — never changes
   startMonth: number;
   maturityMonth: number; // startMonth + 12; freed at beginning of this month
+  isCompound: boolean;   // true = compound reinvestment tranche; false = main rebuy/deposit tranche
 }
 
 export interface MonthResult {
@@ -160,6 +161,11 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     tranches = tranches.filter(t => t.maturityMonth !== m);
     const maturedSum = maturing.reduce((s, t) => s + t.principal, 0);
     const maturedCount = maturing.length;
+    // Fold + early VIP only trigger when a main (non-compound) tranche matures.
+    // Pure compound-tranche maturities must NOT fold other tranches' yield — that
+    // buries the big rebuy's yield inside a tiny lump and collapses available to
+    // nearly zero in months 14–24 (and the equivalent windows in later cycles).
+    const hasMainMaturity = maturing.some(t => !t.isCompound);
 
     // ── 2. New deposit for this month ────────────────────────────────────────
     // Month 1 includes the startAmount as an additional deposit.
@@ -186,8 +192,8 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     let preRebuyYield = 0;
     let nVFolded = 0;
 
-    if (maturedSum > 0 && principalTakeout === 0) {
-      // ── 3a. Early VIP check (maturity rebuy months only) ─────────────────
+    if (maturedSum > 0 && principalTakeout === 0 && hasMainMaturity) {
+      // ── 3a. Early VIP check (main-tranche maturity months only) ──────────
       const compoundCapNow = tranches.reduce((s, t) => s + t.principal, 0);
       const totalCapForVip = compoundCapNow + maturedSum + depositNet;
       if (vipEnabled) {
@@ -215,11 +221,13 @@ export function runCalculation(params: CalculationParams): CalculationResult {
         }
       }
 
-      // ── 3b. Fold compound yield into rebuy ────────────────────────────────
+      // ── 3b. Fold ONLY compound tranches' yield into the rebuy lump ────────
+      // Main (rebuy) tranches keep their yield in the available pool so that
+      // months between main maturities (e.g. 14–24) show full available income.
       const vipBonusNow = vActive ? 3.0 : 0;
-      preRebuyYield = tranches.reduce(
-        (s, t) => s + Math.round(t.principal * ((t.baseRate + vipBonusNow) / 100)), 0
-      );
+      preRebuyYield = tranches
+        .filter(t => t.isCompound)
+        .reduce((s, t) => s + Math.round(t.principal * ((t.baseRate + vipBonusNow) / 100)), 0);
       const nV84 = vActive ? 84 : 0;
       nVFolded = Math.min(preRebuyYield, nV84);
     }
@@ -241,13 +249,14 @@ export function runCalculation(params: CalculationParams): CalculationResult {
         baseRate: sp.baseRate,
         startMonth: m,
         maturityMonth: m + 12,
+        isCompound: false,
       });
     }
 
-    // ── 4. VIP check (non-maturity months) ───────────────────────────────────
-    // For months without a maturing contract, VIP check runs after the new
-    // tranche is created so the deduction proportionally includes it.
-    if (maturedSum === 0 || principalTakeout > 0) {
+    // ── 4. VIP check (non-main-maturity months) ──────────────────────────────
+    // Runs after the new tranche is created. Also covers compound-tranche
+    // maturity months, since those skip the early VIP check above.
+    if (!hasMainMaturity || maturedSum === 0 || principalTakeout > 0) {
       const totalCapNow = tranches.reduce((s, t) => s + t.principal, 0);
       if (vipEnabled) {
         const vipThresholdMet = totalCapNow >= 3550 || (m === 1 && startAmount >= 3550);
@@ -300,7 +309,34 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // ── 8. Withdrawal from yield (principal takeout already counted in step 3) ─
     const pO = totalYield * (mD.opnP / 100);
     const remainingOpn = Math.max(0, mD.opn - principalTakeout);
-    const rO = Math.min(remainingOpn + pO, Math.max(0, available));
+    let rO = Math.min(remainingOpn + pO, Math.max(0, available));
+
+    // On contract-maturity months, compound yields were folded into the rebuy
+    // lump (step 3b), locking them inside the tranche. This makes `available`
+    // far smaller than the intended opnP% of totalYield. Fix: compute how much
+    // is still owed to the user and pull that shortfall directly from the rebuy
+    // tranche's principal, so the withdrawal is always exactly opnP% of the
+    // Discount Applied column (totalYield).
+    if (mD.opnP > 0 && yieldFolded > 0) {
+      const fullTarget = Math.min(
+        remainingOpn + pO,
+        Math.max(0, totalYield - effectiveNV + wallet),
+      );
+      const shortfall = Math.round(fullTarget - rO);
+      if (shortfall > 0 && tranches.length > 0) {
+        const rebuy = tranches[tranches.length - 1];
+        // Only touch the tranche that was just created this month (the rebuy)
+        if (rebuy.startMonth === m) {
+          const reduction = Math.min(shortfall, Math.floor(rebuy.principal));
+          rebuy.principal -= reduction;
+          rO += reduction;
+          const adjSp = getSPLevel(rebuy.principal);
+          rebuy.spName = adjSp.name;
+          rebuy.baseRate = adjSp.baseRate;
+        }
+      }
+    }
+
     tOut += rO;
     runningWithdrawals += rO;
     if (principalTakeout > 0 || rO > 0) activeWithdrawalMonths++;
@@ -325,6 +361,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
         baseRate: cSp.baseRate,
         startMonth: m + 1,    // earns from next month
         maturityMonth: m + 13, // 12 full months of earning
+        isCompound: true,
       });
     }
 
@@ -437,7 +474,7 @@ export function stratSimulate(
     const newLump = maturedSum + depositNet;
     if (newLump > 0) {
       const sp = getSPLevel(newLump);
-      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12 });
+      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12, isCompound: false });
     }
 
     // 4. VIP check
@@ -473,7 +510,7 @@ export function stratSimulate(
       const reinvest = Math.round(available - out);
       if (reinvest > 0) {
         const cSp = getSPLevel(reinvest);
-        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
       }
       wallet = 0;
     } else {
@@ -481,7 +518,7 @@ export function stratSimulate(
       const reinvest = Math.round(available);
       if (reinvest > 0) {
         const cSp = getSPLevel(reinvest);
-        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+        tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
       }
       wallet = 0;
     }
@@ -516,7 +553,7 @@ export function stratFindMeetingMonth(
     const newLump = maturedSum + depositNet;
     if (newLump > 0) {
       const sp = getSPLevel(newLump);
-      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12 });
+      tranches.push({ id: nextId++, principal: newLump, spName: sp.name, baseRate: sp.baseRate, startMonth: i, maturityMonth: i + 12, isCompound: false });
     }
 
     const totalCap = tranches.reduce((s, t) => s + t.principal, 0);
@@ -547,7 +584,7 @@ export function stratFindMeetingMonth(
     const reinvest = Math.round(available);
     if (reinvest > 0) {
       const cSp = getSPLevel(reinvest);
-      tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13 });
+      tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
     }
     wallet = 0;
 
@@ -590,9 +627,8 @@ export function calculateStrategy(
       if (stratSimulate(startDeposit, months, mid, 0, vipEnabled) >= monthlyGoal) high = mid;
       else low = mid;
     }
-    let suggested = Math.round(high);
-    if (suggested > 0 && suggested < 100) suggested = 100;
-    planA_deposit = suggested;
+    // STANDING RULE: minimum $107/month — do not change without explicit instruction.
+    planA_deposit = Math.max(107, Math.round(high));
   }
 
   // Plan B

@@ -1761,7 +1761,7 @@ export default function PartnerToolsScreen() {
     router.push({
       pathname: "/(tabs)/scenario-tool",
       params: {
-        source: "property",
+        plan: "property",
         startAmount: String(assetResult.noVip.deposit),
         years: String(assetResult.years),
         outP: "80",
@@ -1776,7 +1776,7 @@ export default function PartnerToolsScreen() {
     router.push({
       pathname: "/(tabs)/scenario-tool",
       params: {
-        source: "property",
+        plan: "property",
         startAmount: String(assetResult.withVip.deposit),
         years: String(assetResult.years),
         outP: "80",

@@ -1,5 +1,8 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+# Google Play Store service account key (never commit this)
+google-play-key.json
+
 # dependencies
 node_modules/
 .npm/
