@@ -884,7 +884,7 @@ export default function ScenarioToolScreen() {
                       <div class="stat-value blue">${result.rocMonth ? 'Month ' + result.rocMonth + ' (Year ' + Math.ceil(result.rocMonth/12) + ')' : 'Pending'}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Max Monthly Discount (Month ${totalMonths})</div>
+                      <div class="stat-label">Max Monthly Discount (Month ${result.maxMonthlyOutMonth})</div>
                       <div class="stat-value green">${fmt(result.maxMonthlyOut)}</div>
                     </div>
                   </div>
@@ -1055,7 +1055,7 @@ export default function ScenarioToolScreen() {
                   red={displayNetResult < 0}
                 />
                 <SummaryItem label={t(language, 'availableRebates')} value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.months.length))} value={fmt(result.maxMonthlyOut)} green />
+                <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.maxMonthlyOutMonth))} value={fmt(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
                   value={result.rocMonth

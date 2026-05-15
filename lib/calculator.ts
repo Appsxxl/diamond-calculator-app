@@ -140,6 +140,10 @@ export function runCalculation(params: CalculationParams): CalculationResult {
   let rocMonth: number | null = null;
   let finalMaxVal = 0;
   let finalMaxMonth = 0;
+  let finalMaxWithdrawal = 0;
+  let finalMaxWithdrawalMonth = 0;
+  let finalMaxGrossYield = 0;
+  let finalMaxGrossYieldMonth = 0;
   let activeWithdrawalMonths = 0;
 
   const results: MonthResult[] = [];
@@ -296,6 +300,9 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     const nV = vActive ? 84 : 0;
     if (vipEnabled) { vipPot += nV; tVipPot += nV; }
 
+    // Track max gross yield (matches the "Monthly Discount" table column)
+    if (totalYield > finalMaxGrossYield) { finalMaxGrossYield = totalYield; finalMaxGrossYieldMonth = m; }
+
     // ── 7. Available to withdraw or reinvest ─────────────────────────────────
     // When yield was folded into the rebuy (preRebuyYield > 0), subtract it
     // from available to avoid double-counting; nVFolded covered the VIP pot
@@ -340,6 +347,8 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     tOut += rO;
     runningWithdrawals += rO;
     if (principalTakeout > 0 || rO > 0) activeWithdrawalMonths++;
+    const actualMonthlyWithdrawal = principalTakeout + rO;
+    if (actualMonthlyWithdrawal > finalMaxWithdrawal) { finalMaxWithdrawal = actualMonthlyWithdrawal; finalMaxWithdrawalMonth = m; }
 
     // ── 9. ROC (return-of-capital) check ─────────────────────────────────────
     if (rocMonth === null && runningWithdrawals >= tIn && tIn > 0) rocMonth = m;
@@ -433,8 +442,11 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     finalCompPot: 0,
     netResult,
     rocMonth,
-    maxMonthlyOut: finalMaxVal,
-    maxMonthlyOutMonth: finalMaxMonth,
+    // When withdrawals are configured, show the max actual payout received.
+    // When compound-only, show max gross yield — matches the Monthly Discount table column
+    // and represents what the plan generates at peak (total from all active tranches).
+    maxMonthlyOut: finalMaxWithdrawal > 0 ? finalMaxWithdrawal : finalMaxGrossYield,
+    maxMonthlyOutMonth: finalMaxWithdrawal > 0 ? finalMaxWithdrawalMonth : finalMaxGrossYieldMonth,
     activeWithdrawalMonths,
     goalReached: goal > 0 ? finalMaxVal >= goal : false,
     goalProgress,
