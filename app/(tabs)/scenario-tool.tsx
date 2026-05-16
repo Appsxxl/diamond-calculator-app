@@ -1003,6 +1003,14 @@ export default function ScenarioToolScreen() {
                       <div class="param-value">${totalYears} Years (${totalMonths} Months)</div>
                     </div>
                     <div class="param-row">
+                      <div class="param-label">SP Tier</div>
+                      <div class="param-value" style="color:#1e3a5f">${(() => { const sp = getSPLevel(getNetDeposit(numVal(startAmount))); return sp.name + ' — ' + (sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(2) + '%/mo'; })()}</div>
+                    </div>
+                    <div class="param-row">
+                      <div class="param-label">Monthly Goal Target</div>
+                      <div class="param-value" style="color:${result.goalReachedMonth ? '#16a34a' : '#1e3a5f'}">${fmt(numVal(goal))}${result.goalReachedMonth ? ' ✓' : ''}</div>
+                    </div>
+                    <div class="param-row">
                       <div class="param-label">Monthly Diamond Purchases</div>
                       <div class="param-value" style="font-weight:700">${depositLabel}</div>
                     </div>
@@ -1046,6 +1054,10 @@ export default function ScenarioToolScreen() {
                     <div class="stat">
                       <div class="stat-label">Max Monthly Discount (Month ${result.maxMonthlyOutMonth})</div>
                       <div class="stat-value green">${fmt(result.maxMonthlyOut)}</div>
+                    </div>
+                    <div class="stat" style="grid-column:span 2;background:${result.goalReachedMonth ? '#f0fdf4' : '#fefce8'};border:1.5px solid ${result.goalReachedMonth ? '#16a34a' : '#ca8a04'}">
+                      <div class="stat-label">🎯 Monthly Goal — ${fmt(numVal(goal))}</div>
+                      <div class="stat-value" style="color:${result.goalReachedMonth ? '#16a34a' : '#b45309'}">${result.goalReachedMonth ? '✅ Reached at Month ' + result.goalReachedMonth + ' (Year ' + Math.ceil(result.goalReachedMonth/12) + ')' : '⏳ Not reached within ' + totalYears + '-year period'}</div>
                     </div>
                   </div>
                   ${result.totalVipCost > 0 ? '<p style="font-size:9px;color:#64748b;margin:4px 0 0 2px">* Total Purchase Amount includes the initial purchase, monthly contributions, and the manual $1,000 VIP activation fee.</p>' : ''}
@@ -1108,7 +1120,8 @@ export default function ScenarioToolScreen() {
                         type: 'application/pdf',
                       });
                     } else {
-                      await Print.printAsync({ uri });
+                      // iOS: share sheet lets adviser AirDrop, email, save to Files, etc.
+                      await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'Share Strategy PDF' });
                     }
                   }
                 } catch (e) {
