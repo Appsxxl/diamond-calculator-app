@@ -12,6 +12,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Clipboard from "expo-clipboard";
@@ -1345,6 +1346,10 @@ export default function PartnerToolsScreen() {
   const [revenueReuse, setRevenueReuse] = useState("50");
   const [revenueParts, setRevenueParts] = useState("1");
   const [revenueResult, setRevenueResult] = useState<ReturnType<typeof calcTimeline> | null>(null);
+  const [calcPropertyLoading, setCalcPropertyLoading] = useState(false);
+  const [calcSavingsLoading, setCalcSavingsLoading] = useState(false);
+  const [calcAssetLoading, setCalcAssetLoading] = useState(false);
+  const [calcRevenueLoading, setCalcRevenueLoading] = useState(false);
 
   // Live pool inputs — Adviser fills from back office
   const [pool1Total, setPool1Total] = useState("73908");
@@ -1381,12 +1386,15 @@ export default function PartnerToolsScreen() {
     await AsyncStorage.setItem(REFERRAL_STORAGE_KEY, trimmed);
     setEditingCode(false);
   };
-  const handleCalcRevenue = () => {
+  const handleCalcRevenue = async () => {
+    setCalcRevenueLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
     setRevenueResult(calcTimeline(
       parseFloat(revenueDb)||0, parseFloat(revenueConv)||0,
       parseFloat(revenueAvg)||0, parseFloat(revenueReuse)||0,
       parseFloat(revenueParts)||1, globalStats
     ));
+    setCalcRevenueLoading(false);
   };
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -1566,9 +1574,11 @@ export default function PartnerToolsScreen() {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
-  const calculateProperty = () => {
+  const calculateProperty = async () => {
     const cost = parseFloat(propCost) || 0;
     if (cost <= 0) return;
+    setCalcPropertyLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     // Plan D binary search — same engine as Strategy Engineer Plan D
     // Finds the exact deposit where stratSimulate(deposit, 1, 0, 75, vip) >= cost
@@ -1599,6 +1609,7 @@ export default function PartnerToolsScreen() {
       withVip: withVipResult,
       targetCost: cost,
     });
+    setCalcPropertyLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
@@ -1635,9 +1646,11 @@ export default function PartnerToolsScreen() {
   };
 
   // ── Savings Goal: 75% withdrawal target income ────────────────────────────
-  const calculateSavings = () => {
+  const calculateSavings = async () => {
     const income = parseFloat(savingsGoal) || 0;
     if (income <= 0) return;
+    setCalcSavingsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
     // Binary search: find deposit where 75% of monthly rebate = target income
     // i.e. stratSimulate(deposit, 1, 0, 75, vip) >= income
     const savingsSearch = (vip: boolean) => {
@@ -1666,6 +1679,7 @@ export default function PartnerToolsScreen() {
       withVip: savingsSearch(true),
       targetIncome: income,
     });
+    setCalcSavingsLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
@@ -1722,10 +1736,12 @@ export default function PartnerToolsScreen() {
     return result.totalOut;
   };
 
-  const calculateAsset = () => {
+  const calculateAsset = async () => {
     const target = parseFloat(assetTarget) || 0;
     const years = parseInt(assetYears) || 5;
     if (target <= 0 || years <= 0) return;
+    setCalcAssetLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
     const months = years * 12;
     // Binary search finds minimum gross deposit where total 80% withdrawals >= target.
     // Fee is then added on top so the displayed deposit = gross + fee (what the customer actually wires).
@@ -1753,6 +1769,7 @@ export default function PartnerToolsScreen() {
       targetAmount: target,
       years,
     });
+    setCalcAssetLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
@@ -2121,8 +2138,8 @@ export default function PartnerToolsScreen() {
               placeholder={tx.placeholderCustomAmount}
             />
 
-            <TouchableOpacity style={S.calcBtn} onPress={calculateProperty} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findPlanBtn}</Text>
+            <TouchableOpacity style={[S.calcBtn, calcPropertyLoading && { opacity: 0.7 }]} onPress={calculateProperty} activeOpacity={0.8} disabled={calcPropertyLoading}>
+              {calcPropertyLoading ? <ActivityIndicator color="#fff" /> : <Text style={S.calcBtnText}>{tx.findPlanBtn}</Text>}
             </TouchableOpacity>
 
             {propResult && (
@@ -2198,8 +2215,8 @@ export default function PartnerToolsScreen() {
               placeholder={tx.placeholderCustomAmount}
             />
 
-            <TouchableOpacity style={S.calcBtn} onPress={calculateSavings} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findSavingsBtn}</Text>
+            <TouchableOpacity style={[S.calcBtn, calcSavingsLoading && { opacity: 0.7 }]} onPress={calculateSavings} activeOpacity={0.8} disabled={calcSavingsLoading}>
+              {calcSavingsLoading ? <ActivityIndicator color="#fff" /> : <Text style={S.calcBtnText}>{tx.findSavingsBtn}</Text>}
             </TouchableOpacity>
 
             {savingsResult && (
@@ -2290,8 +2307,8 @@ export default function PartnerToolsScreen() {
               placeholder={tx.placeholderYears}
             />
 
-            <TouchableOpacity style={S.calcBtn} onPress={calculateAsset} activeOpacity={0.8}>
-              <Text style={S.calcBtnText}>{tx.findAssetBtn}</Text>
+            <TouchableOpacity style={[S.calcBtn, calcAssetLoading && { opacity: 0.7 }]} onPress={calculateAsset} activeOpacity={0.8} disabled={calcAssetLoading}>
+              {calcAssetLoading ? <ActivityIndicator color="#fff" /> : <Text style={S.calcBtnText}>{tx.findAssetBtn}</Text>}
             </TouchableOpacity>
 
             {assetResult && (
@@ -2355,8 +2372,8 @@ export default function PartnerToolsScreen() {
               </View>
             ))}
           </View>
-          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }]} onPress={handleCalcRevenue}>
-            <Text style={S.calcBtnText}>{tx.projRevCalcBtn}</Text>
+          <TouchableOpacity style={[S.calcBtn, { backgroundColor: GOLD }, calcRevenueLoading && { opacity: 0.7 }]} onPress={handleCalcRevenue} disabled={calcRevenueLoading}>
+            {calcRevenueLoading ? <ActivityIndicator color="#0f172a" /> : <Text style={S.calcBtnText}>{tx.projRevCalcBtn}</Text>}
           </TouchableOpacity>
           {revenueResult && (
             <>

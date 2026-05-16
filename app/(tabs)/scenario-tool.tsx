@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  ActivityIndicator,
   useWindowDimensions,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -77,6 +78,7 @@ export default function ScenarioToolScreen() {
   };
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [calculating, setCalculating] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
 
@@ -373,7 +375,9 @@ export default function ScenarioToolScreen() {
     setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
   };
 
-  const handleCalculate = () => {
+  const handleCalculate = async () => {
+    setCalculating(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
     const params: CalculationParams = {
       startAmount: getNetDeposit(numVal(startAmount, 3000)),
       years: numVal(years, 5),
@@ -384,6 +388,7 @@ export default function ScenarioToolScreen() {
     };
     const res = runCalculation(params);
     setResult(res);
+    setCalculating(false);
   };
 
   const vipShadow = useMemo(() => {
@@ -680,8 +685,10 @@ export default function ScenarioToolScreen() {
         </View>
 
         {/* Calculate */}
-        <TouchableOpacity style={S.calcBtn} onPress={handleCalculate}>
-          <Text style={S.calcText}>⚡ {t(language, 'calculate').toUpperCase()}</Text>
+        <TouchableOpacity style={[S.calcBtn, calculating && { opacity: 0.7 }]} onPress={handleCalculate} disabled={calculating}>
+          {calculating
+            ? <ActivityIndicator color="#0f172a" />
+            : <Text style={S.calcText}>⚡ {t(language, 'calculate').toUpperCase()}</Text>}
         </TouchableOpacity>
 
         {/* Results */}
