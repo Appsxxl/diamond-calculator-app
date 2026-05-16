@@ -101,8 +101,13 @@ export default function ScenarioToolScreen() {
   const [manualVip, setManualVip] = useState(false);
   const vipExplicitlyOff = useRef(false);
 
-  // Load persisted backup on mount (runs once)
+  // Load persisted backup on mount (runs once).
+  // Skip if we arrived with external params — the params effects will own state.
   useEffect(() => {
+    if (params.plan || params.source === 'property') {
+      setHydrated(true);
+      return;
+    }
     AsyncStorage.getItem('plan_b_scenario_backup').then(raw => {
       if (raw) {
         try {
@@ -183,6 +188,12 @@ export default function ScenarioToolScreen() {
   // Auto-fill from Strategy Engineer when navigated with plan params
   useEffect(() => {
     if (!params.plan) return;
+    // Full reset — clear every bulk/override field so no stale data from a previous session leaks in
+    setAnnualVal(""); setBulkOpnVal(""); setBulkOpnFrom("");
+    setBulkOpnPVal(""); setBulkOpnPFrom("");
+    setBulkStortVal(""); setBulkStortTo("");
+    setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
+    setManualVip(false);
     const newMonthData: Record<number, MonthData> = {};
     const yrs = parseFloat(params.years ?? "5") || 5;
     const totalM = yrs * 12;
@@ -196,7 +207,6 @@ export default function ScenarioToolScreen() {
       for (let m = 1; m <= totalM; m++) {
         newMonthData[m] = { stort: dep, opn: 0, opnP: 0, comp: 100 };
       }
-      // Mirror into the visible "Monthly Diamond Purchases" input fields
       setBulkStortVal(String(dep));
       setBulkStortTo(String(totalM));
     }
@@ -238,18 +248,26 @@ export default function ScenarioToolScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.plan, params.startAmount, params.monthlyDeposit, params.years, params.outP, params.vip, params.goalAmount]);
 
-  // Auto-fill from Property Optimizer
+  // Auto-fill from Property Optimizer / Asset Goal Planner
   useEffect(() => {
     if (params.source !== "property") return;
+    // Full reset — wipe every bulk/override field so previous session data doesn't bleed in
+    setAnnualVal(""); setBulkOpnVal(""); setBulkOpnFrom("");
+    setBulkOpnPVal(""); setBulkOpnPFrom("");
+    setBulkStortVal(""); setBulkStortTo("");
+    setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
+    setManualVip(false);
     const newMonthData: Record<number, MonthData> = {};
     const yrs = parseFloat(params.years ?? "10") || 10;
     const totalM = yrs * 12;
     const withdrawal = parseFloat(params.propWithdrawal ?? "0") || 0;
     const fromMonth = parseInt(params.propWithdrawalFrom ?? "61") || 61;
     const outPct = parseFloat(params.outP ?? "0") || 0;
+    const startAmt = parseFloat(params.startAmount ?? "0") || 0;
+    const vipOn = params.vip === "1" || startAmt >= 3550;
     if (params.startAmount) setStartAmount(params.startAmount);
     setYears(String(yrs));
-    if (params.vip !== undefined) setVipEnabled(params.vip === "1");
+    if (params.vip !== undefined) setVipEnabled(vipOn);
     // Apply fixed withdrawal from a specific month onwards (Property Optimizer)
     if (withdrawal > 0) {
       for (let m = fromMonth; m <= totalM; m++) {
@@ -263,13 +281,21 @@ export default function ScenarioToolScreen() {
       }
     }
     setMonthData(newMonthData);
-    setResult(null);
-    const spLabel = params.startAmount ? `$${parseFloat(params.startAmount).toLocaleString()}` : "";
-    const vipLabel = params.vip === "1" ? " + VIP" : "";
+    // Run calculation immediately — avoids blank screen when startAmount didn't change
+    setResult(runCalculation({
+      startAmount: getNetDeposit(startAmt),
+      years: yrs,
+      goal: numVal(goal, 3500),
+      vipEnabled: vipOn,
+      manualVip: false,
+      monthData: newMonthData,
+    }));
+    const spLabel = startAmt > 0 ? `$${startAmt.toLocaleString()}` : "";
+    const vipLabel = vipOn ? " + VIP" : "";
     if (outPct > 0) {
       setAppliedBanner(`🏡 Asset Goal Planner: ${spLabel}${vipLabel} — ${outPct}% out/mo · ${yrs}y`);
     } else {
-      setAppliedBanner(`🏠 Property Optimizer: ${spLabel}${vipLabel} — $${withdrawal.toLocaleString()}/mo withdrawal from Year 5`);
+      setAppliedBanner(`🏠 Property Optimizer: ${spLabel}${vipLabel} — $${withdrawal.toLocaleString()}/mo from Y5`);
     }
     const timer = setTimeout(() => setAppliedBanner(null), 8000);
     return () => clearTimeout(timer);
@@ -559,14 +585,14 @@ export default function ScenarioToolScreen() {
             {/* Upsell tip */}
             {showUpsell && (
               <View style={{
-                backgroundColor: 'rgba(245,158,11,0.14)',
+                backgroundColor: 'rgba(253,224,71,0.12)',
                 borderRadius: 7,
                 padding: 9,
                 marginTop: 7,
                 borderWidth: 1.5,
-                borderColor: '#f59e0b',
+                borderColor: '#FDE047',
               }}>
-                <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: 'bold', lineHeight: 15 }}>
+                <Text style={{ color: '#FDE047', fontSize: 10, fontWeight: 'bold', lineHeight: 15 }}>
                   {t(language, 'upsellTipGeneric')
                     .replace('{amount}', fmt(upsellGap))
                     .replace('{plan}', `${planTier.nextTier!.name} (${planTier.nextTier!.rate}%)`)}
@@ -1500,7 +1526,7 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
 
   const flowSteps = [
     { icon: '⛏',  topLine: t(language, 'directRoughTopLine'), label: t(language, 'sourcingLabel'),  sub: t(language, 'ofSalePrice'),    value: '~10%', highlight: true  },
-    { icon: '✂️', topLine: t(language, 'internalCutTopLine'), label: t(language, 'giaCertLabel'),   sub: t(language, 'processingCost'), value: '~15%', highlight: false },
+    { icon: '💎', topLine: t(language, 'internalCutTopLine'), label: t(language, 'giaCertLabel'),   sub: t(language, 'processingCost'), value: '~15%', highlight: false },
     { icon: '💼',  topLine: t(language, 'b2bGlobalTopLine'),   label: t(language, 'b2bSaleCardLabel'), sub: t(language, 'realizedValue'), value: '100%', highlight: true  },
   ];
 
@@ -1587,7 +1613,7 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <Text style={{ fontSize: 22 }}>💼</Text>
-                <Text style={{ color: GOLD_DIM, fontSize: 8, fontFamily: ff }}>B2B</Text>
+                <Text style={{ color: GOLD_DIM, fontSize: 8, fontFamily: ff }}>Business to Business</Text>
                 <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: ff }}>100%</Text>
               </View>
             </View>
@@ -1667,7 +1693,7 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
           <View style={{ marginBottom: 10 }}>
             {[
               { icon: '⛏', label: t(language, 'roughCostRow'),  pct: '~10%', color: '#94a3b8' },
-              { icon: '✂️', label: t(language, 'cutGiaRow'),     pct: '~15%', color: '#94a3b8' },
+              { icon: '💎', label: t(language, 'cutGiaRow'),     pct: '~15%', color: '#94a3b8' },
               { icon: '💼', label: t(language, 'b2bSaleRow'),    pct: '100%', color: '#e2e8f0' },
             ].map((row, i) => (
               <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
@@ -1708,6 +1734,9 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
               {t(language, 'capitalRotationDesc')}{' '}
               <Text style={{ color: '#4ade80', fontWeight: 'bold' }}>{t(language, 'consistentRebates')}</Text>
               {' ' + t(language, 'regardlessCycle')}
+            </Text>
+            <Text style={{ color: GOLD, fontSize: 11, fontWeight: 'bold', fontFamily: ff, marginTop: 5 }}>
+              300% minimum — 4 cycles / 12 months
             </Text>
           </View>
         </View>

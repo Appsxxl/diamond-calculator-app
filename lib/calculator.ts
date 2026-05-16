@@ -417,7 +417,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
       isSpUpgrade: newLump > 0 && newSpName !== '' && newSpName !== prevSpName,
       isGoalReached:
         goal > 0 &&
-        totalAvailable >= goal &&
+        totalYield >= goal &&
         (results.length === 0 || !results[results.length - 1].isGoalReached),
       activeTranchesCount: tranches.length,
       maturedCount,
@@ -428,7 +428,7 @@ export function runCalculation(params: CalculationParams): CalculationResult {
   const goalReachedMonth = results.find(r => r.isGoalReached)?.month ?? null;
   const finalCap = tranches.reduce((s, t) => s + t.principal, 0);
   const netResult = (finalCap + tOut) - (tIn + tVipPot);
-  const goalProgress = goal > 0 ? Math.min((finalMaxVal / goal) * 100, 100) : 0;
+  const goalProgress = goal > 0 ? Math.min((finalMaxGrossYield / goal) * 100, 100) : 0;
 
   return {
     months: results,
@@ -442,13 +442,12 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     finalCompPot: 0,
     netResult,
     rocMonth,
-    // When withdrawals are configured, show the max actual payout received.
-    // When compound-only, show max gross yield — matches the Monthly Discount table column
-    // and represents what the plan generates at peak (total from all active tranches).
-    maxMonthlyOut: finalMaxWithdrawal > 0 ? finalMaxWithdrawal : finalMaxGrossYield,
-    maxMonthlyOutMonth: finalMaxWithdrawal > 0 ? finalMaxWithdrawalMonth : finalMaxGrossYieldMonth,
+    // Always show peak gross yield — matches the "Monthly Discount" table column and
+    // represents what the plan generates at its highest point regardless of out%.
+    maxMonthlyOut: finalMaxGrossYield,
+    maxMonthlyOutMonth: finalMaxGrossYieldMonth,
     activeWithdrawalMonths,
-    goalReached: goal > 0 ? finalMaxVal >= goal : false,
+    goalReached: goal > 0 ? finalMaxGrossYield >= goal : false,
     goalProgress,
     goalReachedMonth,
   };

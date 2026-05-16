@@ -24,7 +24,7 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
 ];
 
 const SP_LEVELS = [
-  { sp: "SP1", range: "$0–$1K",     base: "2.2%",  vip: "5.2%" },
+  { sp: "SP1", range: "$110–$1K",   base: "2.2%",  vip: "5.2%" },
   { sp: "SP2", range: "$1K–2.5K",  base: "2.45%", vip: "5.45%" },
   { sp: "SP3", range: "$2.5K–5K", base: "2.7%",  vip: "5.7%" },
   { sp: "SP4", range: "$5K–$10K",   base: "3.0%",  vip: "6.0%" },

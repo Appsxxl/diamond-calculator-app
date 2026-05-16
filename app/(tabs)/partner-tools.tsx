@@ -19,7 +19,8 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
-import { stratSimulate, getSPLevel, getNetDeposit } from "@/lib/calculator";
+import { stratSimulate, getSPLevel, getNetDeposit, runCalculation, createDefaultMonthData } from "@/lib/calculator";
+import type { MonthData } from "@/lib/calculator";
 import * as Haptics from "expo-haptics";
 import * as Notifications from "expo-notifications";
 import {
@@ -380,7 +381,7 @@ const TX: Record<string, {
     assetTargetLabel: "Target Amount ($)",
     assetYearsLabel: "Timeframe (years)",
     findAssetBtn: "Find My Asset Plan",
-    assetNote: "Compound rebates build your lump sum. 25% reinvested monthly.",
+    assetNote: "Compound rebates build your lump sum. 20% reinvested monthly.",
     assetApplyNoVip: "📊 Apply (No VIP)",
     assetApplyWithVip: "📊 Apply (With VIP)",
     clientLetterTitle: "Client Letter Generator",
@@ -510,7 +511,7 @@ const TX: Record<string, {
     assetTargetLabel: "Doelbedrag ($)",
     assetYearsLabel: "Tijdshorizon (jaren)",
     findAssetBtn: "Vind Mijn Vermogensplan",
-    assetNote: "Samengestelde kortingen bouwen uw bedrag op. 25% maandelijks herbelegd.",
+    assetNote: "Samengestelde kortingen bouwen uw bedrag op. 20% maandelijks herbelegd.",
     assetApplyNoVip: "📊 Toepassen (Geen VIP)",
     assetApplyWithVip: "📊 Toepassen (Met VIP)",
     clientLetterTitle: "Klantbriefgenerator",
@@ -640,7 +641,7 @@ const TX: Record<string, {
     assetTargetLabel: "Zielbetrag ($)",
     assetYearsLabel: "Zeitrahmen (Jahre)",
     findAssetBtn: "Meinen Vermögensplan Finden",
-    assetNote: "Zinseszins-Vergütungen bauen Ihren Betrag auf. 25% monatlich reinvestiert.",
+    assetNote: "Zinseszins-Vergütungen bauen Ihren Betrag auf. 20% monatlich reinvestiert.",
     assetApplyNoVip: "📊 Anwenden (Kein VIP)",
     assetApplyWithVip: "📊 Anwenden (Mit VIP)",
     clientLetterTitle: "Kundenbriefgenerator",
@@ -770,7 +771,7 @@ const TX: Record<string, {
     assetTargetLabel: "Montant Cible ($)",
     assetYearsLabel: "Horizon (années)",
     findAssetBtn: "Trouver Mon Plan Actif",
-    assetNote: "Les remises composées construisent votre somme. 25% réinvesti mensuellement.",
+    assetNote: "Les remises composées construisent votre somme. 20% réinvesti mensuellement.",
     assetApplyNoVip: "📊 Appliquer (Sans VIP)",
     assetApplyWithVip: "📊 Appliquer (Avec VIP)",
     clientLetterTitle: "Générateur de lettre client",
@@ -900,7 +901,7 @@ const TX: Record<string, {
     assetTargetLabel: "Monto Objetivo ($)",
     assetYearsLabel: "Plazo (años)",
     findAssetBtn: "Encontrar Mi Plan de Activos",
-    assetNote: "Los descuentos compuestos construyen su suma. 25% reinvertido mensualmente.",
+    assetNote: "Los descuentos compuestos construyen su suma. 20% reinvertido mensualmente.",
     assetApplyNoVip: "📊 Aplicar (Sin VIP)",
     assetApplyWithVip: "📊 Aplicar (Con VIP)",
     clientLetterTitle: "Generador de carta de cliente",
@@ -1030,7 +1031,7 @@ const TX: Record<string, {
     assetTargetLabel: "Целевая Сумма ($)",
     assetYearsLabel: "Срок (лет)",
     findAssetBtn: "Найти Мой План Активов",
-    assetNote: "Сложные скидки формируют вашу сумму. 25% реинвестируется ежемесячно.",
+    assetNote: "Сложные скидки формируют вашу сумму. 20% реинвестируется ежемесячно.",
     assetApplyNoVip: "📊 Применить (Без VIP)",
     assetApplyWithVip: "📊 Применить (С VIP)",
     clientLetterTitle: "Генератор письма клиенту",
@@ -1160,7 +1161,7 @@ const TX: Record<string, {
     assetTargetLabel: "目标金额 ($)",
     assetYearsLabel: "时间框架（年）",
     findAssetBtn: "找到我的资产计划",
-    assetNote: "复利回扣积累您的金额。每月25%再投资。",
+    assetNote: "复利回扣积累您的金额。每月20%再投资。",
     assetApplyNoVip: "📊 应用（无VIP）",
     assetApplyWithVip: "📊 应用（含VIP）",
     clientLetterTitle: "客户信函生成器",
@@ -1399,8 +1400,8 @@ export default function PartnerToolsScreen() {
   const [assetTarget, setAssetTarget] = useState("250000");
   const [assetYears, setAssetYears] = useState("5");
   const [assetResult, setAssetResult] = useState<{
-    noVip: { deposit: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
-    withVip: { deposit: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
+    noVip: { deposit: number; netDeposit: number; entryFee: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
+    withVip: { deposit: number; netDeposit: number; entryFee: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
     targetAmount: number;
     years: number;
   } | null>(null);
@@ -1684,46 +1685,25 @@ export default function PartnerToolsScreen() {
     });
   };
 
-  // ── Asset Goal Planner: lump-sum accumulation (25% reinvested) ─────────────
-  // Simulate N months with 80% out% and return the TOTAL accumulated withdrawals
-  const simulateTotalOut = (inleg: number, months: number, vipEnabled: boolean): number => {
-    let cap = getNetDeposit(inleg);
-    let wallet = 0;
-    let vipPot = 0;
-    let vActive = false;
-    let vMnd = 0;
-    let totalOut = 0;
-    for (let i = 1; i <= months; i++) {
-      if (vipEnabled) {
-        if ((cap - 1000) >= 2500 && (!vActive || vMnd <= 0)) {
-          const cost = 1000;
-          if (vipPot >= cost) vipPot -= cost;
-          else cap -= cost;
-          vActive = true;
-          vMnd = 12;
-        }
-      }
-      const spRate =
-        cap >= 100000 ? 3.3 :
-        cap >= 50000  ? 3.2 :
-        cap >= 10000  ? 3.1 :
-        cap >= 5000   ? 3.0 :
-        cap >= 2500   ? 2.7 :
-        cap >= 1000   ? 2.45 : 2.2;
-      const totalRate = spRate + (vActive ? 3.0 : 0);
-      const discount = Math.round(cap * (totalRate / 100));
-      const vipEarnings = vActive ? 84 : 0;
-      if (vipEnabled) vipPot += vipEarnings;
-      const available = (discount - vipEarnings) + wallet;
-      // 80% out, 20% reinvested into cap
-      const actualOut = available * 0.80;
-      totalOut += actualOut;
-      cap += available - actualOut;
-      wallet = 0;
-      if (vMnd > 0) vMnd--;
-      if (vMnd === 0) vActive = false;
+  // ── Asset Goal Planner: lump-sum accumulation (20% reinvested) ─────────────
+  // Simulate N months with 80% out%. inleg is the gross deposit; fee is deducted
+  // inside. The binary search finds the minimum gross, then the entry fee is added
+  // on top so the displayed deposit = gross + fee (the true total the customer wires).
+  const simulateTotalOut = (grossDeposit: number, months: number, vipEnabled: boolean): number => {
+    const years = months / 12;
+    const monthData: Record<number, MonthData> = {};
+    for (let m = 1; m <= months; m++) {
+      monthData[m] = { stort: 0, opn: 0, opnP: 80, comp: 100 };
     }
-    return totalOut;
+    const result = runCalculation({
+      startAmount: getNetDeposit(grossDeposit),
+      years,
+      goal: 0,
+      vipEnabled,
+      manualVip: false,
+      monthData,
+    });
+    return result.totalOut;
   };
 
   const calculateAsset = () => {
@@ -1731,7 +1711,8 @@ export default function PartnerToolsScreen() {
     const years = parseInt(assetYears) || 5;
     if (target <= 0 || years <= 0) return;
     const months = years * 12;
-    // Binary search: find deposit where total withdrawals over N years (80% out%) >= target
+    // Binary search finds minimum gross deposit where total 80% withdrawals >= target.
+    // Fee is then added on top so the displayed deposit = gross + fee (what the customer actually wires).
     const assetSearch = (vip: boolean) => {
       let low = 0, high = 10_000_000;
       for (let i = 0; i < 60; i++) {
@@ -1739,12 +1720,16 @@ export default function PartnerToolsScreen() {
         if (simulateTotalOut(mid, months, vip) >= target) high = mid;
         else low = mid;
       }
-      const deposit = Math.ceil(high);
-      const sp = getSPLevel(deposit);
-      const totalOut = Math.round(simulateTotalOut(deposit, months, vip));
+      const grossBase = Math.ceil(high);
+      // Add entry fee on top: fee = $5 flat + 1.25% of grossBase
+      const deposit = Math.ceil(grossBase + 5 + grossBase * 0.0125);
+      const netDeposit = Math.floor(getNetDeposit(deposit));
+      const entryFee = deposit - netDeposit;
+      const sp = getSPLevel(netDeposit);
+      const totalOut = Math.round(simulateTotalOut(grossBase, months, vip));
       const avgMonthly = Math.round(totalOut / months);
       const baseRate = sp.baseRate + (vip ? 3.0 : 0);
-      return { deposit, sp: sp.name + (vip ? "+VIP" : ""), rate: baseRate, totalOut, avgMonthly };
+      return { deposit, netDeposit, entryFee, sp: sp.name + (vip ? "+VIP" : ""), rate: baseRate, totalOut, avgMonthly };
     };
     setAssetResult({
       noVip: assetSearch(false),
@@ -2303,7 +2288,9 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.noVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.noVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>Entry fee: −${assetResult.noVip.entryFee.toLocaleString()}</Text>
+                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>Net capital: ${assetResult.noVip.netDeposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 4 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
                     <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.noVip.totalOut.toLocaleString()}</Text>
                     <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10 }]} onPress={handleAssetApplyNoVip} activeOpacity={0.85}>
@@ -2314,7 +2301,9 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.withVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.withVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 2 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
+                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>Entry fee: −${assetResult.withVip.entryFee.toLocaleString()}</Text>
+                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>Net capital: ${assetResult.withVip.netDeposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 4 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
                     <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.withVip.totalOut.toLocaleString()}</Text>
                     <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
                     <TouchableOpacity style={[S.applyBtn, { marginTop: 10, backgroundColor: "#92400e" }]} onPress={handleAssetApplyWithVip} activeOpacity={0.85}>
