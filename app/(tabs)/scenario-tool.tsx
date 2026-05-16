@@ -110,6 +110,7 @@ export default function ScenarioToolScreen() {
   const [years, setYears] = useState("5");
   const [goal, setGoal] = useState("3500");
   const [inputErrors, setInputErrors] = useState<{ startAmount?: string; years?: string }>({});
+  const [showOptionsHelp, setShowOptionsHelp] = useState(false);
   const [vipEnabled, setVipEnabled] = useState(false);
 
   // Bulk deposit
@@ -757,6 +758,18 @@ export default function ScenarioToolScreen() {
             )}
           </View>
         </View>
+
+        {/* Extra Options Help */}
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6, paddingVertical: 6, paddingHorizontal: 2 }}
+          onPress={() => setShowOptionsHelp(true)}
+          activeOpacity={0.7}
+        >
+          <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 1.5, borderColor: '#33C5FF', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ color: '#33C5FF', fontSize: 11, fontWeight: 'bold', lineHeight: 14 }}>i</Text>
+          </View>
+          <Text style={{ color: '#33C5FF', fontSize: 12, fontWeight: '600' }}>How to use the extra options</Text>
+        </TouchableOpacity>
 
         {/* Bulk Deposit */}
         <View style={S.card}>
@@ -1601,6 +1614,67 @@ export default function ScenarioToolScreen() {
         <View style={{ height: 20 }} />
         <DisclaimerFooter />
       </ScrollView>
+
+      {/* ── Extra Options Help Modal ── */}
+      <Modal visible={showOptionsHelp} transparent animationType="slide" onRequestClose={() => setShowOptionsHelp(false)}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' }}>
+          <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: '#1e293b', maxHeight: '85%' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#1e293b' }}>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>ℹ️ Extra Options Explained</Text>
+              <TouchableOpacity onPress={() => setShowOptionsHelp(false)}>
+                <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }} showsVerticalScrollIndicator={false}>
+              {([
+                {
+                  icon: '💰',
+                  title: 'Monthly Deposit',
+                  color: '#33C5FF',
+                  body: 'Buy extra diamonds every month on top of your initial purchase.\n\nEnter the amount ($) and up to which month you want to keep buying. Press OK to apply.\n\nExample: $500 until month 24 = $500 extra purchase every month for 2 years.',
+                },
+                {
+                  icon: '🎁',
+                  title: 'Annual Bonus Deposit',
+                  color: '#f59e0b',
+                  body: 'Add a one-time extra purchase that repeats once per year (every 12 months).\n\nUseful for annual bonuses, tax refunds, or year-end investments.\n\nExample: $2,000 → buys $2,000 in diamonds on month 12, 24, 36, etc.',
+                },
+                {
+                  icon: '📤',
+                  title: 'Fixed Monthly Withdrawal',
+                  color: '#fb923c',
+                  body: 'Take out a fixed dollar amount from your monthly discount every month, starting from a specific month.\n\nEnter the amount ($) and the starting month, then press OK.\n\nExample: $500 from month 25 = withdraw $500 per month from year 3 onwards.\n\nNote: withdrawal cannot exceed your monthly discount. Any excess stays in your account.',
+                },
+                {
+                  icon: '📊',
+                  title: 'Out % (Percentage Withdrawal)',
+                  color: '#a78bfa',
+                  body: 'Instead of a fixed amount, take out a percentage of your monthly discount.\n\nEnter the % and the starting month, then press Set.\n\nExample: 75% from month 1 = always take 75% of your discount as cash, reinvest the remaining 25%.\n\nThis is the standard Plan B model — 75% out, 25% compounding.',
+                },
+                {
+                  icon: '⚡',
+                  title: 'Active Compounding %',
+                  color: '#4ade80',
+                  body: 'Controls how much of your monthly discount is reinvested (compounded) into new diamond purchases versus paid out.\n\n100% = full compounding, no cash taken out — your diamond portfolio grows fastest.\n0% = all discount paid out as cash every month.\n\nThe default is 100% compounding. You can change individual months in the monthly table below the results by tapping the Comp% cell.',
+                },
+              ] as const).map(item => (
+                <View key={item.title} style={{ backgroundColor: '#1e293b', borderRadius: 12, padding: 14, borderLeftWidth: 3, borderLeftColor: item.color }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <Text style={{ fontSize: 18 }}>{item.icon}</Text>
+                    <Text style={{ color: item.color, fontSize: 14, fontWeight: 'bold' }}>{item.title}</Text>
+                  </View>
+                  <Text style={{ color: '#94a3b8', fontSize: 13, lineHeight: 20 }}>{item.body}</Text>
+                </View>
+              ))}
+              <View style={{ backgroundColor: 'rgba(253,224,71,0.08)', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#FDE047' }}>
+                <Text style={{ color: '#FDE047', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>💡 Tip — using options together</Text>
+                <Text style={{ color: '#94a3b8', fontSize: 12, lineHeight: 18 }}>You can combine all options. For example: buy $500/month for 3 years, then take 75% out from month 37 onwards. The calculator applies all settings simultaneously and shows the result month by month.</Text>
+              </View>
+              <View style={{ height: 8 }} />
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       {/* ── Saved Clients Modal ── */}
       <Modal visible={showClientsModal} transparent animationType="slide" onRequestClose={() => { setShowClientsModal(false); setClientSearch(""); }}>
