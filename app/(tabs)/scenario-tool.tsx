@@ -401,6 +401,28 @@ export default function ScenarioToolScreen() {
     setCalculating(false);
   };
 
+  const handleReset = () => {
+    setStartAmount("3000");
+    setYears("5");
+    setGoal("3500");
+    setVipEnabled(false);
+    setManualVip(false);
+    setAnnualVal("");
+    setBulkStortVal("");
+    setBulkStortTo("");
+    setBulkOpnVal("");
+    setBulkOpnFrom("");
+    setBulkOpnPVal("");
+    setBulkOpnPFrom("");
+    setBulkCompVal("");
+    setBulkCompFrom("");
+    setBulkCompTo("");
+    setMonthData({});
+    setResult(null);
+    setInputErrors({});
+    setClientName("");
+  };
+
   const vipShadow = useMemo(() => {
     if (!result || vipEnabled || autoVip) return null;
     if (result.goalReachedMonth !== null) return null;
@@ -700,12 +722,20 @@ export default function ScenarioToolScreen() {
           </Text>
         </View>
 
-        {/* Calculate */}
-        <TouchableOpacity style={[S.calcBtn, calculating && { opacity: 0.7 }]} onPress={handleCalculate} disabled={calculating}>
-          {calculating
-            ? <ActivityIndicator color="#0f172a" />
-            : <Text style={S.calcText}>⚡ {t(language, 'calculate').toUpperCase()}</Text>}
-        </TouchableOpacity>
+        {/* Calculate + Reset */}
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 0 }}>
+          <TouchableOpacity style={[S.calcBtn, { flex: 1, marginBottom: 0 }, calculating && { opacity: 0.7 }]} onPress={handleCalculate} disabled={calculating}>
+            {calculating
+              ? <ActivityIndicator color="#0f172a" />
+              : <Text style={S.calcText}>⚡ {t(language, 'calculate').toUpperCase()}</Text>}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ backgroundColor: '#1e293b', borderRadius: 12, padding: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#334155', marginBottom: 8 }}
+            onPress={handleReset}
+          >
+            <Text style={{ color: '#64748b', fontSize: 13, fontWeight: 'bold' }}>↺ Reset</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Results */}
         {result && (
