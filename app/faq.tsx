@@ -54,7 +54,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Can I start small and grow?",
-        a: "Yes. You can begin with as little as $100 (SP1). Every rebate above $100 can start a new 12-month cycle, allowing compounding.",
+        a: "Yes. You can begin with as little as $110 (SP1). Every rebate above $110 can start a new 12-month cycle, allowing compounding.",
       },
       {
         q: "Who is this suitable for?",
@@ -74,7 +74,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "What is the minimum and maximum investment?",
-        a: "The minimum investment is $100 (SP1). There is no official maximum — the highest standard tier is SP7 at $50,000+. Many clients start with SP4 ($5,000–$10,000) for the optimal balance of rebate rate and flexibility.\n\nYou can also run multiple Solution Plans simultaneously to scale your total position.",
+        a: "The minimum investment is $110 (SP1). There is no official maximum — the highest standard tier is SP7 at $100,000+. Many clients start with SP4 ($5,000–$9,999) for the optimal balance of rebate rate and flexibility.\n\nYou can also run multiple Solution Plans simultaneously to scale your total position.",
       },
       {
         q: "What is Diamond Solution and where is it based?",
@@ -98,7 +98,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "What is the VIP3 Bonus and how does it work?",
-        a: "The VIP3 Bonus is an additional reward available to clients who hold a VIP plan at the SP3 level ($2,000–$5,000) or higher.\n\nHow it works:\n• You must have an active VIP subscription ($1,000/year)\n• Your capital must be at SP3 or above\n• The VIP3 Bonus adds an extra monthly credit on top of your standard VIP rebate\n\nBenefits of VIP3:\n• Higher effective monthly yield\n• Faster capital compounding\n• Priority access to new Diamond Solution programs\n\nThe VIP3 Bonus is automatically applied in the calculator when you enable VIP at SP3+ levels. You can see the exact monthly impact in the Scenario Tool by enabling VIP and setting your deposit to $2,000 or more.",
+        a: "The VIP3 Bonus is an additional reward available to clients who hold a VIP plan at the SP3 level ($2,500–$4,999) or higher.\n\nHow it works:\n• You must have an active VIP subscription ($1,000/year)\n• Your capital must be at SP3 or above\n• The VIP3 Bonus adds an extra monthly credit on top of your standard VIP rebate\n\nBenefits of VIP3:\n• Higher effective monthly yield\n• Faster capital compounding\n• Priority access to new Diamond Solution programs\n\nThe VIP3 Bonus is automatically applied in the calculator when you enable VIP at SP3+ levels. You can see the exact monthly impact in the Scenario Tool by enabling VIP and setting your deposit to $2,000 or more.",
       },
     ],
     nl: [
@@ -132,7 +132,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Kan ik klein beginnen en groeien?",
-        a: "Ja. U kunt beginnen met slechts $100 (SP1). Elke korting boven $100 kan een nieuwe 12-maandscyclus starten, waardoor samengestelde groei mogelijk is.",
+        a: "Ja. U kunt beginnen met slechts $110 (SP1). Elke korting boven $110 kan een nieuwe 12-maandscyclus starten, waardoor samengestelde groei mogelijk is.",
       },
       {
         q: "Voor wie is dit geschikt?",
@@ -152,7 +152,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Wat is de minimale en maximale investering?",
-        a: "De minimale investering is $100 (SP1). Er is geen officieel maximum — de hoogste standaardtier is SP7 bij $50.000+. Veel klanten beginnen met SP4 ($5.000–$10.000) voor de optimale balans tussen kortingspercentage en flexibiliteit.\n\nU kunt ook meerdere Oplossingsplannen tegelijkertijd uitvoeren om uw totale positie te schalen.",
+        a: "De minimale investering is $110 (SP1). Er is geen officieel maximum — de hoogste standaardtier is SP7 bij $100.000+. Veel klanten beginnen met SP4 ($5.000–$9.999) voor de optimale balans tussen kortingspercentage en flexibiliteit.\n\nU kunt ook meerdere Oplossingsplannen tegelijkertijd uitvoeren om uw totale positie te schalen.",
       },
       {
         q: "Wat is Diamond Solution en waar is het gevestigd?",
@@ -176,7 +176,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Wat is de VIP3 Bonus en hoe werkt het?",
-        a: "De VIP3 Bonus is een extra beloning voor klanten met een VIP-plan op SP3-niveau ($2.000–$5.000) of hoger.\n\nHoe het werkt:\n• U moet een actief VIP-abonnement hebben ($1.000/jaar)\n• Uw kapitaal moet op SP3 of hoger zijn\n• De VIP3 Bonus voegt een extra maandelijks tegoed toe bovenop uw standaard VIP-korting\n\nVoordelen van VIP3:\n• Hogere effectieve maandelijkse opbrengst\n• Snellere kapitaalgroei door samengestelde rente\n• Prioriteitstoegang tot nieuwe Diamond Solution-programma's\n\nDe VIP3 Bonus wordt automatisch toegepast in de calculator wanneer u VIP inschakelt op SP3+ niveaus.",
+        a: "De VIP3 Bonus is een extra beloning voor klanten met een VIP-plan op SP3-niveau ($2.500–$4.999) of hoger.\n\nHoe het werkt:\n• U moet een actief VIP-abonnement hebben ($1.000/jaar)\n• Uw kapitaal moet op SP3 of hoger zijn\n• De VIP3 Bonus voegt een extra maandelijks tegoed toe bovenop uw standaard VIP-korting\n\nVoordelen van VIP3:\n• Hogere effectieve maandelijkse opbrengst\n• Snellere kapitaalgroei door samengestelde rente\n• Prioriteitstoegang tot nieuwe Diamond Solution-programma's\n\nDe VIP3 Bonus wordt automatisch toegepast in de calculator wanneer u VIP inschakelt op SP3+ niveaus.",
       },
     ],
     de: [
@@ -210,7 +210,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Kann ich klein anfangen und wachsen?",
-        a: "Ja. Sie können mit nur $100 (SP1) beginnen. Jede Rückvergütung über $100 kann einen neuen 12-Monats-Zyklus starten und ermöglicht so Zinseszinseffekte.",
+        a: "Ja. Sie können mit nur $110 (SP1) beginnen. Jede Rückvergütung über $110 kann einen neuen 12-Monats-Zyklus starten und ermöglicht so Zinseszinseffekte.",
       },
       {
         q: "Für wen ist das geeignet?",
@@ -230,7 +230,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Was ist die Mindest- und Höchstinvestition?",
-        a: "Die Mindestinvestition beträgt $100 (SP1). Es gibt kein offizielles Maximum — die höchste Standardstufe ist SP7 bei $50.000+. Viele Kunden beginnen mit SP4 ($5.000–$10.000) für die optimale Balance aus Rückvergütungsrate und Flexibilität.\n\nSie können auch mehrere Lösungspläne gleichzeitig ausführen, um Ihre Gesamtposition zu skalieren.",
+        a: "Die Mindestinvestition beträgt $110 (SP1). Es gibt kein offizielles Maximum — die höchste Standardstufe ist SP7 bei $100.000+. Viele Kunden beginnen mit SP4 ($5.000–$9.999) für die optimale Balance aus Rückvergütungsrate und Flexibilität.\n\nSie können auch mehrere Lösungspläne gleichzeitig ausführen, um Ihre Gesamtposition zu skalieren.",
       },
       {
         q: "Was ist Diamond Solution und wo ist es ansässig?",
@@ -254,7 +254,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Was ist der VIP3-Bonus und wie funktioniert er?",
-        a: "Der VIP3-Bonus ist eine zusätzliche Belohnung für Kunden mit einem VIP-Plan auf SP3-Ebene ($2.000–$5.000) oder höher.\n\nFunktionsweise:\n• Sie müssen ein aktives VIP-Abonnement haben ($1.000/Jahr)\n• Ihr Kapital muss auf SP3 oder höher sein\n• Der VIP3-Bonus fügt eine zusätzliche monatliche Gutschrift über Ihre Standard-VIP-Rückvergütung hinaus hinzu\n\nVorteile von VIP3:\n• Höhere effektive monatliche Rendite\n• Schnelleres Kapitalwachstum durch Zinseszins\n• Prioritätszugang zu neuen Diamond Solution-Programmen\n\nDer VIP3-Bonus wird im Rechner automatisch angewendet, wenn Sie VIP auf SP3+-Ebenen aktivieren.",
+        a: "Der VIP3-Bonus ist eine zusätzliche Belohnung für Kunden mit einem VIP-Plan auf SP3-Ebene ($2.500–$4.999) oder höher.\n\nFunktionsweise:\n• Sie müssen ein aktives VIP-Abonnement haben ($1.000/Jahr)\n• Ihr Kapital muss auf SP3 oder höher sein\n• Der VIP3-Bonus fügt eine zusätzliche monatliche Gutschrift über Ihre Standard-VIP-Rückvergütung hinaus hinzu\n\nVorteile von VIP3:\n• Höhere effektive monatliche Rendite\n• Schnelleres Kapitalwachstum durch Zinseszins\n• Prioritätszugang zu neuen Diamond Solution-Programmen\n\nDer VIP3-Bonus wird im Rechner automatisch angewendet, wenn Sie VIP auf SP3+-Ebenen aktivieren.",
       },
     ],
     fr: [
@@ -288,7 +288,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Puis-je commencer petit et grandir?",
-        a: "Oui. Vous pouvez commencer avec seulement $100 (SP1). Chaque remise supérieure à $100 peut démarrer un nouveau cycle de 12 mois, permettant la capitalisation.",
+        a: "Oui. Vous pouvez commencer avec seulement $110 (SP1). Chaque remise supérieure à $110 peut démarrer un nouveau cycle de 12 mois, permettant la capitalisation.",
       },
       {
         q: "Pour qui est-ce adapté?",
@@ -308,7 +308,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Quel est l'investissement minimum et maximum?",
-        a: "L'investissement minimum est de $100 (SP1). Il n'y a pas de maximum officiel — le niveau standard le plus élevé est SP7 à $50 000+. De nombreux clients commencent avec SP4 ($5 000–$10 000) pour l'équilibre optimal entre taux de remise et flexibilité.\n\nVous pouvez également gérer plusieurs Plans de Solution simultanément pour augmenter votre position totale.",
+        a: "L'investissement minimum est de $110 (SP1). Il n'y a pas de maximum officiel — le niveau standard le plus élevé est SP7 à $100 000+. De nombreux clients commencent avec SP4 ($5 000–$9 999) pour l'équilibre optimal entre taux de remise et flexibilité.\n\nVous pouvez également gérer plusieurs Plans de Solution simultanément pour augmenter votre position totale.",
       },
       {
         q: "Qu'est-ce que Diamond Solution et où est-il basé?",
@@ -332,7 +332,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Qu'est-ce que le Bonus VIP3 et comment fonctionne-t-il?",
-        a: "Le Bonus VIP3 est une récompense supplémentaire pour les clients ayant un plan VIP au niveau SP3 ($2 000–$5 000) ou supérieur.\n\nFonctionnement:\n• Vous devez avoir un abonnement VIP actif (1 000 $/an)\n• Votre capital doit être au niveau SP3 ou supérieur\n• Le Bonus VIP3 ajoute un crédit mensuel supplémentaire en plus de votre remise VIP standard\n\nAvantages du VIP3:\n• Rendement mensuel effectif plus élevé\n• Capitalisation du capital plus rapide\n• Accès prioritaire aux nouveaux programmes Diamond Solution\n\nLe Bonus VIP3 est automatiquement appliqué dans la calculatrice lorsque vous activez VIP aux niveaux SP3+.",
+        a: "Le Bonus VIP3 est une récompense supplémentaire pour les clients ayant un plan VIP au niveau SP3 ($2 500–$4 999) ou supérieur.\n\nFonctionnement:\n• Vous devez avoir un abonnement VIP actif (1 000 $/an)\n• Votre capital doit être au niveau SP3 ou supérieur\n• Le Bonus VIP3 ajoute un crédit mensuel supplémentaire en plus de votre remise VIP standard\n\nAvantages du VIP3:\n• Rendement mensuel effectif plus élevé\n• Capitalisation du capital plus rapide\n• Accès prioritaire aux nouveaux programmes Diamond Solution\n\nLe Bonus VIP3 est automatiquement appliqué dans la calculatrice lorsque vous activez VIP aux niveaux SP3+.",
       },
     ],
     es: [
@@ -366,7 +366,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "¿Puedo empezar pequeño y crecer?",
-        a: "Sí. Puede comenzar con tan solo $100 (SP1). Cada reembolso superior a $100 puede iniciar un nuevo ciclo de 12 meses, permitiendo el interés compuesto.",
+        a: "Sí. Puede comenzar con tan solo $110 (SP1). Cada reembolso superior a $110 puede iniciar un nuevo ciclo de 12 meses, permitiendo el interés compuesto.",
       },
       {
         q: "¿Para quién es adecuado?",
@@ -386,7 +386,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "¿Cuál es la inversión mínima y máxima?",
-        a: "La inversión mínima es de $100 (SP1). No hay máximo oficial — el nivel estándar más alto es SP7 con $50.000+. Muchos clientes comienzan con SP4 ($5.000–$10.000) para el equilibrio óptimo entre tasa de descuento y flexibilidad.\n\nTambién puede ejecutar múltiples Planes de Solución simultáneamente para escalar su posición total.",
+        a: "La inversión mínima es de $110 (SP1). No hay máximo oficial — el nivel estándar más alto es SP7 con $100.000+. Muchos clientes comienzan con SP4 ($5.000–$9.999) para el equilibrio óptimo entre tasa de descuento y flexibilidad.\n\nTambién puede ejecutar múltiples Planes de Solución simultáneamente para escalar su posición total.",
       },
       {
         q: "¿Qué es Diamond Solution y dónde está ubicado?",
@@ -410,7 +410,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "¿Qué es el Bono VIP3 y cómo funciona?",
-        a: "El Bono VIP3 es una recompensa adicional para clientes con un plan VIP en el nivel SP3 ($2,000–$5,000) o superior.\n\nCómo funciona:\n• Debe tener una suscripción VIP activa ($1,000/año)\n• Su capital debe estar en SP3 o superior\n• El Bono VIP3 agrega un crédito mensual adicional además de su descuento VIP estándar\n\nBeneficios del VIP3:\n• Mayor rendimiento mensual efectivo\n• Capitalización de capital más rápida\n• Acceso prioritario a nuevos programas de Diamond Solution\n\nEl Bono VIP3 se aplica automáticamente en la calculadora cuando activa VIP en niveles SP3+.",
+        a: "El Bono VIP3 es una recompensa adicional para clientes con un plan VIP en el nivel SP3 ($2,500–$4,999) o superior.\n\nCómo funciona:\n• Debe tener una suscripción VIP activa ($1,000/año)\n• Su capital debe estar en SP3 o superior\n• El Bono VIP3 agrega un crédito mensual adicional además de su descuento VIP estándar\n\nBeneficios del VIP3:\n• Mayor rendimiento mensual efectivo\n• Capitalización de capital más rápida\n• Acceso prioritario a nuevos programas de Diamond Solution\n\nEl Bono VIP3 se aplica automáticamente en la calculadora cuando activa VIP en niveles SP3+.",
       },
     ],
     ru: [
@@ -444,7 +444,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Могу ли я начать с малого и расти?",
-        a: "Да. Вы можете начать всего с $100 (SP1). Каждый возврат свыше $100 может начать новый 12-месячный цикл, что позволяет использовать сложные проценты.",
+        a: "Да. Вы можете начать всего с $110 (SP1). Каждый возврат свыше $110 может начать новый 12-месячный цикл, что позволяет использовать сложные проценты.",
       },
       {
         q: "Для кого это подходит?",
@@ -464,7 +464,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Каков минимальный и максимальный размер инвестиций?",
-        a: "Минимальная инвестиция составляет $100 (SP1). Официального максимума нет — самый высокий стандартный уровень — SP7 при $50 000+. Многие клиенты начинают с SP4 ($5 000–$10 000) для оптимального баланса между ставкой скидки и гибкостью.\n\nВы также можете одновременно запускать несколько Планов Решений для масштабирования вашей общей позиции.",
+        a: "Минимальная инвестиция составляет $110 (SP1). Официального максимума нет — самый высокий стандартный уровень — SP7 при $100 000+. Многие клиенты начинают с SP4 ($5 000–$9 999) для оптимального баланса между ставкой скидки и гибкостью.\n\nВы также можете одновременно запускать несколько Планов Решений для масштабирования вашей общей позиции.",
       },
       {
         q: "Что такое Diamond Solution и где он находится?",
@@ -488,7 +488,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "Что такое бонус VIP3 и как он работает?",
-        a: "Бонус VIP3 — это дополнительное вознаграждение для клиентов с VIP-планом на уровне SP3 ($2 000–$5 000) или выше.\n\nКак это работает:\n• У вас должна быть активная VIP-подписка ($1 000/год)\n• Ваш капитал должен быть на уровне SP3 или выше\n• Бонус VIP3 добавляет дополнительный ежемесячный кредит сверх вашей стандартной VIP-скидки\n\nПреимущества VIP3:\n• Более высокая эффективная месячная доходность\n• Более быстрое накопление капитала\n• Приоритетный доступ к новым программам Diamond Solution\n\nБонус VIP3 автоматически применяется в калькуляторе при активации VIP на уровнях SP3+.",
+        a: "Бонус VIP3 — это дополнительное вознаграждение для клиентов с VIP-планом на уровне SP3 ($2 500–$4 999) или выше.\n\nКак это работает:\n• У вас должна быть активная VIP-подписка ($1 000/год)\n• Ваш капитал должен быть на уровне SP3 или выше\n• Бонус VIP3 добавляет дополнительный ежемесячный кредит сверх вашей стандартной VIP-скидки\n\nПреимущества VIP3:\n• Более высокая эффективная месячная доходность\n• Более быстрое накопление капитала\n• Приоритетный доступ к новым программам Diamond Solution\n\nБонус VIP3 автоматически применяется в калькуляторе при активации VIP на уровнях SP3+.",
       },
     ],
     zh: [
@@ -522,7 +522,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "我可以从小额开始增长吗？",
-        a: "可以。您可以从$100（SP1）开始。每笔超过$100的返利都可以开始新的12个月周期，实现复利增长。",
+        a: "可以。您可以从$110（SP1）开始。每笔超过$110的返利都可以开始新的12个月周期，实现复利增长。",
       },
       {
         q: "这适合谁？",
@@ -542,7 +542,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "最低和最高投资额是多少？",
-        a: "最低投资额为$100（SP1）。没有官方最高限额——最高标准级别是SP7，起点为$50,000+。许多客户从SP4（$5,000–$10,000）开始，以获得回扣率和灵活性的最佳平衡。\n\n您也可以同时运行多个解决方案计划来扩大您的总仓位。",
+        a: "最低投资额为$110（SP1）。没有官方最高限额——最高标准级别是SP7，起点为$100,000+。许多客户从SP4（$5,000–$9,999）开始，以获得回扣率和灵活性的最佳平衡。\n\n您也可以同时运行多个解决方案计划来扩大您的总仓位。",
       },
       {
         q: "Diamond Solution是什么，总部在哪里？",
@@ -566,7 +566,7 @@ function getFaqItems(lang: string): FaqItem[] {
       },
       {
         q: "什么是VIP3奖励，它如何运作？",
-        a: "VIP3奖励是为持有SP3级别（$2,000–$5,000）或更高VIP计划的客户提供的额外奖励。\n\n运作方式：\n• 您必须拥有有效的VIP订阅（$1,000/年）\n• 您的资本必须在SP3或更高级别\n• VIP3奖励在您的标准VIP返利基础上增加额外的月度积分\n\nVIP3的优势：\n• 更高的有效月收益\n• 更快的资本复利增长\n• 优先访问Diamond Solution新项目\n\n当您在SP3+级别启用VIP时，计算器会自动应用VIP3奖励。",
+        a: "VIP3奖励是为持有SP3级别（$2,500–$4,999）或更高VIP计划的客户提供的额外奖励。\n\n运作方式：\n• 您必须拥有有效的VIP订阅（$1,000/年）\n• 您的资本必须在SP3或更高级别\n• VIP3奖励在您的标准VIP返利基础上增加额外的月度积分\n\nVIP3的优势：\n• 更高的有效月收益\n• 更快的资本复利增长\n• 优先访问Diamond Solution新项目\n\n当您在SP3+级别启用VIP时，计算器会自动应用VIP3奖励。",
       },
     ],
   };
