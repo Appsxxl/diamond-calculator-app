@@ -1423,6 +1423,7 @@ export default function PartnerToolsScreen() {
   // Asset Goal Planner state
   const [assetTarget, setAssetTarget] = useState("250000");
   const [assetYears, setAssetYears] = useState("5");
+  const [assetErrors, setAssetErrors] = useState<{ target?: string; years?: string }>({});
   const [assetResult, setAssetResult] = useState<{
     noVip: { deposit: number; netDeposit: number; entryFee: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
     withVip: { deposit: number; netDeposit: number; entryFee: number; sp: string; rate: number; totalOut: number; avgMonthly: number };
@@ -1738,8 +1739,12 @@ export default function PartnerToolsScreen() {
 
   const calculateAsset = async () => {
     const target = parseFloat(assetTarget) || 0;
-    const years = parseInt(assetYears) || 5;
-    if (target <= 0 || years <= 0) return;
+    const years = parseInt(assetYears) || 0;
+    const errs: { target?: string; years?: string } = {};
+    if (!assetTarget || target <= 0) errs.target = "Enter a valid target amount";
+    if (!assetYears || years <= 0 || years > 30) errs.years = "Enter years between 1 and 30";
+    setAssetErrors(errs);
+    if (Object.keys(errs).length > 0) return;
     setCalcAssetLoading(true);
     await new Promise(resolve => setTimeout(resolve, 0));
     const months = years * 12;
@@ -2276,14 +2281,15 @@ export default function PartnerToolsScreen() {
               ))}
             </View>
             <TextInput
-              style={S.input}
+              style={[S.input, assetErrors.target ? { borderColor: '#ef4444', borderWidth: 1 } : {}]}
               value={assetTarget}
-              onChangeText={setAssetTarget}
+              onChangeText={v => { setAssetTarget(v); setAssetErrors(e => ({ ...e, target: undefined })); }}
               keyboardType="numeric"
               returnKeyType="next"
               placeholderTextColor="#64748b"
               placeholder={tx.placeholderTargetAmount}
             />
+            {assetErrors.target && <Text style={{ color: '#ef4444', fontSize: 11, marginBottom: 4 }}>⚠️ {assetErrors.target}</Text>}
 
             <Text style={S.inputLabel}>{tx.assetYearsLabel}</Text>
             <View style={S.chipRow}>
@@ -2306,6 +2312,7 @@ export default function PartnerToolsScreen() {
               placeholderTextColor="#64748b"
               placeholder={tx.placeholderYears}
             />
+            {assetErrors.years && <Text style={{ color: '#ef4444', fontSize: 11, marginBottom: 4 }}>⚠️ {assetErrors.years}</Text>}
 
             <TouchableOpacity style={[S.calcBtn, calcAssetLoading && { opacity: 0.7 }]} onPress={calculateAsset} activeOpacity={0.8} disabled={calcAssetLoading}>
               {calcAssetLoading ? <ActivityIndicator color="#fff" /> : <Text style={S.calcBtnText}>{tx.findAssetBtn}</Text>}

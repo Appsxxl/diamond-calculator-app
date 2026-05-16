@@ -86,6 +86,7 @@ export default function ScenarioToolScreen() {
   const [startAmount, setStartAmount] = useState("3000");
   const [years, setYears] = useState("5");
   const [goal, setGoal] = useState("3500");
+  const [inputErrors, setInputErrors] = useState<{ startAmount?: string; years?: string }>({});
   const [vipEnabled, setVipEnabled] = useState(false);
 
   // Bulk deposit
@@ -376,6 +377,13 @@ export default function ScenarioToolScreen() {
   };
 
   const handleCalculate = async () => {
+    const errors: { startAmount?: string; years?: string } = {};
+    const amt = parseFloat(startAmount);
+    const yrs = parseFloat(years);
+    if (!startAmount || isNaN(amt) || amt <= 0) errors.startAmount = "Enter a valid deposit amount";
+    if (!years || isNaN(yrs) || yrs <= 0 || yrs > 30) errors.years = "Enter years between 1 and 30";
+    setInputErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     setCalculating(true);
     await new Promise(resolve => setTimeout(resolve, 0));
     const params: CalculationParams = {
@@ -521,7 +529,7 @@ export default function ScenarioToolScreen() {
         <View style={S.row}>
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
-            <TextInput style={S.bigInput} value={startAmount} onChangeText={setStartAmount} keyboardType="numeric" placeholderTextColor="#555" />
+            <TextInput style={S.bigInput} value={startAmount} onChangeText={v => { setStartAmount(v); setInputErrors(e => ({ ...e, startAmount: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
             {numVal(startAmount) > 0 && numVal(startAmount) < 110
               ? <Text style={{ color: '#ef4444', fontSize: 10, marginTop: 4, fontWeight: 'bold' }}>⚠️ SP1 Minimum is $110</Text>
               : numVal(startAmount) >= 110
@@ -556,6 +564,9 @@ export default function ScenarioToolScreen() {
                   })()
                 : null
             }
+            {inputErrors.startAmount && (
+              <Text style={{ color: '#ef4444', fontSize: 11, marginTop: 4 }}>⚠️ {inputErrors.startAmount}</Text>
+            )}
 
             {/* Plan tier badge */}
             {(() => {
@@ -635,7 +646,10 @@ export default function ScenarioToolScreen() {
           </View>
           <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
             <Text style={S.label}>{t(language, 'years').toUpperCase()}</Text>
-            <TextInput style={S.bigInput} value={years} onChangeText={setYears} keyboardType="numeric" placeholderTextColor="#555" />
+            <TextInput style={S.bigInput} value={years} onChangeText={v => { setYears(v); setInputErrors(e => ({ ...e, years: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
+            {inputErrors.years && (
+              <Text style={{ color: '#ef4444', fontSize: 11, marginTop: 4 }}>⚠️ {inputErrors.years}</Text>
+            )}
           </View>
         </View>
 

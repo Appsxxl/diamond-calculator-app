@@ -10,6 +10,7 @@ import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { CalculatorProvider } from "@/lib/calculator-context";
 import { DisclaimerModal } from "@/components/disclaimer-modal";
+import { ErrorBoundary } from "@/components/error-boundary";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -77,6 +78,7 @@ export default function RootLayout() {
 
   const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <CalculatorProvider>
@@ -95,6 +97,7 @@ export default function RootLayout() {
           </CalculatorProvider>
         </QueryClientProvider>
       </trpc.Provider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 

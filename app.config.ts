@@ -42,7 +42,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.0.0",
+  version: "2.1.0",
   description: "Plan B — Strategic Wealth Optimization",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
