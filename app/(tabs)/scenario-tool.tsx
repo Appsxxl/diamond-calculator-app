@@ -10,6 +10,8 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Modal,
+  FlatList,
   useWindowDimensions,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -44,6 +46,20 @@ function getPlanTier(amount: number, vipActive: boolean): PlanTier {
   if (amount >= 2500)   return { name: 'SP3', rate: '2.7%' + v, color: '#fb923c', nextTier: { name: 'SP4', threshold: 5000,   rate: 3.0 } };
   if (amount >= 1000)   return { name: 'SP2', rate: '2.45%' + v, color: '#94a3b8', nextTier: { name: 'SP3', threshold: 2500,  rate: 2.7 } };
   return                       { name: 'SP1', rate: '2.2%' + v,  color: '#64748b', nextTier: { name: 'SP2', threshold: 1000,  rate: 2.45 } };
+}
+
+const CLIENTS_KEY = "plan_b_saved_clients";
+
+interface SavedClient {
+  id: string;
+  name: string;
+  savedAt: number;
+  startAmount: string;
+  years: string;
+  goal: string;
+  vipEnabled: boolean;
+  manualVip: boolean;
+  monthData: Record<number, MonthData>;
 }
 
 export default function ScenarioToolScreen() {
@@ -81,6 +97,8 @@ export default function ScenarioToolScreen() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [savedClients, setSavedClients] = useState<SavedClient[]>([]);
+  const [showClientsModal, setShowClientsModal] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
 
@@ -113,6 +131,9 @@ export default function ScenarioToolScreen() {
       setHydrated(true);
       return;
     }
+    AsyncStorage.getItem(CLIENTS_KEY).then(raw => {
+      if (raw) { try { setSavedClients(JSON.parse(raw)); } catch {} }
+    });
     AsyncStorage.getItem('plan_b_scenario_backup').then(raw => {
       if (raw) {
         try {
@@ -379,6 +400,56 @@ export default function ScenarioToolScreen() {
     setInputErrors({});
   };
 
+  const saveClient = async () => {
+    const name = clientName.trim();
+    if (!name) {
+      Alert.alert("Client name required", "Enter a client name before saving.");
+      return;
+    }
+    const entry: SavedClient = {
+      id: Date.now().toString(),
+      name,
+      savedAt: Date.now(),
+      startAmount,
+      years,
+      goal,
+      vipEnabled,
+      manualVip,
+      monthData,
+    };
+    const updated = [entry, ...savedClients.filter(c => c.name !== name)];
+    setSavedClients(updated);
+    await AsyncStorage.setItem(CLIENTS_KEY, JSON.stringify(updated));
+    Alert.alert("Saved", `"${name}" saved successfully.`);
+  };
+
+  const loadClient = (client: SavedClient) => {
+    setClientName(client.name);
+    setStartAmount(client.startAmount);
+    setYears(client.years);
+    setGoal(client.goal);
+    setVipEnabled(client.vipEnabled);
+    setManualVip(client.manualVip);
+    setMonthData(client.monthData);
+    setResult(null);
+    setInputErrors({});
+    setShowClientsModal(false);
+  };
+
+  const deleteClient = (id: string) => {
+    Alert.alert("Remove client", "Remove this saved profile?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Remove", style: "destructive",
+        onPress: async () => {
+          const updated = savedClients.filter(c => c.id !== id);
+          setSavedClients(updated);
+          await AsyncStorage.setItem(CLIENTS_KEY, JSON.stringify(updated));
+        },
+      },
+    ]);
+  };
+
   const handleCalculate = async () => {
     const errors: { startAmount?: string; years?: string } = {};
     const amt = parseFloat(startAmount);
@@ -514,7 +585,15 @@ export default function ScenarioToolScreen() {
           <View style={S.row}>
             <View style={S.flex1}>
               <Text style={S.label}>{t(language, 'clientName').toUpperCase()}</Text>
-              <TextInput style={S.input} value={clientName} onChangeText={setClientName} placeholder={t(language, 'clientName')} placeholderTextColor="#555" />
+              <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+                <TextInput style={[S.input, { flex: 1, marginBottom: 0 }]} value={clientName} onChangeText={setClientName} placeholder={t(language, 'clientName')} placeholderTextColor="#555" />
+                <TouchableOpacity onPress={saveClient} style={{ backgroundColor: '#1e293b', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#334155' }}>
+                  <Text style={{ fontSize: 15 }}>💾</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setShowClientsModal(true)} style={{ backgroundColor: '#1e293b', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#334155' }}>
+                  <Text style={{ fontSize: 15 }}>📂{savedClients.length > 0 ? ` ${savedClients.length}` : ''}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={S.vipBox}>
               <Text style={S.label}>{t(language, 'vipStatus').toUpperCase()}</Text>
@@ -1436,6 +1515,52 @@ export default function ScenarioToolScreen() {
         <View style={{ height: 20 }} />
         <DisclaimerFooter />
       </ScrollView>
+
+      {/* ── Saved Clients Modal ── */}
+      <Modal visible={showClientsModal} transparent animationType="slide" onRequestClose={() => setShowClientsModal(false)}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' }}>
+          <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: '#1e293b', maxHeight: '75%' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#1e293b' }}>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>📂 Saved Clients</Text>
+              <TouchableOpacity onPress={() => setShowClientsModal(false)}>
+                <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            {savedClients.length === 0 ? (
+              <View style={{ padding: 32, alignItems: 'center' }}>
+                <Text style={{ color: '#475569', fontSize: 14 }}>No saved clients yet.</Text>
+                <Text style={{ color: '#334155', fontSize: 12, marginTop: 4 }}>Enter a client name and tap 💾 to save.</Text>
+              </View>
+            ) : (
+              <FlatList
+                data={savedClients}
+                keyExtractor={c => c.id}
+                contentContainerStyle={{ padding: 12 }}
+                renderItem={({ item }) => {
+                  const sp = getSPLevel(getNetDeposit(parseFloat(item.startAmount) || 0));
+                  const date = new Date(item.savedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                  return (
+                    <TouchableOpacity
+                      onPress={() => loadClient(item)}
+                      style={{ backgroundColor: '#1e293b', borderRadius: 10, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: '#334155', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold', marginBottom: 3 }}>{item.name}</Text>
+                        <Text style={{ color: '#64748b', fontSize: 11 }}>{sp.name}{item.vipEnabled ? ' +VIP' : ''} · ${parseFloat(item.startAmount).toLocaleString()} · {item.years}y</Text>
+                        <Text style={{ color: '#334155', fontSize: 10, marginTop: 2 }}>{date}</Text>
+                      </View>
+                      <TouchableOpacity onPress={() => deleteClient(item.id)} style={{ padding: 8 }}>
+                        <Text style={{ fontSize: 16 }}>🗑️</Text>
+                      </TouchableOpacity>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </ScreenContainer>
   );
 }
