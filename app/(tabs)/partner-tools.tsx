@@ -1359,6 +1359,26 @@ export default function PartnerToolsScreen() {
     AsyncStorage.getItem(REFERRAL_STORAGE_KEY).then(v => { if (v) setReferralCode(v); });
   }, []);
 
+  // Tool usage tracking — most-used tool floats to top
+  type ToolKey = 'property' | 'savings' | 'asset' | 'revenue';
+  const TOOL_USAGE_KEY = "plan_b_tool_usage";
+  const [toolUsage, setToolUsage] = useState<Record<ToolKey, number>>({ property: 0, savings: 0, asset: 0, revenue: 0 });
+  React.useEffect(() => {
+    AsyncStorage.getItem(TOOL_USAGE_KEY).then(raw => {
+      if (raw) try { setToolUsage({ property: 0, savings: 0, asset: 0, revenue: 0, ...JSON.parse(raw) }); } catch {}
+    });
+  }, []);
+  const incrementToolUsage = (key: ToolKey) => {
+    setToolUsage(prev => {
+      const next = { ...prev, [key]: (prev[key] ?? 0) + 1 };
+      AsyncStorage.setItem(TOOL_USAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+  const toolOrder = ((['property', 'savings', 'asset', 'revenue'] as ToolKey[])
+    .slice()
+    .sort((a, b) => (toolUsage[b] ?? 0) - (toolUsage[a] ?? 0)));
+
   const poolTeamVolume = React.useMemo(() => {
     const c = Math.floor((parseFloat(revenueDb)||0) * ((parseFloat(revenueConv)||0) / 100));
     return c * (parseFloat(revenueAvg)||0);
@@ -1385,6 +1405,7 @@ export default function PartnerToolsScreen() {
       parseFloat(revenueAvg)||0, parseFloat(revenueReuse)||0,
       parseFloat(revenueParts)||1, globalStats
     ));
+    incrementToolUsage('revenue');
     setCalcRevenueLoading(false);
   };
   // ─────────────────────────────────────────────────────────────────────────
@@ -1601,6 +1622,7 @@ export default function PartnerToolsScreen() {
       withVip: withVipResult,
       targetCost: cost,
     });
+    incrementToolUsage('property');
     setCalcPropertyLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
@@ -1671,6 +1693,7 @@ export default function PartnerToolsScreen() {
       withVip: savingsSearch(true),
       targetIncome: income,
     });
+    incrementToolUsage('savings');
     setCalcSavingsLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
@@ -1765,6 +1788,7 @@ export default function PartnerToolsScreen() {
       targetAmount: target,
       years,
     });
+    incrementToolUsage('asset');
     setCalcAssetLoading(false);
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
@@ -2106,7 +2130,9 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── SECTION 3: Property Optimizer ───────────────────────────────── */}
+        {toolOrder.map(toolKey => (
+          <React.Fragment key={toolKey}>
+            {toolKey === 'property' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: GOLD }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.propTitle}</Text>
           <View style={S.card}>
@@ -2180,7 +2206,8 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── SECTION 4: Savings Goal ───────────────────────────────── */}
+            )}
+            {toolKey === 'savings' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GREEN + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: GREEN }]}>
           <Text style={[S.sectionTitle, { color: GREEN }]}>{tx.savingsTitle}</Text>
           <View style={S.card}>
@@ -2253,7 +2280,8 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── SECTION 5: Asset Goal Planner ──────────────────────────── */}
+            )}
+            {toolKey === 'asset' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: BLUE + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: BLUE }]}>
           <Text style={[S.sectionTitle, { color: BLUE }]}>{tx.assetTitle}</Text>
           <View style={S.card}>
@@ -2349,7 +2377,8 @@ export default function PartnerToolsScreen() {
         </View>
 
 
-        {/* ── SECTION 0C: PROJECTED REVENUE MODEL ── */}
+            )}
+            {toolKey === 'revenue' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
           <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.projRevTitle}</Text>
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
@@ -2408,6 +2437,10 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
+
+            )}
+          </React.Fragment>
+        ))}
 
         {/* ── SECTION 0B: GLOBAL POOL PATH ── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a2a4a", marginBottom: 12 }]}>
