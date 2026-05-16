@@ -99,6 +99,7 @@ export default function ScenarioToolScreen() {
   const [copied, setCopied] = useState(false);
   const [savedClients, setSavedClients] = useState<SavedClient[]>([]);
   const [showClientsModal, setShowClientsModal] = useState(false);
+  const [clientSearch, setClientSearch] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
 
@@ -612,6 +613,26 @@ export default function ScenarioToolScreen() {
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
             <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={v => { setStartAmount(v); setInputErrors(e => ({ ...e, startAmount: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
+            {/* SP Tier Presets */}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 8 }}>
+              {([
+                { label: 'SP2', amount: '1000', color: '#94a3b8' },
+                { label: 'SP3', amount: '2500', color: '#fb923c' },
+                { label: 'SP4', amount: '5000', color: '#f59e0b' },
+                { label: 'SP5', amount: '10000', color: '#22c55e' },
+                { label: 'SP6', amount: '50000', color: '#a78bfa' },
+                { label: 'SP7', amount: '100000', color: '#22d3ee' },
+              ] as const).map(p => (
+                <TouchableOpacity
+                  key={p.label}
+                  onPress={() => { setStartAmount(p.amount); setInputErrors(e => ({ ...e, startAmount: undefined })); }}
+                  style={{ backgroundColor: p.color + '18', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: p.color + '55' }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: p.color, fontSize: 10, fontWeight: 'bold' }}>{p.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
             {numVal(startAmount) > 0 && numVal(startAmount) < 110
               ? <Text style={{ color: '#ef4444', fontSize: 10, marginTop: 4, fontWeight: 'bold' }}>⚠️ SP1 Minimum is $110</Text>
               : numVal(startAmount) >= 110
@@ -1517,15 +1538,25 @@ export default function ScenarioToolScreen() {
       </ScrollView>
 
       {/* ── Saved Clients Modal ── */}
-      <Modal visible={showClientsModal} transparent animationType="slide" onRequestClose={() => setShowClientsModal(false)}>
+      <Modal visible={showClientsModal} transparent animationType="slide" onRequestClose={() => { setShowClientsModal(false); setClientSearch(""); }}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' }}>
           <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: '#1e293b', maxHeight: '75%' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#1e293b' }}>
               <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>📂 Saved Clients</Text>
-              <TouchableOpacity onPress={() => setShowClientsModal(false)}>
+              <TouchableOpacity onPress={() => { setShowClientsModal(false); setClientSearch(""); }}>
                 <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
               </TouchableOpacity>
             </View>
+            {savedClients.length > 0 && (
+              <TextInput
+                style={{ backgroundColor: '#1e293b', color: '#fff', borderRadius: 8, padding: 10, marginHorizontal: 12, marginTop: 12, marginBottom: 4, fontSize: 13, borderWidth: 1, borderColor: '#334155' }}
+                value={clientSearch}
+                onChangeText={setClientSearch}
+                placeholder="Search clients..."
+                placeholderTextColor="#475569"
+                clearButtonMode="while-editing"
+              />
+            )}
             {savedClients.length === 0 ? (
               <View style={{ padding: 32, alignItems: 'center' }}>
                 <Text style={{ color: '#475569', fontSize: 14 }}>No saved clients yet.</Text>
@@ -1533,9 +1564,10 @@ export default function ScenarioToolScreen() {
               </View>
             ) : (
               <FlatList
-                data={savedClients}
+                data={savedClients.filter(c => c.name.toLowerCase().includes(clientSearch.toLowerCase()))}
                 keyExtractor={c => c.id}
                 contentContainerStyle={{ padding: 12 }}
+                ListEmptyComponent={<View style={{ padding: 24, alignItems: 'center' }}><Text style={{ color: '#475569', fontSize: 13 }}>No clients match "{clientSearch}"</Text></View>}
                 renderItem={({ item }) => {
                   const sp = getSPLevel(getNetDeposit(parseFloat(item.startAmount) || 0));
                   const date = new Date(item.savedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
