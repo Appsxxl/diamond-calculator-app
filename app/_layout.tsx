@@ -9,6 +9,7 @@ import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { CalculatorProvider } from "@/lib/calculator-context";
+import { DisclaimerModal } from "@/components/disclaimer-modal";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -90,6 +91,7 @@ export default function RootLayout() {
               <Stack.Screen name="faq" />
             </Stack>
             <StatusBar style="auto" />
+            <DisclaimerModal />
           </CalculatorProvider>
         </QueryClientProvider>
       </trpc.Provider>
