@@ -376,6 +376,7 @@ export default function ScenarioToolScreen() {
     setBulkStortVal(""); setBulkStortTo(""); setAnnualVal("");
     setBulkOpnVal(""); setBulkOpnFrom(""); setBulkOpnPVal(""); setBulkOpnPFrom("");
     setBulkCompVal(""); setBulkCompFrom(""); setBulkCompTo("");
+    setInputErrors({});
   };
 
   const handleCalculate = async () => {
@@ -399,28 +400,6 @@ export default function ScenarioToolScreen() {
     const res = runCalculation(params);
     setResult(res);
     setCalculating(false);
-  };
-
-  const handleReset = () => {
-    setStartAmount("3000");
-    setYears("5");
-    setGoal("3500");
-    setVipEnabled(false);
-    setManualVip(false);
-    setAnnualVal("");
-    setBulkStortVal("");
-    setBulkStortTo("");
-    setBulkOpnVal("");
-    setBulkOpnFrom("");
-    setBulkOpnPVal("");
-    setBulkOpnPFrom("");
-    setBulkCompVal("");
-    setBulkCompFrom("");
-    setBulkCompTo("");
-    setMonthData({});
-    setResult(null);
-    setInputErrors({});
-    setClientName("");
   };
 
   const vipShadow = useMemo(() => {
