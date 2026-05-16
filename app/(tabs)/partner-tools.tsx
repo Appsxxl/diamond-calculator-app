@@ -309,6 +309,8 @@ const TX: Record<string, {
   poolFormulaNote: string;
   levelLabel: string;
   arVaultDesc: string;
+  entryFeeLabel: string;
+  netCapitalLabel: string;
   okBtn: string;
 }> = {
   en: {
@@ -439,6 +441,8 @@ const TX: Record<string, {
     poolFormulaNote: "Formula: Pool Total ÷ Total Qualified Users × Your Parts · Enter values from your back office for accuracy.",
     levelLabel: "LEVEL",
     arVaultDesc: "3D Diamond portfolio viewer · Scan & inspect your assets in AR",
+    entryFeeLabel: "Entry fee:",
+    netCapitalLabel: "Net capital:",
     okBtn: "OK",
   },
   nl: {
@@ -569,6 +573,8 @@ const TX: Record<string, {
     poolFormulaNote: "Formule: Pool Totaal ÷ Totaal Gekwalificeerde Gebruikers × Mijn Delen · Voer waarden uit uw backoffice in voor nauwkeurigheid.",
     levelLabel: "NIVEAU",
     arVaultDesc: "3D Diamant portfolio viewer · Scan & inspecteer uw activa in AR",
+    entryFeeLabel: "Instapkosten:",
+    netCapitalLabel: "Netto kapitaal:",
     okBtn: "OK",
   },
   de: {
@@ -699,6 +705,8 @@ const TX: Record<string, {
     poolFormulaNote: "Formel: Pool Gesamt ÷ Gesamt Qualifizierte Nutzer × Meine Anteile · Geben Sie Werte aus Ihrem Backoffice ein.",
     levelLabel: "STUFE",
     arVaultDesc: "3D Diamant-Portfolio-Viewer · Scannen & inspizieren Sie Ihre Assets in AR",
+    entryFeeLabel: "Einstiegsgebühr:",
+    netCapitalLabel: "Nettokapital:",
     okBtn: "OK",
   },
   fr: {
@@ -829,6 +837,8 @@ const TX: Record<string, {
     poolFormulaNote: "Formule: Total Pool ÷ Total Utilisateurs Qualifiés × Mes Parts · Entrez les valeurs de votre back-office.",
     levelLabel: "NIVEAU",
     arVaultDesc: "Visionneuse 3D portfolio diamant · Scanner & inspecter vos actifs en AR",
+    entryFeeLabel: "Frais d'entrée :",
+    netCapitalLabel: "Capital net :",
     okBtn: "OK",
   },
   es: {
@@ -959,6 +969,8 @@ const TX: Record<string, {
     poolFormulaNote: "Fórmula: Total Pool ÷ Total Usuarios Calificados × Mis Partes · Ingrese valores de su back office para mayor precisión.",
     levelLabel: "NIVEL",
     arVaultDesc: "Visor 3D de portfolio de diamantes · Escanee e inspeccione sus activos en AR",
+    entryFeeLabel: "Comisión de entrada:",
+    netCapitalLabel: "Capital neto:",
     okBtn: "OK",
   },
   ru: {
@@ -1089,6 +1101,8 @@ const TX: Record<string, {
     poolFormulaNote: "Формула: Пул Всего ÷ Квалиф. Пользователей × Мои Доли · Введите значения из бэк-офиса.",
     levelLabel: "УРОВЕНЬ",
     arVaultDesc: "3D-просмотрщик портфеля алмазов · Сканируйте и проверяйте ваши активы в AR",
+    entryFeeLabel: "Вступительный взнос:",
+    netCapitalLabel: "Чистый капитал:",
     okBtn: "ОК",
   },
   zh: {
@@ -1219,6 +1233,8 @@ const TX: Record<string, {
     poolFormulaNote: "公式：池总额 ÷ 合格用户总数 × 我的份额 · 请输入后台数值以确保准确性。",
     levelLabel: "级别",
     arVaultDesc: "3D钻石投资组合查看器 · 在AR中扫描并检查您的资产",
+    entryFeeLabel: "手续费：",
+    netCapitalLabel: "净资本：",
     okBtn: "确定",
   },
 };
@@ -2288,8 +2304,8 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#94a3b8", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withoutVip}</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.noVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.noVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>Entry fee: −${assetResult.noVip.entryFee.toLocaleString()}</Text>
-                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>Net capital: ${assetResult.noVip.netDeposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>{tx.entryFeeLabel} −${assetResult.noVip.entryFee.toLocaleString()}</Text>
+                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>{tx.netCapitalLabel} ${assetResult.noVip.netDeposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 4 }}>{assetResult.noVip.rate.toFixed(1)}%/mo</Text>
                     <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.noVip.totalOut.toLocaleString()}</Text>
                     <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.noVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
@@ -2301,8 +2317,8 @@ export default function PartnerToolsScreen() {
                     <Text style={{ color: "#f59e0b", fontWeight: "700", fontSize: 11, textAlign: "center", marginBottom: 8 }}>{tx.withVip} ⭐</Text>
                     <Text style={{ color: "#38bdf8", fontWeight: "800", fontSize: 16, textAlign: "center" }}>{assetResult.withVip.sp}</Text>
                     <Text style={{ color: "#e2e8f0", fontSize: 13, textAlign: "center", marginTop: 4 }}>{tx.depositLabel} ${assetResult.withVip.deposit.toLocaleString()}</Text>
-                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>Entry fee: −${assetResult.withVip.entryFee.toLocaleString()}</Text>
-                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>Net capital: ${assetResult.withVip.netDeposit.toLocaleString()}</Text>
+                    <Text style={{ color: "#f87171", fontSize: 10, textAlign: "center", marginTop: 1 }}>{tx.entryFeeLabel} −${assetResult.withVip.entryFee.toLocaleString()}</Text>
+                    <Text style={{ color: "#64748b", fontSize: 10, textAlign: "center", marginTop: 1 }}>{tx.netCapitalLabel} ${assetResult.withVip.netDeposit.toLocaleString()}</Text>
                     <Text style={{ color: "#22c55e", fontSize: 12, textAlign: "center", marginTop: 4 }}>{assetResult.withVip.rate.toFixed(1)}%/mo</Text>
                     <Text style={{ color: "#f59e0b", fontSize: 13, fontWeight: "700", textAlign: "center", marginTop: 4 }}>{tx.totalOutLabel} ${assetResult.withVip.totalOut.toLocaleString()}</Text>
                     <Text style={{ color: "#94a3b8", fontSize: 11, textAlign: "center", marginTop: 2 }}>~${assetResult.withVip.avgMonthly.toLocaleString()}{tx.avgMoLabel}</Text>
