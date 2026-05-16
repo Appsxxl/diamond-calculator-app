@@ -272,13 +272,13 @@ export default function StrategyEngineerScreen() {
             <View style={S.card}>
               <Text style={S.sectionLabel}>{t(language, "seSpReference")}</Text>
               {[
-                { name: "SP1", range: "$0 – $999",          base: "2.2%", vip: "5.2%" },
+                { name: "SP1", range: "$110 – $999",         base: "2.2%",  vip: "5.2%"  },
                 { name: "SP2", range: "$1,000 – $2,499",    base: "2.45%", vip: "5.45%" },
-                { name: "SP3", range: "$2,500 – $4,999",    base: "2.7%", vip: "5.7%" },
-                { name: "SP4", range: "$5,000 – $9,999",    base: "3.0%", vip: "6.0%" },
-                { name: "SP5", range: "$10,000 – $49,999",  base: "3.1%", vip: "6.1%" },
-                { name: "SP6", range: "$50,000 – $99,999",  base: "3.2%", vip: "6.2%" },
-                { name: "SP7", range: "$100,000+",          base: "3.3%", vip: "6.3%" },
+                { name: "SP3", range: "$2,500 – $4,999",    base: "2.7%",  vip: "5.7%"  },
+                { name: "SP4", range: "$5,000 – $9,999",    base: "3.0%",  vip: "6.0%"  },
+                { name: "SP5", range: "$10,000 – $49,999",  base: "3.1%",  vip: "6.1%"  },
+                { name: "SP6", range: "$50,000 – $99,999",  base: "3.2%",  vip: "6.2%"  },
+                { name: "SP7", range: "$100,000+",           base: "3.3%",  vip: "6.3%"  },
               ].map(sp => (
                 <View key={sp.name} style={S.spRow}>
                   <Text style={S.spName}>{sp.name}</Text>
