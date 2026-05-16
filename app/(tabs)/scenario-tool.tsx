@@ -18,6 +18,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
 import * as Clipboard from "expo-clipboard";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
 import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
@@ -1122,45 +1124,95 @@ export default function ScenarioToolScreen() {
             </TouchableOpacity>
 
             {/* Copy Result Button */}
-            <TouchableOpacity
-              style={[S.calcBtn, { backgroundColor: copied ? '#22c55e' : '#1e293b', borderWidth: 1, borderColor: copied ? '#22c55e' : '#334155', marginBottom: 8 }]}
-              onPress={async () => {
-                const deposit = numVal(startAmount);
-                const net = getNetDeposit(deposit);
-                const sp = getSPLevel(net);
-                const vipLabel = vipEnabled ? ' +VIP' : '';
-                const lines = [
-                  '💎 Plan B — Strategy Result',
-                  `──────────────────────────`,
-                  `Deposit:        $${deposit.toLocaleString()}`,
-                  `Net capital:    $${net.toLocaleString()}`,
-                  `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
-                  `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
-                  ``,
-                  `Monthly goal:   $${numVal(goal).toLocaleString()}`,
-                  result.goalReachedMonth
-                    ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
-                    : `Goal reached:   Not within period`,
-                  `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
-                  ``,
-                  `Total invested: $${result.totalIn.toLocaleString()}`,
-                  `Total out:      $${result.totalOut.toLocaleString()}`,
-                  `Final balance:  $${result.finalCap.toLocaleString()}`,
-                  `Net result:     $${result.netResult.toLocaleString()}`,
-                  result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : '',
-                  ``,
-                  `Plan B Diamond · Adviser Pro v2.1`,
-                  `Projections are illustrative only — not a guarantee of returns.`,
-                ].filter(l => l !== undefined).join('\n');
-                await Clipboard.setStringAsync(lines);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2500);
-              }}
-            >
-              <Text style={[S.calcText, { color: copied ? '#fff' : '#94a3b8', fontSize: 13 }]}>
-                {copied ? '✅ Copied to clipboard' : '📋 Copy Result'}
-              </Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
+              <TouchableOpacity
+                style={[S.calcBtn, { flex: 1, backgroundColor: copied ? '#22c55e' : '#1e293b', borderWidth: 1, borderColor: copied ? '#22c55e' : '#334155' }]}
+                onPress={async () => {
+                  const deposit = numVal(startAmount);
+                  const net = getNetDeposit(deposit);
+                  const sp = getSPLevel(net);
+                  const vipLabel = vipEnabled ? ' +VIP' : '';
+                  const lines = [
+                    '💎 Plan B — Strategy Result',
+                    `──────────────────────────`,
+                    clientName ? `Client:         ${clientName}` : null,
+                    `Deposit:        $${deposit.toLocaleString()}`,
+                    `Net capital:    $${net.toLocaleString()}`,
+                    `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
+                    `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
+                    ``,
+                    `Monthly goal:   $${numVal(goal).toLocaleString()}`,
+                    result.goalReachedMonth
+                      ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
+                      : `Goal reached:   Not within period`,
+                    `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
+                    ``,
+                    `Total invested: $${result.totalIn.toLocaleString()}`,
+                    `Total out:      $${result.totalOut.toLocaleString()}`,
+                    `Final balance:  $${result.finalCap.toLocaleString()}`,
+                    `Net result:     $${result.netResult.toLocaleString()}`,
+                    result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : null,
+                    ``,
+                    `Plan B Diamond · Adviser Pro v2.1`,
+                    `Projections are illustrative only — not a guarantee of returns.`,
+                  ].filter((l): l is string => l !== null).join('\n');
+                  await Clipboard.setStringAsync(lines);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2500);
+                }}
+              >
+                <Text style={[S.calcText, { color: copied ? '#fff' : '#94a3b8', fontSize: 13 }]}>
+                  {copied ? '✅ Copied' : '📋 Copy'}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[S.calcBtn, { flex: 1, backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155' }]}
+                onPress={async () => {
+                  const deposit = numVal(startAmount);
+                  const net = getNetDeposit(deposit);
+                  const sp = getSPLevel(net);
+                  const vipLabel = vipEnabled ? ' +VIP' : '';
+                  const lines = [
+                    '💎 Plan B — Strategy Result',
+                    `──────────────────────────`,
+                    clientName ? `Client:         ${clientName}` : null,
+                    `Deposit:        $${deposit.toLocaleString()}`,
+                    `Net capital:    $${net.toLocaleString()}`,
+                    `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
+                    `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
+                    ``,
+                    `Monthly goal:   $${numVal(goal).toLocaleString()}`,
+                    result.goalReachedMonth
+                      ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
+                      : `Goal reached:   Not within period`,
+                    `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
+                    ``,
+                    `Total invested: $${result.totalIn.toLocaleString()}`,
+                    `Total out:      $${result.totalOut.toLocaleString()}`,
+                    `Final balance:  $${result.finalCap.toLocaleString()}`,
+                    `Net result:     $${result.netResult.toLocaleString()}`,
+                    result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : null,
+                    ``,
+                    `Plan B Diamond · Adviser Pro v2.1`,
+                    `Projections are illustrative only — not a guarantee of returns.`,
+                  ].filter((l): l is string => l !== null).join('\n');
+                  const available = await Sharing.isAvailableAsync();
+                  if (!available) {
+                    await Clipboard.setStringAsync(lines);
+                    Alert.alert('Copied', 'Sharing is not available on this device — result copied to clipboard instead.');
+                    return;
+                  }
+                  // Write to a temp file so the share sheet has a proper text attachment
+                  const file = new FileSystem.File(FileSystem.Paths.cache, 'planb-result.txt');
+                  file.create({ overwrite: true });
+                  file.write(lines);
+                  await Sharing.shareAsync(file.uri, { mimeType: 'text/plain', dialogTitle: 'Share Strategy Result', UTI: 'public.plain-text' });
+                }}
+              >
+                <Text style={[S.calcText, { color: '#94a3b8', fontSize: 13 }]}>📤 Share</Text>
+              </TouchableOpacity>
+            </View>
 
             {/* Summary Cards */}
             <View style={[S.card, { borderWidth: 1, borderColor: 'rgba(51,197,255,0.22)' }]}>
