@@ -1444,18 +1444,12 @@ export default function PartnerToolsScreen() {
   } | null>(null);
 
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [form, setForm] = useState({
-    name: "",
-    whatsapp: "",
-    country: "",
-    startDate: formatDDMMYYYY(new Date()),
-    amount: "",
-    level: "1",
+    name: "", whatsapp: "", country: "", startDate: "", amount: "", level: "1",
     contactMoments: [...CONTACT_MOMENT_KEYS] as string[],
   });
-
   const [inAppAlert, setInAppAlert] = useState<{ title: string; body: string } | null>(null);
 
   useEffect(() => {
@@ -1485,12 +1479,6 @@ export default function PartnerToolsScreen() {
     } catch {}
   };
 
-  const openAddModal = () => {
-    setEditingPartner(null);
-    setForm({ name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", level: "1", contactMoments: [...CONTACT_MOMENT_KEYS] });
-    setShowAddModal(true);
-  };
-
   const openEditModal = (partner: Partner) => {
     setEditingPartner(partner);
     setForm({
@@ -1502,67 +1490,41 @@ export default function PartnerToolsScreen() {
       level: String(partner.level ?? 1),
       contactMoments: partner.contactMoments ?? [...CONTACT_MOMENT_KEYS],
     });
-    setShowAddModal(true);
+    setShowEditModal(true);
   };
 
   const toggleContactMoment = (key: string) => {
-    setForm((f) => {
+    setForm(f => {
       const already = f.contactMoments.includes(key);
-      return {
-        ...f,
-        contactMoments: already
-          ? f.contactMoments.filter((k) => k !== key)
-          : [...f.contactMoments, key],
-      };
+      return { ...f, contactMoments: already ? f.contactMoments.filter(k => k !== key) : [...f.contactMoments, key] };
     });
   };
 
   const savePartner = () => {
-    if (!form.name.trim() || !form.amount) {
-      Alert.alert(tx.missingInfo, tx.missingInfoMsg);
-      return;
-    }
-    const amount = parseFloat(form.amount);
-    if (isNaN(amount) || amount <= 0) {
-      Alert.alert(tx.invalidAmount, tx.invalidAmountMsg);
-      return;
-    }
+    if (!editingPartner) return;
     const partner: Partner = {
-      id: editingPartner ? editingPartner.id : Date.now().toString(),
+      id: editingPartner.id,
       name: form.name.trim(),
       whatsapp: form.whatsapp.trim(),
       country: form.country.trim(),
       startDate: form.startDate,
-      amount,
+      amount: parseFloat(form.amount) || editingPartner.amount,
       level: (parseInt(form.level) || 1) as 1 | 2 | 3,
       contactMoments: form.contactMoments,
     };
-    let updated: Partner[];
-    if (editingPartner) {
-      updated = partners.map((p) => (p.id === editingPartner.id ? partner : p));
-    } else {
-      updated = [partner, ...partners];
-    }
+    const updated = partners.map(p => p.id === partner.id ? partner : p);
     savePartners(updated);
-    setShowAddModal(false);
+    setShowEditModal(false);
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    // Schedule push notifications for this partner
     schedulePartnerNotifications(
       { ...partner, startDate: partner.startDate.split("-").reverse().join("-") },
-      {
-        alertRebate: tx.alertRebate,
-        alert90day: tx.alert90day,
-        alert11month: tx.alert11month,
-        alert30day: tx.alert30day,
-        alert12month: tx.alert12month,
-      }
+      { alertRebate: tx.alertRebate, alert90day: tx.alert90day, alert11month: tx.alert11month, alert30day: tx.alert30day, alert12month: tx.alert12month }
     ).catch(() => {});
   };
 
   const deletePartner = (id: string) => {
     const doDelete = () => {
-      const updated = partners.filter((p) => p.id !== id);
-      savePartners(updated);
+      savePartners(partners.filter(p => p.id !== id));
       cancelPartnerNotifications(id).catch(() => {});
     };
     if (Platform.OS === "web") {
@@ -2064,8 +2026,12 @@ export default function PartnerToolsScreen() {
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
           <View style={S.sectionHeader}>
             <Text style={S.sectionTitle}>{t(language, "affDashboardTitle")}</Text>
-            <TouchableOpacity style={S.addBtn} onPress={openAddModal} activeOpacity={0.8}>
-              <Text style={S.addBtnText}>{tx.addBtn}</Text>
+            <TouchableOpacity
+              style={[S.addBtn, { backgroundColor: '#1e3a5f', borderWidth: 1, borderColor: '#33C5FF' }]}
+              onPress={() => router.push('/(tabs)/affiliate')}
+              activeOpacity={0.8}
+            >
+              <Text style={[S.addBtnText, { color: '#33C5FF' }]}>→ Affiliate</Text>
             </TouchableOpacity>
           </View>
 
@@ -2073,7 +2039,16 @@ export default function PartnerToolsScreen() {
             <View style={S.emptyCard}>
               <Text style={S.emptyIcon}>👥</Text>
               <Text style={S.emptyTitle}>{tx.noPartners}</Text>
-              <Text style={S.emptyDesc}>{tx.noPartnersDesc}</Text>
+              <Text style={{ color: '#64748b', fontSize: 12, textAlign: 'center', marginTop: 4 }}>
+                Add and manage partners in the Affiliate tab.
+              </Text>
+              <TouchableOpacity
+                style={{ marginTop: 12, backgroundColor: '#1e3a5f', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#33C5FF' }}
+                onPress={() => router.push('/(tabs)/affiliate')}
+                activeOpacity={0.8}
+              >
+                <Text style={{ color: '#33C5FF', fontSize: 13, fontWeight: '600' }}>Go to Affiliate →</Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <FlatList
@@ -2590,125 +2565,63 @@ export default function PartnerToolsScreen() {
 
       </ScrollView>
 
-      {/* ── Add/Edit Partner Modal ────────────────────────────────────────── */}
-      <Modal
-        visible={showAddModal}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowAddModal(false)}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
+      {/* ── Edit Partner Modal (contact moments + details) ── */}
+      <Modal visible={showEditModal} animationType="slide" transparent onRequestClose={() => setShowEditModal(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
           <View style={S.modalOverlay}>
             <ScrollView style={S.modalSheet} contentContainerStyle={{ paddingBottom: 20 }}>
-              <Text style={S.modalTitle}>{editingPartner ? tx.editPartner : tx.addPartner}</Text>
+              <Text style={S.modalTitle}>{tx.editPartner}</Text>
 
               <Text style={S.inputLabel}>{tx.nameLabel}</Text>
-              <TextInput
-                style={S.input}
-                value={form.name}
-                onChangeText={(v) => setForm((f) => ({ ...f, name: v }))}
-                placeholder={tx.nameLabel.replace(" *", "")}
-                placeholderTextColor="#64748b"
-                returnKeyType="next"
-              />
+              <TextInput style={S.input} value={form.name} onChangeText={v => setForm(f => ({ ...f, name: v }))}
+                placeholderTextColor="#64748b" returnKeyType="next" />
 
               <Text style={S.inputLabel}>{tx.whatsappLabel}</Text>
-              <TextInput
-                style={S.input}
-                value={form.whatsapp}
-                onChangeText={(v) => setForm((f) => ({ ...f, whatsapp: v }))}
-                placeholder="+31 6 12345678"
-                placeholderTextColor="#64748b"
-                keyboardType="phone-pad"
-                returnKeyType="next"
-              />
+              <TextInput style={S.input} value={form.whatsapp} onChangeText={v => setForm(f => ({ ...f, whatsapp: v }))}
+                placeholder="+31 6 12345678" placeholderTextColor="#64748b" keyboardType="phone-pad" returnKeyType="next" />
 
               <Text style={S.inputLabel}>{tx.countryLabel}</Text>
-              <TextInput
-                style={S.input}
-                value={form.country}
-                onChangeText={(v) => setForm((f) => ({ ...f, country: v }))}
-                placeholder="Netherlands"
-                placeholderTextColor="#64748b"
-                returnKeyType="next"
-              />
+              <TextInput style={S.input} value={form.country} onChangeText={v => setForm(f => ({ ...f, country: v }))}
+                placeholderTextColor="#64748b" returnKeyType="next" />
 
               <Text style={S.inputLabel}>{tx.startDateLabel}</Text>
-              <TextInput
-                style={S.input}
-                value={form.startDate}
-                onChangeText={(v) => setForm((f) => ({ ...f, startDate: v }))}
-                placeholder="15-01-2025"
-                placeholderTextColor="#64748b"
-                returnKeyType="next"
-                keyboardType="numbers-and-punctuation"
-              />
+              <TextInput style={S.input} value={form.startDate} onChangeText={v => setForm(f => ({ ...f, startDate: v }))}
+                placeholder="15-01-2025" placeholderTextColor="#64748b" keyboardType="numbers-and-punctuation" returnKeyType="next" />
 
               <Text style={S.inputLabel}>{tx.amountLabel}</Text>
-              <TextInput
-                style={S.input}
-                value={form.amount}
-                onChangeText={(v) => setForm((f) => ({ ...f, amount: v }))}
-                placeholder="5000"
-                placeholderTextColor="#64748b"
-                keyboardType="numeric"
-                returnKeyType="done"
-              />
+              <TextInput style={S.input} value={form.amount} onChangeText={v => setForm(f => ({ ...f, amount: v }))}
+                placeholderTextColor="#64748b" keyboardType="numeric" returnKeyType="done" />
 
-              {/* Level Selector */}
               <Text style={S.inputLabel}>{tx.levelLabel}</Text>
               <View style={S.chipRow}>
-                {([
-                  { value: "1", label: "L1 — 10%" },
-                  { value: "2", label: "L2 — 5%"  },
-                  { value: "3", label: "L3 — 3%"  },
-                ] as { value: string; label: string }[]).map(l => (
-                  <Pressable key={l.value} onPress={() => setForm(f => ({ ...f, level: l.value }))}
-                    style={[S.chip, form.level === l.value && S.chipActive]}>
+                {([{ value: "1", label: "L1 — 10%" }, { value: "2", label: "L2 — 5%" }, { value: "3", label: "L3 — 3%" }] as { value: string; label: string }[]).map(l => (
+                  <Pressable key={l.value} onPress={() => setForm(f => ({ ...f, level: l.value }))} style={[S.chip, form.level === l.value && S.chipActive]}>
                     <Text style={[S.chipText, form.level === l.value && S.chipTextActive]}>{l.label}</Text>
                   </Pressable>
                 ))}
               </View>
 
-              {/* Contact Moment Toggles */}
               <Text style={S.inputLabel}>{tx.contactMomentsLabel}</Text>
               <View style={S.contactMomentsBox}>
-                {CONTACT_MOMENT_KEYS.map((key) => {
+                {CONTACT_MOMENT_KEYS.map(key => {
                   const isOn = form.contactMoments.includes(key);
                   return (
-                    <TouchableOpacity
-                      key={key}
-                      style={[S.contactMomentRow, isOn && S.contactMomentRowOn]}
-                      onPress={() => toggleContactMoment(key)}
-                      activeOpacity={0.8}
-                    >
+                    <TouchableOpacity key={key} style={[S.contactMomentRow, isOn && S.contactMomentRowOn]}
+                      onPress={() => toggleContactMoment(key)} activeOpacity={0.8}>
                       <View style={[S.contactMomentCheck, isOn && S.contactMomentCheckOn]}>
                         {isOn && <Text style={S.contactMomentCheckMark}>✓</Text>}
                       </View>
-                      <Text style={[S.contactMomentLabel, isOn && S.contactMomentLabelOn]}>
-                        {tx[key]}
-                      </Text>
+                      <Text style={[S.contactMomentLabel, isOn && S.contactMomentLabelOn]}>{tx[key]}</Text>
                     </TouchableOpacity>
                   );
                 })}
               </View>
 
               <View style={S.modalBtnRow}>
-                <TouchableOpacity
-                  style={S.modalCancelBtn}
-                  onPress={() => setShowAddModal(false)}
-                  activeOpacity={0.8}
-                >
+                <TouchableOpacity style={S.modalCancelBtn} onPress={() => setShowEditModal(false)} activeOpacity={0.8}>
                   <Text style={S.modalCancelText}>{tx.cancelBtn}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={S.modalSaveBtn}
-                  onPress={savePartner}
-                  activeOpacity={0.8}
-                >
+                <TouchableOpacity style={S.modalSaveBtn} onPress={savePartner} activeOpacity={0.8}>
                   <Text style={S.modalSaveText}>{tx.saveBtn}</Text>
                 </TouchableOpacity>
               </View>
