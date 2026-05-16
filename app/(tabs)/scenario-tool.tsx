@@ -1157,7 +1157,7 @@ export default function ScenarioToolScreen() {
               })()}
 
               {/* ── Brand Authority Row ── */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, marginBottom: 4 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, marginBottom: 2 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <View style={{ backgroundColor: 'rgba(51,197,255,0.1)', borderRadius: 20, paddingHorizontal: 9, paddingVertical: 3, borderWidth: 1, borderColor: 'rgba(51,197,255,0.28)' }}>
                     <Text style={{ color: '#33C5FF', fontSize: 9, fontWeight: 'bold' }}>{t(language, 'giaVerifiedBadge')}</Text>
@@ -1166,6 +1166,10 @@ export default function ScenarioToolScreen() {
                 </View>
                 <Text style={{ color: 'rgba(245,158,11,0.65)', fontSize: 9, fontWeight: 'bold', fontStyle: 'italic' }}>{t(language, 'integrityBadge')}</Text>
               </View>
+              {/* ── Version stamp ── */}
+              <Text style={{ color: '#1e3a5f', fontSize: 8, textAlign: 'right', marginBottom: 4 }}>
+                {`v2.1 · ${new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' })}`}
+              </Text>
 
               {(() => {
                 const spTiers = [
