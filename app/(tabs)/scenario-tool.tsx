@@ -15,6 +15,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
+import * as Clipboard from "expo-clipboard";
 import * as IntentLauncher from "expo-intent-launcher";
 import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-footer";
@@ -79,6 +80,7 @@ export default function ScenarioToolScreen() {
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
 
@@ -1007,6 +1009,47 @@ export default function ScenarioToolScreen() {
             >
               <Text style={[S.calcText, { color: '#fff' }]}>
                 {pdfLoading ? `⏳ ${t(language,'pdfGenerating')}` : `📄 ${t(language,'exportPdf').toUpperCase()}`}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Copy Result Button */}
+            <TouchableOpacity
+              style={[S.calcBtn, { backgroundColor: copied ? '#22c55e' : '#1e293b', borderWidth: 1, borderColor: copied ? '#22c55e' : '#334155', marginBottom: 8 }]}
+              onPress={async () => {
+                const deposit = numVal(startAmount);
+                const net = getNetDeposit(deposit);
+                const sp = getSPLevel(net);
+                const vipLabel = vipEnabled ? ' +VIP' : '';
+                const lines = [
+                  '💎 Plan B — Strategy Result',
+                  `──────────────────────────`,
+                  `Deposit:        $${deposit.toLocaleString()}`,
+                  `Net capital:    $${net.toLocaleString()}`,
+                  `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
+                  `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
+                  ``,
+                  `Monthly goal:   $${numVal(goal).toLocaleString()}`,
+                  result.goalReachedMonth
+                    ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
+                    : `Goal reached:   Not within period`,
+                  `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
+                  ``,
+                  `Total invested: $${result.totalIn.toLocaleString()}`,
+                  `Total out:      $${result.totalOut.toLocaleString()}`,
+                  `Final balance:  $${result.finalCap.toLocaleString()}`,
+                  `Net result:     $${result.netResult.toLocaleString()}`,
+                  result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : '',
+                  ``,
+                  `Plan B Diamond · Adviser Pro v2.1`,
+                  `Projections are illustrative only — not a guarantee of returns.`,
+                ].filter(l => l !== undefined).join('\n');
+                await Clipboard.setStringAsync(lines);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2500);
+              }}
+            >
+              <Text style={[S.calcText, { color: copied ? '#fff' : '#94a3b8', fontSize: 13 }]}>
+                {copied ? '✅ Copied to clipboard' : '📋 Copy Result'}
               </Text>
             </TouchableOpacity>
 
