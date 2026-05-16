@@ -32,6 +32,106 @@ function numVal(s: string, fallback = 0): number {
   return isNaN(n) ? fallback : n;
 }
 
+type OptionsHelpItem = { icon: string; title: string; color: string; body: string };
+type OptionsHelpData = { buttonLabel: string; modalTitle: string; tipTitle: string; tipBody: string; items: OptionsHelpItem[] };
+
+function getOptionsHelpItems(lang: string): OptionsHelpData {
+  const d: Record<string, OptionsHelpData> = {
+    en: {
+      buttonLabel: 'How to use the extra options',
+      modalTitle: 'ℹ️ Extra Options Explained',
+      tipTitle: '💡 Tip — using options together',
+      tipBody: 'You can combine all options. For example: buy $500/month for 3 years, then take 75% out from month 37 onwards. The calculator applies all settings simultaneously and shows the result month by month.',
+      items: [
+        { icon: '💰', title: 'Monthly Deposit', color: '#33C5FF', body: 'Buy extra diamonds every month on top of your initial purchase.\n\nEnter the amount ($) and up to which month you want to keep buying. Press OK to apply.\n\nExample: $500 until month 24 = $500 extra purchase every month for 2 years.' },
+        { icon: '🎁', title: 'Annual Bonus Deposit', color: '#f59e0b', body: 'Add a one-time extra purchase that repeats once per year (every 12 months).\n\nUseful for annual bonuses, tax refunds, or year-end investments.\n\nExample: $2,000 → buys $2,000 in diamonds on month 12, 24, 36, etc.' },
+        { icon: '📤', title: 'Fixed Monthly Withdrawal', color: '#fb923c', body: 'Take out a fixed dollar amount from your monthly discount every month, starting from a specific month.\n\nEnter the amount ($) and the starting month, then press OK.\n\nExample: $500 from month 25 = withdraw $500 per month from year 3 onwards.\n\nNote: withdrawal cannot exceed your monthly discount. Any excess stays in your account.' },
+        { icon: '📊', title: 'Out % (Percentage Withdrawal)', color: '#a78bfa', body: 'Instead of a fixed amount, take out a percentage of your monthly discount.\n\nEnter the % and the starting month, then press Set.\n\nExample: 75% from month 1 = always take 75% of your discount as cash, reinvest the remaining 25%.\n\nThis is the standard Plan B model — 75% out, 25% compounding.' },
+        { icon: '⚡', title: 'Active Compounding %', color: '#4ade80', body: 'Controls how much of your monthly discount is reinvested (compounded) into new diamond purchases versus paid out.\n\n100% = full compounding, no cash taken out — your diamond portfolio grows fastest.\n0% = all discount paid out as cash every month.\n\nThe default is 100% compounding. You can change individual months in the monthly table below the results by tapping the Comp% cell.' },
+      ],
+    },
+    nl: {
+      buttonLabel: 'Hoe gebruik je de extra opties',
+      modalTitle: 'ℹ️ Extra Opties Uitgelegd',
+      tipTitle: '💡 Tip — opties combineren',
+      tipBody: 'U kunt alle opties combineren. Bijvoorbeeld: koop $500/maand voor 3 jaar, neem dan 75% op vanaf maand 37. De calculator past alle instellingen gelijktijdig toe en toont het resultaat maand voor maand.',
+      items: [
+        { icon: '💰', title: 'Maandelijks Depot', color: '#33C5FF', body: 'Koop elke maand extra diamanten bovenop uw eerste aankoop.\n\nVoer het bedrag ($) in en tot welke maand u wilt blijven kopen. Druk op OK.\n\nVoorbeeld: $500 tot maand 24 = $500 extra aankoop elke maand gedurende 2 jaar.' },
+        { icon: '🎁', title: 'Jaarlijkse Bonusstorting', color: '#f59e0b', body: 'Voeg een eenmalige extra aankoop toe die één keer per jaar herhaalt (elke 12 maanden).\n\nNuttig voor jaarlijkse bonussen, belastingteruggaven of jaareinde-investeringen.\n\nVoorbeeld: $2.000 → aankopen op maand 12, 24, 36, enz.' },
+        { icon: '📤', title: 'Vaste Maandelijkse Opname', color: '#fb923c', body: 'Neem elke maand een vast bedrag op van uw maandelijkse korting, beginnend vanaf een specifieke maand.\n\nVoer het bedrag ($) en de startmaand in, druk op OK.\n\nVoorbeeld: $500 vanaf maand 25 = $500 per maand opnemen vanaf jaar 3.\n\nNoot: opname kan de maandelijkse korting niet overschrijden.' },
+        { icon: '📊', title: 'Opname % (Percentage)', color: '#a78bfa', body: 'Neem een percentage van uw maandelijkse korting op in plaats van een vast bedrag.\n\nVoer het % en de startmaand in, druk op Instellen.\n\nVoorbeeld: 75% vanaf maand 1 = altijd 75% van uw korting als contant opnemen, 25% herbeleg.\n\nDit is het standaard Plan B model — 75% opnemen, 25% aangroeien.' },
+        { icon: '⚡', title: 'Actief Samengesteld %', color: '#4ade80', body: 'Bepaalt hoeveel van uw maandelijkse korting wordt herbelegd in nieuwe diamantaankopen.\n\n100% = volledig aangroeien, geen contant opgenomen — uw portefeuille groeit het snelst.\n0% = alle korting maandelijks als contant uitbetaald.\n\nStandaard is 100% samengesteld. U kunt individuele maanden aanpassen in de maandelijkse tabel.' },
+      ],
+    },
+    de: {
+      buttonLabel: 'Wie man die Zusatzoptionen verwendet',
+      modalTitle: 'ℹ️ Zusatzoptionen erklärt',
+      tipTitle: '💡 Tipp — Optionen kombinieren',
+      tipBody: 'Sie können alle Optionen kombinieren. Beispiel: Kaufen Sie $500/Monat für 3 Jahre, dann heben Sie 75% ab Monat 37 ab. Der Rechner wendet alle Einstellungen gleichzeitig an und zeigt das Ergebnis Monat für Monat.',
+      items: [
+        { icon: '💰', title: 'Monatliche Einzahlung', color: '#33C5FF', body: 'Kaufen Sie jeden Monat zusätzliche Diamanten über Ihren Erstkauf hinaus.\n\nGeben Sie den Betrag ($) und den Monat "Bis" ein. Drücken Sie OK.\n\nBeispiel: $500 bis Monat 24 = $500 Zusatzkauf jeden Monat für 2 Jahre.' },
+        { icon: '🎁', title: 'Jährliche Bonuseinzahlung', color: '#f59e0b', body: 'Fügen Sie einmal pro Jahr (alle 12 Monate) einen einmaligen Sonderkauf hinzu.\n\nNützlich für Jahresboni, Steuererstattungen oder Jahresabschlussinvestitionen.\n\nBeispiel: $2.000 → Kauf in Monat 12, 24, 36 usw.' },
+        { icon: '📤', title: 'Feste Monatliche Abhebung', color: '#fb923c', body: 'Heben Sie jeden Monat einen festen Betrag von Ihrem monatlichen Rabatt ab, ab einem bestimmten Monat.\n\nBetrag und Startmonat eingeben, OK drücken.\n\nBeispiel: $500 ab Monat 25 = $500 pro Monat ab Jahr 3.\n\nHinweis: Abhebung kann den monatlichen Rabatt nicht überschreiten.' },
+        { icon: '📊', title: 'Abhebung % (Prozentsatz)', color: '#a78bfa', body: 'Nehmen Sie statt eines festen Betrags einen Prozentsatz Ihres monatlichen Rabatts ab.\n\n% und Startmonat eingeben, Einstellen drücken.\n\nBeispiel: 75% ab Monat 1 = 75% des Rabatts als Bargeld, 25% Wiederanlage.\n\nDies ist das Standard-Plan-B-Modell — 75% abheben, 25% anlegen.' },
+        { icon: '⚡', title: 'Aktiver Zinseszins %', color: '#4ade80', body: 'Steuert, wie viel Ihres monatlichen Rabatts in neue Diamantkäufe reinvestiert wird.\n\n100% = vollständige Anlage — Ihr Portfolio wächst am schnellsten.\n0% = gesamter Rabatt monatlich als Bargeld ausgezahlt.\n\nStandard ist 100%. Sie können einzelne Monate in der monatlichen Tabelle anpassen.' },
+      ],
+    },
+    fr: {
+      buttonLabel: 'Comment utiliser les options supplémentaires',
+      modalTitle: 'ℹ️ Options supplémentaires expliquées',
+      tipTitle: '💡 Conseil — combiner les options',
+      tipBody: 'Vous pouvez combiner toutes les options. Par exemple: achetez $500/mois pendant 3 ans, puis retirez 75% à partir du mois 37. Le calculateur applique tous les paramètres simultanément et montre le résultat mois par mois.',
+      items: [
+        { icon: '💰', title: 'Dépôt Mensuel', color: '#33C5FF', body: 'Achetez des diamants supplémentaires chaque mois en plus de votre achat initial.\n\nEntrez le montant ($) et jusqu\'à quel mois vous souhaitez continuer. Appuyez sur OK.\n\nExemple: $500 jusqu\'au mois 24 = $500 d\'achat supplémentaire chaque mois pendant 2 ans.' },
+        { icon: '🎁', title: 'Bonus Annuel', color: '#f59e0b', body: 'Ajoutez un achat supplémentaire unique qui se répète une fois par an (tous les 12 mois).\n\nUtile pour les primes annuelles, remboursements d\'impôts ou investissements de fin d\'année.\n\nExemple: $2 000 → achats aux mois 12, 24, 36, etc.' },
+        { icon: '📤', title: 'Retrait Mensuel Fixe', color: '#fb923c', body: 'Retirez un montant fixe de votre remise mensuelle chaque mois, à partir d\'un mois spécifique.\n\nEntrez le montant et le mois de départ, puis appuyez sur OK.\n\nExemple: $500 à partir du mois 25 = $500/mois à partir de l\'an 3.\n\nNote: le retrait ne peut pas dépasser votre remise mensuelle.' },
+        { icon: '📊', title: 'Retrait % (Pourcentage)', color: '#a78bfa', body: 'Retirez un pourcentage de votre remise mensuelle au lieu d\'un montant fixe.\n\nEntrez le % et le mois de départ, puis appuyez sur Définir.\n\nExemple: 75% dès le mois 1 = 75% de remise en cash, 25% réinvesti.\n\nC\'est le modèle Plan B standard — 75% retrait, 25% capitalisation.' },
+        { icon: '⚡', title: 'Capitalisation Active %', color: '#4ade80', body: 'Contrôle combien de votre remise mensuelle est réinvesti dans de nouveaux achats de diamants.\n\n100% = capitalisation complète — votre portefeuille croît le plus vite.\n0% = toute la remise versée en cash chaque mois.\n\nPar défaut: 100%. Vous pouvez modifier des mois individuels dans le tableau mensuel.' },
+      ],
+    },
+    es: {
+      buttonLabel: 'Cómo usar las opciones adicionales',
+      modalTitle: 'ℹ️ Opciones adicionales explicadas',
+      tipTitle: '💡 Consejo — combinar opciones',
+      tipBody: 'Puede combinar todas las opciones. Por ejemplo: compre $500/mes durante 3 años, luego retire el 75% desde el mes 37. La calculadora aplica todos los ajustes simultáneamente y muestra el resultado mes a mes.',
+      items: [
+        { icon: '💰', title: 'Depósito Mensual', color: '#33C5FF', body: 'Compre diamantes adicionales cada mes además de su compra inicial.\n\nIngrese el monto ($) y hasta qué mes desea continuar comprando. Presione OK.\n\nEjemplo: $500 hasta el mes 24 = $500 de compra adicional cada mes durante 2 años.' },
+        { icon: '🎁', title: 'Bono Anual', color: '#f59e0b', body: 'Agregue una compra extra única que se repite una vez al año (cada 12 meses).\n\nÚtil para bonificaciones anuales, reembolsos de impuestos o inversiones de fin de año.\n\nEjemplo: $2,000 → compras en los meses 12, 24, 36, etc.' },
+        { icon: '📤', title: 'Retiro Mensual Fijo', color: '#fb923c', body: 'Retire un monto fijo de su descuento mensual cada mes, comenzando desde un mes específico.\n\nIngrese el monto y el mes de inicio, luego presione OK.\n\nEjemplo: $500 desde el mes 25 = $500/mes a partir del año 3.\n\nNota: el retiro no puede exceder su descuento mensual.' },
+        { icon: '📊', title: 'Retiro % (Porcentaje)', color: '#a78bfa', body: 'En lugar de un monto fijo, retire un porcentaje de su descuento mensual.\n\nIngrese el % y el mes de inicio, luego presione Establecer.\n\nEjemplo: 75% desde el mes 1 = siempre retire el 75% del descuento en efectivo, reinvierta el 25%.\n\nEste es el modelo Plan B estándar — 75% retiro, 25% capitalización.' },
+        { icon: '⚡', title: 'Capitalización Activa %', color: '#4ade80', body: 'Controla cuánto de su descuento mensual se reinvierte en nuevas compras de diamantes.\n\n100% = capitalización completa — su cartera crece más rápido.\n0% = todo el descuento pagado en efectivo cada mes.\n\nEl valor predeterminado es 100%. Puede cambiar meses individuales en la tabla mensual.' },
+      ],
+    },
+    ru: {
+      buttonLabel: 'Как использовать дополнительные параметры',
+      modalTitle: 'ℹ️ Дополнительные параметры',
+      tipTitle: '💡 Совет — комбинирование параметров',
+      tipBody: 'Можно комбинировать все параметры. Например: покупайте $500/месяц в течение 3 лет, затем выводите 75% с месяца 37. Калькулятор применяет все настройки одновременно и показывает результат помесячно.',
+      items: [
+        { icon: '💰', title: 'Ежемесячный депозит', color: '#33C5FF', body: 'Покупайте дополнительные алмазы каждый месяц сверх первоначальной покупки.\n\nВведите сумму ($) и месяц «До». Нажмите OK.\n\nПример: $500 до месяца 24 = дополнительная покупка на $500 каждый месяц в течение 2 лет.' },
+        { icon: '🎁', title: 'Ежегодный бонусный депозит', color: '#f59e0b', body: 'Добавьте разовую дополнительную покупку, повторяющуюся раз в год (каждые 12 месяцев).\n\nПолезно для годовых бонусов, налоговых возвратов или инвестиций в конце года.\n\nПример: $2 000 → покупки в месяцах 12, 24, 36 и т.д.' },
+        { icon: '📤', title: 'Фиксированный ежемесячный вывод', color: '#fb923c', body: 'Выводите фиксированную сумму из ежемесячного дохода каждый месяц, начиная с определённого месяца.\n\nВведите сумму и начальный месяц, нажмите OK.\n\nПример: $500 с месяца 25 = $500 в месяц начиная с 3-го года.\n\nПримечание: вывод не может превышать ежемесячный доход.' },
+        { icon: '📊', title: 'Вывод % (Процентный вывод)', color: '#a78bfa', body: 'Вместо фиксированной суммы выводите процент от ежемесячного дохода.\n\nВведите % и начальный месяц, нажмите «Установить».\n\nПример: 75% с месяца 1 = всегда выводить 75% дохода, реинвестировать 25%.\n\nЭто стандартная модель Plan B — 75% вывод, 25% сложный процент.' },
+        { icon: '⚡', title: 'Активный сложный %', color: '#4ade80', body: 'Контролирует, какая часть ежемесячного дохода реинвестируется в новые покупки алмазов.\n\n100% = полный сложный процент, нет вывода — портфель растёт быстрее всего.\n0% = весь доход выплачивается ежемесячно.\n\nПо умолчанию 100%. Можно изменить отдельные месяцы в таблице.' },
+      ],
+    },
+    zh: {
+      buttonLabel: '如何使用额外选项',
+      modalTitle: 'ℹ️ 额外选项说明',
+      tipTitle: '💡 提示 — 组合使用选项',
+      tipBody: '您可以组合所有选项。例如：购买$500/月持续3年，然后从第37个月起提取75%。计算器同时应用所有设置并逐月显示结果。',
+      items: [
+        { icon: '💰', title: '月度存款', color: '#33C5FF', body: '每月在初始购买之外额外购买钻石。\n\n输入金额（$）和您想继续购买的截止月份。按确定。\n\n示例：$500 直到第24个月 = 连续2年每月额外购买$500。' },
+        { icon: '🎁', title: '年度奖金存款', color: '#f59e0b', body: '添加每年重复一次（每12个月）的一次性额外购买。\n\n适用于年度奖金、税务退款或年末投资。\n\n示例：$2,000 → 在第12、24、36个月等购买。' },
+        { icon: '📤', title: '固定月度提款', color: '#fb923c', body: '从特定月份开始，每月从月度收益中提取固定金额。\n\n输入金额和开始月份，然后按确定。\n\n示例：从第25个月起每月$500 = 从第3年起每月提取$500。\n\n注意：提款不能超过您的月度收益。' },
+        { icon: '📊', title: '提款%（百分比提款）', color: '#a78bfa', body: '不是固定金额，而是提取月度收益的百分比。\n\n输入百分比和开始月份，然后按设置。\n\n示例：从第1个月起75% = 始终提取75%的收益作为现金，将剩余25%再投资。\n\n这是标准Plan B模型 — 75%提取，25%复利。' },
+        { icon: '⚡', title: '主动复利%', color: '#4ade80', body: '控制月度收益中有多少被再投资到新的钻石购买中。\n\n100% = 完全复利，不提取现金 — 您的钻石组合增长最快。\n0% = 所有收益每月以现金方式支付。\n\n默认为100%复利。您可以在下方月度表格中更改单个月份。' },
+      ],
+    },
+  };
+  return d[lang] ?? d['en'];
+}
+
 type PlanTier = {
   name: string;
   rate: string;
@@ -111,6 +211,7 @@ export default function ScenarioToolScreen() {
   const [goal, setGoal] = useState("3500");
   const [inputErrors, setInputErrors] = useState<{ startAmount?: string; years?: string }>({});
   const [showOptionsHelp, setShowOptionsHelp] = useState(false);
+  const optionsHelp = useMemo(() => getOptionsHelpItems(language), [language]);
   const [vipEnabled, setVipEnabled] = useState(false);
 
   // Bulk deposit
@@ -768,7 +869,7 @@ export default function ScenarioToolScreen() {
           <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 1.5, borderColor: '#33C5FF', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ color: '#33C5FF', fontSize: 11, fontWeight: 'bold', lineHeight: 14 }}>i</Text>
           </View>
-          <Text style={{ color: '#33C5FF', fontSize: 12, fontWeight: '600' }}>How to use the extra options</Text>
+          <Text style={{ color: '#33C5FF', fontSize: 12, fontWeight: '600' }}>{optionsHelp.buttonLabel}</Text>
         </TouchableOpacity>
 
         {/* Bulk Deposit */}
@@ -1620,44 +1721,13 @@ export default function ScenarioToolScreen() {
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' }}>
           <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: '#1e293b', maxHeight: '85%' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#1e293b' }}>
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>ℹ️ Extra Options Explained</Text>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{optionsHelp.modalTitle}</Text>
               <TouchableOpacity onPress={() => setShowOptionsHelp(false)}>
                 <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
               </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }} showsVerticalScrollIndicator={false}>
-              {([
-                {
-                  icon: '💰',
-                  title: 'Monthly Deposit',
-                  color: '#33C5FF',
-                  body: 'Buy extra diamonds every month on top of your initial purchase.\n\nEnter the amount ($) and up to which month you want to keep buying. Press OK to apply.\n\nExample: $500 until month 24 = $500 extra purchase every month for 2 years.',
-                },
-                {
-                  icon: '🎁',
-                  title: 'Annual Bonus Deposit',
-                  color: '#f59e0b',
-                  body: 'Add a one-time extra purchase that repeats once per year (every 12 months).\n\nUseful for annual bonuses, tax refunds, or year-end investments.\n\nExample: $2,000 → buys $2,000 in diamonds on month 12, 24, 36, etc.',
-                },
-                {
-                  icon: '📤',
-                  title: 'Fixed Monthly Withdrawal',
-                  color: '#fb923c',
-                  body: 'Take out a fixed dollar amount from your monthly discount every month, starting from a specific month.\n\nEnter the amount ($) and the starting month, then press OK.\n\nExample: $500 from month 25 = withdraw $500 per month from year 3 onwards.\n\nNote: withdrawal cannot exceed your monthly discount. Any excess stays in your account.',
-                },
-                {
-                  icon: '📊',
-                  title: 'Out % (Percentage Withdrawal)',
-                  color: '#a78bfa',
-                  body: 'Instead of a fixed amount, take out a percentage of your monthly discount.\n\nEnter the % and the starting month, then press Set.\n\nExample: 75% from month 1 = always take 75% of your discount as cash, reinvest the remaining 25%.\n\nThis is the standard Plan B model — 75% out, 25% compounding.',
-                },
-                {
-                  icon: '⚡',
-                  title: 'Active Compounding %',
-                  color: '#4ade80',
-                  body: 'Controls how much of your monthly discount is reinvested (compounded) into new diamond purchases versus paid out.\n\n100% = full compounding, no cash taken out — your diamond portfolio grows fastest.\n0% = all discount paid out as cash every month.\n\nThe default is 100% compounding. You can change individual months in the monthly table below the results by tapping the Comp% cell.',
-                },
-              ] as const).map(item => (
+              {optionsHelp.items.map(item => (
                 <View key={item.title} style={{ backgroundColor: '#1e293b', borderRadius: 12, padding: 14, borderLeftWidth: 3, borderLeftColor: item.color }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                     <Text style={{ fontSize: 18 }}>{item.icon}</Text>
@@ -1667,8 +1737,8 @@ export default function ScenarioToolScreen() {
                 </View>
               ))}
               <View style={{ backgroundColor: 'rgba(253,224,71,0.08)', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#FDE047' }}>
-                <Text style={{ color: '#FDE047', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>💡 Tip — using options together</Text>
-                <Text style={{ color: '#94a3b8', fontSize: 12, lineHeight: 18 }}>You can combine all options. For example: buy $500/month for 3 years, then take 75% out from month 37 onwards. The calculator applies all settings simultaneously and shows the result month by month.</Text>
+                <Text style={{ color: '#FDE047', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>{optionsHelp.tipTitle}</Text>
+                <Text style={{ color: '#94a3b8', fontSize: 12, lineHeight: 18 }}>{optionsHelp.tipBody}</Text>
               </View>
               <View style={{ height: 8 }} />
             </ScrollView>
