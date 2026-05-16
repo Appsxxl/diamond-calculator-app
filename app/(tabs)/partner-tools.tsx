@@ -70,14 +70,6 @@ const BLUE = "#33C5FF";
 const POOL_MAX = { pool1: 6, pool2: 4, pool3: 2 };
 const BLUE_DIAMOND_THRESHOLD = 1_000_000;
 
-// fetchDailyStats() — replace URL with real API endpoint when backend is ready
-// Shape: { globalTurnover, pool1Parts, pool2Parts, pool3Parts }
-const fetchDailyStats = async () => ({
-  globalTurnover: 10_000_000,
-  pool1Parts: 4,
-  pool2Parts: 2,
-  pool3Parts: 1,
-});
 
 const fmtM = (n: number) =>
   n >= 1_000_000 ? `$${(n/1_000_000).toFixed(2)}M`
@@ -1365,7 +1357,6 @@ export default function PartnerToolsScreen() {
   // Referral code loader + stats
   React.useEffect(() => {
     AsyncStorage.getItem(REFERRAL_STORAGE_KEY).then(v => { if (v) setReferralCode(v); });
-    fetchDailyStats().then(setGlobalStats);
   }, []);
 
   const poolTeamVolume = React.useMemo(() => {
