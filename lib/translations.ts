@@ -16,6 +16,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Strategic Wealth Optimization",
+    familyIncomeTagline: "Build Your Family's Monthly Income with Diamonds",
     startCalculation: "Start Calculation",
     recentCalculations: "Recent Calculations",
 
@@ -539,6 +540,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Strategische Vermogensoptimalisatie",
+    familyIncomeTagline: "Bouw het Maandinkomen van uw Gezin op met Diamanten",
     startCalculation: "Berekening Starten",
     recentCalculations: "Recente Berekeningen",
 
@@ -1047,6 +1049,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Strategische Vermögensoptimierung",
+    familyIncomeTagline: "Bauen Sie das Monatseinkommen Ihrer Familie mit Diamanten auf",
     startCalculation: "Berechnung Starten",
     recentCalculations: "Letzte Berechnungen",
 
@@ -1555,6 +1558,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Optimisation Stratégique de la Richesse",
+    familyIncomeTagline: "Construisez le Revenu Mensuel de votre Famille avec des Diamants",
     startCalculation: "Commencer le Calcul",
     recentCalculations: "Calculs Récents",
 
@@ -2063,6 +2067,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Optimización Estratégica de la Riqueza",
+    familyIncomeTagline: "Construya los Ingresos Mensuales de su Familia con Diamantes",
     startCalculation: "Iniciar Cálculo",
     recentCalculations: "Cálculos Recientes",
 
@@ -2570,6 +2575,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Стратегическая оптимизация капитала",
+    familyIncomeTagline: "Создайте ежемесячный доход вашей семьи с помощью алмазов",
     startCalculation: "Начать расчёт",
     recentCalculations: "Недавние расчёты",
 
@@ -3074,6 +3080,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Home Screen
     welcomeTitle: "Plan B",
     welcomeSubtitle: "战略财富优化",
+    familyIncomeTagline: "用钻石打造您家庭的月收入",
     startCalculation: "开始计算",
     recentCalculations: "最近计算",
 
@@ -3572,6 +3579,7 @@ export const translations: Record<Language, Record<string, string>> = {
   tl: {
     welcomeTitle: "Maligayang pagdating sa Plan B",
     welcomeSubtitle: "Ang iyong pisikal na kayamanan",
+    familyIncomeTagline: "Itayo ang Buwanang Kita ng Iyong Pamilya sa Pamamagitan ng Diamonds",
     goalCards: "Mga Layunin",
     goalCardsSubtitle: "Piliin ang iyong diskarte",
     explanation: "Paliwanag",
@@ -4048,6 +4056,7 @@ export const translations: Record<Language, Record<string, string>> = {
   pt: {
     welcomeTitle: "Bem-vindo ao Plan B",
     welcomeSubtitle: "O seu activo físico de riqueza",
+    familyIncomeTagline: "Construa a Renda Mensal da sua Família com Diamantes",
     goalCards: "Objetivos",
     goalCardsSubtitle: "Escolha a sua estratégia",
     explanation: "Explicação",
@@ -4524,6 +4533,7 @@ export const translations: Record<Language, Record<string, string>> = {
   ar: {
     welcomeTitle: "مرحباً بك في الخطة ب",
     welcomeSubtitle: "أصلك المادي من الثروة",
+    familyIncomeTagline: "ابنِ دخلاً شهرياً لعائلتك مع الماس",
     goalCards: "الأهداف",
     goalCardsSubtitle: "اختر استراتيجيتك",
     explanation: "شرح",
@@ -5000,6 +5010,7 @@ export const translations: Record<Language, Record<string, string>> = {
   th: {
     welcomeTitle: "ยินดีต้อนรับสู่ Plan B",
     welcomeSubtitle: "สินทรัพย์ทางกายภาพของคุณ",
+    familyIncomeTagline: "สร้างรายได้รายเดือนให้ครอบครัวของคุณด้วยเพชร",
     goalCards: "เป้าหมาย",
     goalCardsSubtitle: "เลือกกลยุทธ์ของคุณ",
     explanation: "คำอธิบาย",
@@ -5476,6 +5487,7 @@ export const translations: Record<Language, Record<string, string>> = {
   hi: {
     welcomeTitle: "Plan B में आपका स्वागत है",
     welcomeSubtitle: "आपकी भौतिक संपत्ति",
+    familyIncomeTagline: "हीरों से अपने परिवार की मासिक आय बनाएं",
     goalCards: "लक्ष्य",
     goalCardsSubtitle: "अपनी रणनीति चुनें",
     explanation: "स्पष्टीकरण",
@@ -5956,6 +5968,7 @@ export const translations: Record<Language, Record<string, string>> = {
     settings: "Impostazioni",
     welcomeTitle: "Plan B",
     welcomeSubtitle: "Ottimizzazione Patrimoniale Strategica",
+    familyIncomeTagline: "Costruisci il Reddito Mensile della tua Famiglia con i Diamanti",
     startCalculation: "Inizia Calcolo",
     recentCalculations: "Calcoli Recenti",
     clientName: "Nome Cliente",
@@ -6426,6 +6439,7 @@ export const translations: Record<Language, Record<string, string>> = {
   vi: {
     welcomeTitle: "Chào mừng đến với Plan B",
     welcomeSubtitle: "Tài sản vật chất của bạn",
+    familyIncomeTagline: "Xây Dựng Thu Nhập Hàng Tháng Cho Gia Đình Bạn Với Kim Cương",
     goalCards: "Mục tiêu",
     goalCardsSubtitle: "Chọn chiến lược của bạn",
     explanation: "Giải thích",

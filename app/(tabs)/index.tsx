@@ -190,6 +190,7 @@ export default function HomeScreen() {
           <Text style={S.heroIcon}>💎</Text>
           <Text style={S.heroTitle}>{t(language, "welcomeTitle")}</Text>
           <Text style={S.heroSub}>{t(language, "welcomeSubtitle")}</Text>
+          <Text style={S.heroTagline}>{t(language, "familyIncomeTagline")}</Text>
         </View>
 
         {/* Goal Cards Section */}
@@ -355,6 +356,7 @@ const S = StyleSheet.create({
   heroIcon: { fontSize: 44, marginBottom: 8 },
   heroTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", letterSpacing: 1 },
   heroSub: { fontSize: 15, color: "#94a3b8", marginTop: 4, textAlign: "center" },
+  heroTagline: { fontSize: 17, fontWeight: "700", color: "#f59e0b", marginTop: 10, textAlign: "center", paddingHorizontal: 16, lineHeight: 24 },
 
   // Goal Cards
   sectionHeader: { marginBottom: 12 },
