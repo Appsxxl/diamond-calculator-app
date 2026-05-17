@@ -636,7 +636,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Maandelijks",
-    finalBalance: "Eindwaarde Diamanten",
+    finalBalance: "💎 Eindwaarde Diamanten",
     monthlyBreakdown: "Maandelijks Korting Schema",
     selectStrategy: "Selecteer een investeringsstrategie",
     tip: "Tip",
@@ -1144,7 +1144,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Monatlich",
-    finalBalance: "Endwert der Diamanten",
+    finalBalance: "💎 Endwert der Diamanten",
     monthlyBreakdown: "Monatlicher Vergütungsplan",
     selectStrategy: "Wählen Sie eine Anlagestrategie",
     tip: "Tipp",
@@ -1652,7 +1652,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Mensuel",
-    finalBalance: "Valeur Finale des Diamants",
+    finalBalance: "💎 Valeur Finale des Diamants",
     monthlyBreakdown: "Calendrier Mensuel des Remises",
     selectStrategy: "Sélectionnez une stratégie d'investissement",
     tip: "Conseil",
@@ -2160,7 +2160,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Additional Keys
     monthly: "Mensual",
-    finalBalance: "Valor Final de los Diamantes",
+    finalBalance: "💎 Valor Final de los Diamantes",
     monthlyBreakdown: "Calendario Mensual de Reembolsos",
     selectStrategy: "Seleccione una estrategia de inversión",
     tip: "Consejo",
@@ -2667,7 +2667,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Additional Keys
     monthly: "Ежемесячно",
-    finalBalance: "Итоговая стоимость алмазов",
+    finalBalance: "💎 Итоговая стоимость алмазов",
     monthlyBreakdown: "Ежемесячный план возвратов",
     selectStrategy: "Выберите инвестиционную стратегию",
     tip: "Совет",
@@ -3171,7 +3171,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Additional Keys
     monthly: "每月",
-    finalBalance: "钻石最终价值",
+    finalBalance: "💎 钻石最终价值",
     monthlyBreakdown: "每月返利计划",
     selectStrategy: "选择投资策略",
     tip: "提示",
@@ -3596,7 +3596,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "Lohika ng Paglago %",
     totalIn: "Kabuuang Halagang Binayad",
     totalOut: "Kabuuang Rebate na Natanggap",
-    finalBalance: "Huling Halaga ng Diamante",
+    finalBalance: "💎 Huling Halaga ng Diamante",
     rocBreakEven: "Punto ng Pagbabayad sa Pagbili",
     currentStatus: "Buod ng Diskarte",
     monthlyBreakdown: "Buwanang Iskedyul ng Rebate",
@@ -4072,7 +4072,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "Lógica de Crescimento %",
     totalIn: "Montante Total Pago",
     totalOut: "Total de Rebates Distribuídos",
-    finalBalance: "Valor Final dos Diamantes",
+    finalBalance: "💎 Valor Final dos Diamantes",
     rocBreakEven: "Ponto de Recuperação da Compra",
     currentStatus: "Resumo da Estratégia",
     monthlyBreakdown: "Calendário Mensal de Rebates",
@@ -4548,7 +4548,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "منطق النمو %",
     totalIn: "إجمالي المبلغ المدفوع",
     totalOut: "إجمالي الاستردادات الموزعة",
-    finalBalance: "القيمة النهائية للماس",
+    finalBalance: "💎 القيمة النهائية للماس",
     rocBreakEven: "نقطة استرداد الشراء",
     currentStatus: "ملخص الاستراتيجية",
     monthlyBreakdown: "جدول الاسترداد الشهري",
@@ -5024,7 +5024,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "% ตรรกะการเติบโต",
     totalIn: "ยอดรวมที่ชำระ",
     totalOut: "ส่วนลดรวมที่แจกจ่าย",
-    finalBalance: "มูลค่าสุดท้ายของเพชร",
+    finalBalance: "💎 มูลค่าสุดท้ายของเพชร",
     rocBreakEven: "จุดคืนทุนการซื้อ",
     currentStatus: "สรุปกลยุทธ์",
     monthlyBreakdown: "ตารางส่วนลดรายเดือน",
@@ -5500,7 +5500,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "विकास तर्क %",
     totalIn: "कुल भुगतान राशि",
     totalOut: "कुल वितरित छूट",
-    finalBalance: "हीरे का अंतिम मूल्य",
+    finalBalance: "💎 हीरे का अंतिम मूल्य",
     rocBreakEven: "खरीद पुनर्प्राप्ति बिंदु",
     currentStatus: "रणनीति सारांश",
     monthlyBreakdown: "मासिक छूट अनुसूची",
@@ -6450,7 +6450,7 @@ export const translations: Record<Language, Record<string, string>> = {
     compoundCol: "% Logic Tăng Trưởng",
     totalIn: "Tổng Số Tiền Đã Trả",
     totalOut: "Tổng Hoàn Tiền Đã Phân Phối",
-    finalBalance: "Giá Trị Cuối Của Kim Cương",
+    finalBalance: "💎 Giá Trị Cuối Của Kim Cương",
     rocBreakEven: "Điểm Thu Hồi Mua Hàng",
     currentStatus: "Tóm Tắt Chiến Lược",
     monthlyBreakdown: "Lịch Hoàn Tiền Hàng Tháng",

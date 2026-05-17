@@ -32,6 +32,72 @@ function numVal(s: string, fallback = 0): number {
   return isNaN(n) ? fallback : n;
 }
 
+// ─── Result text builder (Copy / Share) ──────────────────────────────────────
+function buildCopyText(
+  lang: string,
+  { deposit, net, sp, vipEnabled, years, goal, clientName, result }: {
+    deposit: number; net: number;
+    sp: { name: string; baseRate: number };
+    vipEnabled: boolean; years: string; goal: string;
+    clientName: string;
+    result: { goalReachedMonth: number | null; maxMonthlyOut: number; maxMonthlyOutMonth: number; totalIn: number; totalOut: number; finalCap: number; netResult: number; rocMonth: number | null; };
+  }
+): string {
+  const L = (key: string) => t(lang as Language, key);
+  const lbl: Record<string, Record<string, string>> = {
+    title:          { en: '💎 Plan B — Strategy Result', nl: '💎 Plan B — Strategieresultaat', de: '💎 Plan B — Strategie Ergebnis', fr: '💎 Plan B — Résultat Stratégique', es: '💎 Plan B — Resultado Estratégico', ru: '💎 Plan B — Результат стратегии', zh: '💎 Plan B — 策略结果' },
+    duration:       { en: 'Duration', nl: 'Looptijd', de: 'Laufzeit', fr: 'Durée', es: 'Duración', ru: 'Срок', zh: '期限' },
+    goalReached:    { en: 'Goal reached', nl: 'Doel bereikt', de: 'Ziel erreicht', fr: 'Objectif atteint', es: 'Meta alcanzada', ru: 'Цель достигнута', zh: '目标达成' },
+    goalMissed:     { en: 'Not within period', nl: 'Niet bereikt', de: 'Nicht erreicht', fr: 'Non atteint', es: 'No alcanzado', ru: 'Не достигнута', zh: '未达成' },
+    peak:           { en: 'Peak discount', nl: 'Max korting', de: 'Max. Rabatt', fr: 'Remise max', es: 'Desc. máximo', ru: 'Макс. скидка', zh: '最高折扣' },
+    month:          { en: 'Month', nl: 'Maand', de: 'Monat', fr: 'Mois', es: 'Mes', ru: 'Месяц', zh: '月' },
+    year:           { en: 'Year', nl: 'Jaar', de: 'Jahr', fr: 'Année', es: 'Año', ru: 'Год', zh: '年' },
+    yearSingle:     { en: 'year', nl: 'jaar', de: 'Jahr', fr: 'an', es: 'año', ru: 'год', zh: '年' },
+    yearPlural:     { en: 'years', nl: 'jaar', de: 'Jahre', fr: 'ans', es: 'años', ru: 'лет', zh: '年' },
+    footer2:        { en: 'Projections are illustrative only — not a guarantee of returns.', nl: 'Projecties zijn illustratief — geen garantie op rendement.', de: 'Prognosen sind illustrativ — keine Renditegarantie.', fr: 'Projections illustratives uniquement — sans garantie de rendement.', es: 'Proyecciones ilustrativas — sin garantía de rentabilidad.', ru: 'Прогнозы носят иллюстративный характер — не гарантия доходности.', zh: '预测仅供参考，不构成收益保证。' },
+  };
+  const g = (key: string) => lbl[key]?.[lang] ?? lbl[key]?.['en'] ?? key;
+  const yrs = numVal(years);
+  return [
+    g('title'),
+    '──────────────────────────',
+    clientName ? `${L('clientName')}:  ${clientName}` : null,
+    `${L('startDiamonds')}:  $${deposit.toLocaleString()}`,
+    `${L('netInvestedDiamonds')}:  $${net.toLocaleString()}`,
+    `${L('planPrefix')}  ${sp.name}${vipEnabled ? ' +VIP' : ''} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
+    `${g('duration')}:  ${years} ${yrs === 1 ? g('yearSingle') : g('yearPlural')}`,
+    ``,
+    `${L('goal')}:  $${numVal(goal).toLocaleString()}`,
+    result.goalReachedMonth
+      ? `${g('goalReached')}:  ${g('month')} ${result.goalReachedMonth} (${g('year')} ${Math.ceil(result.goalReachedMonth / 12)})`
+      : `${g('goalReached')}:  ${g('goalMissed')}`,
+    `${g('peak')}:  $${result.maxMonthlyOut.toLocaleString()} (${g('month')} ${result.maxMonthlyOutMonth})`,
+    ``,
+    `${L('totalIn')}:  $${result.totalIn.toLocaleString()}`,
+    `${L('totalOut')}:  $${result.totalOut.toLocaleString()}`,
+    `${L('finalBalance')}:  $${result.finalCap.toLocaleString()}`,
+    `${L('netResult')}:  $${result.netResult.toLocaleString()}`,
+    result.rocMonth ? `${L('rocBreakEven')}:  ${g('month')} ${result.rocMonth}` : null,
+    ``,
+    `Plan B Diamond · Adviser Pro`,
+    g('footer2'),
+  ].filter((l): l is string => l !== null).join('\n');
+}
+
+// ─── PDF labels by language ───────────────────────────────────────────────────
+function getPdfLabels(lang: string): Record<string, string> {
+  const d: Record<string, Record<string, string>> = {
+    en: { docTitle:'Personal Strategy Roadmap', giaTitle:'GIA Verified', giaSub:'Plan B Integrity', preparedFor:'Prepared for', yearPlanB:'Year Plan B Strategy', paramsTitle:'Strategy Parameters', spTier:'SP Tier', vipFeeLabel:'VIP Activation Fee', feesLabel:'Transaction Fees', feesValue:'$5 flat + 1.25% applied to all deposits', vipActive:'Active (+3% Monthly Discount)', vipStandard:'Standard', vipFeeValue:'$1,000 (Paid Manually)', vipFeeNone:'None', summaryTitle:'Strategy Summary', goalLabel:'🎯 Monthly Goal', goalReached:'✅ Reached at Month {month} (Year {year})', goalMissed:'⏳ Not reached within {years}-year period', pending:'Pending', tableTitle:'Monthly Discount Schedule', tableGrouped:'(Grouped by Year)', colPeriod:'Period', colMonth:'Month', colAnnualDep:'Annual Deposits ($)', colMonthlyDep:'Monthly Deposit ($)', colAnnualDisc:'Annual Discount Gained ($)', colMonthlyDisc:'Monthly Discount ($)', colCumulative:'Cumulative Discounts ($)', colTotalAsset:'💎 Total Asset Value ($)', secTitle:'Security & Guarantees', secBoxTitle:'🛡️ Your Protections', g1:'Contractual 100% Buyback Guarantee on completion of the {years}-year strategy period.', g2:'Ownership of physical, GIA-certified diamonds — legally yours.', g3:'Diamonds stored in secure Dubai Freezone or delivered to your home.', g4:'All ownership rights transferable to your children or next of kin.', discTitle:'Mathematical Calculation Only:', discBody:'This document provides mathematical calculations for illustrative purposes and is not financial advice. All projections are based on current plan parameters and may vary. Always review the official Diamond Solution contract documents.', generatedBy:'Generated by Plan B App', vipNote:'* Total Purchase Amount includes the initial purchase, monthly contributions, and the manual $1,000 VIP activation fee.' },
+    nl: { docTitle:'Persoonlijk Strategieroadmap', giaTitle:'GIA Geverifieerd', giaSub:'Plan B Integriteit', preparedFor:'Opgesteld voor', yearPlanB:'Jaar Plan B Strategie', paramsTitle:'Strategie Parameters', spTier:'SP Niveau', vipFeeLabel:'VIP Activeringskosten', feesLabel:'Transactiekosten', feesValue:'$5 vast + 1,25% op alle stortingen', vipActive:'Actief (+3% Maandelijkse Korting)', vipStandard:'Standaard', vipFeeValue:'$1.000 (Handmatig betaald)', vipFeeNone:'Geen', summaryTitle:'Strategiebeschrijving', goalLabel:'🎯 Maandelijks Doel', goalReached:'✅ Bereikt in Maand {month} (Jaar {year})', goalMissed:'⏳ Niet bereikt binnen {years}-jaarsperiode', pending:'In behandeling', tableTitle:'Maandelijks Kortingsoverzicht', tableGrouped:'(Gegroepeerd per jaar)', colPeriod:'Periode', colMonth:'Maand', colAnnualDep:'Jaarlijkse Stortingen ($)', colMonthlyDep:'Maandelijkse Storting ($)', colAnnualDisc:'Jaarlijkse Korting ($)', colMonthlyDisc:'Maandelijkse Korting ($)', colCumulative:'Cumulatieve Kortingen ($)', colTotalAsset:'💎 Totale Waarde ($)', secTitle:'Veiligheid & Garanties', secBoxTitle:'🛡️ Uw Beschermingen', g1:'Contractuele 100% Terugkoopgarantie na afloop van de {years}-jaarsperiode.', g2:'Eigendom van fysieke, GIA-gecertificeerde diamanten — uw wettelijk eigendom.', g3:'Diamanten opgeslagen in Dubai Vrijzone of thuisbezorgd.', g4:'Alle eigendomsrechten overdraagbaar aan uw kinderen of naaste familie.', discTitle:'Alleen Wiskundige Berekening:', discBody:'Dit document biedt wiskundige berekeningen voor illustratieve doeleinden en is geen financieel advies. Bekijk altijd de officiële Diamond Solution-contractdocumenten.', generatedBy:'Gegenereerd door Plan B App', vipNote:'* Totaal aankoopbedrag inclusief eerste aankoop, maandelijkse bijdragen en de handmatige VIP-activeringskosten van $1.000.' },
+    de: { docTitle:'Persönliche Strategie-Roadmap', giaTitle:'GIA Verifiziert', giaSub:'Plan B Integrität', preparedFor:'Erstellt für', yearPlanB:'Jahre Plan B Strategie', paramsTitle:'Strategie-Parameter', spTier:'SP-Level', vipFeeLabel:'VIP-Aktivierungsgebühr', feesLabel:'Transaktionsgebühren', feesValue:'5 $ pauschal + 1,25% auf alle Einzahlungen', vipActive:'Aktiv (+3% Monatlicher Rabatt)', vipStandard:'Standard', vipFeeValue:'1.000 $ (Manuell bezahlt)', vipFeeNone:'Keine', summaryTitle:'Strategiezusammenfassung', goalLabel:'🎯 Monatliches Ziel', goalReached:'✅ Erreicht in Monat {month} (Jahr {year})', goalMissed:'⏳ Nicht erreicht innerhalb {years}-Jahres-Zeitraum', pending:'Ausstehend', tableTitle:'Monatlicher Rabattplan', tableGrouped:'(Gruppiert nach Jahr)', colPeriod:'Zeitraum', colMonth:'Monat', colAnnualDep:'Jährliche Einzahlungen ($)', colMonthlyDep:'Monatliche Einzahlung ($)', colAnnualDisc:'Jährlicher Rabatt ($)', colMonthlyDisc:'Monatlicher Rabatt ($)', colCumulative:'Kumulierte Rabatte ($)', colTotalAsset:'💎 Gesamter Vermögenswert ($)', secTitle:'Sicherheit & Garantien', secBoxTitle:'🛡️ Ihre Schutzmaßnahmen', g1:'Vertragliche 100% Rückkaufgarantie nach Abschluss der {years}-Jahres-Strategie.', g2:'Eigentum an physischen, GIA-zertifizierten Diamanten — legal Ihres.', g3:'Diamanten in der Dubai Freizone gelagert oder nach Hause geliefert.', g4:'Alle Eigentumsrechte übertragbar auf Ihre Kinder oder nächsten Angehörigen.', discTitle:'Nur Mathematische Berechnung:', discBody:'Dieses Dokument enthält mathematische Berechnungen zu illustrativen Zwecken und ist keine Finanzberatung. Überprüfen Sie immer die offiziellen Diamond Solution-Vertragsunterlagen.', generatedBy:'Erstellt von Plan B App', vipNote:'* Gesamter Kaufbetrag inkl. Erstkauf, monatliche Beiträge und manuelle VIP-Aktivierungsgebühr von 1.000 $.' },
+    fr: { docTitle:'Feuille de Route Stratégique Personnelle', giaTitle:'Vérifié GIA', giaSub:'Intégrité Plan B', preparedFor:'Préparé pour', yearPlanB:'Ans de Stratégie Plan B', paramsTitle:'Paramètres de Stratégie', spTier:'Niveau SP', vipFeeLabel:"Frais d'Activation VIP", feesLabel:'Frais de Transaction', feesValue:'5 $ fixe + 1,25% sur tous les dépôts', vipActive:'Actif (+3% Remise Mensuelle)', vipStandard:'Standard', vipFeeValue:'1 000 $ (Payé manuellement)', vipFeeNone:'Aucun', summaryTitle:'Résumé Stratégique', goalLabel:'🎯 Objectif Mensuel', goalReached:'✅ Atteint au Mois {month} (Année {year})', goalMissed:'⏳ Non atteint dans la période de {years} ans', pending:'En attente', tableTitle:'Calendrier de Remises Mensuelles', tableGrouped:'(Groupé par année)', colPeriod:'Période', colMonth:'Mois', colAnnualDep:'Dépôts Annuels ($)', colMonthlyDep:'Dépôt Mensuel ($)', colAnnualDisc:'Remise Annuelle ($)', colMonthlyDisc:'Remise Mensuelle ($)', colCumulative:'Remises Cumulées ($)', colTotalAsset:'💎 Valeur Totale des Actifs ($)', secTitle:'Sécurité & Garanties', secBoxTitle:'🛡️ Vos Protections', g1:"Garantie de Rachat Contractuelle à 100% à l'issue de la période de {years} ans.", g2:'Propriété de diamants physiques certifiés GIA — légalement vôtres.', g3:'Diamants stockés en Zone Franche de Dubaï ou livrés à domicile.', g4:'Tous droits de propriété transmissibles à vos enfants ou proches.', discTitle:'Calcul Mathématique Uniquement :', discBody:"Ce document fournit des calculs mathématiques à titre illustratif et ne constitue pas un conseil financier. Consultez toujours les documents contractuels officiels de Diamond Solution.", generatedBy:'Généré par Plan B App', vipNote:"* Montant total d'achat incluant l'achat initial, les contributions mensuelles et les frais d'activation VIP manuels de 1 000 $." },
+    es: { docTitle:'Hoja de Ruta Estratégica Personal', giaTitle:'Verificado GIA', giaSub:'Integridad Plan B', preparedFor:'Preparado para', yearPlanB:'Años de Estrategia Plan B', paramsTitle:'Parámetros de Estrategia', spTier:'Nivel SP', vipFeeLabel:'Tarifa de Activación VIP', feesLabel:'Tarifas de Transacción', feesValue:'$5 fijo + 1,25% en todos los depósitos', vipActive:'Activo (+3% Descuento Mensual)', vipStandard:'Estándar', vipFeeValue:'$1,000 (Pagado Manualmente)', vipFeeNone:'Ninguno', summaryTitle:'Resumen Estratégico', goalLabel:'🎯 Meta Mensual', goalReached:'✅ Alcanzado en Mes {month} (Año {year})', goalMissed:'⏳ No alcanzado en el período de {years} años', pending:'Pendiente', tableTitle:'Calendario de Descuentos Mensuales', tableGrouped:'(Agrupado por año)', colPeriod:'Período', colMonth:'Mes', colAnnualDep:'Depósitos Anuales ($)', colMonthlyDep:'Depósito Mensual ($)', colAnnualDisc:'Descuento Anual ($)', colMonthlyDisc:'Descuento Mensual ($)', colCumulative:'Descuentos Acumulados ($)', colTotalAsset:'💎 Valor Total de Activos ($)', secTitle:'Seguridad y Garantías', secBoxTitle:'🛡️ Sus Protecciones', g1:'Garantía de Recompra Contractual del 100% al completar el período de {years} años.', g2:'Propiedad de diamantes físicos certificados GIA — legalmente suyos.', g3:'Diamantes almacenados en Zona Franca de Dubái o entregados en su domicilio.', g4:'Todos los derechos de propiedad transferibles a sus hijos o familiares.', discTitle:'Solo Cálculo Matemático:', discBody:'Este documento proporciona cálculos matemáticos con fines ilustrativos y no constituye asesoramiento financiero. Revise siempre los documentos contractuales oficiales de Diamond Solution.', generatedBy:'Generado por Plan B App', vipNote:'* El monto total de compra incluye la compra inicial, contribuciones mensuales y la tarifa de activación VIP manual de $1,000.' },
+    ru: { docTitle:'Персональная Стратегическая Дорожная Карта', giaTitle:'GIA Проверено', giaSub:'Целостность Plan B', preparedFor:'Подготовлено для', yearPlanB:'Лет Стратегии Plan B', paramsTitle:'Параметры Стратегии', spTier:'Уровень SP', vipFeeLabel:'Плата за Активацию VIP', feesLabel:'Комиссии за Транзакции', feesValue:'$5 фиксированно + 1,25% на все депозиты', vipActive:'Активен (+3% Ежемесячная Скидка)', vipStandard:'Стандарт', vipFeeValue:'$1 000 (Оплачено вручную)', vipFeeNone:'Отсутствует', summaryTitle:'Сводка Стратегии', goalLabel:'🎯 Ежемесячная Цель', goalReached:'✅ Достигнута в Месяц {month} (Год {year})', goalMissed:'⏳ Не достигнута в течение {years}-летнего периода', pending:'В ожидании', tableTitle:'График Ежемесячных Скидок', tableGrouped:'(Сгруппировано по годам)', colPeriod:'Период', colMonth:'Месяц', colAnnualDep:'Годовые Депозиты ($)', colMonthlyDep:'Ежемесячный Депозит ($)', colAnnualDisc:'Годовые Скидки ($)', colMonthlyDisc:'Ежемесячная Скидка ($)', colCumulative:'Накопленные Скидки ($)', colTotalAsset:'💎 Общая Стоимость Активов ($)', secTitle:'Безопасность и Гарантии', secBoxTitle:'🛡️ Ваши Гарантии', g1:'Договорная гарантия 100% обратного выкупа по завершении {years}-летнего периода.', g2:'Право собственности на физические алмазы с сертификатом GIA — ваша законная собственность.', g3:'Алмазы хранятся в Свободной Зоне Дубая или доставляются на дом.', g4:'Все права собственности передаваемы детям или ближайшим родственникам.', discTitle:'Только Математический Расчёт:', discBody:'Этот документ содержит математические расчёты в иллюстративных целях и не является финансовым советом. Всегда изучайте официальные договорные документы Diamond Solution.', generatedBy:'Создано приложением Plan B', vipNote:'* Общая сумма покупки включает первоначальную покупку, ежемесячные взносы и ручную плату за активацию VIP в размере $1 000.' },
+    zh: { docTitle:'个人策略路线图', giaTitle:'GIA认证', giaSub:'Plan B 诚信保证', preparedFor:'为以下客户准备', yearPlanB:'年Plan B策略', paramsTitle:'策略参数', spTier:'SP级别', vipFeeLabel:'VIP激活费', feesLabel:'交易费用', feesValue:'$5固定 + 所有存款的1.25%', vipActive:'已激活（+3%月度折扣）', vipStandard:'标准', vipFeeValue:'$1,000（手动支付）', vipFeeNone:'无', summaryTitle:'策略摘要', goalLabel:'🎯 月度目标', goalReached:'✅ 在第{month}个月达成（第{year}年）', goalMissed:'⏳ 在{years}年期内未达成', pending:'待定', tableTitle:'月度折扣计划', tableGrouped:'（按年分组）', colPeriod:'期间', colMonth:'月份', colAnnualDep:'年度存款（$）', colMonthlyDep:'月度存款（$）', colAnnualDisc:'年度获得折扣（$）', colMonthlyDisc:'月度折扣（$）', colCumulative:'累计折扣（$）', colTotalAsset:'💎 总资产价值（$）', secTitle:'安全与保障', secBoxTitle:'🛡️ 您的保护', g1:'在{years}年策略期结束时，合同承诺100%回购保证。', g2:'拥有GIA认证的实体钻石所有权——合法属于您。', g3:'钻石存储在迪拜自由区或送货上门。', g4:'所有所有权可转让给您的子女或近亲。', discTitle:'仅供数学计算：', discBody:'本文件提供数学计算仅供参考，不构成财务建议。所有预测均基于当前计划参数，可能有所变化。请务必查阅Diamond Solution官方合同文件。', generatedBy:'由Plan B应用程序生成', vipNote:'* 总购买金额包括初始购买、每月供款及手动$1,000 VIP激活费。' },
+  };
+  return d[lang] ?? d['en'];
+}
+
 type OptionsHelpItem = { icon: string; title: string; color: string; body: string };
 type OptionsHelpData = { buttonLabel: string; modalTitle: string; tipTitle: string; tipBody: string; items: OptionsHelpItem[] };
 
@@ -199,6 +265,7 @@ export default function ScenarioToolScreen() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [savedClients, setSavedClients] = useState<SavedClient[]>([]);
   const [showClientsModal, setShowClientsModal] = useState(false);
   const [clientSearch, setClientSearch] = useState("");
@@ -950,6 +1017,7 @@ export default function ScenarioToolScreen() {
                     florida: { name: 'Diamond Solution — Florida, USA', address: 'Florida, United States', reg: 'US Operations Office' },
                   };
                   const office = officeData[officeLocation] ?? officeData.dubai;
+                  const P = getPdfLabels(language);
                   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
                   const pdfFilename = `PlanB_${(clientName || 'Strategy').replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '')}_${new Date().toISOString().split('T')[0]}`;
                   const totalYears = Math.round(result.months.length / 12);
@@ -1088,11 +1156,11 @@ export default function ScenarioToolScreen() {
                     <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
                       <div class="gia-seal">
                         <div class="gia-seal-icon">🔒</div>
-                        <div class="gia-seal-title">GIA Verified</div>
-                        <div class="gia-seal-sub">Plan B Integrity</div>
+                        <div class="gia-seal-title">${P.giaTitle}</div>
+                        <div class="gia-seal-sub">${P.giaSub}</div>
                       </div>
                       <div class="doc-title">
-                        <div class="doc-title-main">Personal Strategy Roadmap</div>
+                        <div class="doc-title-main">${P.docTitle}</div>
                         <div class="doc-meta">Date: ${today}</div>
                         <div class="doc-meta">${office.name}</div>
                       </div>
@@ -1102,114 +1170,114 @@ export default function ScenarioToolScreen() {
                   <!-- CLIENT BLOCK -->
                   ${clientName ? `<div class="client-block">
                     <div class="client-name">${clientName}</div>
-                    <div class="client-meta">Prepared for: ${totalYears}-Year Plan B Strategy &nbsp;·&nbsp; ${office.reg}</div>
+                    <div class="client-meta">${P.preparedFor}: ${totalYears}-${P.yearPlanB} &nbsp;·&nbsp; ${office.reg}</div>
                   </div>` : ''}
 
                   <!-- STRATEGY PARAMETERS -->
-                  <div class="section-title">Strategy Parameters</div>
+                  <div class="section-title">${P.paramsTitle}</div>
                   <div class="params-box">
                     <div class="param-row">
-                      <div class="param-label">Initial Diamond Purchase</div>
+                      <div class="param-label">${t(language, 'startDiamonds')}</div>
                       <div class="param-value">${fmt(numVal(startAmount))}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">Strategy Duration</div>
+                      <div class="param-label">${t(language, 'years')}</div>
                       <div class="param-value">${totalYears} Years (${totalMonths} Months)</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">SP Tier</div>
+                      <div class="param-label">${P.spTier}</div>
                       <div class="param-value" style="color:#1e3a5f">${(() => { const sp = getSPLevel(getNetDeposit(numVal(startAmount))); return sp.name + ' — ' + (sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(2) + '%/mo'; })()}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">Monthly Goal Target</div>
+                      <div class="param-label">${t(language, 'goal')}</div>
                       <div class="param-value" style="color:${result.goalReachedMonth ? '#16a34a' : '#1e3a5f'}">${fmt(numVal(goal))}${result.goalReachedMonth ? ' ✓' : ''}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">Monthly Diamond Purchases</div>
+                      <div class="param-label">${t(language, 'deposit')}</div>
                       <div class="param-value" style="font-weight:700">${depositLabel}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">VIP Status</div>
-                      <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? 'Active (+3% Monthly Discount)' : 'Standard'}</div>
+                      <div class="param-label">${t(language, 'vipStatus')}</div>
+                      <div class="param-value" style="color:${vipEnabled ? '#33C5FF' : '#64748b'}">${vipEnabled ? P.vipActive : P.vipStandard}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label">VIP Activation Fee</div>
-                      <div class="param-value" style="color:${vipEnabled ? '#f59e0b' : '#64748b'}">${vipEnabled ? '$1,000 (Paid Manually)' : 'None'}</div>
+                      <div class="param-label">${P.vipFeeLabel}</div>
+                      <div class="param-value" style="color:${vipEnabled ? '#f59e0b' : '#64748b'}">${vipEnabled ? P.vipFeeValue : P.vipFeeNone}</div>
                     </div>
                     <div class="param-row">
-                      <div class="param-label" style="font-weight:700">Transaction Fees</div>
-                      <div class="param-value" style="font-weight:700;color:#f59e0b">$5 flat + 1.25% applied to all deposits</div>
+                      <div class="param-label" style="font-weight:700">${P.feesLabel}</div>
+                      <div class="param-value" style="font-weight:700;color:#f59e0b">${P.feesValue}</div>
                     </div>
                   </div>
 
                   <!-- STRATEGY SUMMARY -->
-                  <div class="section-title">Strategy Summary — ${totalYears} Year Period</div>
+                  <div class="section-title">${P.summaryTitle} — ${totalYears} ${P.yearPlanB}</div>
                   <div class="summary-box">
                     <div class="stat">
-                      <div class="stat-label">Total Purchase Amount${result.totalVipCost > 0 ? ' *' : ''}</div>
+                      <div class="stat-label">${t(language, 'totalIn')}${result.totalVipCost > 0 ? ' *' : ''}</div>
                       <div class="stat-value">${fmt(result.totalIn + result.totalVipCost)}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Total Strategy Discounts</div>
+                      <div class="stat-label">${t(language, 'totalOut')}</div>
                       <div class="stat-value green">${fmt(result.totalOut)}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Total 💎 Assets</div>
+                      <div class="stat-label">${t(language, 'finalBalance')}</div>
                       <div class="stat-value green">${fmt(result.finalCap)}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Net Strategy Value</div>
+                      <div class="stat-label">${t(language, 'netResult')}</div>
                       <div class="stat-value green">${(() => { const adj = result.netResult - result.totalVipCost; const base = result.totalIn + result.totalVipCost; return fmt(adj) + ' (' + (base > 0 ? (adj / base * 100).toFixed(1) : '0.0') + '%)'; })()}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Purchase Offset Point</div>
-                      <div class="stat-value blue">${result.rocMonth ? 'Month ' + result.rocMonth + ' (Year ' + Math.ceil(result.rocMonth/12) + ')' : 'Pending'}</div>
+                      <div class="stat-label">${t(language, 'rocBreakEven')}</div>
+                      <div class="stat-value blue">${result.rocMonth ? P.colMonth + ' ' + result.rocMonth + ' (Year ' + Math.ceil(result.rocMonth/12) + ')' : P.pending}</div>
                     </div>
                     <div class="stat">
-                      <div class="stat-label">Max Monthly Discount (Month ${result.maxMonthlyOutMonth})</div>
+                      <div class="stat-label">${t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.maxMonthlyOutMonth))}</div>
                       <div class="stat-value green">${fmt(result.maxMonthlyOut)}</div>
                     </div>
                     <div class="stat" style="grid-column:span 2;background:${result.goalReachedMonth ? '#f0fdf4' : '#fefce8'};border:1.5px solid ${result.goalReachedMonth ? '#16a34a' : '#ca8a04'}">
-                      <div class="stat-label">🎯 Monthly Goal — ${fmt(numVal(goal))}</div>
-                      <div class="stat-value" style="color:${result.goalReachedMonth ? '#16a34a' : '#b45309'}">${result.goalReachedMonth ? '✅ Reached at Month ' + result.goalReachedMonth + ' (Year ' + Math.ceil(result.goalReachedMonth/12) + ')' : '⏳ Not reached within ' + totalYears + '-year period'}</div>
+                      <div class="stat-label">${P.goalLabel} — ${fmt(numVal(goal))}</div>
+                      <div class="stat-value" style="color:${result.goalReachedMonth ? '#16a34a' : '#b45309'}">${result.goalReachedMonth ? P.goalReached.replace('{month}', String(result.goalReachedMonth)).replace('{year}', String(Math.ceil(result.goalReachedMonth/12))) : P.goalMissed.replace('{years}', String(totalYears))}</div>
                     </div>
                   </div>
-                  ${result.totalVipCost > 0 ? '<p style="font-size:9px;color:#64748b;margin:4px 0 0 2px">* Total Purchase Amount includes the initial purchase, monthly contributions, and the manual $1,000 VIP activation fee.</p>' : ''}
+                  ${result.totalVipCost > 0 ? `<p style="font-size:9px;color:#64748b;margin:4px 0 0 2px">${P.vipNote}</p>` : ''}
 
                   <!-- MONTHLY DISCOUNT SCHEDULE -->
-                  <div class="section-title">Monthly Discount Schedule ${totalYears > 5 ? '(Grouped by Year)' : ''}</div>
+                  <div class="section-title">${P.tableTitle} ${totalYears > 5 ? P.tableGrouped : ''}</div>
                   <table>
                     <thead>
                       <tr>
-                        <th>${totalYears > 5 ? 'Period' : 'Month'}</th>
-                        <th style="text-align:right">${totalYears > 5 ? 'Annual Deposits ($)' : 'Monthly Deposit ($)'}</th>
-                        <th style="text-align:right">${totalYears > 5 ? 'Annual Discount Gained ($)' : 'Monthly Discount ($)'}</th>
-                        <th style="text-align:right">Cumulative Discounts ($)</th>
-                        <th style="text-align:right">Total Asset Value ($)</th>
+                        <th>${totalYears > 5 ? P.colPeriod : P.colMonth}</th>
+                        <th style="text-align:right">${totalYears > 5 ? P.colAnnualDep : P.colMonthlyDep}</th>
+                        <th style="text-align:right">${totalYears > 5 ? P.colAnnualDisc : P.colMonthlyDisc}</th>
+                        <th style="text-align:right">${P.colCumulative}</th>
+                        <th style="text-align:right">${P.colTotalAsset}</th>
                       </tr>
                     </thead>
                     <tbody>${tableBody}</tbody>
                   </table>
 
                   <!-- SECURITY & GUARANTEES -->
-                  <div class="section-title">Security & Guarantees</div>
+                  <div class="section-title">${P.secTitle}</div>
                   <div class="guarantee-box">
-                    <div class="guarantee-title">🛡️ Your Protections</div>
-                    <div class="guarantee-item">Contractual 100% Buyback Guarantee on completion of the ${totalYears}-year strategy period.</div>
-                    <div class="guarantee-item">Ownership of physical, GIA-certified diamonds — legally yours.</div>
-                    <div class="guarantee-item">Diamonds stored in secure Dubai Freezone or delivered to your home.</div>
-                    <div class="guarantee-item">All ownership rights transferable to your children or next of kin.</div>
+                    <div class="guarantee-title">${P.secBoxTitle}</div>
+                    <div class="guarantee-item">${P.g1.replace('{years}', String(totalYears))}</div>
+                    <div class="guarantee-item">${P.g2}</div>
+                    <div class="guarantee-item">${P.g3}</div>
+                    <div class="guarantee-item">${P.g4}</div>
                   </div>
 
                   <!-- DISCLAIMER -->
                   <div class="disclaimer">
-                    ⚠️ <strong>Mathematical Calculation Only:</strong> This document provides mathematical calculations for illustrative purposes and is not financial advice. All projections are based on current plan parameters and may vary. Always review the official Diamond Solution contract documents.
+                    ⚠️ <strong>${P.discTitle}</strong> ${P.discBody}
                   </div>
 
                   <!-- FOOTER -->
                   <div class="footer">
                     <span><strong>${office.name}</strong> · ${office.address} · ${office.reg}</span>
-                    <span>Generated by Plan B App · ${today} · ${pdfFilename}.pdf</span>
+                    <span>${P.generatedBy} · ${today} · ${pdfFilename}.pdf</span>
                   </div>
 
                   </body></html>`;
@@ -1258,32 +1326,8 @@ export default function ScenarioToolScreen() {
                   const deposit = numVal(startAmount);
                   const net = getNetDeposit(deposit);
                   const sp = getSPLevel(net);
-                  const vipLabel = vipEnabled ? ' +VIP' : '';
-                  const lines = [
-                    '💎 Plan B — Strategy Result',
-                    `──────────────────────────`,
-                    clientName ? `Client:         ${clientName}` : null,
-                    `Deposit:        $${deposit.toLocaleString()}`,
-                    `Net capital:    $${net.toLocaleString()}`,
-                    `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
-                    `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
-                    ``,
-                    `Monthly goal:   $${numVal(goal).toLocaleString()}`,
-                    result.goalReachedMonth
-                      ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
-                      : `Goal reached:   Not within period`,
-                    `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
-                    ``,
-                    `Total invested: $${result.totalIn.toLocaleString()}`,
-                    `Total out:      $${result.totalOut.toLocaleString()}`,
-                    `Final balance:  $${result.finalCap.toLocaleString()}`,
-                    `Net result:     $${result.netResult.toLocaleString()}`,
-                    result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : null,
-                    ``,
-                    `Plan B Diamond · Adviser Pro v2.1`,
-                    `Projections are illustrative only — not a guarantee of returns.`,
-                  ].filter((l): l is string => l !== null).join('\n');
-                  await Clipboard.setStringAsync(lines);
+                  const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
+                  await Clipboard.setStringAsync(text);
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2500);
                 }}
@@ -1294,50 +1338,29 @@ export default function ScenarioToolScreen() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[S.calcBtn, { flex: 1, backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155' }]}
+                style={[S.calcBtn, { flex: 1, backgroundColor: shared ? '#22c55e' : '#1e293b', borderWidth: 1, borderColor: shared ? '#22c55e' : '#334155' }]}
                 onPress={async () => {
                   const deposit = numVal(startAmount);
                   const net = getNetDeposit(deposit);
                   const sp = getSPLevel(net);
-                  const vipLabel = vipEnabled ? ' +VIP' : '';
-                  const lines = [
-                    '💎 Plan B — Strategy Result',
-                    `──────────────────────────`,
-                    clientName ? `Client:         ${clientName}` : null,
-                    `Deposit:        $${deposit.toLocaleString()}`,
-                    `Net capital:    $${net.toLocaleString()}`,
-                    `Plan:           ${sp.name}${vipLabel} (${(sp.baseRate + (vipEnabled ? 3 : 0)).toFixed(1)}%/mo)`,
-                    `Duration:       ${years} year${numVal(years) !== 1 ? 's' : ''}`,
-                    ``,
-                    `Monthly goal:   $${numVal(goal).toLocaleString()}`,
-                    result.goalReachedMonth
-                      ? `Goal reached:   Month ${result.goalReachedMonth} (Year ${Math.ceil(result.goalReachedMonth / 12)})`
-                      : `Goal reached:   Not within period`,
-                    `Peak discount:  $${result.maxMonthlyOut.toLocaleString()} (Month ${result.maxMonthlyOutMonth})`,
-                    ``,
-                    `Total invested: $${result.totalIn.toLocaleString()}`,
-                    `Total out:      $${result.totalOut.toLocaleString()}`,
-                    `Final balance:  $${result.finalCap.toLocaleString()}`,
-                    `Net result:     $${result.netResult.toLocaleString()}`,
-                    result.rocMonth ? `Break-even:     Month ${result.rocMonth}` : null,
-                    ``,
-                    `Plan B Diamond · Adviser Pro v2.1`,
-                    `Projections are illustrative only — not a guarantee of returns.`,
-                  ].filter((l): l is string => l !== null).join('\n');
+                  const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
                   const available = await Sharing.isAvailableAsync();
                   if (!available) {
-                    await Clipboard.setStringAsync(lines);
-                    Alert.alert('Copied', 'Sharing is not available on this device — result copied to clipboard instead.');
+                    await Clipboard.setStringAsync(text);
+                    setShared(true);
+                    setTimeout(() => setShared(false), 2500);
                     return;
                   }
                   // Write to a temp file so the share sheet has a proper text attachment
                   const file = new FileSystem.File(FileSystem.Paths.cache, 'planb-result.txt');
                   file.create({ overwrite: true });
-                  file.write(lines);
+                  file.write(text);
                   await Sharing.shareAsync(file.uri, { mimeType: 'text/plain', dialogTitle: 'Share Strategy Result', UTI: 'public.plain-text' });
+                  setShared(true);
+                  setTimeout(() => setShared(false), 2500);
                 }}
               >
-                <Text style={[S.calcText, { color: '#94a3b8', fontSize: 13 }]}>📤 Share</Text>
+                <Text style={[S.calcText, { color: shared ? '#fff' : '#94a3b8', fontSize: 13 }]}>{shared ? '✅ ' + t(language, 'done') : '📤 ' + t(language, 'shareLink')}</Text>
               </TouchableOpacity>
             </View>
 
@@ -1931,7 +1954,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
         <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualDiscountGained')}</Text>
         <Text style={{ flex: 1, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualAssetGrowth')}</Text>
         <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'vipStatus')}</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>Total Assets</Text>
+        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'finalBalance')}</Text>
       </View>
       {rows.map(r => (
         <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
