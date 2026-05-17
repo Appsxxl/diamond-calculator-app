@@ -294,6 +294,16 @@ export default function SettingsScreen() {
             <Text style={S.articleTitle}>FAQ — Frequently Asked Questions</Text>
             <Text style={S.articleChevron}>›</Text>
           </TouchableOpacity>
+          {/* View Introduction */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push({ pathname: "/onboarding" })}
+            style={[S.articleRow, { borderTopWidth: 0.5, borderTopColor: "#1e293b" }]}
+          >
+            <Text style={S.articleIcon}>💎</Text>
+            <Text style={S.articleTitle}>{t(language, "viewOnboarding") || "View Introduction"}</Text>
+            <Text style={S.articleChevron}>›</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Data Management */}

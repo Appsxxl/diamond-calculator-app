@@ -298,10 +298,15 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* Settings link */}
-        <TouchableOpacity style={S.settingsLink} onPress={() => router.push("/settings")}>
-          <Text style={S.settingsText}>⚙️ {t(language, "settings")}</Text>
-        </TouchableOpacity>
+        {/* View Introduction + Settings links */}
+        <View style={{ flexDirection: "row", justifyContent: "center", gap: 24, paddingVertical: 12 }}>
+          <TouchableOpacity onPress={() => router.push("/onboarding")}>
+            <Text style={S.settingsText}>💎 {t(language, "viewOnboarding") || "View Introduction"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/settings")}>
+            <Text style={S.settingsText}>⚙️ {t(language, "settings")}</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>

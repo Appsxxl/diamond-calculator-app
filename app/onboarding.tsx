@@ -9,7 +9,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
@@ -59,17 +59,21 @@ const LANGUAGES = [
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { language, setLanguage } = useCalculator();
   const [tooltip, setTooltip] = useState<number | null>(null);
 
+  const canGoBack = navigation.canGoBack();
   const tr = (key: string) => t(language, key);
 
   const handleCTA = async () => {
+    if (canGoBack) { router.back(); return; }
     await AsyncStorage.setItem("onboarding_seen", "1");
     router.replace("/(tabs)");
   };
 
   const handleSkip = async () => {
+    if (canGoBack) { router.back(); return; }
     await AsyncStorage.setItem("onboarding_seen", "1");
     router.replace("/(tabs)");
   };
@@ -85,6 +89,13 @@ export default function OnboardingScreen() {
         contentContainerStyle={S.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Back button — only when accessed from within the app */}
+        {canGoBack && (
+          <TouchableOpacity onPress={() => router.back()} style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 4, alignSelf: "flex-start" }}>
+            <Text style={{ color: "#64748b", fontSize: 16 }}>← Back</Text>
+          </TouchableOpacity>
+        )}
+
         {/* Language Selector */}
         <View style={S.langRow}>
           {LANGUAGES.map((lang) => (
