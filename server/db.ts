@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { AdvisorProfile, advisorProfiles, InsertAdvisorProfile, InsertUser, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -90,3 +90,22 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // TODO: add feature queries here as your schema grows.
+
+export async function getAdvisorProfile(userId: number): Promise<AdvisorProfile | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(advisorProfiles).where(eq(advisorProfiles.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertAdvisorProfile(
+  userId: number,
+  data: Partial<Omit<InsertAdvisorProfile, "id" | "userId" | "createdAt" | "updatedAt">>,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .insert(advisorProfiles)
+    .values({ userId, ...data })
+    .onDuplicateKeyUpdate({ set: data });
+}

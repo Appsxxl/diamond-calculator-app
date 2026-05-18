@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
+import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
 
 type LetterType = "invitation" | "presentation" | "business";
@@ -870,8 +871,7 @@ const CL_TEXT: Record<string, {
   },
 };
 
-// Loads the diamond asset and returns a base64 data URI for use in HTML/PDF.
-async function loadLogoBase64(): Promise<string> {
+async function loadDiamondBase64(): Promise<string> {
   try {
     const asset = await Asset.fromModule(require("../assets/onboarding/diamond.png")).downloadAsync();
     if (!asset.localUri) return "";
@@ -880,6 +880,23 @@ async function loadLogoBase64(): Promise<string> {
   } catch {
     return "";
   }
+}
+
+// Returns a logo suitable for embedding in PDF HTML.
+// On web, a URL is usable directly as <img src>. On native, converts to base64.
+async function resolveLogoForPdf(customLogoUrl?: string | null): Promise<string> {
+  if (customLogoUrl) {
+    if (Platform.OS === "web") return customLogoUrl;
+    try {
+      const dest = `${FileSystem.cacheDirectory}custom_logo_pdf`;
+      await FileSystem.downloadAsync(customLogoUrl, dest);
+      const b64 = await FileSystem.readAsStringAsync(dest, { encoding: FileSystem.EncodingType.Base64 });
+      return `data:image/jpeg;base64,${b64}`;
+    } catch {
+      // fall through to diamond
+    }
+  }
+  return loadDiamondBase64();
 }
 
 function buildHtml(letter: string, logoDataUri: string, customerName: string, date: string): string {
@@ -974,23 +991,41 @@ export default function ClientLetterScreen() {
   const [copied, setCopied] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [logoBase64, setLogoBase64] = useState("");
+  const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null);
 
+  // Load diamond logo for offline/fallback use
   useEffect(() => {
-    loadLogoBase64().then(setLogoBase64);
+    loadDiamondBase64().then(setLogoBase64);
   }, []);
 
+  // Load profile from server — populate fields and custom logo
+  const profileQuery = trpc.advisor.getProfile.useQuery(undefined, { retry: false });
+
   useEffect(() => {
+    const profile = profileQuery.data;
+    if (!profile) return;
+    if (profile.adviserName)  setAdviserName(profile.adviserName);
+    if (profile.companyName)  setAdviserCompany(profile.companyName);
+    if (profile.mobile)       setAdviserMobile(profile.mobile);
+    if (profile.contactInfo)  setAdviserContact(profile.contactInfo);
+    if (profile.logoUrl)      setCustomLogoUrl(profile.logoUrl);
+  }, [profileQuery.data]);
+
+  // AsyncStorage fallback for offline — only used if server profile is empty
+  useEffect(() => {
+    if (profileQuery.isLoading) return;
+    if (profileQuery.data?.adviserName) return; // server data takes priority
     AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
       if (!raw) return;
       try {
         const saved = JSON.parse(raw);
-        if (saved.adviserName)    setAdviserName(saved.adviserName);
-        if (saved.adviserCompany) setAdviserCompany(saved.adviserCompany);
-        if (saved.adviserMobile)  setAdviserMobile(saved.adviserMobile);
-        if (saved.adviserContact) setAdviserContact(saved.adviserContact);
+        if (saved.adviserName)    setAdviserName((p) => p || saved.adviserName);
+        if (saved.adviserCompany) setAdviserCompany((p) => p || saved.adviserCompany);
+        if (saved.adviserMobile)  setAdviserMobile((p) => p || saved.adviserMobile);
+        if (saved.adviserContact) setAdviserContact((p) => p || saved.adviserContact);
       } catch { /* ignore */ }
     });
-  }, []);
+  }, [profileQuery.isLoading, profileQuery.data]);
 
   const saveAdviserInfo = useCallback(() => {
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ adviserName, adviserCompany, adviserMobile, adviserContact }));
@@ -1021,7 +1056,8 @@ export default function ClientLetterScreen() {
     try {
       const docCustomer = customerName.trim() || "———";
       const docDate = formatDate(language);
-      const html = buildHtml(letter, logoBase64, docCustomer, docDate);
+      const logoSrc = await resolveLogoForPdf(customLogoUrl) || logoBase64;
+      const html = buildHtml(letter, logoSrc, docCustomer, docDate);
       if (Platform.OS === "web") {
         const iframe = document.createElement("iframe");
         iframe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:0;";
@@ -1073,9 +1109,18 @@ export default function ClientLetterScreen() {
 
           {/* ── Header ── */}
           <View style={S.header}>
-            <TouchableOpacity onPress={() => router.back()} style={S.backBtn} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Text style={S.backText}>{tx.back}</Text>
-            </TouchableOpacity>
+            <View style={S.headerTopRow}>
+              <TouchableOpacity onPress={() => router.back()} style={S.backBtn} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Text style={S.backText}>{tx.back}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/letters/profile-setup")}
+                style={S.profileBtn}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={S.profileBtnText}>⚙ Profile</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={S.screenTitle}>{tx.title}</Text>
             <Text style={S.screenSub}>{tx.sub}</Text>
           </View>
@@ -1214,13 +1259,30 @@ const S = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#1e293b",
   },
-  backBtn: {
-    marginBottom: 10,
+  backBtn: {},
+  headerTopRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
   },
   backText: {
     color: GOLD,
     fontSize: 14,
     fontFamily: FONT,
+  },
+  profileBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#1e2d47",
+    backgroundColor: "#0f1f38",
+  },
+  profileBtnText: {
+    color: "#94a3b8",
+    fontFamily: FONT,
+    fontSize: 12,
   },
   screenTitle: {
     fontSize: 22,

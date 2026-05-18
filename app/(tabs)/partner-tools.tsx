@@ -249,6 +249,8 @@ const TX: Record<string, {
   alert12month: string;
   clientLetterTitle: string;
   clientLetterDesc: string;
+  lettersHubTitle: string;
+  lettersHubDesc: string;
   alertsCount: string;
   diamondStability: string;
   onTopOfResidual: string;
@@ -381,6 +383,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Apply (With VIP)",
     clientLetterTitle: "Client Letter Generator",
     clientLetterDesc: "Create a professional introduction letter in your language — ready to copy or share instantly.",
+    lettersHubTitle: "Letters & Outreach",
+    lettersHubDesc: "Customer · Advisor · Real Estate · VIP/HNW letters in 14 languages with your logo.",
     alertsCount: "{count} alerts",
     diamondStability: "💎 Diamond Stability",
     onTopOfResidual: "✨ On top of your monthly residual income",
@@ -513,6 +517,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Toepassen (Met VIP)",
     clientLetterTitle: "Klantbriefgenerator",
     clientLetterDesc: "Maak een professionele introductiebrief in uw taal — klaar om te kopiëren of direct te delen.",
+    lettersHubTitle: "Brieven & Outreach",
+    lettersHubDesc: "Klant · Adviseur · Vastgoed · VIP/HNW brieven in 14 talen met uw logo.",
     alertsCount: "{count} meldingen",
     diamondStability: "💎 Diamant Stabiliteit",
     onTopOfResidual: "✨ Bovenop uw maandelijks residueel inkomen",
@@ -645,6 +651,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Anwenden (Mit VIP)",
     clientLetterTitle: "Kundenbriefgenerator",
     clientLetterDesc: "Erstellen Sie einen professionellen Einführungsbrief in Ihrer Sprache — fertig zum Kopieren oder sofortigen Teilen.",
+    lettersHubTitle: "Briefe & Outreach",
+    lettersHubDesc: "Kunden · Berater · Immobilien · VIP/HNW Briefe in 14 Sprachen mit Ihrem Logo.",
     alertsCount: "{count} Benachrichtigungen",
     diamondStability: "💎 Diamant-Stabilität",
     onTopOfResidual: "✨ Zusätzlich zu Ihrem monatlichen Residualeinkommen",
@@ -777,6 +785,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Appliquer (Avec VIP)",
     clientLetterTitle: "Générateur de lettre client",
     clientLetterDesc: "Créez une lettre d'introduction professionnelle dans votre langue — prête à copier ou partager instantanément.",
+    lettersHubTitle: "Lettres & Outreach",
+    lettersHubDesc: "Client · Conseiller · Immobilier · VIP/HNW lettres en 14 langues avec votre logo.",
     alertsCount: "{count} alertes",
     diamondStability: "💎 Stabilité Diamant",
     onTopOfResidual: "✨ En plus de votre revenu résiduel mensuel",
@@ -909,6 +919,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Aplicar (Con VIP)",
     clientLetterTitle: "Generador de carta de cliente",
     clientLetterDesc: "Crea una carta de presentación profesional en tu idioma — lista para copiar o compartir al instante.",
+    lettersHubTitle: "Cartas & Outreach",
+    lettersHubDesc: "Cliente · Asesor · Inmobiliario · VIP/HNW cartas en 14 idiomas con tu logo.",
     alertsCount: "{count} alertas",
     diamondStability: "💎 Estabilidad Diamante",
     onTopOfResidual: "✨ Además de sus ingresos residuales mensuales",
@@ -1041,6 +1053,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 Применить (С VIP)",
     clientLetterTitle: "Генератор письма клиенту",
     clientLetterDesc: "Создайте профессиональное вводное письмо на вашем языке — готово к копированию или мгновенному обмену.",
+    lettersHubTitle: "Письма & Outreach",
+    lettersHubDesc: "Клиент · Советник · Недвижимость · VIP/HNW письма на 14 языках с вашим логотипом.",
     alertsCount: "{count} уведомлений",
     diamondStability: "💎 Стабильность Алмаза",
     onTopOfResidual: "✨ В дополнение к вашему ежемесячному остаточному доходу",
@@ -1173,6 +1187,8 @@ const TX: Record<string, {
     assetApplyWithVip: "📊 应用（含VIP）",
     clientLetterTitle: "客户信函生成器",
     clientLetterDesc: "用您的语言创建一封专业的介绍信——随时可复制或分享。",
+    lettersHubTitle: "信函与推广",
+    lettersHubDesc: "客户 · 顾问 · 房地产 · VIP/高净值信函，14种语言，含您的标志。",
     alertsCount: "{count} 条提醒",
     diamondStability: "💎 钻石稳定性",
     onTopOfResidual: "✨ 除您的月度被动收入之外",
@@ -1860,7 +1876,7 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
-        {/* ── CLIENT LETTER GENERATOR ── */}
+        {/* ── LETTERS & OUTREACH HUB ── */}
         <TouchableOpacity
           style={{
             marginHorizontal: 16, marginBottom: 14,
@@ -1869,14 +1885,14 @@ export default function PartnerToolsScreen() {
             borderWidth: 1.5, borderColor: GOLD,
             flexDirection: "row", alignItems: "center", gap: 14,
           }}
-          onPress={() => router.push("/client-letter")}
+          onPress={() => router.push("/letters")}
           activeOpacity={0.85}
         >
           <Text style={{ fontSize: 30 }}>✉️</Text>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: GOLD, fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.clientLetterTitle}</Text>
+            <Text style={{ color: GOLD, fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.lettersHubTitle}</Text>
             <Text style={{ color: "#94a3b8", fontSize: 12, marginTop: 3, lineHeight: 17 }}>
-              {tx.clientLetterDesc}
+              {tx.lettersHubDesc}
             </Text>
           </View>
           <Text style={{ color: GOLD, fontSize: 18 }}>›</Text>
