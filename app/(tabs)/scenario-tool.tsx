@@ -13,6 +13,8 @@ import {
   Modal,
   FlatList,
   useWindowDimensions,
+  Animated,
+  Linking,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -298,6 +300,8 @@ export default function ScenarioToolScreen() {
     total:    Math.round(TW * 0.115),
   };
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
+  const [vipBannerDismissed, setVipBannerDismissed] = useState(false);
+  const vipBannerOpacity = useRef(new Animated.Value(0)).current;
   const [pdfLoading, setPdfLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -379,6 +383,15 @@ export default function ScenarioToolScreen() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startAmount]);
+
+  // VIP SP7 premium CTA: fade in when deposit reaches $100k
+  useEffect(() => {
+    if (numVal(startAmount) >= 100000 && !vipBannerDismissed) {
+      Animated.timing(vipBannerOpacity, { toValue: 1, duration: 700, useNativeDriver: true }).start();
+    } else {
+      Animated.timing(vipBannerOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start();
+    }
+  }, [startAmount, vipBannerDismissed]);
 
   // Plan Coach: tier detection & upsell
   const planTier = getPlanTier(numVal(startAmount), autoVip);
@@ -474,6 +487,7 @@ export default function ScenarioToolScreen() {
       C: "Plan C — One-Year Lump Sum Strategy",
       D: "Plan D — Instant Payout Strategy",
       property: "Asset Goal Planner",
+      goal: "Goal Quick-Launch",
     };
     setAppliedBanner(`✅ ${t(language, 'appliedFromStrategy')}: ${planLabels[params.plan ?? ""] ?? params.plan}`);
     // Auto-dismiss banner after 5 seconds
@@ -763,6 +777,32 @@ export default function ScenarioToolScreen() {
               <Text style={S.appliedBannerClose}>✕</Text>
             </TouchableOpacity>
           </View>
+        )}
+
+        {/* VIP SP7 Premium CTA — fades in at $100k+ */}
+        {numVal(startAmount) >= 100000 && !vipBannerDismissed && (
+          <Animated.View style={[S.vipCtaBanner, { opacity: vipBannerOpacity }]}>
+            <View style={S.vipCtaTopRow}>
+              <Text style={S.vipCtaGem}>💎</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={S.vipCtaTitle}>SP7 Tier Unlocked</Text>
+                <Text style={S.vipCtaSubtitle}>$100,000+ · 3.3% base · 6.3% VIP</Text>
+              </View>
+              <TouchableOpacity onPress={() => setVipBannerDismissed(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Text style={S.vipCtaClose}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={S.vipCtaBody}>
+              Would you like to schedule a direct VIP consultation with a STIG International managing partner to review this custom model?
+            </Text>
+            <TouchableOpacity
+              style={S.vipCtaBtn}
+              activeOpacity={0.85}
+              onPress={() => Linking.openURL('mailto:vip@stiginternational.com?subject=VIP%20Consultation%20Request%20%E2%80%94%20SP7%20%24100K%2B%20Model')}
+            >
+              <Text style={S.vipCtaBtnText}>Schedule VIP Consultation →</Text>
+            </TouchableOpacity>
+          </Animated.View>
         )}
 
         {/* Goal bar */}
@@ -2323,4 +2363,14 @@ const S = StyleSheet.create({
   appliedBanner: { backgroundColor: "#14532d", borderRadius: 10, padding: 10, marginBottom: 8, flexDirection: "row", alignItems: "center", borderWidth: 1, borderColor: "#22c55e" },
   appliedBannerText: { color: "#86efac", fontSize: 15, fontWeight: "600", flex: 1, lineHeight: 22 },
   appliedBannerClose: { color: "#86efac", fontSize: 18, paddingLeft: 8 },
+
+  vipCtaBanner: { backgroundColor: "#0c1a2e", borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1.5, borderColor: "#f59e0b" },
+  vipCtaTopRow: { flexDirection: "row", alignItems: "flex-start", gap: 10, marginBottom: 10 },
+  vipCtaGem: { fontSize: 28, lineHeight: 34 },
+  vipCtaTitle: { color: "#f59e0b", fontWeight: "bold", fontSize: 15, letterSpacing: 0.4 },
+  vipCtaSubtitle: { color: "#64748b", fontSize: 11, fontWeight: "600", marginTop: 2 },
+  vipCtaClose: { color: "#475569", fontSize: 18, paddingLeft: 6 },
+  vipCtaBody: { color: "#cbd5e1", fontSize: 13, lineHeight: 20, marginBottom: 12 },
+  vipCtaBtn: { backgroundColor: "#f59e0b", borderRadius: 10, paddingVertical: 11, alignItems: "center" },
+  vipCtaBtnText: { color: "#0f172a", fontWeight: "bold", fontSize: 14, letterSpacing: 0.3 },
 });

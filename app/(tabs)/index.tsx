@@ -99,6 +99,7 @@ const TESTIMONIALS = [
     sp: "SP6",
     months: 18,
     vip: true,
+    avatar: "https://i.pravatar.cc/80?img=11",
     en: "After 18 months my portfolio is performing exactly as projected. This is serious wealth building — not speculation.",
     nl: "Na 18 maanden presteert mijn portefeuille precies zoals geprognosticeerd. Dit is serieuze vermogensopbouw — geen speculatie.",
     de: "Nach 18 Monaten entwickelt sich mein Portfolio genau wie prognostiziert. Das ist seriöser Vermögensaufbau — keine Spekulation.",
@@ -109,6 +110,7 @@ const TESTIMONIALS = [
     sp: "SP4",
     months: 12,
     vip: true,
+    avatar: "https://i.pravatar.cc/80?img=47",
     en: "The professionalism and transparency gave me confidence to grow my position after just 6 months. I wish I had started sooner.",
     nl: "De professionaliteit en transparantie gaven mij het vertrouwen om mijn positie na 6 maanden te vergroten. Ik wou dat ik eerder was begonnen.",
     de: "Die Professionalität und Transparenz gaben mir das Vertrauen, meine Position nach 6 Monaten auszubauen. Ich wünschte, ich hätte früher begonnen.",
@@ -119,6 +121,7 @@ const TESTIMONIALS = [
     sp: "SP5",
     months: 9,
     vip: true,
+    avatar: "https://i.pravatar.cc/80?img=7",
     en: "I compared several alternatives. Nothing matched the combination of returns, structure, and personal guidance I found here.",
     nl: "Ik heb meerdere alternatieven vergeleken. Niets tipt aan de combinatie van rendement, structuur en persoonlijke begeleiding die ik hier vond.",
     de: "Ich habe mehrere Alternativen verglichen. Nichts kam an die Kombination aus Rendite, Struktur und persönlicher Beratung heran.",
@@ -129,6 +132,7 @@ const TESTIMONIALS = [
     sp: "SP7",
     months: 24,
     vip: true,
+    avatar: "https://i.pravatar.cc/80?img=60",
     en: "My family's financial future is on a clear path. The monthly reports and adviser contact make all the difference.",
     nl: "De financiële toekomst van mijn gezin ligt nu op een helder pad. De maandelijkse rapportages en adviseurcontact maken het verschil.",
     de: "Die finanzielle Zukunft meiner Familie liegt auf einem klaren Kurs. Die monatlichen Berichte und der Beraterkontakt machen den Unterschied.",
@@ -139,6 +143,7 @@ const TESTIMONIALS = [
     sp: "SP5",
     months: 14,
     vip: true,
+    avatar: "https://i.pravatar.cc/80?img=33",
     en: "A high-end investment experience. Discreet, professional, and exactly what I needed to diversify my private wealth.",
     nl: "Een investering op topniveau. Discreet, professioneel en precies wat ik nodig had om mijn privévermogen te diversifiëren.",
     de: "Eine erstklassige Investmenterfahrung. Diskret, professionell und genau das, was ich zur Diversifizierung meines Privatvermögens benötigte.",
@@ -280,7 +285,7 @@ export default function HomeScreen() {
 
   const handleCalculate = (card: GoalCard) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push(`/strategy-engineer?startDeposit=${card.startAmount}&vip=${card.vip ? 1 : 0}`);
+    router.push(`/scenario-tool?plan=goal&startAmount=${card.startAmount}&vip=${card.vip ? 1 : 0}&goalAmount=${card.startAmount}&years=5`);
   };
 
   const toolDescriptions: Record<Language, { tool1: string; tool2: string }> = {
@@ -428,9 +433,15 @@ export default function HomeScreen() {
                 <Text style={S.testimonialQuote}>{getTestimonialQuote(item, language)}</Text>
                 <View style={S.testimonialDivider} />
                 <View style={S.testimonialMeta}>
-                  <View>
-                    <Text style={S.testimonialName}>{item.name}</Text>
-                    <Text style={S.testimonialCity}>{item.city}</Text>
+                  <View style={S.testimonialPersonRow}>
+                    <Image
+                      source={{ uri: item.avatar }}
+                      style={S.testimonialAvatar}
+                    />
+                    <View>
+                      <Text style={S.testimonialName}>{item.name}</Text>
+                      <Text style={S.testimonialCity}>{item.city}</Text>
+                    </View>
                   </View>
                   <View style={S.testimonialBadges}>
                     <View style={S.testimonialSpBadge}>
@@ -687,6 +698,8 @@ const S = StyleSheet.create({
   testimonialQuote:       { color: "#cbd5e1", fontSize: 13, lineHeight: 21, fontStyle: "italic", marginBottom: 16 },
   testimonialDivider:     { height: 1, backgroundColor: "#334155", marginBottom: 14 },
   testimonialMeta:        { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+  testimonialPersonRow:   { flexDirection: "row", alignItems: "center", gap: 9 },
+  testimonialAvatar:      { width: 40, height: 40, borderRadius: 20, borderWidth: 1.5, borderColor: "#f59e0b", backgroundColor: "#334155" },
   testimonialName:        { color: "#fff", fontSize: 13, fontWeight: "bold" },
   testimonialCity:        { color: "#64748b", fontSize: 11, marginTop: 2 },
   testimonialBadges:      { alignItems: "flex-end", gap: 4 },
