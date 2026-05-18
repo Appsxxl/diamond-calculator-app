@@ -92,6 +92,75 @@ const GOAL_CARDS: GoalCard[] = [
   },
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "David H.",
+    city: "London",
+    sp: "SP6",
+    months: 18,
+    vip: true,
+    en: "After 18 months my portfolio is performing exactly as projected. This is serious wealth building — not speculation.",
+    nl: "Na 18 maanden presteert mijn portefeuille precies zoals geprognosticeerd. Dit is serieuze vermogensopbouw — geen speculatie.",
+    de: "Nach 18 Monaten entwickelt sich mein Portfolio genau wie prognostiziert. Das ist seriöser Vermögensaufbau — keine Spekulation.",
+  },
+  {
+    name: "Sophie K.",
+    city: "Zürich",
+    sp: "SP4",
+    months: 12,
+    vip: true,
+    en: "The professionalism and transparency gave me confidence to grow my position after just 6 months. I wish I had started sooner.",
+    nl: "De professionaliteit en transparantie gaven mij het vertrouwen om mijn positie na 6 maanden te vergroten. Ik wou dat ik eerder was begonnen.",
+    de: "Die Professionalität und Transparenz gaben mir das Vertrauen, meine Position nach 6 Monaten auszubauen. Ich wünschte, ich hätte früher begonnen.",
+  },
+  {
+    name: "Marco V.",
+    city: "Amsterdam",
+    sp: "SP5",
+    months: 9,
+    vip: true,
+    en: "I compared several alternatives. Nothing matched the combination of returns, structure, and personal guidance I found here.",
+    nl: "Ik heb meerdere alternatieven vergeleken. Niets tipt aan de combinatie van rendement, structuur en persoonlijke begeleiding die ik hier vond.",
+    de: "Ich habe mehrere Alternativen verglichen. Nichts kam an die Kombination aus Rendite, Struktur und persönlicher Beratung heran.",
+  },
+  {
+    name: "Elena P.",
+    city: "Dubai",
+    sp: "SP7",
+    months: 24,
+    vip: true,
+    en: "My family's financial future is on a clear path. The monthly reports and adviser contact make all the difference.",
+    nl: "De financiële toekomst van mijn gezin ligt nu op een helder pad. De maandelijkse rapportages en adviseurcontact maken het verschil.",
+    de: "Die finanzielle Zukunft meiner Familie liegt auf einem klaren Kurs. Die monatlichen Berichte und der Beraterkontakt machen den Unterschied.",
+  },
+  {
+    name: "Thomas R.",
+    city: "Vienna",
+    sp: "SP5",
+    months: 14,
+    vip: true,
+    en: "A high-end investment experience. Discreet, professional, and exactly what I needed to diversify my private wealth.",
+    nl: "Een investering op topniveau. Discreet, professioneel en precies wat ik nodig had om mijn privévermogen te diversifiëren.",
+    de: "Eine erstklassige Investmenterfahrung. Diskret, professionell und genau das, was ich zur Diversifizierung meines Privatvermögens benötigte.",
+  },
+];
+
+const TESTIMONIAL_LABELS: Partial<Record<Language, { title: string; months: string }>> = {
+  en: { title: "Client Testimonials", months: "mo." },
+  nl: { title: "Klantervaringen",     months: "mnd." },
+  de: { title: "Kundenstimmen",       months: "Mon." },
+};
+
+function getTestimonialQuote(item: typeof TESTIMONIALS[0], lang: Language): string {
+  if (lang === "nl") return item.nl;
+  if (lang === "de") return item.de;
+  return item.en;
+}
+
+function getTestimonialLabel(lang: Language) {
+  return TESTIMONIAL_LABELS[lang] ?? TESTIMONIAL_LABELS.en!;
+}
+
 const LEADERSHIP_TEXT: Record<Language, {
   sectionTitle: string;
   ceoTitle: string;
@@ -343,6 +412,43 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Testimonials */}
+        <View style={S.testimonialSection}>
+          <Text style={S.testimonialSectionTitle}>{getTestimonialLabel(language).title}</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={286}
+            decelerationRate="fast"
+            contentContainerStyle={{ gap: 10, paddingRight: 4 }}
+          >
+            {TESTIMONIALS.map((item) => (
+              <View key={item.name} style={S.testimonialCard}>
+                <Text style={S.testimonialQuoteMark}>"</Text>
+                <Text style={S.testimonialQuote}>{getTestimonialQuote(item, language)}</Text>
+                <View style={S.testimonialDivider} />
+                <View style={S.testimonialMeta}>
+                  <View>
+                    <Text style={S.testimonialName}>{item.name}</Text>
+                    <Text style={S.testimonialCity}>{item.city}</Text>
+                  </View>
+                  <View style={S.testimonialBadges}>
+                    <View style={S.testimonialSpBadge}>
+                      <Text style={S.testimonialSpText}>{item.sp}</Text>
+                    </View>
+                    <Text style={S.testimonialMonthsText}>{item.months} {getTestimonialLabel(language).months}</Text>
+                    {item.vip && (
+                      <View style={S.testimonialVipBadge}>
+                        <Text style={S.testimonialVipText}>⭐ VIP</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* Goal Cards Section */}
         <View style={S.sectionHeader}>
           <Text style={S.sectionTitle}>{t(language, "goalCards")}</Text>
@@ -572,6 +678,23 @@ const S = StyleSheet.create({
 
   settingsLink: { alignItems: "center", paddingVertical: 12 },
   settingsText: { color: "#64748b", fontSize: 15 },
+
+  // Testimonials
+  testimonialSection:     { marginBottom: 24 },
+  testimonialSectionTitle:{ color: "#f59e0b", fontSize: 16, fontWeight: "bold", letterSpacing: 0.5, marginBottom: 12 },
+  testimonialCard:        { width: 276, backgroundColor: "#1e293b", borderRadius: 16, padding: 18, borderTopWidth: 2, borderTopColor: "#f59e0b" },
+  testimonialQuoteMark:   { color: "#f59e0b", fontSize: 44, fontWeight: "bold", lineHeight: 44, marginBottom: 2, opacity: 0.55 },
+  testimonialQuote:       { color: "#cbd5e1", fontSize: 13, lineHeight: 21, fontStyle: "italic", marginBottom: 16 },
+  testimonialDivider:     { height: 1, backgroundColor: "#334155", marginBottom: 14 },
+  testimonialMeta:        { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+  testimonialName:        { color: "#fff", fontSize: 13, fontWeight: "bold" },
+  testimonialCity:        { color: "#64748b", fontSize: 11, marginTop: 2 },
+  testimonialBadges:      { alignItems: "flex-end", gap: 4 },
+  testimonialSpBadge:     { backgroundColor: "rgba(51,197,255,0.13)", borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, borderWidth: 1, borderColor: "rgba(51,197,255,0.3)" },
+  testimonialSpText:      { color: "#33C5FF", fontSize: 10, fontWeight: "bold" },
+  testimonialMonthsText:  { color: "#64748b", fontSize: 10 },
+  testimonialVipBadge:    { backgroundColor: "rgba(245,158,11,0.13)", borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, borderWidth: 1, borderColor: "rgba(245,158,11,0.3)" },
+  testimonialVipText:     { color: "#f59e0b", fontSize: 10, fontWeight: "bold" },
 
   // Modal
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.75)", justifyContent: "center", alignItems: "center", padding: 20 },
