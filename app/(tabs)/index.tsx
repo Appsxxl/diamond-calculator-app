@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Platform } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Platform, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { DisclaimerFooter } from "@/components/disclaimer-footer";
@@ -91,6 +91,113 @@ const GOAL_CARDS: GoalCard[] = [
     vip: true,
   },
 ];
+
+const LEADERSHIP_TEXT: Record<Language, {
+  sectionTitle: string;
+  ceoTitle: string;
+  cooTitle: string;
+  patrickBio: string;
+  michaelBio: string;
+}> = {
+  en: {
+    sectionTitle: "Meet Our Leadership",
+    ceoTitle: "CEO & Co-Founder",
+    cooTitle: "COO",
+    patrickBio: "Visionary entrepreneur and architect of the diamond investment model. Patrick built STIG International to give advisors and families access to a smarter, secure wealth-building solution.",
+    michaelBio: "Operational leader driving STIG's global network. Michael ensures every advisor and client receives world-class service, consistency, and results they can count on.",
+  },
+  nl: {
+    sectionTitle: "Ons Leiderschap",
+    ceoTitle: "CEO & Medeoprichter",
+    cooTitle: "COO",
+    patrickBio: "Visionair ondernemer en architect van het diamantinvesteringsmodel. Patrick bouwde STIG International om adviseurs en families toegang te geven tot een slimmere, veilige vermogensopbouwoplossing.",
+    michaelBio: "Operationeel leider van het wereldwijde STIG-netwerk. Michael zorgt dat elke adviseur en klant eersteklas service, consistentie en betrouwbare resultaten ontvangt.",
+  },
+  de: {
+    sectionTitle: "Unser Führungsteam",
+    ceoTitle: "CEO & Mitgründer",
+    cooTitle: "COO",
+    patrickBio: "Visionärer Unternehmer und Architekt des Diamant-Investitionsmodells. Patrick gründete STIG International, um Beratern und Familien Zugang zu einer intelligenten, sicheren Vermögensaufbaulösung zu ermöglichen.",
+    michaelBio: "Operativer Leiter des globalen STIG-Netzwerks. Michael stellt sicher, dass jeder Berater und Kunde erstklassigen Service, Konsistenz und verlässliche Ergebnisse erhält.",
+  },
+  fr: {
+    sectionTitle: "Notre Direction",
+    ceoTitle: "PDG & Co-Fondateur",
+    cooTitle: "Directeur des Opérations",
+    patrickBio: "Entrepreneur visionnaire et architecte du modèle d'investissement diamant. Patrick a fondé STIG International pour donner aux conseillers et familles accès à une solution de création de patrimoine plus intelligente et sécurisée.",
+    michaelBio: "Leader opérationnel du réseau mondial STIG. Michael garantit que chaque conseiller et client reçoit un service de classe mondiale, cohérence et résultats fiables.",
+  },
+  es: {
+    sectionTitle: "Nuestro Liderazgo",
+    ceoTitle: "CEO y Cofundador",
+    cooTitle: "COO",
+    patrickBio: "Emprendedor visionario y arquitecto del modelo de inversión en diamantes. Patrick fundó STIG International para dar a asesores y familias acceso a una solución de creación de riqueza más inteligente y segura.",
+    michaelBio: "Líder operativo de la red global de STIG. Michael garantiza que cada asesor y cliente reciba servicio de clase mundial, coherencia y resultados confiables.",
+  },
+  it: {
+    sectionTitle: "La Nostra Leadership",
+    ceoTitle: "CEO e Co-Fondatore",
+    cooTitle: "COO",
+    patrickBio: "Imprenditore visionario e architetto del modello di investimento in diamanti. Patrick ha fondato STIG International per dare a consulenti e famiglie accesso a una soluzione di creazione di ricchezza più intelligente e sicura.",
+    michaelBio: "Leader operativo della rete globale STIG. Michael garantisce che ogni consulente e cliente riceva un servizio di livello mondiale, coerenza e risultati affidabili.",
+  },
+  pt: {
+    sectionTitle: "Nossa Liderança",
+    ceoTitle: "CEO e Co-Fundador",
+    cooTitle: "COO",
+    patrickBio: "Empreendedor visionário e arquiteto do modelo de investimento em diamantes. Patrick fundou a STIG International para dar a assessores e famílias acesso a uma solução de criação de riqueza mais inteligente e segura.",
+    michaelBio: "Líder operacional da rede global da STIG. Michael garante que cada assessor e cliente receba serviço de classe mundial, consistência e resultados confiáveis.",
+  },
+  ru: {
+    sectionTitle: "Наше Руководство",
+    ceoTitle: "Генеральный директор и Сооснователь",
+    cooTitle: "Операционный директор",
+    patrickBio: "Визионерский предприниматель и архитектор модели алмазных инвестиций. Патрик основал STIG International, чтобы дать консультантам и семьям доступ к более умному и безопасному решению для накопления капитала.",
+    michaelBio: "Операционный лидер глобальной сети STIG. Михаэль обеспечивает, чтобы каждый консультант и клиент получал первоклассный сервис, последовательность и надёжные результаты.",
+  },
+  zh: {
+    sectionTitle: "领导团队",
+    ceoTitle: "首席执行官兼联合创始人",
+    cooTitle: "首席运营官",
+    patrickBio: "富有远见的企业家，钻石投资模式的架构师。Patrick创立了STIG International，为顾问和家庭提供更智慧、更安全的财富增值解决方案。",
+    michaelBio: "STIG全球网络的运营领袖。Michael确保每位顾问和客户都能获得世界级的服务、一致性和可靠的回报。",
+  },
+  tl: {
+    sectionTitle: "Ang Aming Pamumuno",
+    ceoTitle: "CEO at Co-Founder",
+    cooTitle: "COO",
+    patrickBio: "Isang visionary na negosyante at arkitekto ng diamond investment model. Itinayo ni Patrick ang STIG International para bigyan ang mga advisor at pamilya ng mas matalinong paraan ng pagpapalago ng yaman.",
+    michaelBio: "Operational na lider ng pandaigdigang network ng STIG. Tinitiyak ni Michael na ang bawat advisor at kliyente ay nakakatanggap ng world-class na serbisyo at maaasahang resulta.",
+  },
+  ar: {
+    sectionTitle: "قيادتنا",
+    ceoTitle: "الرئيس التنفيذي والمؤسس المشارك",
+    cooTitle: "المدير التشغيلي",
+    patrickBio: "رائد أعمال ذو رؤية ومهندس نموذج الاستثمار في الألماس. أسّس باتريك STIG International لمنح المستشارين والعائلات إمكانية الوصول إلى حل أذكى وأكثر أماناً لبناء الثروة.",
+    michaelBio: "القائد التشغيلي للشبكة العالمية لـ STIG. يضمن مايكل حصول كل مستشار وعميل على خدمة عالمية المستوى واتساق ونتائج موثوقة.",
+  },
+  th: {
+    sectionTitle: "ผู้นำของเรา",
+    ceoTitle: "ซีอีโอและผู้ร่วมก่อตั้ง",
+    cooTitle: "ซีโอโอ",
+    patrickBio: "ผู้ประกอบการที่มีวิสัยทัศน์และสถาปนิกของโมเดลการลงทุนเพชร Patrick ก่อตั้ง STIG International เพื่อมอบโซลูชันการสร้างความมั่งคั่งที่ชาญฉลาดและปลอดภัยยิ่งขึ้นแก่ที่ปรึกษาและครอบครัว",
+    michaelBio: "ผู้นำด้านปฏิบัติการของเครือข่ายทั่วโลกของ STIG Michael รับประกันว่าที่ปรึกษาและลูกค้าทุกคนจะได้รับบริการระดับโลก ความสอดคล้อง และผลลัพธ์ที่เชื่อถือได้",
+  },
+  hi: {
+    sectionTitle: "हमारा नेतृत्व",
+    ceoTitle: "सीईओ और सह-संस्थापक",
+    cooTitle: "सीओओ",
+    patrickBio: "दूरदर्शी उद्यमी और डायमंड निवेश मॉडल के वास्तुकार। Patrick ने STIG International की स्थापना सलाहकारों और परिवारों को एक समझदार, सुरक्षित संपत्ति-निर्माण समाधान तक पहुंच देने के लिए की।",
+    michaelBio: "STIG के वैश्विक नेटवर्क के परिचालन नेता। Michael सुनिश्चित करते हैं कि प्रत्येक सलाहकार और ग्राहक को विश्व-स्तरीय सेवा, स्थिरता और भरोसेमंद परिणाम मिलें।",
+  },
+  vi: {
+    sectionTitle: "Lãnh Đạo Của Chúng Tôi",
+    ceoTitle: "CEO và Đồng Sáng Lập",
+    cooTitle: "COO",
+    patrickBio: "Doanh nhân có tầm nhìn và kiến trúc sư của mô hình đầu tư kim cương. Patrick thành lập STIG International để mang đến cho các cố vấn và gia đình một giải pháp xây dựng tài sản thông minh và an toàn hơn.",
+    michaelBio: "Lãnh đạo vận hành của mạng lưới toàn cầu STIG. Michael đảm bảo rằng mọi cố vấn và khách hàng đều nhận được dịch vụ đẳng cấp thế giới, sự nhất quán và kết quả đáng tin cậy.",
+  },
+};
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -191,6 +298,49 @@ export default function HomeScreen() {
           <Text style={S.heroTitle}>{t(language, "welcomeTitle")}</Text>
           <Text style={S.heroSub}>{t(language, "welcomeSubtitle")}</Text>
           <Text style={S.heroTagline}>{t(language, "familyIncomeTagline")}</Text>
+        </View>
+
+        {/* Leadership Section */}
+        <View style={S.leaderSection}>
+          <View style={S.leaderHeaderRow}>
+            <View>
+              <Text style={S.leaderSectionTitle}>
+                {LEADERSHIP_TEXT[language]?.sectionTitle ?? LEADERSHIP_TEXT.en.sectionTitle}
+              </Text>
+              <Text style={S.leaderSectionSub}>STIG International</Text>
+            </View>
+            <TouchableOpacity onPress={() => router.push("/leadership")} style={S.leaderMoreBtn}>
+              <Text style={S.leaderMoreText}>Full Bio →</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={S.leaderRow}>
+            {/* Patrick Stoeger */}
+            <TouchableOpacity style={[S.leaderCard, { borderTopColor: "#f59e0b" }]} onPress={() => router.push("/leadership")} activeOpacity={0.85}>
+              <Image source={require("../../assets/images/patrick-stoeger.jpg")} style={S.leaderPhoto} />
+              <Text style={S.leaderName}>Patrick Stoeger</Text>
+              <View style={[S.leaderBadge, { backgroundColor: "rgba(245,158,11,0.12)", borderColor: "rgba(245,158,11,0.3)" }]}>
+                <Text style={[S.leaderBadgeText, { color: "#f59e0b" }]}>
+                  {LEADERSHIP_TEXT[language]?.ceoTitle ?? LEADERSHIP_TEXT.en.ceoTitle}
+                </Text>
+              </View>
+              <Text style={S.leaderBio}>
+                {LEADERSHIP_TEXT[language]?.patrickBio ?? LEADERSHIP_TEXT.en.patrickBio}
+              </Text>
+            </TouchableOpacity>
+            {/* Michael Lang */}
+            <TouchableOpacity style={[S.leaderCard, { borderTopColor: "#33C5FF" }]} onPress={() => router.push("/leadership")} activeOpacity={0.85}>
+              <Image source={require("../../assets/images/michael-lang.jpg")} style={S.leaderPhoto} />
+              <Text style={S.leaderName}>Michael Lang</Text>
+              <View style={[S.leaderBadge, { backgroundColor: "rgba(51,197,255,0.12)", borderColor: "rgba(51,197,255,0.3)" }]}>
+                <Text style={[S.leaderBadgeText, { color: "#33C5FF" }]}>
+                  {LEADERSHIP_TEXT[language]?.cooTitle ?? LEADERSHIP_TEXT.en.cooTitle}
+                </Text>
+              </View>
+              <Text style={S.leaderBio}>
+                {LEADERSHIP_TEXT[language]?.michaelBio ?? LEADERSHIP_TEXT.en.michaelBio}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Goal Cards Section */}
@@ -357,6 +507,21 @@ const S = StyleSheet.create({
   heroTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", letterSpacing: 1 },
   heroSub: { fontSize: 15, color: "#94a3b8", marginTop: 4, textAlign: "center" },
   heroTagline: { fontSize: 17, fontWeight: "700", color: "#f59e0b", marginTop: 10, textAlign: "center", paddingHorizontal: 16, lineHeight: 24 },
+
+  // Leadership Section
+  leaderSection: { marginBottom: 24 },
+  leaderHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
+  leaderSectionTitle: { color: "#f59e0b", fontSize: 16, fontWeight: "bold", letterSpacing: 0.5, marginBottom: 2 },
+  leaderSectionSub: { color: "#33C5FF", fontSize: 13, fontWeight: "600", letterSpacing: 1 },
+  leaderMoreBtn: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 8, borderWidth: 1, borderColor: "#334155" },
+  leaderMoreText: { color: "#64748b", fontSize: 12, fontWeight: "600" },
+  leaderRow: { flexDirection: "row", gap: 10 },
+  leaderCard: { flex: 1, backgroundColor: "#1e293b", borderRadius: 14, padding: 14, borderTopWidth: 2, alignItems: "center" },
+  leaderPhoto: { width: 72, height: 86, borderRadius: 10, marginBottom: 10, backgroundColor: "#334155" },
+  leaderName: { color: "#fff", fontSize: 14, fontWeight: "bold", textAlign: "center", marginBottom: 6 },
+  leaderBadge: { borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1, marginBottom: 8 },
+  leaderBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.3, textAlign: "center" },
+  leaderBio: { color: "#94a3b8", fontSize: 11, lineHeight: 16, textAlign: "center" },
 
   // Goal Cards
   sectionHeader: { marginBottom: 12 },
