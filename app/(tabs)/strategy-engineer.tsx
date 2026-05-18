@@ -355,22 +355,31 @@ export default function StrategyEngineerScreen() {
             </View>
 
             {/* SP Reference Table */}
-            <View style={S.card}>
-              <Text style={S.sectionLabel}>{t(language, "seSpReference")}</Text>
+            <View style={S.refCard}>
+              <Text style={S.refTitle}>{t(language, "spLevelOverview")}</Text>
+              <View style={S.vipBanner}>
+                <Text style={S.vipBannerText}>⭐ {t(language, "vipInfo")}</Text>
+              </View>
+              <View style={[S.refItem, { borderBottomColor: "#334155", borderBottomWidth: 1, marginBottom: 4 }]}>
+                <Text style={[S.refSp, { color: "#64748b" }]}>SP</Text>
+                <Text style={[S.refRange, { color: "#64748b" }]}>Range</Text>
+                <Text style={[S.refRate, { color: "#64748b" }]}>{t(language, "baseRate")}</Text>
+                <Text style={[S.refVip, { color: "#64748b" }]}>{t(language, "vipRate")}</Text>
+              </View>
               {[
-                { name: "SP1", range: "$0 – $999",          base: "2.2%", vip: "5.2%" },
-                { name: "SP2", range: "$1,000 – $2,499",    base: "2.45%", vip: "5.45%" },
-                { name: "SP3", range: "$2,500 – $4,999",    base: "2.7%", vip: "5.7%" },
-                { name: "SP4", range: "$5,000 – $9,999",    base: "3.0%", vip: "6.0%" },
-                { name: "SP5", range: "$10,000 – $49,999",  base: "3.1%", vip: "6.1%" },
-                { name: "SP6", range: "$50,000 – $99,999",  base: "3.2%", vip: "6.2%" },
-                { name: "SP7", range: "$100,000+",          base: "3.3%", vip: "6.3%" },
-              ].map(sp => (
-                <View key={sp.name} style={S.spRow}>
-                  <Text style={S.spName}>{sp.name}</Text>
-                  <Text style={S.spRange}>{sp.range}</Text>
-                  <Text style={S.spBase}>{sp.base}</Text>
-                  <Text style={S.spVip}>{sp.vip} {t(language, "seVipSuffix")}</Text>
+                { sp: "SP1", range: "$110–$1K",    base: "2.2%",  vip: "5.2%" },
+                { sp: "SP2", range: "$1K–$2.5K",   base: "2.45%", vip: "5.45%" },
+                { sp: "SP3", range: "$2.5K–$5K",   base: "2.7%",  vip: "5.7%" },
+                { sp: "SP4", range: "$5K–$10K",    base: "3.0%",  vip: "6.0%" },
+                { sp: "SP5", range: "$10K–$50K",   base: "3.1%",  vip: "6.1%" },
+                { sp: "SP6", range: "$50K–$100K",  base: "3.2%",  vip: "6.2%" },
+                { sp: "SP7", range: "$100K+",      base: "3.3%",  vip: "6.3%" },
+              ].map(item => (
+                <View key={item.sp} style={S.refItem}>
+                  <Text style={S.refSp}>{item.sp}</Text>
+                  <Text style={S.refRange}>{item.range}</Text>
+                  <Text style={S.refRate}>{item.base}</Text>
+                  <Text style={S.refVip}>{item.vip}</Text>
                 </View>
               ))}
             </View>
@@ -413,11 +422,15 @@ const S = StyleSheet.create({
   resultBox: { backgroundColor: "#0f172a", borderRadius: 8, padding: 10 },
   resultLabel: { color: "#64748b", fontSize: 13, marginBottom: 3 },
   resultValue: { fontSize: 18, fontWeight: "bold" },
-  spRow: { flexDirection: "row", alignItems: "center", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#0f172a" },
-  spName: { color: "#f59e0b", fontWeight: "bold", fontSize: 14, width: 44 },
-  spRange: { color: "#94a3b8", fontSize: 13, flex: 1 },
-  spBase: { color: "#22c55e", fontWeight: "bold", fontSize: 14, width: 48 },
-  spVip: { color: "#f59e0b", fontWeight: "bold", fontSize: 14, width: 68, textAlign: "right" },
+  refCard: { backgroundColor: "#1e293b", borderRadius: 12, padding: 12, marginBottom: 8 },
+  refTitle: { color: "#f59e0b", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5, marginBottom: 8 },
+  vipBanner: { backgroundColor: "rgba(245,158,11,0.09)", borderRadius: 8, padding: 8, marginBottom: 10, borderWidth: 1, borderColor: "rgba(245,158,11,0.27)" },
+  vipBannerText: { color: "#f59e0b", fontSize: 14, fontWeight: "600", textAlign: "center" },
+  refItem: { flexDirection: "row", alignItems: "center", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#0f172a" },
+  refSp: { color: "#f59e0b", fontWeight: "bold", fontSize: 14, width: 44 },
+  refRange: { color: "#94a3b8", fontSize: 13, flex: 1 },
+  refRate: { color: "#22c55e", fontWeight: "bold", fontSize: 14, width: 52 },
+  refVip: { color: "#f59e0b", fontWeight: "bold", fontSize: 14, width: 64, textAlign: "right" },
   applyBtn: { marginTop: 10, borderWidth: 1, borderRadius: 8, padding: 10, alignItems: "center", backgroundColor: "#0f172a" },
   applyBtnText: { fontWeight: "bold", fontSize: 16, letterSpacing: 0.5 },
 });
