@@ -401,19 +401,108 @@ function getVimeoThumbUrl(video: VimeoVideo) {
   return video.thumbnail ?? `https://vumbnail.com/${video.id}.jpg`;
 }
 
-// Fetches one page from Vimeo's simple JSON API (no auth needed, 20 items/page).
-async function fetchVimeoApiPage(page: number): Promise<any[]> {
+function formatAge(dateStr: string | undefined): string {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  const days = Math.floor((Date.now() - d.getTime()) / 86_400_000);
+  if (days === 0) return "Today";
+  if (days < 7)   return `${days} days ago`;
+  if (days < 30)  return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
+}
+
+function formatVimeoAge(dateStr: string | undefined): string {
+  if (!dateStr) return "";
+  const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86_400_000);
+  if (days === 0) return "Today";
+  if (days < 7)   return `${days}d ago`;
+  if (days < 30)  return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+}
+
+function parseYouTubeXML(xml: string): YouTubeVideo[] {
+  const out: YouTubeVideo[] = [];
+  const entryRe = /<entry>(.*?)<\/entry>/gs;
+  let m: RegExpExecArray | null;
+  while ((m = entryRe.exec(xml)) !== null) {
+    const e = m[1];
+    const id    = e.match(/<yt:videoId>([^<]+)<\/yt:videoId>/)?.[1];
+    const title = e.match(/<title>([^<]+)<\/title>/)?.[1];
+    const pub   = e.match(/<published>([^<]+)<\/published>/)?.[1];
+    if (!id || !title) continue;
+    out.push({
+      id,
+      title: title.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"),
+      duration: "",
+      views: "",
+      age: formatAge(pub),
+    });
+  }
+  return out;
+}
+
+// Fetch YouTube RSS — tries rss2json first (CORS-safe), then direct/proxy XML
+async function fetchYouTubeRSS(): Promise<YouTubeVideo[]> {
+  const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+
+  // Strategy 1: rss2json.com — no CORS issues, works on web & native
+  try {
+    const res = await fetch(
+      `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`,
+      { signal: AbortSignal.timeout(9000) }
+    );
+    if (res.ok) {
+      const json = await res.json();
+      if (json.status === "ok" && Array.isArray(json.items) && json.items.length > 0) {
+        const videos = json.items
+          .map((item: any) => {
+            const fromGuid = (item.guid ?? "").replace("yt:video:", "");
+            const fromLink = ((item.link ?? "").split("v=")[1] ?? "").split("&")[0];
+            const videoId  = fromGuid || fromLink;
+            return { id: videoId, title: item.title ?? "", duration: "", views: "", age: formatAge(item.pubDate) };
+          })
+          .filter((v: YouTubeVideo) => v.id.length === 11);
+        if (videos.length > 0) return videos;
+      }
+    }
+  } catch { /* fall through */ }
+
+  // Strategy 2: raw XML via direct fetch (native) or CORS proxies (web)
+  const xmlSources: Array<() => Promise<string | null>> = Platform.OS !== "web"
+    ? [() => fetch(RSS_URL, { signal: AbortSignal.timeout(8000) }).then(r => r.ok ? r.text() : null).catch(() => null)]
+    : [
+        () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`, { signal: AbortSignal.timeout(8000) })
+              .then(async r => { if (!r.ok) return null; return (await r.json()).contents ?? null; }).catch(() => null),
+        () => fetch(`https://corsproxy.io/?${encodeURIComponent(RSS_URL)}`, { signal: AbortSignal.timeout(8000) })
+              .then(r => r.ok ? r.text() : null).catch(() => null),
+      ];
+
+  for (const src of xmlSources) {
+    const xml = await src();
+    if (xml) {
+      const parsed = parseYouTubeXML(xml);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  return [];
+}
+
+// Fetch one page from the Vimeo v2 API — no auth needed
+async function fetchVimeoPage(page: number): Promise<any[]> {
   const url = `https://vimeo.com/api/v2/diamondsolution/videos.json?page=${page}`;
   if (Platform.OS !== "web") {
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) return [];
-      return res.json();
-    } catch { return []; }
+      if (res.ok) return res.json();
+    } catch {}
+    return [];
   }
   const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   ];
   for (const proxy of proxies) {
     try {
@@ -428,138 +517,70 @@ async function fetchVimeoApiPage(page: number): Promise<any[]> {
 
 async function openUrl(url: string, errorMsg: string) {
   try {
-    if (Platform.OS === "web") {
-      window.open(url, "_blank");
-      return;
-    }
+    if (Platform.OS === "web") { window.open(url, "_blank"); return; }
     await Linking.openURL(url);
   } catch {
     Alert.alert("Error", errorMsg);
   }
 }
 
-// ─── YouTube Auto-Sync Hook ───────────────────────────────────────────────────
-// Uses YouTube RSS feed (no API key required) to auto-fetch latest videos.
-// New videos published to the channel appear automatically — no code changes needed.
+// ─── YouTube Hook ─────────────────────────────────────────────────────────────
 function useYouTubeVideos() {
-  const [videos, setVideos] = useState<YouTubeVideo[]>(YOUTUBE_FALLBACK);
-  const [loading, setLoading] = useState(false);
+  const [videos, setVideos]       = useState<YouTubeVideo[]>(YOUTUBE_FALLBACK);
+  const [loading, setLoading]     = useState(true);
+  const [liveLoaded, setLiveLoaded] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchFeed() {
-      setLoading(true);
-      try {
-        const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-        // On web, use a CORS proxy; on native, fetch directly
-        const fetchUrl = Platform.OS === "web"
-          ? `https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`
-          : RSS_URL;
-
-        const res = await fetch(fetchUrl, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok) throw new Error("RSS fetch failed");
-
-        let xmlText: string;
-        if (Platform.OS === "web") {
-          const json = await res.json();
-          xmlText = json.contents as string;
-        } else {
-          xmlText = await res.text();
-        }
-
-        // Parse XML entries
-        const parsed: YouTubeVideo[] = [];
-        const entryRegex = /<entry>(.*?)<\/entry>/gs;
-        let match: RegExpExecArray | null;
-        while ((match = entryRegex.exec(xmlText)) !== null) {
-          const entry = match[1];
-          const idMatch = entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/);
-          const titleMatch = entry.match(/<title>([^<]+)<\/title>/);
-          const pubMatch = entry.match(/<published>([^<]+)<\/published>/);
-          if (!idMatch || !titleMatch) continue;
-
-          const pubDate = pubMatch ? new Date(pubMatch[1]) : new Date();
-          const now = new Date();
-          const diffDays = Math.floor((now.getTime() - pubDate.getTime()) / 86400000);
-          const age = diffDays === 0 ? "Today"
-            : diffDays < 7 ? `${diffDays} days ago`
-            : diffDays < 30 ? `${Math.floor(diffDays / 7)} weeks ago`
-            : diffDays < 365 ? `${Math.floor(diffDays / 30)} months ago`
-            : `${Math.floor(diffDays / 365)} years ago`;
-
-          parsed.push({
-            id: idMatch[1],
-            title: titleMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">"),
-            duration: "",
-            views: "",
-            age,
-          });
-        }
-
-        if (!cancelled && parsed.length > 0) {
-          setVideos(parsed);
-        } else if (!cancelled) {
-          setVideos(YOUTUBE_FALLBACK);
-        }
-      } catch {
-        if (!cancelled) setVideos(YOUTUBE_FALLBACK);
-      } finally {
-        if (!cancelled) setLoading(false);
+    setLoading(true);
+    fetchYouTubeRSS().then(result => {
+      if (cancelled) return;
+      if (result.length > 0) {
+        setVideos(result);
+        setLiveLoaded(true);
+      } else {
+        setVideos(YOUTUBE_FALLBACK);
+        setLiveLoaded(false);
       }
-    }
-    fetchFeed();
+      setLoading(false);
+    });
     return () => { cancelled = true; };
   }, [refreshKey]);
 
-  return { videos, loading, refresh };
+  return { videos, loading, liveLoaded, refresh };
 }
 
-// Fetches ALL videos from the channel by paginating the Vimeo v2 JSON API
-// (20 items/page, no auth required). Filters to the active language.
+// ─── Vimeo Hook ───────────────────────────────────────────────────────────────
 function useVimeoVideos(language: string) {
   const [allVideos, setAllVideos] = useState<VimeoVideo[]>(VIMEO_FALLBACK);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]     = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
     async function fetchAll() {
-      setLoading(true);
-      try {
-        const collected: VimeoVideo[] = [];
-        for (let page = 1; page <= 20; page++) {
-          const items = await fetchVimeoApiPage(page);
-          if (cancelled) return;
-          if (!Array.isArray(items) || items.length === 0) break;
-
-          for (const item of items) {
-            const pubDate = item.upload_date ? new Date(item.upload_date) : new Date();
-            const diffDays = Math.floor((Date.now() - pubDate.getTime()) / 86400000);
-            const age = diffDays === 0 ? "Today"
-              : diffDays < 7  ? `${diffDays}d ago`
-              : diffDays < 30 ? `${Math.floor(diffDays / 7)}w ago`
-              : diffDays < 365 ? `${Math.floor(diffDays / 30)}mo ago`
-              : `${Math.floor(diffDays / 365)}y ago`;
-
-            collected.push({
-              id: String(item.id),
-              title: item.title ?? "",
-              age,
-              thumbnail: item.thumbnail_large ?? item.thumbnail_medium ?? undefined,
-            });
-          }
-
-          if (items.length < 20) break; // last page
+      const collected: VimeoVideo[] = [];
+      for (let page = 1; page <= 20; page++) {
+        if (cancelled) return;
+        const items = await fetchVimeoPage(page);
+        if (!Array.isArray(items) || items.length === 0) break;
+        for (const item of items) {
+          collected.push({
+            id: String(item.id),
+            title: item.title ?? "",
+            age: formatVimeoAge(item.upload_date),
+            thumbnail: item.thumbnail_large ?? item.thumbnail_medium ?? undefined,
+          });
         }
-
-        if (!cancelled) setAllVideos(collected.length > 0 ? collected : VIMEO_FALLBACK);
-      } catch {
-        if (!cancelled) setAllVideos(VIMEO_FALLBACK);
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (items.length < 20) break;
+      }
+      if (!cancelled) {
+        setAllVideos(collected.length > 0 ? collected : VIMEO_FALLBACK);
+        setLoading(false);
       }
     }
     fetchAll();
@@ -574,7 +595,7 @@ function useVimeoVideos(language: string) {
 export default function VideosScreen() {
   const { language, partnerMode } = useCalculator();
   const tx = TEXT[language] ?? TEXT.en;
-  const { videos: ytVideos, loading: ytLoading, refresh: refreshYT } = useYouTubeVideos();
+  const { videos: ytVideos, loading: ytLoading, liveLoaded: ytLive, refresh: refreshYT } = useYouTubeVideos();
   const { videos: vimeoVideos, loading: vimeoLoading, refresh: refreshVimeo } = useVimeoVideos(language);
 
   const handleYouTubePress = useCallback((videoId: string) => {
@@ -642,9 +663,16 @@ export default function VideosScreen() {
 
           {/* YouTube Videos */}
           <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20, marginBottom: 12 }}>
-            <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{tx.latestVideos}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[S.sectionLabel, { marginBottom: 0 }]}>{tx.latestVideos}</Text>
+              {!ytLoading && (
+                <Text style={{ fontSize: 10, marginTop: 3, color: ytLive ? "#22c55e" : "#64748b" }}>
+                  {ytLive ? `✓ Live · ${ytVideos.length} videos` : `⚠ Showing cached · ${ytVideos.length} videos`}
+                </Text>
+              )}
+            </View>
             <TouchableOpacity style={S.refreshBtn} onPress={handleRefreshYT} activeOpacity={0.8} disabled={ytLoading}>
-              <Text style={S.refreshBtnText}>{ytLoading ? "..." : tx.refreshBtn}</Text>
+              <Text style={S.refreshBtnText}>{ytLoading ? "Loading…" : tx.refreshBtn}</Text>
             </TouchableOpacity>
           </View>
 
