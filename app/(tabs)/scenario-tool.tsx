@@ -302,6 +302,7 @@ export default function ScenarioToolScreen() {
   const [appliedBanner, setAppliedBanner] = useState<string | null>(null);
   const [vipBannerDismissed, setVipBannerDismissed] = useState(false);
   const vipBannerOpacity = useRef(new Animated.Value(0)).current;
+  const [adviserMobile, setAdviserMobile] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -335,6 +336,13 @@ export default function ScenarioToolScreen() {
 
   const [manualVip, setManualVip] = useState(false);
   const vipExplicitlyOff = useRef(false);
+
+  // Load adviser mobile from profile on mount for VIP CTA WhatsApp link
+  useEffect(() => {
+    AsyncStorage.getItem('adviser_profile_local').then(raw => {
+      if (raw) { try { const p = JSON.parse(raw); if (p.mobile) setAdviserMobile(p.mobile); } catch {} }
+    });
+  }, []);
 
   // Load persisted backup on mount (runs once).
   // Skip if we arrived with external params — the params effects will own state.
@@ -798,9 +806,17 @@ export default function ScenarioToolScreen() {
             <TouchableOpacity
               style={S.vipCtaBtn}
               activeOpacity={0.85}
-              onPress={() => Linking.openURL('mailto:vip@stiginternational.com?subject=VIP%20Consultation%20Request%20%E2%80%94%20SP7%20%24100K%2B%20Model')}
+              onPress={() => {
+                const num = adviserMobile.replace(/\D/g, '');
+                const text = encodeURIComponent(`Hi, I've modelled a $${Number(startAmount).toLocaleString()} SP7 portfolio and would like to discuss a VIP consultation.`);
+                if (num) {
+                  Linking.openURL(`https://wa.me/${num}?text=${text}`);
+                } else {
+                  Alert.alert('Profile incomplete', 'Please add your mobile number in Letters → Profile to enable this link.');
+                }
+              }}
             >
-              <Text style={S.vipCtaBtnText}>Schedule VIP Consultation →</Text>
+              <Text style={S.vipCtaBtnText}>💬 Schedule VIP Consultation via WhatsApp →</Text>
             </TouchableOpacity>
           </Animated.View>
         )}
