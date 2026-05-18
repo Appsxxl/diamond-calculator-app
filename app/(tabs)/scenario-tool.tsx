@@ -1529,7 +1529,10 @@ export default function ScenarioToolScreen() {
                 ];
                 const nextSp = spTiers.find(t => result.finalCap < t.threshold && result.finalCap >= t.threshold * 0.8);
                 const spHint = nextSp
-                  ? `Add ${fmt(nextSp.threshold - result.finalCap)} to unlock ${nextSp.name} (${nextSp.rate}% base/mo)`
+                  ? t(language, 'spUpgradeHint')
+                      .replace('{amount}', fmt(nextSp.threshold - result.finalCap))
+                      .replace('{plan}', nextSp.name)
+                      .replace('{rate}', String(nextSp.rate))
                   : null;
                 const vipCountdownHint = vipEnabled && result.finalVipPot < 1000
                   ? t(language, 'vipRenewalHint')
