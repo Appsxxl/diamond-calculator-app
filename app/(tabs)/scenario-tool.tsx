@@ -1710,8 +1710,8 @@ export default function ScenarioToolScreen() {
                             <View style={{ backgroundColor: row.isManualVip ? "rgba(51,197,255,0.15)" : "rgba(245,158,11,0.18)", flexDirection: "row", alignItems: "center", paddingVertical: 3, paddingHorizontal: 4, borderLeftWidth: 2, borderLeftColor: row.isManualVip ? "#33C5FF" : "#f59e0b" }}>
                               <Text style={{ color: row.isManualVip ? "#33C5FF" : "#f59e0b", fontSize: 10, fontWeight: "bold" }}>
                                 {row.isManualVip
-                                  ? `💳 Month ${row.month} — VIP Activation: $1,000 paid manually (external fee — deposit ~$1,016 gross to cover)`
-                                  : `⚠️ Month ${row.month} — VIP Activation: $1,000 deducted from deposit`}
+                                  ? t(language, 'manualVipBanner').replace('{month}', String(row.month))
+                                  : t(language, 'autoVipBanner').replace('{month}', String(row.month))}
                               </Text>
                             </View>
                           )}

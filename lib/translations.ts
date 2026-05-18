@@ -362,7 +362,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Total",
     vipSelfFunded: "SELF-FUNDED",
     yearTotal: "Year {year} Total",
-    manualVipBanner: "💳 Month {month} — Manual VIP Activation Fee: $1,000",
+    manualVipBanner: "💳 Month {month} — VIP Activation: $1,000 paid manually (external fee — deposit ~$1,016 gross to cover)",
+    autoVipBanner: "⚠️ Month {month} — VIP Activation: $1,000 deducted from deposit",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 TARGET MONTHLY DISCOUNT REACHED — Month {month}",
 
@@ -874,7 +875,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Totaal",
     vipSelfFunded: "ZELF-GEFINANC.",
     yearTotal: "Jaar {year} Totaal",
-    manualVipBanner: "💳 Maand {month} — Handmatige VIP Activeringskosten: $1.000",
+    manualVipBanner: "💳 Maand {month} — VIP Activering: $1.000 handmatig betaald (externe kosten — stort ~$1.016 bruto)",
+    autoVipBanner: "⚠️ Maand {month} — VIP Activering: $1.000 afgehouden van storting",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% basis)",
     goalReachedInTable: "🎯 MAANDELIJKS KORTINGSDOEL BEREIKT — Maand {month}",
 
@@ -1383,7 +1385,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Gesamt",
     vipSelfFunded: "SELBST-FIN.",
     yearTotal: "Jahr {year} Gesamt",
-    manualVipBanner: "💳 Monat {month} — Manuelle VIP Aktivierungsgebühr: $1.000",
+    manualVipBanner: "💳 Monat {month} — VIP-Aktivierung: $1.000 manuell bezahlt (externe Gebühr — ca. $1.016 brutto einzahlen)",
+    autoVipBanner: "⚠️ Monat {month} — VIP-Aktivierung: $1.000 vom Einzahlungsbetrag abgezogen",
     spUpgradeRow: "⬆️ SP-UPGRADE → {plan} ({rate}% Basis)",
     goalReachedInTable: "🎯 MONATL. RABATTZIEL ERREICHT — Monat {month}",
 
@@ -1892,7 +1895,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Total",
     vipSelfFunded: "AUTO-FINANCÉ",
     yearTotal: "Année {year} Total",
-    manualVipBanner: "💳 Mois {month} — Frais d'Activation VIP Manuelle : $1 000",
+    manualVipBanner: "💳 Mois {month} — Activation VIP : $1 000 payé manuellement (frais externe — déposer ~$1 016 brut)",
+    autoVipBanner: "⚠️ Mois {month} — Activation VIP : $1 000 déduit du dépôt",
     spUpgradeRow: "⬆️ UPGRADE SP → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 OBJECTIF MENSUEL ATTEINT — Mois {month}",
 
@@ -2401,7 +2405,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Total",
     vipSelfFunded: "AUTO-FINANC.",
     yearTotal: "Año {year} Total",
-    manualVipBanner: "💳 Mes {month} — Tarifa de Activación VIP Manual: $1.000",
+    manualVipBanner: "💳 Mes {month} — Activación VIP: $1.000 pagado manualmente (comisión externa — depositar ~$1.016 bruto)",
+    autoVipBanner: "⚠️ Mes {month} — Activación VIP: $1.000 deducido del depósito",
     spUpgradeRow: "⬆️ ACTUALIZ. SP → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 META MENSUAL ALCANZADA — Mes {month}",
 
@@ -2903,7 +2908,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Итого",
     vipSelfFunded: "САМОФИНАНС.",
     yearTotal: "Итого Год {year}",
-    manualVipBanner: "💳 Месяц {month} — Ручная плата за активацию VIP: $1.000",
+    manualVipBanner: "💳 Месяц {month} — Активация VIP: $1 000 оплачено вручную (внешняя комиссия — внесите ~$1 016 брутто)",
+    autoVipBanner: "⚠️ Месяц {month} — Активация VIP: $1 000 вычтено из депозита",
     spUpgradeRow: "⬆️ ОБНОВЛЕНИЕ SP → {plan} ({rate}% базовая)",
     goalReachedInTable: "🎯 ЕЖЕМЕС. ЦЕЛЬ СКИДКИ ДОСТИГНУТА — Месяц {month}",
 
@@ -3408,7 +3414,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "合计",
     vipSelfFunded: "自筹资金",
     yearTotal: "第{year}年合计",
-    manualVipBanner: "💳 第{month}月 — 手动VIP激活费: $1,000",
+    manualVipBanner: "💳 第{month}月 — VIP激活: 手动支付$1,000（外部费用 — 存入约$1,016总额）",
+    autoVipBanner: "⚠️ 第{month}月 — VIP激活：$1,000 从存款中扣除",
     spUpgradeRow: "⬆️ SP升级 → {plan}（{rate}%基础）",
     goalReachedInTable: "🎯 月度折扣目标已达成 — 第{month}个月",
 
@@ -3914,7 +3921,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Kabuuan",
     vipSelfFunded: "SARILING-PINONDOHAN",
     yearTotal: "Kabuuan ng Taon {year}",
-    manualVipBanner: "💳 Buwan {month} — Bayad sa Manu-manong VIP Activation: $1,000",
+    manualVipBanner: "💳 Buwan {month} — VIP Activation: $1,000 bayad nang manu-mano (external fee — mag-deposito ng ~$1,016 gross)",
+    autoVipBanner: "⚠️ Buwan {month} — VIP Activation: $1,000 binawas mula sa deposito",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% batayan)",
     goalReachedInTable: "🎯 NAABOT NA ANG TARGET NA BUWANANG DISKWENTO — Buwan {month}",
 
@@ -4391,7 +4399,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Total",
     vipSelfFunded: "AUTOFINANCIADO",
     yearTotal: "Total do Ano {year}",
-    manualVipBanner: "💳 Mês {month} — Taxa de Ativação VIP Manual: $1.000",
+    manualVipBanner: "💳 Mês {month} — Ativação VIP: $1.000 pago manualmente (taxa externa — depositar ~$1.016 bruto)",
+    autoVipBanner: "⚠️ Mês {month} — Ativação VIP: $1.000 deduzido do depósito",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 DESCONTO MENSAL ALVO ATINGIDO — Mês {month}",
 
@@ -4868,7 +4877,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "الإجمالي",
     vipSelfFunded: "ممول ذاتياً",
     yearTotal: "إجمالي السنة {year}",
-    manualVipBanner: "💳 الشهر {month} — رسوم تفعيل VIP اليدوي: $1,000",
+    manualVipBanner: "💳 الشهر {month} — تفعيل VIP: تم دفع $1,000 يدوياً (رسوم خارجية — أودع ~$1,016 إجمالياً)",
+    autoVipBanner: "⚠️ الشهر {month} — تفعيل VIP: تم خصم $1,000 من الإيداع",
     spUpgradeRow: "⬆️ ترقية SP → {plan} ({rate}% أساس)",
     goalReachedInTable: "🎯 تم تحقيق الخصم الشهري المستهدف — الشهر {month}",
 
@@ -5345,7 +5355,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "ยอดรวม",
     vipSelfFunded: "ระดมทุนเอง",
     yearTotal: "ยอดรวมปี {year}",
-    manualVipBanner: "💳 เดือน {month} — ค่าธรรมเนียมเปิดใช้งาน VIP ด้วยตนเอง: $1,000",
+    manualVipBanner: "💳 เดือน {month} — เปิดใช้งาน VIP: ชำระ $1,000 ด้วยตนเอง (ค่าธรรมเนียมภายนอก — ฝาก ~$1,016 ก่อนหักค่าใช้จ่าย)",
+    autoVipBanner: "⚠️ เดือน {month} — เปิดใช้งาน VIP: หัก $1,000 จากเงินฝาก",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% ฐาน)",
     goalReachedInTable: "🎯 บรรลุส่วนลดรายเดือนเป้าหมายแล้ว — เดือน {month}",
 
@@ -5822,7 +5833,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "कुल",
     vipSelfFunded: "स्व-वित्तपोषित",
     yearTotal: "वर्ष {year} का कुल",
-    manualVipBanner: "💳 माह {month} — मैनुअल VIP सक्रियण शुल्क: $1,000",
+    manualVipBanner: "💳 माह {month} — VIP सक्रियण: $1,000 मैन्युअली भुगतान (बाहरी शुल्क — ~$1,016 सकल जमा करें)",
+    autoVipBanner: "⚠️ माह {month} — VIP सक्रियण: $1,000 जमा से काटा गया",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% आधार)",
     goalReachedInTable: "🎯 लक्षित मासिक छूट प्राप्त — महीना {month}",
 
@@ -6261,7 +6273,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Totale",
     vipSelfFunded: "AUTO-FINANZIATO",
     yearTotal: "Totale Anno {year}",
-    manualVipBanner: "💳 Mese {month} — Tariffa Attivazione VIP Manuale: $1.000",
+    manualVipBanner: "💳 Mese {month} — Attivazione VIP: $1.000 pagato manualmente (tariffa esterna — deposito ~$1.016 lordo)",
+    autoVipBanner: "⚠️ Mese {month} — Attivazione VIP: $1.000 detratto dal deposito",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% base)",
     goalReachedInTable: "🎯 SCONTO MENSILE TARGET RAGGIUNTO — Mese {month}",
 
@@ -6774,7 +6787,8 @@ export const translations: Record<Language, Record<string, string>> = {
     totalLabel: "Tổng",
     vipSelfFunded: "TỰ TÀI TRỢ",
     yearTotal: "Tổng Năm {year}",
-    manualVipBanner: "💳 Tháng {month} — Phí Kích Hoạt VIP Thủ Công: $1.000",
+    manualVipBanner: "💳 Tháng {month} — Kích Hoạt VIP: $1.000 trả thủ công (phí bên ngoài — nạp ~$1.016 gộp)",
+    autoVipBanner: "⚠️ Tháng {month} — Kích Hoạt VIP: $1.000 khấu trừ từ khoản nạp",
     spUpgradeRow: "⬆️ SP UPGRADE → {plan} ({rate}% cơ bản)",
     goalReachedInTable: "🎯 ĐÃ ĐẠT CHIẾT KHẤU HÀNG THÁNG MỤC TIÊU — Tháng {month}",
 
