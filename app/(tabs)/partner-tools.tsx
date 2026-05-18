@@ -1358,6 +1358,9 @@ export default function PartnerToolsScreen() {
   const [calcSavingsLoading, setCalcSavingsLoading] = useState(false);
   const [calcAssetLoading, setCalcAssetLoading] = useState(false);
   const [calcRevenueLoading, setCalcRevenueLoading] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportPayload, setExportPayload]     = useState("");
+  const [exportDone, setExportDone]           = useState(false);
 
   // Live pool inputs — Adviser fills from back office
   const [pool1Total, setPool1Total] = useState("73908");
@@ -1837,6 +1840,103 @@ export default function PartnerToolsScreen() {
     return curIdx >= bdIdx;
   }, [currentTier]);
 
+  // ── Export handlers ───────────────────────────────────────────────────────────
+  const handleExport = React.useCallback(async () => {
+    const SP_RATES: Record<string, number> = {
+      "SP7 (3.3%)": 3.3, "SP6 (3.2%)": 3.2, "SP5 (3.1%)": 3.1,
+      "SP4 (3.0%)": 3.0, "SP3 (2.7%)": 2.7, "SP2 (2.45%)": 2.45, "SP1 (2.2%)": 2.2,
+    };
+
+    const enrichedPartners = partners.map(p => {
+      const months   = monthsElapsed(p.startDate);
+      let portfolio  = p.amount;
+      for (let m = 0; m < months; m++) portfolio *= (1 + 0.033 * 0.5);
+      const spLabel  = getSPLabel(p.amount);
+      const baseRate = SP_RATES[spLabel] ?? 3.3;
+      const monthlyRebate        = portfolio * (baseRate / 100);
+      const levelPct             = p.level === 3 ? 0.03 : p.level === 2 ? 0.05 : 0.10;
+      const agentMonthlyResidual = monthlyRebate * levelPct;
+      const growthPct            = ((portfolio - p.amount) / p.amount) * 100;
+      const [dd, mm, yyyy]       = p.startDate.split("-");
+      return {
+        id:                         p.id,
+        name:                       p.name,
+        whatsapp:                   p.whatsapp || null,
+        country:                    p.country  || null,
+        start_date_iso:             `${yyyy}-${mm}-${dd}`,
+        start_date_display:         p.startDate,
+        months_active:              months,
+        initial_investment_usd:     p.amount,
+        sp_level:                   spLabel,
+        base_rebate_rate_pct:       baseRate,
+        level:                      p.level ?? 1,
+        commission_rate_pct:        (levelPct * 100).toFixed(0) + "%",
+        estimated_portfolio_usd:    Math.round(portfolio),
+        portfolio_growth_pct:       parseFloat(growthPct.toFixed(2)),
+        monthly_rebate_usd:         Math.round(monthlyRebate),
+        agent_monthly_residual_usd: parseFloat(agentMonthlyResidual.toFixed(2)),
+        contact_moments:            p.contactMoments ?? [],
+        alerts:                     getAlerts(p, TX.en),
+        status:                     months >= 12 ? "renewal_due" : months >= 11 ? "renewal_soon" : "active",
+      };
+    });
+
+    const totalPortfolio = enrichedPartners.reduce((s, p) => s + p.estimated_portfolio_usd, 0);
+    const totalResidual  = enrichedPartners.reduce((s, p) => s + p.agent_monthly_residual_usd, 0);
+    const avgTenure      = partners.length > 0
+      ? Math.round(enrichedPartners.reduce((s, p) => s + p.months_active, 0) / partners.length)
+      : 0;
+
+    const payload = {
+      schema:        "stig-adviser-export",
+      version:       "1.0",
+      exported_at:   new Date().toISOString(),
+      generated_by:  "Adviser Pro · STIG International",
+      note:          "Structured for AI import. All monetary values in USD. Dates in ISO 8601.",
+      adviser: {
+        referral_code:           referralCode || null,
+        current_rank:            `${currentTier.emoji} ${currentTier.rank}`,
+        rank_volume_usd:         partners.reduce((s, p) => s + p.amount, 0),
+        next_rank:               nextTier ? `${nextTier.emoji} ${nextTier.rank}` : null,
+        next_rank_threshold_usd: nextTier ? parseVol(nextTier.teamVol) : null,
+        infinity_bonus_rate:     currentTier.infinity,
+      },
+      portfolio_summary: {
+        total_partners:                 partners.length,
+        total_initial_investment_usd:   partners.reduce((s, p) => s + p.amount, 0),
+        estimated_total_portfolio_usd:  Math.round(totalPortfolio),
+        estimated_monthly_residual_usd: parseFloat(totalResidual.toFixed(2)),
+        partners_needing_attention:     enrichedPartners.filter(p => p.alerts.length > 0).length,
+        average_tenure_months:          avgTenure,
+      },
+      partners: enrichedPartners,
+    };
+
+    const json = JSON.stringify(payload, null, 2);
+    setExportPayload(json);
+    setExportDone(false);
+    setShowExportModal(true);
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }, [partners, referralCode, currentTier, nextTier]);
+
+  const handleDownloadOrCopy = React.useCallback(async () => {
+    if (!exportPayload) return;
+    const dateStr  = new Date().toISOString().slice(0, 10);
+    if (Platform.OS === "web") {
+      const blob = new Blob([exportPayload], { type: "application/json" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `stig-adviser-export-${dateStr}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      await Clipboard.setStringAsync(exportPayload);
+    }
+    setExportDone(true);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }, [exportPayload]);
+
   // ── Residual Stream — L1 10% + L2 5% + L3 3% + Infinity (mirrors affiliate.tsx) ──
   const residualSummary = React.useMemo(() => {
     if (partners.length === 0) return null;
@@ -2110,6 +2210,57 @@ export default function PartnerToolsScreen() {
           )}
         </View>
 
+
+        {/* ── DATA EXPORT ── */}
+        <View style={{
+          marginHorizontal: 16, marginBottom: 14,
+          backgroundColor: "#060f1a",
+          borderRadius: 16, padding: 18,
+          borderWidth: 1.5, borderColor: "#1a3a5c",
+          borderTopWidth: 3, borderTopColor: GREEN,
+        }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, gap: 12 }}>
+            <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(34,197,94,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.3)" }}>
+              <Text style={{ fontSize: 22 }}>📦</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: GREEN, fontSize: 15, fontWeight: "bold", letterSpacing: 0.3 }}>Data Export & AI Backup</Text>
+              <Text style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>Structured JSON · AI-ready · All partners</Text>
+            </View>
+          </View>
+
+          <View style={{ backgroundColor: "#0a1a2e", borderRadius: 10, padding: 12, marginBottom: 14, borderWidth: 1, borderColor: "#1a3550" }}>
+            {[
+              { icon: "🔢", label: "Partners", value: String(partners.length) },
+              { icon: "💰", label: "Total invested", value: `$${partners.reduce((s, p) => s + p.amount, 0).toLocaleString()}` },
+              { icon: "🏅", label: "Rank", value: `${currentTier.emoji} ${currentTier.rank}` },
+              { icon: "📅", label: "Export date", value: new Date().toLocaleDateString("en-GB") },
+            ].map(row => (
+              <View key={row.label} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
+                <Text style={{ color: "#64748b", fontSize: 12 }}>{row.icon}  {row.label}</Text>
+                <Text style={{ color: "#e2e8f0", fontSize: 12, fontWeight: "600" }}>{row.value}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={{ backgroundColor: "rgba(34,197,94,0.06)", borderRadius: 8, padding: 10, marginBottom: 14, borderWidth: 1, borderColor: "rgba(34,197,94,0.15)" }}>
+            <Text style={{ color: "#94a3b8", fontSize: 11, lineHeight: 17 }}>
+              Export includes full partner profiles with computed SP levels, portfolio estimates, monthly residuals, tenure, alerts, and rank data — structured for direct AI analysis or import.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={{ backgroundColor: GREEN, borderRadius: 12, paddingVertical: 14, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}
+            onPress={handleExport}
+            activeOpacity={0.85}
+            disabled={partners.length === 0}
+          >
+            <Text style={{ fontSize: 18 }}>⬇</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>
+              {partners.length === 0 ? "No partners to export" : "Generate Export"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {/* ── SECURITY BADGE BAR ── */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 12, justifyContent: "center" }}>
@@ -2669,6 +2820,91 @@ export default function PartnerToolsScreen() {
             </TouchableOpacity>
           </View>
         </Pressable>
+      </Modal>
+
+      {/* ── EXPORT MODAL ── */}
+      <Modal visible={showExportModal} transparent animationType="slide" onRequestClose={() => setShowExportModal(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.75)" }}>
+            <View style={{ backgroundColor: "#060f1a", borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, borderTopWidth: 2, borderColor: GREEN, maxHeight: "85%" }}>
+
+              {/* Header */}
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, gap: 14 }}>
+                <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(34,197,94,0.15)", alignItems: "center", justifyContent: "center", borderWidth: 1.5, borderColor: GREEN }}>
+                  <Text style={{ fontSize: 24 }}>📦</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: GREEN, fontSize: 18, fontWeight: "bold" }}>Export Ready</Text>
+                  <Text style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>STIG Adviser Export · v1.0 · AI-structured</Text>
+                </View>
+                <TouchableOpacity onPress={() => setShowExportModal(false)} style={{ padding: 6 }}>
+                  <Text style={{ color: "#64748b", fontSize: 20, fontWeight: "bold" }}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Stats row */}
+              <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+                {[
+                  { label: "Partners", value: String(partners.length), color: BLUE },
+                  { label: "With Alerts", value: String(partners.filter(p => getAlerts(p, TX.en).length > 0).length), color: "#f97316" },
+                  { label: "Fields / partner", value: "17", color: GOLD },
+                  { label: "Format", value: "JSON", color: GREEN },
+                ].map(s => (
+                  <View key={s.label} style={{ flex: 1, backgroundColor: "#0a1a2e", borderRadius: 8, padding: 8, alignItems: "center", borderTopWidth: 2, borderTopColor: s.color }}>
+                    <Text style={{ color: s.color, fontSize: 14, fontWeight: "bold" }}>{s.value}</Text>
+                    <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3, marginTop: 2, textAlign: "center" }}>{s.label}</Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* JSON preview */}
+              <View style={{ backgroundColor: "#020810", borderRadius: 10, padding: 14, marginBottom: 16, borderWidth: 1, borderColor: "#1a3550" }}>
+                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", letterSpacing: 0.8, marginBottom: 8, textTransform: "uppercase" }}>Preview</Text>
+                <ScrollView style={{ maxHeight: 140 }} showsVerticalScrollIndicator={false}>
+                  <Text style={{ color: "#4ade80", fontSize: 10, fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace", lineHeight: 16 }}>
+                    {exportPayload.slice(0, 600)}{exportPayload.length > 600 ? "\n  …" : ""}
+                  </Text>
+                </ScrollView>
+              </View>
+
+              {/* What's included */}
+              <View style={{ backgroundColor: "#0a1a2e", borderRadius: 10, padding: 12, marginBottom: 20, borderWidth: 1, borderColor: "#1a3550" }}>
+                <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Included fields per partner</Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+                  {["name", "country", "start_date_iso", "months_active", "sp_level", "base_rebate_rate_pct", "level", "commission_rate_pct", "initial_investment_usd", "estimated_portfolio_usd", "portfolio_growth_pct", "monthly_rebate_usd", "agent_monthly_residual_usd", "alerts", "status", "contact_moments", "whatsapp"].map(f => (
+                    <View key={f} style={{ backgroundColor: "#0f2035", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, borderWidth: 1, borderColor: "#1a3550" }}>
+                      <Text style={{ color: "#4ade80", fontSize: 9, fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>{f}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* Action buttons */}
+              {exportDone ? (
+                <View style={{ backgroundColor: "rgba(34,197,94,0.12)", borderRadius: 12, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "rgba(34,197,94,0.3)" }}>
+                  <Text style={{ fontSize: 28, marginBottom: 6 }}>✅</Text>
+                  <Text style={{ color: GREEN, fontWeight: "bold", fontSize: 15 }}>
+                    {Platform.OS === "web" ? "File downloaded" : "Copied to clipboard"}
+                  </Text>
+                  <Text style={{ color: "#64748b", fontSize: 12, marginTop: 4 }}>
+                    {Platform.OS === "web" ? "Check your Downloads folder" : "Paste into your AI system or notes app"}
+                  </Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={{ backgroundColor: GREEN, borderRadius: 12, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 10 }}
+                  onPress={handleDownloadOrCopy}
+                  activeOpacity={0.85}
+                >
+                  <Text style={{ fontSize: 20 }}>{Platform.OS === "web" ? "⬇" : "📋"}</Text>
+                  <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16, letterSpacing: 0.3 }}>
+                    {Platform.OS === "web" ? "Download JSON File" : "Copy to Clipboard"}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </ScreenContainer>
   );
