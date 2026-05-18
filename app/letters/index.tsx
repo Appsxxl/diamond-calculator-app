@@ -20,6 +20,8 @@ type HubText = {
   cardAdvisorTitle: string; cardAdvisorSub: string; cardAdvisorTemplates: string;
   cardRealEstateTitle: string; cardRealEstateSub: string; cardRealEstateTemplates: string;
   cardHnwTitle: string; cardHnwSub: string; cardHnwTemplates: string;
+  cardPersonalTitle: string; cardPersonalSub: string; cardPersonalMeta: string;
+  cardSentLogTitle: string; cardSentLogSub: string; cardSentLogMeta: string;
   comingSoon: string;
 };
 
@@ -35,6 +37,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 templates · 14 languages",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Ultra-Premium Letter · Direct Email",
     cardHnwTemplates: "Full profile · 14 languages",
+    cardPersonalTitle: "MY PERSONAL LETTERS", cardPersonalSub: "Create, draft & share your own letters",
+    cardPersonalMeta: "Drafts · Variables · WhatsApp share",
+    cardSentLogTitle: "SENT LOG & PIPELINE", cardSentLogSub: "Track outcomes, follow-ups & conversions",
+    cardSentLogMeta: "Pipeline · Follow-up alerts · Stats",
     comingSoon: "COMING SOON",
   },
   nl: {
@@ -48,6 +54,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 sjablonen · 14 talen",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Ultra-Premium Brief · Directe E-mail",
     cardHnwTemplates: "Volledig profiel · 14 talen",
+    cardPersonalTitle: "MIJN PERSOONLIJKE BRIEVEN", cardPersonalSub: "Maak, bewaar en deel uw eigen brieven",
+    cardPersonalMeta: "Concepten · Variabelen · WhatsApp delen",
+    cardSentLogTitle: "VERZENDLOG & PIPELINE", cardSentLogSub: "Volg resultaten, follow-ups en conversies",
+    cardSentLogMeta: "Pipeline · Follow-up meldingen · Statistieken",
     comingSoon: "BINNENKORT",
   },
   de: {
@@ -61,6 +71,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 Vorlagen · 14 Sprachen",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Ultra-Premium Brief · Direkte E-Mail",
     cardHnwTemplates: "Vollständiges Profil · 14 Sprachen",
+    cardPersonalTitle: "MEINE PERSÖNLICHEN BRIEFE", cardPersonalSub: "Eigene Briefe erstellen, entwerfen und teilen",
+    cardPersonalMeta: "Entwürfe · Variablen · WhatsApp-Teilen",
+    cardSentLogTitle: "GESENDET-LOG & PIPELINE", cardSentLogSub: "Ergebnisse, Nachfassaktionen und Conversions verfolgen",
+    cardSentLogMeta: "Pipeline · Follow-up-Hinweise · Statistiken",
     comingSoon: "DEMNÄCHST",
   },
   fr: {
@@ -74,6 +88,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 modèles · 14 langues",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Lettre ultra-premium · Email direct",
     cardHnwTemplates: "Profil complet · 14 langues",
+    cardPersonalTitle: "MES LETTRES PERSONNELLES", cardPersonalSub: "Créez, rédigez et partagez vos propres lettres",
+    cardPersonalMeta: "Brouillons · Variables · Partage WhatsApp",
+    cardSentLogTitle: "JOURNAL D'ENVOI & PIPELINE", cardSentLogSub: "Suivez résultats, relances et conversions",
+    cardSentLogMeta: "Pipeline · Alertes de relance · Statistiques",
     comingSoon: "BIENTÔT",
   },
   es: {
@@ -87,6 +105,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 plantillas · 14 idiomas",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Carta ultra-premium · Email directo",
     cardHnwTemplates: "Perfil completo · 14 idiomas",
+    cardPersonalTitle: "MIS CARTAS PERSONALES", cardPersonalSub: "Crea, redacta y comparte tus propias cartas",
+    cardPersonalMeta: "Borradores · Variables · Compartir WhatsApp",
+    cardSentLogTitle: "REGISTRO ENVIADO & PIPELINE", cardSentLogSub: "Seguimiento de resultados, seguimientos y conversiones",
+    cardSentLogMeta: "Pipeline · Alertas de seguimiento · Estadísticas",
     comingSoon: "PRÓXIMAMENTE",
   },
   it: {
@@ -100,6 +122,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 modelli · 14 lingue",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Lettera ultra-premium · Email diretto",
     cardHnwTemplates: "Profilo completo · 14 lingue",
+    cardPersonalTitle: "LE MIE LETTERE PERSONALI", cardPersonalSub: "Crea, abbozza e condividi le tue lettere",
+    cardPersonalMeta: "Bozze · Variabili · Condivisione WhatsApp",
+    cardSentLogTitle: "LOG INVIATI & PIPELINE", cardSentLogSub: "Monitora risultati, follow-up e conversioni",
+    cardSentLogMeta: "Pipeline · Avvisi follow-up · Statistiche",
     comingSoon: "PROSSIMAMENTE",
   },
   pt: {
@@ -113,6 +139,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 modelos · 14 idiomas",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Carta ultra-premium · Email direto",
     cardHnwTemplates: "Perfil completo · 14 idiomas",
+    cardPersonalTitle: "MINHAS CARTAS PESSOAIS", cardPersonalSub: "Crie, rascunhe e compartilhe suas cartas",
+    cardPersonalMeta: "Rascunhos · Variáveis · Compartilhar WhatsApp",
+    cardSentLogTitle: "LOG DE ENVIOS & PIPELINE", cardSentLogSub: "Acompanhe resultados, follow-ups e conversões",
+    cardSentLogMeta: "Pipeline · Alertas de follow-up · Estatísticas",
     comingSoon: "EM BREVE",
   },
   ru: {
@@ -126,6 +156,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 шаблона · 14 языков",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Ультра-премиум письмо · Прямой email",
     cardHnwTemplates: "Полный профиль · 14 языков",
+    cardPersonalTitle: "МОИ ЛИЧНЫЕ ПИСЬМА", cardPersonalSub: "Создавайте, редактируйте и делитесь письмами",
+    cardPersonalMeta: "Черновики · Переменные · Поделиться WhatsApp",
+    cardSentLogTitle: "ЖУРНАЛ ОТПРАВЛЕННЫХ", cardSentLogSub: "Отслеживайте результаты, напоминания и конверсии",
+    cardSentLogMeta: "Воронка · Напоминания · Статистика",
     comingSoon: "СКОРО",
   },
   zh: {
@@ -139,6 +173,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2个模板 · 14种语言",
     cardHnwTitle: "VIP / 高净值推广", cardHnwSub: "超高端信函 · 直接邮件",
     cardHnwTemplates: "完整资料 · 14种语言",
+    cardPersonalTitle: "我的个人信函", cardPersonalSub: "创建、起草并分享您的信函",
+    cardPersonalMeta: "草稿 · 变量 · WhatsApp分享",
+    cardSentLogTitle: "发送日志与销售漏斗", cardSentLogSub: "跟踪结果、跟进和转化",
+    cardSentLogMeta: "销售漏斗 · 跟进提醒 · 统计",
     comingSoon: "即将推出",
   },
   tl: {
@@ -152,6 +190,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 template · 14 wika",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Ultra-Premium na Liham · Direktang Email",
     cardHnwTemplates: "Buong profile · 14 wika",
+    cardPersonalTitle: "AKING MGA PERSONAL NA LIHAM", cardPersonalSub: "Gumawa, mag-draft at magbahagi ng liham",
+    cardPersonalMeta: "Mga draft · Mga variable · WhatsApp share",
+    cardSentLogTitle: "TALAAN NG IPINADALA & PIPELINE", cardSentLogSub: "Subaybayan ang mga resulta at follow-up",
+    cardSentLogMeta: "Pipeline · Mga alerto sa follow-up · Stats",
     comingSoon: "PAPARATING",
   },
   ar: {
@@ -165,6 +207,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "قالبان · 14 لغة",
     cardHnwTitle: "VIP / كبار العملاء", cardHnwSub: "رسالة فائقة الجودة · بريد مباشر",
     cardHnwTemplates: "ملف كامل · 14 لغة",
+    cardPersonalTitle: "رسائلي الشخصية", cardPersonalSub: "أنشئ وصمم وشارك رسائلك الخاصة",
+    cardPersonalMeta: "مسودات · متغيرات · مشاركة واتساب",
+    cardSentLogTitle: "سجل الإرسال والمسار", cardSentLogSub: "تتبع النتائج والمتابعات والتحويلات",
+    cardSentLogMeta: "المسار · تنبيهات المتابعة · إحصائيات",
     comingSoon: "قريباً",
   },
   th: {
@@ -178,6 +224,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 แบบ · 14 ภาษา",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "จดหมายระดับสูงสุด · อีเมลตรง",
     cardHnwTemplates: "โปรไฟล์เต็ม · 14 ภาษา",
+    cardPersonalTitle: "จดหมายส่วนตัวของฉัน", cardPersonalSub: "สร้าง ร่าง และแบ่งปันจดหมายของคุณ",
+    cardPersonalMeta: "ร่าง · ตัวแปร · แชร์ WhatsApp",
+    cardSentLogTitle: "บันทึกการส่ง & ไปป์ไลน์", cardSentLogSub: "ติดตามผลลัพธ์ การติดตาม และการแปลง",
+    cardSentLogMeta: "ไปป์ไลน์ · การแจ้งเตือน · สถิติ",
     comingSoon: "เร็วๆ นี้",
   },
   hi: {
@@ -191,6 +241,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 टेम्पलेट · 14 भाषाएं",
     cardHnwTitle: "VIP / HNW आउटरीच", cardHnwSub: "अल्ट्रा-प्रीमियम पत्र · डायरेक्ट ईमेल",
     cardHnwTemplates: "पूर्ण प्रोफ़ाइल · 14 भाषाएं",
+    cardPersonalTitle: "मेरे व्यक्तिगत पत्र", cardPersonalSub: "अपने पत्र बनाएं, ड्राफ्ट करें और साझा करें",
+    cardPersonalMeta: "ड्राफ्ट · चर · WhatsApp साझा करें",
+    cardSentLogTitle: "भेजा गया लॉग & पाइपलाइन", cardSentLogSub: "परिणाम, फॉलो-अप और रूपांतरण ट्रैक करें",
+    cardSentLogMeta: "पाइपलाइन · फॉलो-अप अलर्ट · आंकड़े",
     comingSoon: "जल्द आ रहा है",
   },
   vi: {
@@ -204,6 +258,10 @@ const TX: Record<Language, HubText> = {
     cardRealEstateTemplates: "2 mẫu · 14 ngôn ngữ",
     cardHnwTitle: "VIP / HNW OUTREACH", cardHnwSub: "Thư siêu cao cấp · Email trực tiếp",
     cardHnwTemplates: "Hồ sơ đầy đủ · 14 ngôn ngữ",
+    cardPersonalTitle: "THƯ CÁ NHÂN CỦA TÔI", cardPersonalSub: "Tạo, soạn thảo và chia sẻ thư của bạn",
+    cardPersonalMeta: "Bản nháp · Biến số · Chia sẻ WhatsApp",
+    cardSentLogTitle: "NHẬT KÝ GỬI & PIPELINE", cardSentLogSub: "Theo dõi kết quả, theo dõi và chuyển đổi",
+    cardSentLogMeta: "Pipeline · Cảnh báo theo dõi · Thống kê",
     comingSoon: "SẮP RA MẮT",
   },
 };
@@ -254,6 +312,24 @@ const TIERS: TierCard[] = [
     route: "/letters/hnw-outreach",
     active: true,
     accentColor: "#a855f7",
+  },
+  {
+    icon: "📝",
+    titleKey: "cardPersonalTitle",
+    subKey: "cardPersonalSub",
+    templatesKey: "cardPersonalMeta",
+    route: "/letters/personal",
+    active: true,
+    accentColor: "#8b5cf6",
+  },
+  {
+    icon: "📊",
+    titleKey: "cardSentLogTitle",
+    subKey: "cardSentLogSub",
+    templatesKey: "cardSentLogMeta",
+    route: "/letters/sent-log",
+    active: true,
+    accentColor: "#0ea5e9",
   },
 ];
 
