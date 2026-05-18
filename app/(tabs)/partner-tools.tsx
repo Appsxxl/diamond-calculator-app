@@ -1361,6 +1361,9 @@ export default function PartnerToolsScreen() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportPayload, setExportPayload]     = useState("");
   const [exportDone, setExportDone]           = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importCandidates, setImportCandidates] = useState<Partner[]>([]);
+  const [importError, setImportError]           = useState("");
 
   // Live pool inputs — Adviser fills from back office
   const [pool1Total, setPool1Total] = useState("73908");
@@ -1937,6 +1940,92 @@ export default function PartnerToolsScreen() {
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   }, [exportPayload]);
 
+  const parseImportJSON = (raw: string): { partners: Partner[]; error: string } => {
+    try {
+      const parsed = JSON.parse(raw);
+      // Accept both the full export envelope and a raw array
+      const items: any[] = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.partners)
+          ? parsed.partners
+          : null;
+      if (!items) return { partners: [], error: "Invalid format — expected a STIG export file or JSON array." };
+      if (items.length === 0) return { partners: [], error: "The file contains no partners." };
+
+      const restored: Partner[] = items.map((item: any, i: number) => {
+        // Accept both export format (start_date_display) and native format (startDate)
+        const startDate: string =
+          item.start_date_display ?? item.startDate ?? formatDDMMYYYY(new Date());
+        const amount = Number(item.initial_investment_usd ?? item.amount ?? 0);
+        return {
+          id:             item.id ?? String(Date.now() + i),
+          name:           String(item.name ?? `Partner ${i + 1}`),
+          whatsapp:       String(item.whatsapp ?? ""),
+          country:        String(item.country ?? ""),
+          startDate,
+          amount,
+          level:          ([1, 2, 3].includes(Number(item.level)) ? Number(item.level) : 1) as 1 | 2 | 3,
+          contactMoments: Array.isArray(item.contact_moments ?? item.contactMoments)
+            ? (item.contact_moments ?? item.contactMoments)
+            : [...CONTACT_MOMENT_KEYS],
+        };
+      }).filter((p: Partner) => p.name && p.amount > 0);
+
+      if (restored.length === 0)
+        return { partners: [], error: "No valid partner records found in the file." };
+      return { partners: restored, error: "" };
+    } catch {
+      return { partners: [], error: "Could not read the file — make sure it's a valid JSON export." };
+    }
+  };
+
+  const handleImportFromClipboard = React.useCallback(async () => {
+    setImportError("");
+    const raw = await Clipboard.getStringAsync();
+    if (!raw.trim()) {
+      setImportError("Clipboard is empty. Copy your export JSON first, then tap Import.");
+      setImportCandidates([]);
+      setShowImportModal(true);
+      return;
+    }
+    const { partners: found, error } = parseImportJSON(raw);
+    setImportError(error);
+    setImportCandidates(found);
+    setShowImportModal(true);
+  }, []);
+
+  const handleImportFromFile = React.useCallback(() => {
+    const input = document.createElement("input");
+    input.type  = "file";
+    input.accept = ".json,application/json";
+    input.onchange = async (e: any) => {
+      const file = e.target?.files?.[0];
+      if (!file) return;
+      const raw = await file.text();
+      const { partners: found, error } = parseImportJSON(raw);
+      setImportError(error);
+      setImportCandidates(found);
+      setShowImportModal(true);
+    };
+    input.click();
+  }, []);
+
+  const handleImportConfirm = React.useCallback(async (mode: "replace" | "merge") => {
+    if (importCandidates.length === 0) return;
+    let finalList: Partner[];
+    if (mode === "replace") {
+      finalList = importCandidates;
+    } else {
+      const existingIds = new Set(partners.map(p => p.id));
+      const newOnes     = importCandidates.filter(p => !existingIds.has(p.id));
+      finalList         = [...partners, ...newOnes];
+    }
+    await savePartners(finalList);
+    setShowImportModal(false);
+    setImportCandidates([]);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }, [importCandidates, partners]);
+
   // ── Residual Stream — L1 10% + L2 5% + L3 3% + Infinity (mirrors affiliate.tsx) ──
   const residualSummary = React.useMemo(() => {
     if (partners.length === 0) return null;
@@ -2258,6 +2347,44 @@ export default function PartnerToolsScreen() {
             <Text style={{ fontSize: 18 }}>⬇</Text>
             <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>
               {partners.length === 0 ? "No partners to export" : "Generate Export"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── DATA IMPORT ── */}
+        <View style={{
+          marginHorizontal: 16, marginBottom: 14,
+          backgroundColor: "#060f1a",
+          borderRadius: 16, padding: 18,
+          borderWidth: 1.5, borderColor: "#1a3a5c",
+          borderTopWidth: 3, borderTopColor: BLUE,
+        }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, gap: 12 }}>
+            <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(51,197,255,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(51,197,255,0.3)" }}>
+              <Text style={{ fontSize: 22 }}>📥</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: BLUE, fontSize: 15, fontWeight: "bold", letterSpacing: 0.3 }}>Import Backup</Text>
+              <Text style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>
+                {Platform.OS === "web" ? "Select a JSON export file" : "Paste from clipboard"}
+              </Text>
+            </View>
+          </View>
+
+          <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginBottom: 14, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
+            <Text style={{ color: "#94a3b8", fontSize: 11, lineHeight: 17 }}>
+              Restore partners from a previous export. Choose to replace your current list or merge — new partners are added, existing ones (same ID) are kept.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={{ backgroundColor: BLUE, borderRadius: 12, paddingVertical: 14, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}
+            onPress={Platform.OS === "web" ? handleImportFromFile : handleImportFromClipboard}
+            activeOpacity={0.85}
+          >
+            <Text style={{ fontSize: 18 }}>{Platform.OS === "web" ? "📂" : "📋"}</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>
+              {Platform.OS === "web" ? "Select JSON File" : "Paste & Import"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -2901,6 +3028,120 @@ export default function PartnerToolsScreen() {
                     {Platform.OS === "web" ? "Download JSON File" : "Copy to Clipboard"}
                   </Text>
                 </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* ── IMPORT MODAL ── */}
+      <Modal visible={showImportModal} transparent animationType="slide" onRequestClose={() => setShowImportModal(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.75)" }}>
+            <View style={{ backgroundColor: "#060f1a", borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, borderTopWidth: 2, borderColor: BLUE, maxHeight: "85%" }}>
+
+              {/* Header */}
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, gap: 14 }}>
+                <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(51,197,255,0.15)", alignItems: "center", justifyContent: "center", borderWidth: 1.5, borderColor: BLUE }}>
+                  <Text style={{ fontSize: 24 }}>{importError ? "⚠️" : "📥"}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: BLUE, fontSize: 18, fontWeight: "bold" }}>
+                    {importError ? "Import Error" : `${importCandidates.length} Partner${importCandidates.length !== 1 ? "s" : ""} Found`}
+                  </Text>
+                  <Text style={{ color: "#64748b", fontSize: 12, marginTop: 2 }}>STIG Adviser Import</Text>
+                </View>
+                <TouchableOpacity onPress={() => setShowImportModal(false)} style={{ padding: 6 }}>
+                  <Text style={{ color: "#64748b", fontSize: 20, fontWeight: "bold" }}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              {importError ? (
+                <>
+                  <View style={{ backgroundColor: "rgba(239,68,68,0.08)", borderRadius: 12, padding: 16, marginBottom: 20, borderWidth: 1, borderColor: "rgba(239,68,68,0.25)" }}>
+                    <Text style={{ color: "#f87171", fontSize: 14, lineHeight: 21 }}>{importError}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{ backgroundColor: "#1e293b", borderRadius: 12, paddingVertical: 14, alignItems: "center", borderWidth: 1, borderColor: "#334155" }}
+                    onPress={() => setShowImportModal(false)}
+                  >
+                    <Text style={{ color: "#94a3b8", fontWeight: "bold", fontSize: 15 }}>Close</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  {/* Stats */}
+                  <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+                    {[
+                      { label: "In file",    value: String(importCandidates.length),                                              color: BLUE  },
+                      { label: "Existing",   value: String(partners.length),                                                     color: GOLD  },
+                      { label: "New only",   value: String(importCandidates.filter(p => !partners.some(e => e.id === p.id)).length), color: GREEN },
+                      { label: "Duplicates", value: String(importCandidates.filter(p => partners.some(e => e.id === p.id)).length),  color: "#64748b" },
+                    ].map(s => (
+                      <View key={s.label} style={{ flex: 1, backgroundColor: "#0a1a2e", borderRadius: 8, padding: 8, alignItems: "center", borderTopWidth: 2, borderTopColor: s.color }}>
+                        <Text style={{ color: s.color, fontSize: 14, fontWeight: "bold" }}>{s.value}</Text>
+                        <Text style={{ color: "#64748b", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.3, marginTop: 2, textAlign: "center" }}>{s.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  {/* Partner preview list */}
+                  <View style={{ backgroundColor: "#020810", borderRadius: 10, padding: 14, marginBottom: 16, borderWidth: 1, borderColor: "#1a3550", maxHeight: 180 }}>
+                    <Text style={{ color: "#64748b", fontSize: 10, fontWeight: "bold", letterSpacing: 0.8, marginBottom: 8, textTransform: "uppercase" }}>Partners to import</Text>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      {importCandidates.map((p, i) => {
+                        const isDuplicate = partners.some(e => e.id === p.id);
+                        return (
+                          <View key={p.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#0f2035" }}>
+                            <Text style={{ color: "#64748b", fontSize: 10, width: 20 }}>{i + 1}.</Text>
+                            <Text style={{ color: isDuplicate ? "#64748b" : "#e2e8f0", fontSize: 12, flex: 1, fontWeight: "600" }}>{p.name}</Text>
+                            <Text style={{ color: "#64748b", fontSize: 10, marginRight: 8 }}>{p.country}</Text>
+                            <Text style={{ color: GOLD, fontSize: 10, fontWeight: "bold" }}>${p.amount.toLocaleString()}</Text>
+                            {isDuplicate && (
+                              <View style={{ marginLeft: 6, backgroundColor: "#1a3550", borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 }}>
+                                <Text style={{ color: "#64748b", fontSize: 9 }}>dup</Text>
+                              </View>
+                            )}
+                          </View>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+
+                  {/* Import mode buttons */}
+                  <View style={{ gap: 10 }}>
+                    <TouchableOpacity
+                      style={{ backgroundColor: GREEN, borderRadius: 12, paddingVertical: 14, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}
+                      onPress={() => handleImportConfirm("merge")}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={{ fontSize: 18 }}>🔀</Text>
+                      <View style={{ alignItems: "center" }}>
+                        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15 }}>Merge — Add New Only</Text>
+                        <Text style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, marginTop: 1 }}>Skips partners that already exist</Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{ backgroundColor: "#7f1d1d", borderRadius: 12, paddingVertical: 14, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8, borderWidth: 1, borderColor: "#ef4444" }}
+                      onPress={() => handleImportConfirm("replace")}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={{ fontSize: 18 }}>♻️</Text>
+                      <View style={{ alignItems: "center" }}>
+                        <Text style={{ color: "#fca5a5", fontWeight: "bold", fontSize: 15 }}>Replace All</Text>
+                        <Text style={{ color: "rgba(252,165,165,0.65)", fontSize: 11, marginTop: 1 }}>Overwrites your entire partner list</Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{ backgroundColor: "#1e293b", borderRadius: 12, paddingVertical: 12, alignItems: "center", borderWidth: 1, borderColor: "#334155" }}
+                      onPress={() => setShowImportModal(false)}
+                    >
+                      <Text style={{ color: "#64748b", fontWeight: "bold", fontSize: 14 }}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
               )}
             </View>
           </View>
