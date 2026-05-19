@@ -687,6 +687,22 @@ export default function ComplianceScreen() {
         <View style={S.footer}>
           <Text style={S.footerText}>{tx.footerText}</Text>
         </View>
+
+        {/* Official registered address */}
+        <View style={S.addressBlock}>
+          <Text style={S.addressTitle}>🏢 OFFICIAL REGISTERED ADDRESS</Text>
+          <Text style={S.addressLine}>STIG Group / STIG International Gemstone</Text>
+          <Text style={S.addressLine}>HDS Business Center, Cluster M, 26th Floor</Text>
+          <Text style={S.addressLine}>Office 2602 · Dubai, United Arab Emirates</Text>
+        </View>
+
+        {/* Authorized partner notice */}
+        <View style={S.partnerNotice}>
+          <Text style={S.partnerIcon}>✅</Text>
+          <Text style={S.partnerText}>
+            This tool is operated by an authorized distribution partner using officially approved materials provided by STIG International Gemstone.
+          </Text>
+        </View>
       </ScrollView>
     </ScreenContainer>
   );
@@ -774,6 +790,32 @@ const S = StyleSheet.create({
     borderLeftColor: "#334155",
   },
   footerText: { fontSize: 13, color: "#e2e8f0", lineHeight: 19 },
+
+  addressBlock: {
+    marginTop: 12,
+    padding: 14,
+    backgroundColor: "#0f172a",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#1e3a5f",
+  },
+  addressTitle: { fontSize: 10, fontWeight: "800", color: "#38bdf8", letterSpacing: 1, marginBottom: 8 },
+  addressLine: { fontSize: 13, color: "#94a3b8", lineHeight: 20 },
+
+  partnerNotice: {
+    marginTop: 10,
+    marginBottom: 8,
+    padding: 14,
+    backgroundColor: "rgba(34,197,94,0.06)",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(34,197,94,0.2)",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  partnerIcon: { fontSize: 16, marginTop: 1 },
+  partnerText: { flex: 1, fontSize: 12, color: "#86efac", lineHeight: 18 },
   secPanel: {
     backgroundColor: "#0f172a",
     borderRadius: 14,
