@@ -25,17 +25,29 @@ const TEXT: Record<Language, LeaderText> = {
   en: {
     sectionTitle: "Leadership",
     sectionSub: "The Visionaries Behind STIG International",
-    patrickTitle: "Patrick Stoeger",
-    patrickRole: "CEO & Co-Founder — STIG International",
+    patrickTitle: "Patrick Stöger",
+    patrickRole: "Chief Executive Officer & Co-Founder",
     patrickBio: [
-      "Patrick Stoeger founded STIG International in 2018, with a single conviction: that every family deserves access to real, certified diamonds as a vehicle for long-term financial security.",
-      "Based in Dubai Silicon Oasis, UAE, he has built STIG into a global diamond solution platform operating across more than 180 countries. His leadership drives the company's mission to make wealth preservation through diamonds both accessible and transparent.",
+      "Executive Overview",
+      "Patrick Stöger is an entrepreneur, financial strategist, and the Chief Executive Officer and Co-Founder of STIG International. With a professional background rooted in rigorous asset management and structured financial planning, Stöger has dedicated his career to engineering alternative wealth optimization models that bridge the gap between traditional asset preservation and modern financial technology.",
+      "Under his leadership, STIG International has evolved into a global platform, transforming the way private wealth advisors, family offices, and individual investors utilize physical commodities to build sustainable, long-term passive income and generational wealth.",
+      "Core Philosophy & Financial Methodology",
+      "Stöger's strategic vision is driven by the belief that traditional, fiat-based financial models are increasingly vulnerable to economic instability and systemic inflation. In response, he pioneered the \"Plan B\" philosophy — an institutional-grade mathematical framework that treats high-grade investment commodities as a stable, hard-asset ledger.",
+      "Rather than viewing alternative assets as speculative vehicles, Stöger's methodology focuses on absolute mathematical predictability. He is the principal architect behind the Solution Plan (SP) Tier System — a modular financial model ranging from SP1 to SP7 — designed to help clients achieve concrete, real-world milestones such as property acquisition, education funding, and complete financial independence, with total transparent growth forecasting.",
+      "Corporate Governance & Global Strategy",
+      "As Managing Director (Geschäftsführer) of STIG International Trading FZCO, based in the IFZA Business Park at Dubai Silicon Oasis (UAE), Stöger oversees core digital infrastructure, asset trading mechanics, and global software development for the platform. His structural groundwork in private capital management includes serving as founder and Managing Director of Stöger Holding GmbH in Central Europe. Championing a digital-first approach, he has driven STIG's proprietary simulation tools into a highly localized, multi-language application supporting over 13 languages across European and Asian markets — ensuring the platform remains universally accessible to a diverse, global network of advisors and clients.",
     ],
     michaelTitle: "Michael Lang",
-    michaelRole: "COO — Chief Operating Officer",
+    michaelRole: "Chief Operating Officer & Co-Founder",
     michaelBio: [
-      "Michael Lang oversees the operational backbone of STIG International — ensuring that every adviser, every client, and every diamond solution meets the standards the company was built on.",
-      "With a focus on scalable systems and adviser excellence, Michael ensures that the growth Patrick envisions becomes the reality advisers experience every day.",
+      "Executive Overview",
+      "Michael Lang is an operational strategist, executive leader, and the Chief Operating Officer and Co-Founder of STIG International. Complementing the platform's strategic framework, Lang is responsible for global execution, network infrastructure, and day-to-day operations that enable the \"Plan B\" ecosystem to scale seamlessly across international borders.",
+      "Under his operational guidance, STIG International has built a highly efficient, client-centric administration capable of serving a rapidly expanding global network of private clients and financial advisors.",
+      "Operational Methodology & Network Management",
+      "Lang's primary focus is converting complex mathematical financial modeling into a friction-free user experience. He oversees the implementation of the platform's digital ecosystem — ensuring that the Plan B Architect and the month-by-month Scenario Tool remain precise, responsive, and secure for multi-tier portfolio simulations.",
+      "A core pillar of Lang's methodology is the scaling and optimization of the Global Advisor Network. He structures back-end support systems that empower independent wealth advisors worldwide, providing real-time tools, compliance baselines, and structured pathways to seamlessly onboard and manage private client portfolios across asset tiers SP1 through SP7.",
+      "Global Execution & Client Services",
+      "Lang directs the operational onboarding and continuous service infrastructure for the platform's global intermediary network, ensuring advisors have immediate deployment capabilities. He manages the functional synergy between the multi-language framework — supporting over 13 languages including German, Thai, Hindi, and Vietnamese — and the physical asset management workflows. His operational design removes administrative roadblocks, allowing wealth tiers from entry-level private portfolios up to high-net-worth SP7 configurations to experience a premium, white-glove digital onboarding process.",
     ],
   },
   nl: {
@@ -287,9 +299,10 @@ export default function LeadershipScreen() {
             </View>
           </View>
           <View style={S.bioBlock}>
-            {tx.patrickBio.map((para, i) => (
-              <Text key={i} style={S.bioText}>{para}</Text>
-            ))}
+            {tx.patrickBio.map((para, i) => {
+              const isHeader = para.length < 60 && !para.endsWith('.') && !para.endsWith(',');
+              return <Text key={i} style={isHeader ? S.bioSectionHeader : S.bioText}>{para}</Text>;
+            })}
           </View>
         </View>
 
@@ -308,9 +321,10 @@ export default function LeadershipScreen() {
             </View>
           </View>
           <View style={S.bioBlock}>
-            {tx.michaelBio.map((para, i) => (
-              <Text key={i} style={S.bioText}>{para}</Text>
-            ))}
+            {tx.michaelBio.map((para, i) => {
+              const isHeader = para.length < 60 && !para.endsWith('.') && !para.endsWith(',');
+              return <Text key={i} style={isHeader ? S.bioSectionHeader : S.bioText}>{para}</Text>;
+            })}
           </View>
         </View>
 
@@ -367,6 +381,7 @@ const S = StyleSheet.create({
   locationText: { color: "#64748b", fontSize: 13 },
 
   bioBlock: { gap: 10 },
+  bioSectionHeader: { color: "#f59e0b", fontSize: 12, fontWeight: "800", letterSpacing: 1, marginTop: 10, marginBottom: 0, textTransform: "uppercase" },
   bioText: { color: "#cbd5e1", fontSize: 14, lineHeight: 22 },
 
   footer: { alignItems: "center", paddingVertical: 16 },

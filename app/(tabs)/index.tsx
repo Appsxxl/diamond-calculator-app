@@ -175,10 +175,10 @@ const LEADERSHIP_TEXT: Record<Language, {
 }> = {
   en: {
     sectionTitle: "Meet Our Leadership",
-    ceoTitle: "CEO & Co-Founder",
-    cooTitle: "COO",
-    patrickBio: "Visionary entrepreneur and architect of the diamond investment model. Patrick built STIG International to give advisors and families access to a smarter, secure wealth-building solution.",
-    michaelBio: "Operational leader driving STIG's global network. Michael ensures every advisor and client receives world-class service, consistency, and results they can count on.",
+    ceoTitle: "Chief Executive Officer & Co-Founder",
+    cooTitle: "Chief Operating Officer & Co-Founder",
+    patrickBio: "Entrepreneur and principal architect of the Plan B philosophy and the SP Tier System — an institutional-grade framework delivering predictable, transparent wealth growth for advisors and families worldwide.",
+    michaelBio: "Operational strategist driving STIG's global execution and network infrastructure. Michael translates the Plan B model into a seamless, scalable experience for advisors and clients across 180+ countries.",
   },
   nl: {
     sectionTitle: "Ons Leiderschap",
