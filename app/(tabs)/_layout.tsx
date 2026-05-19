@@ -91,7 +91,7 @@ export default function TabLayout() {
         name="compliance"
         options={{
           title: "Compliance",
-          tabBarIcon: ({ color }) => <IconSymbol size={24} name="shield.fill" color={color} />,
+          tabBarIcon: ({ focused }) => <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.55 }}>⚖️</Text>,
         }}
       />
 

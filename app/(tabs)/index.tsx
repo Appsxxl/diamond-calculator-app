@@ -405,7 +405,7 @@ export default function HomeScreen() {
 
         {/* Hero */}
         <View style={S.hero}>
-          <Image source={require("../../assets/onboarding/diamond.png")} style={S.heroLogo} resizeMode="contain" />
+          <Text style={S.heroIcon}>💎</Text>
           <Text style={S.heroTitle}>{t(language, "welcomeTitle")}</Text>
           <Text style={S.heroSub}>{t(language, "welcomeSubtitle")}</Text>
           <Text style={S.heroTagline}>{t(language, "familyIncomeTagline")}</Text>
@@ -697,7 +697,7 @@ const S = StyleSheet.create({
   langText: { color: "#94a3b8", fontSize: 10, fontWeight: "bold" },
   langTextActive: { color: "#0f172a" },
   hero: { alignItems: "center", marginBottom: 20 },
-  heroLogo: { width: 72, height: 72, marginBottom: 8 },
+  heroIcon: { fontSize: 44, marginBottom: 8 },
   heroTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", letterSpacing: 1 },
   heroSub: { fontSize: 15, color: "#94a3b8", marginTop: 4, textAlign: "center" },
   heroTagline: { fontSize: 17, fontWeight: "700", color: "#f59e0b", marginTop: 10, textAlign: "center", paddingHorizontal: 16, lineHeight: 24 },
