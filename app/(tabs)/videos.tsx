@@ -541,11 +541,15 @@ function categoryLabel(cat: VimeoCategory, tx: typeof TEXT["en"]) {
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function VideosScreen() {
-  const { language } = useCalculator();
+  const { language, partnerMode } = useCalculator();
   const tx = TEXT[language] ?? TEXT.en;
   const { videos: ytVideos, loading: ytLoading, liveLoaded: ytLive, refresh: refreshYT } = useYouTubeVideos();
   const { videos: vimeoVideos, refreshing: vimeoRefreshing, liveLoaded: vimeoLive, refresh: refreshVimeo } = useVimeoVideos(language);
   const { width } = useWindowDimensions();
+
+  // JPP1 = visible to all. JPP2 + JPP3 = adviser-only.
+  const invitationVideos = vimeoVideos.filter(v => v.category === "invitation");
+  const adviserVideos    = vimeoVideos.filter(v => v.category !== "invitation");
   const isLargeScreen = width >= 768;
 
   const openVimeo = useCallback(async (videoId: string) => {
@@ -656,7 +660,7 @@ export default function VideosScreen() {
             )}
           </View>
 
-          {/* ══ SECTION 2: Diamond Solution Vimeo ══════════════════════════ */}
+          {/* ══ SECTION 2a: Invitation videos — visible to all ══════════════ */}
           <View style={S.sectionBlock}>
             <View style={S.sectionHeaderRow}>
               <View style={S.vimeoLogoWrap}>
@@ -668,7 +672,7 @@ export default function VideosScreen() {
                   {vimeoRefreshing && <ActivityIndicator size="small" color="#0ea5e9" style={{ marginLeft: 8 }} />}
                   {!vimeoRefreshing && (
                     <Text style={[S.liveTag, { color: vimeoLive ? "#22c55e" : "#64748b" }]}>
-                      {vimeoLive ? `● LIVE · ${vimeoVideos.length}` : `● STATIC · ${vimeoVideos.length}`}
+                      {vimeoLive ? `● LIVE` : `● STATIC`}
                     </Text>
                   )}
                 </View>
@@ -676,7 +680,7 @@ export default function VideosScreen() {
               </View>
             </View>
 
-            {vimeoVideos.map((video) => {
+            {invitationVideos.map((video) => {
               const cat = categoryLabel(video.category, tx);
               return (
                 <TouchableOpacity key={video.id} style={S.vimeoCard} onPress={() => openVimeo(video.id)} activeOpacity={0.85}>
@@ -711,6 +715,45 @@ export default function VideosScreen() {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* ══ SECTION 2b: Presentation + Plan — adviser only ══════════════ */}
+          {partnerMode && (
+            <View style={S.sectionBlock}>
+              <View style={S.sectionTitleRow}>
+                <Text style={S.sectionLabel}>ADVISER — PRESENTATIONS & COMPENSATION PLANS</Text>
+                <View style={S.adviserBadge}>
+                  <Text style={S.adviserBadgeText}>🔒 ADVISER</Text>
+                </View>
+              </View>
+              <Text style={[S.sectionDesc, { marginBottom: 14 }]}>Full business presentation and compensation plan videos. Not visible to clients.</Text>
+
+              {adviserVideos.map((video) => {
+                const cat = categoryLabel(video.category, tx);
+                return (
+                  <TouchableOpacity key={video.id} style={S.vimeoCard} onPress={() => openVimeo(video.id)} activeOpacity={0.85}>
+                    <View style={S.vimeoThumbWrap}>
+                      <Image source={{ uri: video.thumbnail }} style={S.vimeoThumb} resizeMode="cover" />
+                      <View style={S.playOverlay}>
+                        <View style={S.vimeoPlayBtn}>
+                          <Text style={S.playIcon}>▶</Text>
+                        </View>
+                      </View>
+                      <View style={[S.catBadge, { backgroundColor: cat.color + "22", borderColor: cat.color + "55" }]}>
+                        <Text style={[S.catBadgeText, { color: cat.color }]}>{cat.label}</Text>
+                      </View>
+                    </View>
+                    <View style={S.vimeoInfo}>
+                      <Text style={S.vimeoTitle} numberOfLines={2}>{video.title}</Text>
+                      <View style={S.vimeoMetaRow}>
+                        {!!video.age && <Text style={S.vimeoAge}>{video.age}</Text>}
+                        <Text style={S.watchVimeoText}>{tx.watchVimeo}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
 
         </View>
       </ScrollView>
@@ -780,6 +823,9 @@ const S = StyleSheet.create({
   videoMetaText: { fontSize: 13, color: "#64748b" },
   videoMetaDot: { fontSize: 13, color: "#334155" },
   watchText: { fontSize: 14, color: "#f59e0b", fontWeight: "bold", marginTop: 4 },
+
+  adviserBadge: { backgroundColor: "rgba(245,158,11,0.12)", borderRadius: 5, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1, borderColor: "rgba(245,158,11,0.35)" },
+  adviserBadgeText: { color: "#f59e0b", fontSize: 10, fontWeight: "800", letterSpacing: 0.5 },
 
   refreshBtn: { backgroundColor: "#1e293b", borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: "#334155" },
   refreshBtnText: { color: "#64748b", fontSize: 12, fontWeight: "600" },
