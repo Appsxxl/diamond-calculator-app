@@ -132,7 +132,7 @@ const TESTIMONIALS = [
     sp: "SP7",
     months: 24,
     vip: true,
-    avatar: "https://i.pravatar.cc/80?img=60",
+    avatar: "https://i.pravatar.cc/80?img=44",
     en: "My family's financial future is on a clear path. The monthly reports and adviser contact make all the difference.",
     nl: "De financiële toekomst van mijn gezin ligt nu op een helder pad. De maandelijkse rapportages en adviseurcontact maken het verschil.",
     de: "Die finanzielle Zukunft meiner Familie liegt auf einem klaren Kurs. Die monatlichen Berichte und der Beraterkontakt machen den Unterschied.",
@@ -471,7 +471,7 @@ export default function HomeScreen() {
           >
             {TESTIMONIALS.map((item) => (
               <View key={item.name} style={S.testimonialCard}>
-                <Text style={S.testimonialQuoteMark}>"</Text>
+                <Text style={S.testimonialQuoteMark}>💎</Text>
                 <Text style={S.testimonialQuote}>{getTestimonialQuote(item, language)}</Text>
                 <View style={S.testimonialDivider} />
                 <View style={S.testimonialMeta}>
@@ -784,7 +784,7 @@ const S = StyleSheet.create({
   testimonialSection:     { marginBottom: 24 },
   testimonialSectionTitle:{ color: "#f59e0b", fontSize: 16, fontWeight: "bold", letterSpacing: 0.5, marginBottom: 12 },
   testimonialCard:        { width: 276, backgroundColor: "#1e293b", borderRadius: 16, padding: 18, borderTopWidth: 2, borderTopColor: "#f59e0b" },
-  testimonialQuoteMark:   { color: "#f59e0b", fontSize: 44, fontWeight: "bold", lineHeight: 44, marginBottom: 2, opacity: 0.55 },
+  testimonialQuoteMark:   { fontSize: 28, lineHeight: 34, marginBottom: 4 },
   testimonialQuote:       { color: "#cbd5e1", fontSize: 13, lineHeight: 21, fontStyle: "italic", marginBottom: 16 },
   testimonialDivider:     { height: 1, backgroundColor: "#334155", marginBottom: 14 },
   testimonialMeta:        { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
