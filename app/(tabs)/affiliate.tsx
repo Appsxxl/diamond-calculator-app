@@ -64,6 +64,7 @@ interface Partner {
   startDate: string; // DD/MM/YYYY
   amount: number;
   level?: 1 | 2 | 3;
+  vip?: boolean;
   contactMoments?: string[];
 }
 
@@ -98,30 +99,45 @@ function formatDDMMYYYY(d: Date): string {
   return [d.getDate(), d.getMonth() + 1, d.getFullYear()]
     .map(v => String(v).padStart(2, "0")).join("/");
 }
-function getSPLabel(amount: number): string {
-  if (amount >= 100_000) return "SP7 (3.3%)";
-  if (amount >= 50_000)  return "SP6 (3.2%)";
-  if (amount >= 10_000)  return "SP5 (3.1%)";
-  if (amount >= 5_000)   return "SP4 (3.0%)";
-  if (amount >= 2_500)   return "SP3 (2.7%)";
-  if (amount >= 1_000)   return "SP2 (2.45%)";
-  return "SP1 (2.2%)";
+function getBaseRate(amount: number): number {
+  if (amount >= 100_000) return 0.033;
+  if (amount >= 50_000)  return 0.032;
+  if (amount >= 10_000)  return 0.031;
+  if (amount >= 5_000)   return 0.030;
+  if (amount >= 2_500)   return 0.027;
+  if (amount >= 1_000)   return 0.0245;
+  return 0.022;
+}
+function getRate(amount: number, vip?: boolean): number {
+  return getBaseRate(amount) + (vip ? 0.03 : 0);
+}
+function getSPLabel(amount: number, vip?: boolean): string {
+  let sp = "SP1"; let base = 2.2;
+  if (amount >= 100_000) { sp = "SP7"; base = 3.3; }
+  else if (amount >= 50_000)  { sp = "SP6"; base = 3.2; }
+  else if (amount >= 10_000)  { sp = "SP5"; base = 3.1; }
+  else if (amount >= 5_000)   { sp = "SP4"; base = 3.0; }
+  else if (amount >= 2_500)   { sp = "SP3"; base = 2.7; }
+  else if (amount >= 1_000)   { sp = "SP2"; base = 2.45; }
+  const total = base + (vip ? 3 : 0);
+  return vip ? `${sp} (${total.toFixed(1)}% VIP)` : `${sp} (${base}%)`;
 }
 
 function getAlerts(p: Partner): string[] {
   const alerts: string[] = [];
   const days   = daysBetween(p.startDate);
   const months = monthsElapsed(p.startDate);
-  const rebate = p.amount * 0.033;
+  const rate   = getRate(p.amount, p.vip);
+  const rebate = p.amount * rate;
 
-  if (rebate >= 100)                          alerts.push(`💰 Monthly rebate ~${fmt(rebate)}/mo`);
+  if (rebate >= 100)                          alerts.push(`💰 Monthly rebate ~${fmt(rebate)}/mo${p.vip ? " ⭐ VIP" : ""}`);
   if (days  >= 80  && days  <= 100)          alerts.push("📋 90-Day check-in due");
   if (months === 11)                          alerts.push("⚠️ Month 11 — contract renewal soon");
   if (months >= 11 && months < 12)           alerts.push("📝 Prepare renewal documents");
   if (months >= 12)                          alerts.push("🔄 12-Month: Strategy review");
 
   // Compounding Review trigger
-  const growth = Math.pow(1 + 0.033 * 0.5, months);
+  const growth = Math.pow(1 + rate * 0.5, months);
   const portfolioGrowthPct = ((growth - 1) * 100);
   if (months >= 6  && portfolioGrowthPct >= 10) alerts.push(`📈 Compounding Review +${portfolioGrowthPct.toFixed(0)}% (Mo.${months})`);
   if (months >= 12 && portfolioGrowthPct >= 20) alerts.push("💎 Portfolio milestone — new strategy opportunity!");
@@ -129,7 +145,7 @@ function getAlerts(p: Partner): string[] {
   return alerts;
 }
 
-const BLANK_FORM = { name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", level: "1" };
+const BLANK_FORM = { name: "", whatsapp: "", country: "", startDate: formatDDMMYYYY(new Date()), amount: "", level: "1", vip: false };
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 export default function AffiliateScreen() {
@@ -196,7 +212,7 @@ export default function AffiliateScreen() {
   };
   const openEdit = (p: Partner) => {
     setEditingPartner(p);
-    setForm({ name: p.name, whatsapp: p.whatsapp, country: p.country, startDate: p.startDate, amount: String(p.amount), level: String(p.level ?? 1) });
+    setForm({ name: p.name, whatsapp: p.whatsapp, country: p.country, startDate: p.startDate, amount: String(p.amount), level: String(p.level ?? 1), vip: !!p.vip });
     setShowAddModal(true);
   };
   const handleDelete = (id: string) => {
@@ -215,6 +231,7 @@ export default function AffiliateScreen() {
       startDate: form.startDate || formatDDMMYYYY(new Date()),
       amount: parseFloat(form.amount) || 0,
       level: (parseInt(form.level) || 1) as 1 | 2 | 3,
+      vip: form.vip,
     };
     const updated = editingPartner
       ? partners.map(p => p.id === partner.id ? partner : p)
@@ -227,8 +244,9 @@ export default function AffiliateScreen() {
   const totalAlerts = useMemo(() => partners.reduce((s, p) => s + getAlerts(p).length, 0), [partners]);
   const totalPortfolio = useMemo(() => partners.reduce((s, p) => {
     const months = monthsElapsed(p.startDate);
+    const r = getRate(p.amount, p.vip) * 0.5;
     let pf = p.amount;
-    for (let m = 0; m < months; m++) pf += pf * 0.033 * 0.5;
+    for (let m = 0; m < months; m++) pf += pf * r;
     return s + pf;
   }, 0), [partners]);
   const rankVolume = useMemo(() => partners.reduce((s, p) => s + p.amount, 0), [partners]);
@@ -268,9 +286,10 @@ export default function AffiliateScreen() {
     let l1 = 0, l2 = 0, l3 = 0, totalRebate = 0;
     partners.forEach(p => {
       const months = monthsElapsed(p.startDate);
+      const r = getRate(p.amount, p.vip);
       let pf = p.amount;
-      for (let m = 0; m < months; m++) pf += pf * 0.033 * 0.5;
-      const rebate = pf * 0.033 * 0.5;
+      for (let m = 0; m < months; m++) pf += pf * r * 0.5;
+      const rebate = pf * r * 0.5;
       totalRebate += rebate;
       const lvl = p.level ?? 1;
       if (lvl === 1)      l1 += rebate * 0.10;
@@ -282,7 +301,7 @@ export default function AffiliateScreen() {
   const compoundingReviewCount = useMemo(() =>
     partners.filter(p => {
       const months = monthsElapsed(p.startDate);
-      const growth = ((Math.pow(1 + 0.033 * 0.5, months) - 1) * 100);
+      const growth = ((Math.pow(1 + getRate(p.amount, p.vip) * 0.5, months) - 1) * 100);
       return months >= 6 && growth >= 10;
     }).length, [partners]);
 
@@ -301,13 +320,20 @@ export default function AffiliateScreen() {
   const renderPartner = useCallback(({ item }: { item: Partner }) => {
     const alerts  = getAlerts(item);
     const months  = monthsElapsed(item.startDate);
-    const spLabel = getSPLabel(item.amount);
+    const spLabel = getSPLabel(item.amount, item.vip);
     const hasCompoundingReview = alerts.some(a => a.includes("Compounding Review"));
     return (
       <View style={[S.partnerCard, hasCompoundingReview && { borderLeftColor: "#f97316", borderLeftWidth: 3 }]}>
         <View style={S.partnerHeader}>
           <View style={{ flex: 1 }}>
-            <Text style={S.partnerName}>{item.name}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              <Text style={S.partnerName}>{item.name}</Text>
+              {item.vip && (
+                <View style={{ backgroundColor: "rgba(245,158,11,0.18)", borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1, borderWidth: 1, borderColor: "rgba(245,158,11,0.45)" }}>
+                  <Text style={{ color: "#f59e0b", fontSize: 10, fontWeight: "bold" }}>⭐ VIP</Text>
+                </View>
+              )}
+            </View>
             <Text style={S.partnerMeta}>{item.country} · L{item.level ?? 1} · {t(language, "affMo")}{months} · {spLabel}</Text>
           </View>
           <View style={S.partnerBadge}>
@@ -806,10 +832,22 @@ export default function AffiliateScreen() {
                 ))}
               </View>
 
+              <Text style={S.inputLabel}>VIP STATUS</Text>
+              <View style={S.chipRow}>
+                <Pressable onPress={() => setForm(f => ({ ...f, vip: false }))}
+                  style={[S.chip, !form.vip && S.chipActive]}>
+                  <Text style={[S.chipText, !form.vip && S.chipTextActive]}>Standard</Text>
+                </Pressable>
+                <Pressable onPress={() => setForm(f => ({ ...f, vip: true }))}
+                  style={[S.chip, form.vip && { backgroundColor: "#f59e0b", borderColor: "#f59e0b" }]}>
+                  <Text style={[S.chipText, form.vip && { color: "#fff", fontWeight: "bold" as const }]}>⭐ VIP (+3%/mo)</Text>
+                </Pressable>
+              </View>
+
               {form.amount ? (
                 <View style={[S.poolCard, { borderLeftColor: GOLD, marginTop: 8 }]}>
                   <Text style={{ color: GOLD, fontSize: 12, fontWeight: "bold" }}>
-                    Plan: {getSPLabel(parseFloat(form.amount) || 0)} · Est. rebate: {fmt((parseFloat(form.amount) || 0) * 0.033)}/mo
+                    Plan: {getSPLabel(parseFloat(form.amount) || 0, form.vip)} · Est. rebate: {fmt((parseFloat(form.amount) || 0) * getRate(parseFloat(form.amount) || 0, form.vip))}/mo
                   </Text>
                 </View>
               ) : null}
