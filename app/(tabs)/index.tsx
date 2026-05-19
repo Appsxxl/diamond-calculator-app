@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Platform, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
@@ -299,6 +299,21 @@ export default function HomeScreen() {
   const { language, setLanguage, partnerMode } = useCalculator();
   const [explainCard, setExplainCard] = useState<GoalCard | null>(null);
   const [goalYears, setGoalYears] = useState<3 | 5>(5);
+  const testimonialScrollRef = useRef<ScrollView>(null);
+  const testimonialIndexRef = useRef(0);
+
+  useEffect(() => {
+    const CARD_WIDTH = 286; // 276px card + 10px gap
+    const total = TESTIMONIALS.length;
+    const timer = setInterval(() => {
+      testimonialIndexRef.current = (testimonialIndexRef.current + 1) % total;
+      testimonialScrollRef.current?.scrollTo({
+        x: testimonialIndexRef.current * CARD_WIDTH,
+        animated: true,
+      });
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleLang = (code: Language) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -390,7 +405,7 @@ export default function HomeScreen() {
 
         {/* Hero */}
         <View style={S.hero}>
-          <Text style={S.heroIcon}>💎</Text>
+          <Image source={require("../../assets/onboarding/diamond.png")} style={S.heroLogo} resizeMode="contain" />
           <Text style={S.heroTitle}>{t(language, "welcomeTitle")}</Text>
           <Text style={S.heroSub}>{t(language, "welcomeSubtitle")}</Text>
           <Text style={S.heroTagline}>{t(language, "familyIncomeTagline")}</Text>
@@ -443,11 +458,16 @@ export default function HomeScreen() {
         <View style={S.testimonialSection}>
           <Text style={S.testimonialSectionTitle}>{getTestimonialLabel(language).title}</Text>
           <ScrollView
+            ref={testimonialScrollRef}
             horizontal
             showsHorizontalScrollIndicator={false}
             snapToInterval={286}
             decelerationRate="fast"
             contentContainerStyle={{ gap: 10, paddingRight: 4 }}
+            onScrollBeginDrag={() => {
+              // pause auto-scroll index tracking when user manually swipes
+              testimonialIndexRef.current = 0;
+            }}
           >
             {TESTIMONIALS.map((item) => (
               <View key={item.name} style={S.testimonialCard}>
@@ -677,7 +697,7 @@ const S = StyleSheet.create({
   langText: { color: "#94a3b8", fontSize: 10, fontWeight: "bold" },
   langTextActive: { color: "#0f172a" },
   hero: { alignItems: "center", marginBottom: 20 },
-  heroIcon: { fontSize: 44, marginBottom: 8 },
+  heroLogo: { width: 72, height: 72, marginBottom: 8 },
   heroTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", letterSpacing: 1 },
   heroSub: { fontSize: 15, color: "#94a3b8", marginTop: 4, textAlign: "center" },
   heroTagline: { fontSize: 17, fontWeight: "700", color: "#f59e0b", marginTop: 10, textAlign: "center", paddingHorizontal: 16, lineHeight: 24 },
