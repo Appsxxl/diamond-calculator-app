@@ -273,10 +273,32 @@ const LEADERSHIP_TEXT: Record<Language, {
   },
 };
 
+function getGoalSP(amount: number): { sp: string; base: number } {
+  if (amount >= 100000) return { sp: "SP7", base: 3.3 };
+  if (amount >= 50000)  return { sp: "SP6", base: 3.2 };
+  if (amount >= 10000)  return { sp: "SP5", base: 3.1 };
+  if (amount >= 5000)   return { sp: "SP4", base: 3.0 };
+  if (amount >= 2500)   return { sp: "SP3", base: 2.7 };
+  if (amount >= 1000)   return { sp: "SP2", base: 2.45 };
+  return { sp: "SP1", base: 2.2 };
+}
+
+function getGoalProjection(amount: number, vip: boolean, years: number) {
+  const { sp, base } = getGoalSP(amount);
+  const totalRate = base + (vip ? 3 : 0);
+  const rateDecimal = totalRate / 100;
+  const rebateNow = Math.round(amount * rateDecimal);
+  const months = years * 12;
+  const portfolioAfter = amount * Math.pow(1 + rateDecimal * 0.5, months);
+  const rebateAfter = Math.round(portfolioAfter * rateDecimal);
+  return { sp, base, totalRate, rebateNow, rebateAfter };
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const { language, setLanguage, partnerMode } = useCalculator();
   const [explainCard, setExplainCard] = useState<GoalCard | null>(null);
+  const [goalYears, setGoalYears] = useState<3 | 5>(5);
 
   const handleLang = (code: Language) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -285,7 +307,7 @@ export default function HomeScreen() {
 
   const handleCalculate = (card: GoalCard) => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push(`/scenario-tool?plan=goal&startAmount=${card.startAmount}&vip=${card.vip ? 1 : 0}&goalAmount=${card.startAmount}&years=5`);
+    router.push(`/scenario-tool?plan=goal&startAmount=${card.startAmount}&vip=${card.vip ? 1 : 0}&goalAmount=${card.startAmount}&years=${goalYears}`);
   };
 
   const toolDescriptions: Record<Language, { tool1: string; tool2: string }> = {
@@ -461,37 +483,72 @@ export default function HomeScreen() {
         </View>
 
         {/* Goal Cards Section */}
-        <View style={S.sectionHeader}>
-          <Text style={S.sectionTitle}>{t(language, "goalCards")}</Text>
-          <Text style={S.sectionSub}>{t(language, "goalCardsSubtitle")}</Text>
+        <View style={[S.sectionHeader, { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={S.sectionTitle}>{t(language, "goalCards")}</Text>
+            <Text style={S.sectionSub}>{t(language, "goalCardsSubtitle")}</Text>
+          </View>
+          <View style={{ flexDirection: "row", gap: 5 }}>
+            {([3, 5] as const).map(y => (
+              <TouchableOpacity
+                key={y}
+                style={[S.yearBtn, goalYears === y && S.yearBtnActive]}
+                onPress={() => setGoalYears(y)}
+              >
+                <Text style={[S.yearBtnText, goalYears === y && S.yearBtnTextActive]}>{y}Y</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         <View style={S.goalGrid}>
-          {GOAL_CARDS.map((card) => (
-            <View key={card.titleKey} style={S.goalCard}>
-              <Text style={S.goalIcon}>{card.icon}</Text>
-              <Text style={S.goalTitle}>{t(language, card.titleKey)}</Text>
-              <Text style={S.goalSubtitle}>{t(language, card.subtitleKey)}</Text>
-              <Text style={S.goalRecommended}>⭐ {t(language, card.titleKey.replace('Title', 'Rec'))}</Text>
-              <View style={S.goalButtons}>
-                <TouchableOpacity
-                  style={S.explainBtn}
-                  onPress={() => {
-                    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setExplainCard(card);
-                  }}
-                >
-                  <Text style={S.explainBtnText}>{t(language, "explanation")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={S.calcBtn}
-                  onPress={() => handleCalculate(card)}
-                >
-                  <Text style={S.calcBtnText}>{t(language, "calculateGoal")}</Text>
-                </TouchableOpacity>
+          {GOAL_CARDS.map((card) => {
+            const proj = getGoalProjection(card.startAmount, card.vip, goalYears);
+            return (
+              <View key={card.titleKey} style={S.goalCard}>
+                <Text style={S.goalIcon}>{card.icon}</Text>
+                <Text style={S.goalTitle}>{t(language, card.titleKey)}</Text>
+                <Text style={S.goalSubtitle}>{t(language, card.subtitleKey)}</Text>
+                <Text style={S.goalRecommended}>⭐ {t(language, card.titleKey.replace('Title', 'Rec'))}</Text>
+
+                {/* Plan example */}
+                <View style={S.goalPlanBox}>
+                  <Text style={S.goalPlanRate}>
+                    {proj.sp} · {proj.base}% + 3% VIP = {proj.totalRate}%
+                  </Text>
+                  <View style={S.goalPlanRow}>
+                    <View style={{ flex: 1, alignItems: "center" }}>
+                      <Text style={S.goalPlanLabel}>Now</Text>
+                      <Text style={S.goalPlanNow}>${proj.rebateNow.toLocaleString()}/mo</Text>
+                    </View>
+                    <View style={S.goalPlanDivider} />
+                    <View style={{ flex: 1, alignItems: "center" }}>
+                      <Text style={S.goalPlanLabel}>After {goalYears}Y</Text>
+                      <Text style={S.goalPlanAfter}>${proj.rebateAfter.toLocaleString()}/mo</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={S.goalButtons}>
+                  <TouchableOpacity
+                    style={S.explainBtn}
+                    onPress={() => {
+                      if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setExplainCard(card);
+                    }}
+                  >
+                    <Text style={S.explainBtnText}>{t(language, "explanation")}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={S.calcBtn}
+                    onPress={() => handleCalculate(card)}
+                  >
+                    <Text style={S.calcBtnText}>{t(language, "calculateGoal")}</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* Tool 1: Strategy Engineer */}
@@ -650,6 +707,19 @@ const S = StyleSheet.create({
   goalTitle: { color: "#fff", fontSize: 15, fontWeight: "bold", marginBottom: 3 },
   goalSubtitle: { color: "#94a3b8", fontSize: 13, marginBottom: 6, lineHeight: 18 },
   goalRecommended: { color: "#f59e0b", fontSize: 13, fontWeight: "600", marginBottom: 10 },
+  yearBtn: { paddingHorizontal: 11, paddingVertical: 5, borderRadius: 7, borderWidth: 1, borderColor: "#334155", backgroundColor: "#1e293b" },
+  yearBtnActive: { backgroundColor: "#f59e0b", borderColor: "#f59e0b" },
+  yearBtnText: { color: "#64748b", fontSize: 12, fontWeight: "bold" },
+  yearBtnTextActive: { color: "#0f172a" },
+
+  goalPlanBox: { backgroundColor: "rgba(15,23,42,0.9)", borderRadius: 8, padding: 8, marginBottom: 8, borderWidth: 1, borderColor: "#1e3a5f" },
+  goalPlanRate: { color: "#64748b", fontSize: 9, fontWeight: "600", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
+  goalPlanRow: { flexDirection: "row", alignItems: "center" },
+  goalPlanLabel: { color: "#475569", fontSize: 9, fontWeight: "600", textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 2 },
+  goalPlanNow: { color: "#f59e0b", fontSize: 12, fontWeight: "bold" },
+  goalPlanAfter: { color: "#22c55e", fontSize: 12, fontWeight: "bold" },
+  goalPlanDivider: { width: 1, height: 28, backgroundColor: "#1e3a5f", marginHorizontal: 6 },
+
   goalButtons: { gap: 6 },
   explainBtn: { backgroundColor: "#33C5FF", borderRadius: 6, paddingVertical: 7, alignItems: "center" },
   explainBtnText: { color: "#fff", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 },
