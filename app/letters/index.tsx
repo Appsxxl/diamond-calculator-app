@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView, Text, TouchableOpacity, View, StyleSheet, Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
+
+interface ScenarioPrefill { clientName: string; spName: string; amount: string; years: string; savedAt: number; }
 
 const NAVY = "#0a1628";
 const GOLD = "#e67e22";
@@ -337,6 +340,18 @@ export default function LettersHubScreen() {
   const router = useRouter();
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
+  const [prefill, setPrefill] = useState<ScenarioPrefill | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('letter_prefill').then(raw => {
+      if (!raw) return;
+      try {
+        const p: ScenarioPrefill = JSON.parse(raw);
+        if (Date.now() - p.savedAt < 30 * 60 * 1000) setPrefill(p);
+        else AsyncStorage.removeItem('letter_prefill');
+      } catch {}
+    });
+  }, []);
 
   const profileQuery = trpc.advisor.getProfile.useQuery(undefined, { retry: false });
   const hasLogo = !!profileQuery.data?.logoUrl;
@@ -381,6 +396,21 @@ export default function LettersHubScreen() {
           <Text style={S.title}>{tx.title}</Text>
           <Text style={S.sub}>{tx.sub}</Text>
         </View>
+
+        {/* Scenario prefill banner */}
+        {prefill && (
+          <View style={S.prefillBanner}>
+            <View style={{ flex: 1 }}>
+              <Text style={S.prefillTitle}>📋 Pre-filled from Scenario Tool</Text>
+              <Text style={S.prefillSub}>
+                {prefill.clientName ? `${prefill.clientName} · ` : ''}{prefill.spName} · ${Number(prefill.amount).toLocaleString()} · {prefill.years}y
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => { AsyncStorage.removeItem('letter_prefill'); setPrefill(null); }} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Text style={{ color: '#60a5fa', fontSize: 18 }}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Profile nudge — shown if no profile is set yet */}
         {!profileQuery.isLoading && !hasProfile && (
@@ -482,6 +512,10 @@ const S = StyleSheet.create({
   profileBtnText: { color: "#94a3b8", fontFamily: FONT, fontSize: 12 },
   title: { color: "#fff", fontFamily: FONT, fontSize: 22, letterSpacing: 1.2, marginBottom: 6 },
   sub: { color: "#64748b", fontFamily: FONT, fontSize: 13, lineHeight: 19 },
+
+  prefillBanner: { marginHorizontal: 16, marginTop: 12, backgroundColor: "#0c1a2e", borderRadius: 10, borderWidth: 1, borderColor: "#1e3a5f", padding: 12, flexDirection: "row", alignItems: "center", gap: 10 },
+  prefillTitle: { color: "#60a5fa", fontSize: 12, fontWeight: "800", marginBottom: 2 },
+  prefillSub: { color: "#475569", fontSize: 11 },
 
   nudge: {
     marginHorizontal: 16,

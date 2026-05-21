@@ -279,6 +279,7 @@ interface SavedClient {
   vipEnabled: boolean;
   manualVip: boolean;
   monthData: Record<number, MonthData>;
+  notes?: string;
 }
 
 export default function ScenarioToolScreen() {
@@ -327,6 +328,9 @@ export default function ScenarioToolScreen() {
   const [showHistory, setShowHistory] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
+  const [clientNotes, setClientNotes] = useState("");
+  const [reverseResult, setReverseResult] = useState<{ gross: number; spName: string; reachedMonth: number } | null>(null);
+  const [reverseSearching, setReverseSearching] = useState(false);
 
   const [clientName, setClientName] = useState("");
   const [startAmount, setStartAmount] = useState("3000");
@@ -637,6 +641,30 @@ export default function ScenarioToolScreen() {
   };
 
 
+  const handleReverseSearch = async () => {
+    const targetGoal = numVal(goal, 0);
+    const yrs = numVal(years, 5);
+    if (targetGoal <= 0 || yrs <= 0) return;
+    setReverseSearching(true);
+    setReverseResult(null);
+    await new Promise(r => setTimeout(r, 0));
+    let lo = 110, hi = 500000, answer = -1, answerMonth = -1;
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      const res = runCalculation({ startAmount: getNetDeposit(mid), years: yrs, goal: targetGoal, vipEnabled, manualVip: false, monthData: {} });
+      if (res.goalReachedMonth !== null) { answer = mid; answerMonth = res.goalReachedMonth; hi = mid - 1; }
+      else { lo = mid + 1; }
+    }
+    if (answer > 0) {
+      const sp = getSPLevel(getNetDeposit(answer));
+      setReverseResult({ gross: answer, spName: sp.name, reachedMonth: answerMonth });
+    } else {
+      setReverseResult(null);
+      Alert.alert("Not achievable", `A monthly goal of $${targetGoal.toLocaleString()} cannot be reached within ${yrs} years even at the maximum investment level. Try increasing the years or lowering the goal.`);
+    }
+    setReverseSearching(false);
+  };
+
   const handleReset = () => {
     AsyncStorage.removeItem('plan_b_scenario_backup').catch(() => {});
     setAutosaved(false);
@@ -664,6 +692,7 @@ export default function ScenarioToolScreen() {
       vipEnabled,
       manualVip,
       monthData,
+      notes: clientNotes.trim() || undefined,
     };
     const updated = [entry, ...savedClients.filter(c => c.name !== name)];
     setSavedClients(updated);
@@ -679,6 +708,7 @@ export default function ScenarioToolScreen() {
     setVipEnabled(client.vipEnabled);
     setManualVip(client.manualVip);
     setMonthData(client.monthData);
+    setClientNotes(client.notes ?? "");
     setResult(null);
     setInputErrors({});
     setShowClientsModal(false);
@@ -903,6 +933,15 @@ export default function ScenarioToolScreen() {
               />
             </View>
           </View>
+          <TextInput
+            style={S.notesInput}
+            value={clientNotes}
+            onChangeText={setClientNotes}
+            placeholder="Client notes (optional)"
+            placeholderTextColor="#334155"
+            multiline
+            numberOfLines={2}
+          />
         </View>
 
         {/* Start & Years */}
@@ -1108,6 +1147,37 @@ export default function ScenarioToolScreen() {
           <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 16 }}>
             {t(language, 'activeCompInfo')}
           </Text>
+        </View>
+
+        {/* Reverse Calculator */}
+        <View style={S.reverseCard}>
+          <Text style={S.reverseTitle}>🔄 REVERSE CALCULATOR</Text>
+          <Text style={S.reverseSub}>What is the minimum investment to reach your ${numVal(goal).toLocaleString()} goal in {years} years?</Text>
+          <TouchableOpacity
+            style={[S.reverseBtn, reverseSearching && { opacity: 0.6 }]}
+            onPress={handleReverseSearch}
+            disabled={reverseSearching}
+            activeOpacity={0.8}
+          >
+            <Text style={S.reverseBtnText}>{reverseSearching ? '⏳ Searching...' : '🔍 FIND MINIMUM INVESTMENT'}</Text>
+          </TouchableOpacity>
+          {reverseResult && (
+            <View style={S.reverseResultBox}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={S.reverseResultAmount}>${reverseResult.gross.toLocaleString()}</Text>
+                  <Text style={S.reverseResultMeta}>{reverseResult.spName}{vipEnabled ? ' +VIP' : ''} · Goal reached Month {reverseResult.reachedMonth} ({formatGoalDuration(reverseResult.reachedMonth, language)})</Text>
+                </View>
+                <TouchableOpacity
+                  style={S.reverseApplyBtn}
+                  onPress={() => { setStartAmount(String(reverseResult.gross)); setReverseResult(null); }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={S.reverseApplyBtnText}>Apply ↑</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Recent Calculations History */}
@@ -1545,6 +1615,22 @@ export default function ScenarioToolScreen() {
               }}
             >
               <Text style={S.whatsappBtnText}>💬 Send via WhatsApp</Text>
+            </TouchableOpacity>
+
+            {/* Create Letter (prefill) */}
+            <TouchableOpacity
+              style={S.createLetterBtn}
+              activeOpacity={0.85}
+              onPress={async () => {
+                const sp = getSPLevel(getNetDeposit(numVal(startAmount)));
+                await AsyncStorage.setItem('letter_prefill', JSON.stringify({
+                  clientName, spName: sp.name, amount: startAmount, years,
+                  savedAt: Date.now(),
+                }));
+                router.push('/letters' as any);
+              }}
+            >
+              <Text style={S.createLetterBtnText}>📝 Create Letter for This Client</Text>
             </TouchableOpacity>
 
             {/* Summary Cards */}
@@ -1998,6 +2084,7 @@ export default function ScenarioToolScreen() {
                       <View style={{ flex: 1 }}>
                         <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold', marginBottom: 3 }}>{item.name}</Text>
                         <Text style={{ color: '#64748b', fontSize: 11 }}>{sp.name}{item.vipEnabled ? ' +VIP' : ''} · ${parseFloat(item.startAmount).toLocaleString()} · {item.years}y</Text>
+                        {item.notes ? <Text style={{ color: '#475569', fontSize: 11, marginTop: 2, fontStyle: 'italic' }} numberOfLines={1}>{item.notes}</Text> : null}
                         <Text style={{ color: '#334155', fontSize: 10, marginTop: 2 }}>{date}</Text>
                       </View>
                       <TouchableOpacity onPress={() => deleteClient(item.id)} style={{ padding: 8 }}>
@@ -2492,4 +2579,20 @@ const S = StyleSheet.create({
   vipCtaBody: { color: "#cbd5e1", fontSize: 13, lineHeight: 20, marginBottom: 12 },
   vipCtaBtn: { backgroundColor: "#f59e0b", borderRadius: 10, paddingVertical: 11, alignItems: "center" },
   vipCtaBtnText: { color: "#0f172a", fontWeight: "bold", fontSize: 14, letterSpacing: 0.3 },
+
+  notesInput: { backgroundColor: "#0f172a", color: "#94a3b8", borderRadius: 8, padding: 9, fontSize: 13, borderWidth: 1, borderColor: "#1e3a5f", marginTop: 8, minHeight: 40 },
+
+  reverseCard: { backgroundColor: "#0c1a2e", borderRadius: 12, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: "#1e3a5f" },
+  reverseTitle: { color: "#60a5fa", fontSize: 11, fontWeight: "800", letterSpacing: 1, marginBottom: 4 },
+  reverseSub: { color: "#475569", fontSize: 12, marginBottom: 10, lineHeight: 17 },
+  reverseBtn: { backgroundColor: "#1e3a5f", borderRadius: 10, paddingVertical: 11, alignItems: "center", borderWidth: 1, borderColor: "#334155" },
+  reverseBtnText: { color: "#60a5fa", fontWeight: "bold", fontSize: 13, letterSpacing: 0.5 },
+  reverseResultBox: { backgroundColor: "#0f172a", borderRadius: 10, padding: 12, marginTop: 10, borderWidth: 1, borderColor: "#22c55e" },
+  reverseResultAmount: { color: "#22c55e", fontSize: 22, fontWeight: "bold" },
+  reverseResultMeta: { color: "#64748b", fontSize: 11, marginTop: 2 },
+  reverseApplyBtn: { backgroundColor: "#22c55e", borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 },
+  reverseApplyBtnText: { color: "#0f172a", fontWeight: "bold", fontSize: 13 },
+
+  createLetterBtn: { backgroundColor: "#1e293b", borderRadius: 12, paddingVertical: 13, alignItems: "center", marginBottom: 8, borderWidth: 1, borderColor: "#334155" },
+  createLetterBtnText: { color: "#94a3b8", fontWeight: "bold", fontSize: 14, letterSpacing: 0.3 },
 });
