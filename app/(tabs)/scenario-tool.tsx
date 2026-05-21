@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import Svg, { Polyline, Line, Text as SvgText } from 'react-native-svg';
 import {
   View,
   Text,
@@ -258,6 +259,14 @@ const CLIENTS_KEY   = "plan_b_saved_clients";
 const HISTORY_KEY   = "plan_b_calc_history";
 const HISTORY_LIMIT = 10;
 
+const CURRENCIES = [
+  { code: 'USD', symbol: '$',    rate: 1 },
+  { code: 'EUR', symbol: '€',    rate: 0.92 },
+  { code: 'GBP', symbol: '£',    rate: 0.79 },
+  { code: 'AED', symbol: 'AED ', rate: 3.67 },
+] as const;
+type CurrencyCode = typeof CURRENCIES[number]['code'];
+
 interface HistoryEntry {
   id: string;
   savedAt: number;
@@ -268,6 +277,16 @@ interface HistoryEntry {
   sp: string;
   peakRebate: number;
 }
+
+type ClientStatus = 'prospect' | 'meeting' | 'proposal' | 'signed' | 'active';
+const STATUS_META: Record<ClientStatus, { label: string; color: string; bg: string }> = {
+  prospect: { label: 'PROSPECT', color: '#94a3b8', bg: '#1e293b' },
+  meeting:  { label: 'MEETING',  color: '#60a5fa', bg: '#0c1a2e' },
+  proposal: { label: 'PROPOSAL', color: '#f59e0b', bg: '#1c1400' },
+  signed:   { label: 'SIGNED',   color: '#4ade80', bg: '#0a1f0a' },
+  active:   { label: 'ACTIVE',   color: '#22c55e', bg: '#052e16' },
+};
+const STATUS_ORDER: ClientStatus[] = ['prospect', 'meeting', 'proposal', 'signed', 'active'];
 
 interface SavedClient {
   id: string;
@@ -280,6 +299,7 @@ interface SavedClient {
   manualVip: boolean;
   monthData: Record<number, MonthData>;
   notes?: string;
+  status?: ClientStatus;
 }
 
 export default function ScenarioToolScreen() {
@@ -331,6 +351,14 @@ export default function ScenarioToolScreen() {
   const [clientNotes, setClientNotes] = useState("");
   const [reverseResult, setReverseResult] = useState<{ gross: number; spName: string; reachedMonth: number } | null>(null);
   const [reverseSearching, setReverseSearching] = useState(false);
+
+  // Feature 9 — Multi-Currency
+  const [currency, setCurrency] = useState<CurrencyCode>('USD');
+
+  // Feature 11 — Comparison Mode
+  const [showCompareModal, setShowCompareModal] = useState(false);
+  const [compareEntry, setCompareEntry] = useState<HistoryEntry | null>(null);
+  const [compareResult, setCompareResult] = useState<ReturnType<typeof runCalculation> | null>(null);
 
   const [clientName, setClientName] = useState("");
   const [startAmount, setStartAmount] = useState("3000");
@@ -580,6 +608,12 @@ export default function ScenarioToolScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.source, params.startAmount, params.propWithdrawal, params.propWithdrawalFrom, params.vip, params.years, params.outP]);
 
+  // Feature 9 — Currency converter helper
+  const cx = useCallback((n: number) => {
+    const cur = CURRENCIES.find(c => c.code === currency)!;
+    return `${cur.symbol}${Math.round(n * cur.rate).toLocaleString()}`;
+  }, [currency]);
+
   const totalMonths = numVal(years, 1) * 12;
 
   const getMonthData = useCallback((m: number): MonthData => {
@@ -693,6 +727,7 @@ export default function ScenarioToolScreen() {
       manualVip,
       monthData,
       notes: clientNotes.trim() || undefined,
+      status: 'prospect' as ClientStatus,
     };
     const updated = [entry, ...savedClients.filter(c => c.name !== name)];
     setSavedClients(updated);
@@ -712,6 +747,21 @@ export default function ScenarioToolScreen() {
     setResult(null);
     setInputErrors({});
     setShowClientsModal(false);
+  };
+
+  // Feature 12 — Client Data Export
+  const handleExportClients = async () => {
+    if (savedClients.length === 0) { Alert.alert("No clients", "No saved clients to export."); return; }
+    const json = JSON.stringify(savedClients, null, 2);
+    try {
+      const file = new FileSystem.File(FileSystem.Paths.cache, `planb_clients_${new Date().toISOString().split('T')[0]}.json`);
+      file.create({ overwrite: true });
+      file.write(json);
+      await Sharing.shareAsync(file.uri, { mimeType: 'application/json', dialogTitle: 'Export Client Data', UTI: 'public.json' });
+    } catch {
+      await Clipboard.setStringAsync(json);
+      Alert.alert("Copied", "Client data copied to clipboard.");
+    }
   };
 
   const deleteClient = (id: string) => {
@@ -1237,6 +1287,19 @@ export default function ScenarioToolScreen() {
         {/* Results */}
         {result && (
           <>
+            {/* Currency Toggle */}
+            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10, justifyContent: 'flex-end' }}>
+              {CURRENCIES.map(cur => (
+                <TouchableOpacity
+                  key={cur.code}
+                  onPress={() => setCurrency(cur.code)}
+                  style={{ backgroundColor: currency === cur.code ? '#334155' : '#0f172a', borderRadius: 6, paddingHorizontal: 9, paddingVertical: 5, borderWidth: 1, borderColor: currency === cur.code ? '#60a5fa' : '#1e293b' }}
+                >
+                  <Text style={{ color: currency === cur.code ? '#60a5fa' : '#475569', fontSize: 11, fontWeight: 'bold' }}>{cur.code}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
             {/* PDF Export Button */}
             <TouchableOpacity
               style={[S.calcBtn, { backgroundColor: '#33C5FF', marginBottom: 8, opacity: pdfLoading ? 0.6 : 1 }]}
@@ -1633,6 +1696,54 @@ export default function ScenarioToolScreen() {
               <Text style={S.createLetterBtnText}>📝 Create Letter for This Client</Text>
             </TouchableOpacity>
 
+            {/* Scenario Chart */}
+            <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e293b' }}>
+              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1, marginBottom: 8 }}>📈 MONTHLY REBATE CURVE</Text>
+              <MiniChart months={result.months} goal={numVal(goal)} chartW={Math.min(screenWidth - 64, 700)} />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}><View style={{ width: 14, height: 2.5, backgroundColor: '#22c55e', borderRadius: 2 }} /><Text style={{ color: '#64748b', fontSize: 9 }}>Monthly Rebate</Text></View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}><View style={{ width: 14, height: 2, backgroundColor: '#f59e0b', borderRadius: 2 }} /><Text style={{ color: '#64748b', fontSize: 9 }}>Goal ${numVal(goal).toLocaleString()}</Text></View>
+              </View>
+            </View>
+
+            {/* Compare */}
+            {history.length > 1 && (
+              <TouchableOpacity
+                style={{ backgroundColor: '#0c1a2e', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginBottom: 8, borderWidth: 1, borderColor: '#1e3a5f' }}
+                onPress={() => setShowCompareModal(true)}
+                activeOpacity={0.8}
+              >
+                <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
+                  {compareEntry ? `📊 Comparing: ${compareEntry.clientName || compareEntry.sp}` : '📊 Compare with Another Scenario'}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {compareEntry && compareResult && result && (
+              <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e3a5f' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: '800', letterSpacing: 1, flex: 1, textAlign: 'center' }}>THIS SCENARIO</Text>
+                  <Text style={{ color: '#60a5fa', fontSize: 10, fontWeight: '800', letterSpacing: 1, flex: 1, textAlign: 'center' }}>{(compareEntry.clientName || compareEntry.sp).toUpperCase()}</Text>
+                </View>
+                {[
+                  { label: 'Peak Rebate', a: result.maxMonthlyOut, b: compareResult.maxMonthlyOut },
+                  { label: 'Total In',    a: result.totalIn,        b: compareResult.totalIn },
+                  { label: 'Total Out',   a: result.totalOut,       b: compareResult.totalOut },
+                  { label: 'Final Balance', a: result.finalCap,     b: compareResult.finalCap },
+                  { label: 'Net Result',  a: result.netResult,      b: compareResult.netResult },
+                ].map(row => (
+                  <View key={row.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#1e293b' }}>
+                    <Text style={{ color: '#64748b', fontSize: 11, width: 88 }}>{row.label}</Text>
+                    <Text style={{ flex: 1, color: row.a >= row.b ? '#22c55e' : '#f87171', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{cx(row.a)}</Text>
+                    <Text style={{ flex: 1, color: row.b >= row.a ? '#22c55e' : '#f87171', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{cx(row.b)}</Text>
+                  </View>
+                ))}
+                <TouchableOpacity onPress={() => { setCompareEntry(null); setCompareResult(null); }} style={{ marginTop: 8, alignSelf: 'center' }}>
+                  <Text style={{ color: '#475569', fontSize: 11 }}>✕ Clear comparison</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
             {/* Summary Cards */}
             <View style={[S.card, { borderWidth: 1, borderColor: 'rgba(51,197,255,0.22)' }]}>
               <Text style={S.sectionLabel}>{t(language, 'strategySummaryLabel').replace('{years}', String(Math.round(result.months.length / 12)))}</Text>
@@ -1700,32 +1811,32 @@ export default function ScenarioToolScreen() {
                   <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 7 }}>{t(language, 'totalIn')}</Text>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
                     <Text style={{ color: '#94a3b8', fontSize: 11 }}>{t(language, 'assetCapital')}</Text>
-                    <Text style={{ color: '#e2e8f0', fontSize: 11, fontWeight: 'bold' }}>{fmt(result.totalIn)}</Text>
+                    <Text style={{ color: '#e2e8f0', fontSize: 11, fontWeight: 'bold' }}>{cx(result.totalIn)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                     <Text style={{ color: '#94a3b8', fontSize: 11 }}>{t(language, 'vipAccessFeeLabel')}</Text>
                     <Text style={{ color: vipFee > 0 ? '#f87171' : '#64748b', fontSize: 11, fontWeight: 'bold' }}>
-                      {vipFee > 0 ? `-${fmt(vipFee)}` : '—'}
+                      {vipFee > 0 ? `-${cx(vipFee)}` : '—'}
                     </Text>
                   </View>
                   <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(245,158,11,0.35)', paddingTop: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'totalOutlayLabel')}</Text>
-                    <Text style={{ color: '#f59e0b', fontSize: 14, fontWeight: 'bold' }}>{fmt(displayTotalIn)}</Text>
+                    <Text style={{ color: '#f59e0b', fontSize: 14, fontWeight: 'bold' }}>{cx(displayTotalIn)}</Text>
                   </View>
                 </View>
-                <SummaryItem label={t(language,'totalOut')} value={fmt(result.totalOut)} green={result.totalOut > 0} />
+                <SummaryItem label={t(language,'totalOut')} value={cx(result.totalOut)} green={result.totalOut > 0} />
                 <View style={{ backgroundColor: 'rgba(245,158,11,0.09)', borderRadius: 8, padding: 8, width: '48%', borderWidth: 1.5, borderColor: 'rgba(245,158,11,0.38)' }}>
                   <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{t(language, 'finalBalance')}</Text>
-                  <Text style={{ color: '#f59e0b', fontSize: 16, fontWeight: 'bold' }}>{fmt(result.finalCap)}</Text>
+                  <Text style={{ color: '#f59e0b', fontSize: 16, fontWeight: 'bold' }}>{cx(result.finalCap)}</Text>
                 </View>
                 <SummaryItem
                   label={t(language, 'netResult')}
-                  value={`${fmt(displayNetResult)} (${displayNetPct}%)`}
+                  value={`${cx(displayNetResult)} (${displayNetPct}%)`}
                   green={displayNetResult >= 0}
                   red={displayNetResult < 0}
                 />
-                <SummaryItem label={t(language, 'availableRebates')} value={fmt(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
-                <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.maxMonthlyOutMonth))} value={fmt(result.maxMonthlyOut)} green />
+                <SummaryItem label={t(language, 'availableRebates')} value={cx(result.finalWallet + result.finalVipPot + result.finalCompPot)} />
+                <SummaryItem label={t(language, 'maxMonthlyDiscountLabel').replace('{month}', String(result.maxMonthlyOutMonth))} value={cx(result.maxMonthlyOut)} green />
                 <SummaryItem
                   label={t(language,'rocBreakEven')}
                   value={result.rocMonth
@@ -2047,19 +2158,41 @@ export default function ScenarioToolScreen() {
           <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: '#1e293b', maxHeight: '75%' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#1e293b' }}>
               <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>📂 Saved Clients</Text>
-              <TouchableOpacity onPress={() => { setShowClientsModal(false); setClientSearch(""); }}>
-                <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <TouchableOpacity
+                  onPress={handleExportClients}
+                  style={{ backgroundColor: '#1e293b', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 7, borderWidth: 1, borderColor: '#334155' }}
+                >
+                  <Text style={{ color: '#64748b', fontSize: 12, fontWeight: 'bold' }}>⬇ Export</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { setShowClientsModal(false); setClientSearch(""); }}>
+                  <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             {savedClients.length > 0 && (
-              <TextInput
-                style={{ backgroundColor: '#1e293b', color: '#fff', borderRadius: 8, padding: 10, marginHorizontal: 12, marginTop: 12, marginBottom: 4, fontSize: 13, borderWidth: 1, borderColor: '#334155' }}
-                value={clientSearch}
-                onChangeText={setClientSearch}
-                placeholder="Search clients..."
-                placeholderTextColor="#475569"
-                clearButtonMode="while-editing"
-              />
+              <>
+                <TextInput
+                  style={{ backgroundColor: '#1e293b', color: '#fff', borderRadius: 8, padding: 10, marginHorizontal: 12, marginTop: 12, marginBottom: 4, fontSize: 13, borderWidth: 1, borderColor: '#334155' }}
+                  value={clientSearch}
+                  onChangeText={setClientSearch}
+                  placeholder="Search clients..."
+                  placeholderTextColor="#475569"
+                  clearButtonMode="while-editing"
+                />
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingHorizontal: 12, paddingBottom: 8 }}>
+                  {STATUS_ORDER.map(s => {
+                    const count = savedClients.filter(c => ((c.status as ClientStatus) ?? 'prospect') === s).length;
+                    const m = STATUS_META[s];
+                    return (
+                      <View key={s} style={{ backgroundColor: m.bg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: count > 0 ? m.color : '#1e293b', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Text style={{ color: count > 0 ? m.color : '#475569', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 }}>{m.label}</Text>
+                        <Text style={{ color: count > 0 ? m.color : '#475569', fontSize: 10, fontWeight: 'bold' }}>{count}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </>
             )}
             {savedClients.length === 0 ? (
               <View style={{ padding: 32, alignItems: 'center' }}>
@@ -2086,6 +2219,26 @@ export default function ScenarioToolScreen() {
                         <Text style={{ color: '#64748b', fontSize: 11 }}>{sp.name}{item.vipEnabled ? ' +VIP' : ''} · ${parseFloat(item.startAmount).toLocaleString()} · {item.years}y</Text>
                         {item.notes ? <Text style={{ color: '#475569', fontSize: 11, marginTop: 2, fontStyle: 'italic' }} numberOfLines={1}>{item.notes}</Text> : null}
                         <Text style={{ color: '#334155', fontSize: 10, marginTop: 2 }}>{date}</Text>
+                        <TouchableOpacity
+                          onPress={async () => {
+                            const cur: ClientStatus = (item.status as ClientStatus) ?? 'prospect';
+                            const idx = STATUS_ORDER.indexOf(cur);
+                            const next = STATUS_ORDER[(idx + 1) % STATUS_ORDER.length];
+                            const updated = savedClients.map(c => c.id === item.id ? { ...c, status: next } : c);
+                            setSavedClients(updated);
+                            await AsyncStorage.setItem(CLIENTS_KEY, JSON.stringify(updated));
+                          }}
+                          style={{ marginTop: 5, alignSelf: 'flex-start' }}
+                          activeOpacity={0.7}
+                        >
+                          {(() => {
+                            const st = (item.status as ClientStatus) ?? 'prospect';
+                            const m = STATUS_META[st];
+                            return <View style={{ backgroundColor: m.bg, borderRadius: 5, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1, borderColor: m.color }}>
+                              <Text style={{ color: m.color, fontSize: 9, fontWeight: '800', letterSpacing: 1 }}>{m.label} ›</Text>
+                            </View>;
+                          })()}
+                        </TouchableOpacity>
                       </View>
                       <TouchableOpacity onPress={() => deleteClient(item.id)} style={{ padding: 8 }}>
                         <Text style={{ fontSize: 16 }}>🗑️</Text>
@@ -2095,6 +2248,37 @@ export default function ScenarioToolScreen() {
                 }}
               />
             )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* ── Compare Picker Modal ── */}
+      <Modal visible={showCompareModal} transparent animationType="slide" onRequestClose={() => setShowCompareModal(false)}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' }}>
+          <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, maxHeight: '70%' }}>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 14 }}>Select scenario to compare</Text>
+            <FlatList
+              data={history.filter(e => e.id !== (history[0]?.id ?? ''))}
+              keyExtractor={e => e.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={{ backgroundColor: '#1e293b', borderRadius: 10, padding: 12, marginBottom: 8 }}
+                  onPress={() => {
+                    const cRes = runCalculation({ startAmount: getNetDeposit(Number(item.startAmount)), years: numVal(item.years), goal: numVal(goal), vipEnabled: item.vipEnabled, manualVip: false, monthData: {} });
+                    setCompareEntry(item);
+                    setCompareResult(cRes);
+                    setShowCompareModal(false);
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 13 }}>{item.clientName || `$${Number(item.startAmount).toLocaleString()}`}</Text>
+                  <Text style={{ color: '#64748b', fontSize: 11, marginTop: 2 }}>{item.sp}{item.vipEnabled ? ' +VIP' : ''} · {item.years}y · Peak ${item.peakRebate.toLocaleString()}</Text>
+                </TouchableOpacity>
+              )}
+              ListEmptyComponent={<Text style={{ color: '#475569', textAlign: 'center', padding: 20 }}>No other calculations in history</Text>}
+            />
+            <TouchableOpacity onPress={() => setShowCompareModal(false)} style={{ marginTop: 8, alignItems: 'center', padding: 12 }}>
+              <Text style={{ color: '#60a5fa', fontWeight: 'bold' }}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -2501,6 +2685,46 @@ function SummaryItem({ label, value, green, red }: { label: string; value: strin
       <Text style={S.summaryLabel}>{label}</Text>
       <Text style={[S.summaryValue, green ? { color: "#4ade80" } : red ? { color: "#f87171" } : { color: "#e2e8f0" }]}>{value}</Text>
     </View>
+  );
+}
+
+function MiniChart({ months, goal, chartW }: { months: { month: number; grossYield: number }[]; goal: number; chartW: number }) {
+  const H = 130;
+  const pad = { t: 10, r: 12, b: 24, l: 50 };
+  const iW = chartW - pad.l - pad.r;
+  const iH = H - pad.t - pad.b;
+  const maxVal = Math.max(goal * 1.1, ...months.map(m => m.grossYield), 1);
+  const xOf = (i: number) => pad.l + (i / Math.max(months.length - 1, 1)) * iW;
+  const yOf = (v: number) => pad.t + iH - (v / maxVal) * iH;
+  const pts = months.map((m, i) => `${xOf(i).toFixed(1)},${yOf(m.grossYield).toFixed(1)}`).join(' ');
+  const goalY = yOf(goal);
+  const ticks = [0, 0.25, 0.5, 0.75, 1];
+  const yearEnds = months.filter(m => m.month % 12 === 0);
+  return (
+    <Svg width={chartW} height={H}>
+      {ticks.map(tick => {
+        const y = pad.t + iH * (1 - tick);
+        const v = maxVal * tick;
+        const label = v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${Math.round(v)}`;
+        return (
+          <React.Fragment key={tick}>
+            <Line x1={pad.l} y1={y} x2={chartW - pad.r} y2={y} stroke="#1e293b" strokeWidth={1} />
+            <SvgText x={pad.l - 3} y={y + 3.5} fontSize={7.5} fill="#475569" textAnchor="end">{label}</SvgText>
+          </React.Fragment>
+        );
+      })}
+      {yearEnds.map((m, i) => {
+        const x = xOf(months.indexOf(m));
+        return (
+          <React.Fragment key={i}>
+            <Line x1={x} y1={pad.t} x2={x} y2={pad.t + iH} stroke="#334155" strokeWidth={1} strokeDasharray="2 3" />
+            <SvgText x={x} y={H - 5} fontSize={7.5} fill="#64748b" textAnchor="middle">Y{Math.round(m.month / 12)}</SvgText>
+          </React.Fragment>
+        );
+      })}
+      <Line x1={pad.l} y1={goalY} x2={chartW - pad.r} y2={goalY} stroke="#f59e0b" strokeWidth={1.5} strokeDasharray="5 3" />
+      <Polyline points={pts} fill="none" stroke="#22c55e" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+    </Svg>
   );
 }
 

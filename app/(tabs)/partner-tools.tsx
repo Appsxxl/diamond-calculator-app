@@ -1342,6 +1342,11 @@ export default function PartnerToolsScreen() {
   const [dbSize, setDbSize] = useState("100");
   const [convRate, setConvRate] = useState("10");
   const [avgAmount, setAvgAmount] = useState("5000");
+
+  // Feature 10 — Commission Estimator
+  const [commPersonal, setCommPersonal] = useState('');
+  const [commTeam, setCommTeam] = useState('');
+  const [commResult, setCommResult] = useState<{ monthly: number; rank: string; emoji: string; pct: number; bonus: number } | null>(null);
   // ── New Adviser Dashboard state ──────────────────────────────────────
   const [referralCode, setReferralCode] = useState("");
   const [editingCode, setEditingCode] = useState(false);
@@ -1429,6 +1434,26 @@ export default function PartnerToolsScreen() {
     ));
     incrementToolUsage('revenue');
     setCalcRevenueLoading(false);
+  };
+
+  const calcCommission = () => {
+    const teamVol = parseFloat(commTeam) || 0;
+    const tierMap = [
+      { rank: 'Partner',              emoji: '🤝', minVol: 0,           pct: 0,    bonus: 0 },
+      { rank: 'Pearl',                emoji: '🤍', minVol: 100,         pct: 0,    bonus: 0 },
+      { rank: 'Ruby',                 emoji: '❤️', minVol: 500,         pct: 0,    bonus: 0 },
+      { rank: 'Sapphire',             emoji: '💙', minVol: 25000,       pct: 3,    bonus: 0 },
+      { rank: 'Emerald',              emoji: '💚', minVol: 50000,       pct: 6,    bonus: 1000 },
+      { rank: 'Diamond',              emoji: '💎', minVol: 250000,      pct: 9,    bonus: 5000 },
+      { rank: 'Blue Diamond',         emoji: '🔵', minVol: 1000000,     pct: 12,   bonus: 20000 },
+      { rank: 'Green Diamond',        emoji: '💚', minVol: 2500000,     pct: 15,   bonus: 50000 },
+      { rank: 'Purple Diamond',       emoji: '💜', minVol: 5000000,     pct: 18,   bonus: 100000 },
+      { rank: 'Diamond Elite',        emoji: '💎', minVol: 10000000,    pct: 21,   bonus: 150000 },
+      { rank: 'Double Diamond Elite', emoji: '👑', minVol: 50000000,    pct: 22,   bonus: 1000000 },
+    ];
+    const tier = [...tierMap].reverse().find(t => teamVol >= t.minVol) ?? tierMap[0];
+    const monthly = Math.round(teamVol * (tier.pct / 100));
+    setCommResult({ monthly, rank: tier.rank, emoji: tier.emoji, pct: tier.pct, bonus: tier.bonus });
   };
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -2855,6 +2880,50 @@ export default function PartnerToolsScreen() {
         <View style={{ backgroundColor: "#0f2035", borderRadius: 12, padding: 14, marginBottom: 12, borderWidth: 1.5, borderColor: "#a78bfa44", alignItems: "center" }}>
           <Text style={{ color: "#a78bfa", fontSize: 13, fontWeight: "bold", letterSpacing: 0.5 }}>{t(language, "affVaultComingSoon")}</Text>
           <Text style={{ color: "#475569", fontSize: 10, marginTop: 4 }}>{tx.arVaultDesc}</Text>
+        </View>
+
+        {/* ── Commission Estimator (Feature 10) ── */}
+        <View style={{ paddingHorizontal: 16, paddingBottom: 4 }}>
+          <View style={{ backgroundColor: '#0c1a2e', borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#1e3a5f' }}>
+            <Text style={{ color: '#f59e0b', fontSize: 13, fontWeight: '800', letterSpacing: 1, marginBottom: 4 }}>💰 COMMISSION ESTIMATOR</Text>
+            <Text style={{ color: '#475569', fontSize: 11, marginBottom: 12 }}>Estimate your monthly earnings based on team volume.</Text>
+
+            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>Personal Client Volume ($/month total)</Text>
+            <TextInput
+              style={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: 8, padding: 10, fontSize: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 10 }}
+              value={commPersonal}
+              onChangeText={setCommPersonal}
+              keyboardType="numeric"
+              placeholder="e.g. 50000"
+              placeholderTextColor="#334155"
+            />
+
+            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>Total Team Volume ($/month all levels)</Text>
+            <TextInput
+              style={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: 8, padding: 10, fontSize: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 12 }}
+              value={commTeam}
+              onChangeText={setCommTeam}
+              keyboardType="numeric"
+              placeholder="e.g. 250000"
+              placeholderTextColor="#334155"
+            />
+
+            {commResult && (
+              <View style={{ backgroundColor: '#0f172a', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#22c55e', marginBottom: 10 }}>
+                <Text style={{ color: '#22c55e', fontSize: 18, fontWeight: 'bold', marginBottom: 4 }}>${commResult.monthly.toLocaleString()}/month</Text>
+                <Text style={{ color: '#64748b', fontSize: 11 }}>Rank: {commResult.rank} {commResult.emoji} · {commResult.pct}% infinity bonus on ${Number(commTeam).toLocaleString()} team volume</Text>
+                {commResult.bonus > 0 && <Text style={{ color: '#f59e0b', fontSize: 11, marginTop: 4 }}>🎁 Rank Bonus: ${commResult.bonus.toLocaleString()} (one-time)</Text>}
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={{ backgroundColor: '#1e3a5f', borderRadius: 10, paddingVertical: 11, alignItems: 'center', marginTop: 2, borderWidth: 1, borderColor: '#334155' }}
+              onPress={calcCommission}
+              activeOpacity={0.8}
+            >
+              <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13 }}>CALCULATE EARNINGS</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
       </ScrollView>
