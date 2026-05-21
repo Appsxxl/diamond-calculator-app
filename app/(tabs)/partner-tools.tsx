@@ -31,6 +31,7 @@ import {
   cancelPartnerNotifications,
 } from "@/lib/notifications";
 import { t } from "@/lib/translations";
+import { InfoTip } from "@/components/info-tip";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Partner {
@@ -2147,9 +2148,18 @@ export default function PartnerToolsScreen() {
             {/* Rank Advancement Tracker */}
             <View style={{ backgroundColor: "rgba(51,197,255,0.06)", borderRadius: 8, padding: 10, marginTop: 4, borderWidth: 1, borderColor: "rgba(51,197,255,0.15)" }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
-                  {currentTier.emoji} {currentTier.rank}
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}>
+                    {currentTier.emoji} {currentTier.rank}
+                  </Text>
+                  <InfoTip title="Rank Tiers" body={[
+                    "Your rank in the Plan B network is determined by your total downline team volume.",
+                    "Each rank unlocks a higher infinity bonus % — a monthly percentage paid on your entire team's purchase volume.",
+                    "Rank bonuses (💰) are one-time cash bonuses paid when you first reach a new rank.",
+                    "To advance: grow your team's monthly investment volume. Each new partner and each SP upgrade in your network counts toward your total.",
+                    "The ranks from Sapphire upward earn infinity bonuses. Partner, Pearl, and Ruby do not."
+                  ]} />
+                </View>
                 {nextTier && (
                   <Text style={{ color: "#64748b", fontSize: 10 }}>
                     → {nextTier.emoji} {nextTier.rank} ({nextTier.teamVol})
@@ -2255,7 +2265,17 @@ export default function PartnerToolsScreen() {
         {/* ── SECTION 2: Call List Dashboard ──────────────────────────────── */}
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: "#1a3550", marginBottom: 12 }]}>
           <View style={S.sectionHeader}>
-            <Text style={S.sectionTitle}>{t(language, "affDashboardTitle")}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+              <Text style={S.sectionTitle}>{t(language, "affDashboardTitle")}</Text>
+              <InfoTip title="Partner List" body={[
+                "Track the advisers and partners in your direct downline.",
+                "Add a partner with their name, WhatsApp number, country, start date, and investment amount.",
+                "Level — set 1, 2, or 3 to indicate how deep in your network they are.",
+                "Contact Moments — set automated reminder alerts for key milestones: start date, 3 months, 6 months, 1 year.",
+                "WhatsApp button — opens a pre-written check-in message to that partner via WhatsApp.",
+                "Delete a partner by tapping the trash icon (requires confirmation)."
+              ]} />
+            </View>
             <TouchableOpacity
               style={[S.addBtn, { backgroundColor: '#1e3a5f', borderWidth: 1, borderColor: '#33C5FF' }]}
               onPress={() => router.push('/(tabs)/affiliate')}
@@ -2885,7 +2905,16 @@ export default function PartnerToolsScreen() {
         {/* ── Commission Estimator (Feature 10) ── */}
         <View style={{ paddingHorizontal: 16, paddingBottom: 4 }}>
           <View style={{ backgroundColor: '#0c1a2e', borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#1e3a5f' }}>
-            <Text style={{ color: '#f59e0b', fontSize: 13, fontWeight: '800', letterSpacing: 1, marginBottom: 4 }}>💰 COMMISSION ESTIMATOR</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <Text style={{ color: '#f59e0b', fontSize: 13, fontWeight: '800', letterSpacing: 1 }}>💰 COMMISSION ESTIMATOR</Text>
+              <InfoTip title="Commission Estimator" body={[
+                "Estimates your monthly earnings from the Plan B infinity bonus system.",
+                "Team Volume: the total monthly value of all purchases across your entire downline network (all levels combined).",
+                "Personal Client Volume: what your own direct clients invest per month (not included in the calculation automatically — enter it separately if you want to add it to team volume first).",
+                "Your rank is determined by your total team volume:\n• Sapphire ($25k): 3% infinity\n• Emerald ($50k): 6% + $1k bonus\n• Diamond ($250k): 9% + $5k bonus\n• Blue Diamond ($1M): 12% + $20k bonus\n• Green Diamond ($2.5M): 15% + $50k bonus",
+                "The infinity bonus is a monthly percentage of your team volume. As your team grows, your rank and earnings grow automatically."
+              ]} />
+            </View>
             <Text style={{ color: '#475569', fontSize: 11, marginBottom: 12 }}>Estimate your monthly earnings based on team volume.</Text>
 
             <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>Personal Client Volume ($/month total)</Text>

@@ -29,6 +29,7 @@ import { DisclaimerFooter, DisclaimerInline } from "@/components/disclaimer-foot
 import { useCalculator } from "@/lib/calculator-context";
 import { t, Language } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit, getSPLevel } from "@/lib/calculator";
+import { InfoTip } from "@/components/info-tip";
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
@@ -938,7 +939,14 @@ export default function ScenarioToolScreen() {
         {/* Goal bar */}
         <View style={S.card}>
           <View style={S.row}>
-            <Text style={S.label}>{t(language, 'goal').toUpperCase()} $</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'goal').toUpperCase()} $</Text>
+              <InfoTip title="Monthly Goal" body={[
+                "Set the monthly amount you (or your client) want to receive from Plan B discounts. This is your target — for example $3,500/month.",
+                "The progress bar shows how close the current investment is to hitting this goal. 100% means the goal is already achievable.",
+                "The Goal Reached badge appears when your simulation reaches this amount within the chosen time period. If not reached, try increasing the start amount or years."
+              ]} />
+            </View>
             <TextInput style={S.goalInput} value={goal} onChangeText={setGoal} keyboardType="numeric" placeholderTextColor="#666" />
             <TouchableOpacity style={S.resetBtn} onPress={handleReset}>
               <Text style={S.resetText}>{t(language, 'reset')}</Text>
@@ -962,7 +970,16 @@ export default function ScenarioToolScreen() {
         <View style={S.card}>
           <View style={S.row}>
             <View style={S.flex1}>
-              <Text style={S.label}>{t(language, 'clientName').toUpperCase()}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'clientName').toUpperCase()}</Text>
+                <InfoTip title="Client Name & Saving" body={[
+                  "Enter your client's name to personalize the PDF report and WhatsApp message.",
+                  "💾 Save button — stores this client's full settings (amount, years, VIP, monthly overrides) so you can reload them later.",
+                  "📂 Load button — opens your saved client list. Tap any client to instantly restore their scenario.",
+                  "Notes field — add private notes about the client (e.g. 'prefers conservative', 'callback Thursday'). Notes are saved with the client profile.",
+                  "Pipeline status — each saved client has a status (Prospect → Meeting → Proposal → Signed → Active). Tap the status badge in the client list to advance it."
+                ]} />
+              </View>
               <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
                 <TextInput style={[S.input, { flex: 1, marginBottom: 0 }]} value={clientName} onChangeText={setClientName} placeholder={t(language, 'clientName')} placeholderTextColor="#555" />
                 <TouchableOpacity onPress={saveClient} style={{ backgroundColor: '#1e293b', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#334155' }}>
@@ -974,7 +991,15 @@ export default function ScenarioToolScreen() {
               </View>
             </View>
             <View style={S.vipBox}>
-              <Text style={S.label}>{t(language, 'vipStatus').toUpperCase()}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'vipStatus').toUpperCase()}</Text>
+                <InfoTip title="VIP Status" body={[
+                  "VIP adds +3% per month to your discount rate on top of your base SP rate. For example: SP3 base 2.7% + VIP = 5.7% per month.",
+                  "Auto-VIP: when your start amount reaches $3,550 or above, VIP activates automatically (the plan self-funds the VIP fee from early discounts).",
+                  "Manual VIP: for amounts below the auto threshold, you can enable VIP manually. A one-time $1,000 fee is applied in month 1.",
+                  "VIP dramatically increases the peak monthly rebate and helps the goal be reached sooner."
+                ]} />
+              </View>
               <Switch
                 value={vipEnabled}
                 onValueChange={(v) => { vipExplicitlyOff.current = !v; setVipEnabled(v); }}
@@ -997,7 +1022,15 @@ export default function ScenarioToolScreen() {
         {/* Start & Years */}
         <View style={S.row}>
           <View style={[S.card, S.flex1, { marginRight: 5 }]}>
-            <Text style={S.label}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
+              <InfoTip title="Start Amount & SP Tier" body={[
+                "Enter the gross amount (what is actually paid). The system deducts a 1.25% entry fee + $5 flat fee to calculate the net invested capital.",
+                "SP Tier presets — tap SP2 through SP7 to quickly set common amounts:\n• SP2: $1,000 · 2.45%/mo\n• SP3: $2,500 · 2.70%/mo\n• SP4: $5,000 · 3.00%/mo\n• SP5: $10,000 · 3.10%/mo\n• SP6: $50,000 · 3.20%/mo\n• SP7: $100,000 · 3.30%/mo",
+                "Upsell tip: when you are within $2,000 of the next tier, the calculator shows you how much extra to invest to reach the higher rate.",
+                "Minimum investment: SP1 starts at $110. There is no upper limit."
+              ]} />
+            </View>
             <TextInput style={S.bigInput} value={startAmount} onChangeText={v => { setStartAmount(v); setInputErrors(e => ({ ...e, startAmount: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
             {/* SP Tier Presets */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 8 }}>
@@ -1134,7 +1167,14 @@ export default function ScenarioToolScreen() {
             )}
           </View>
           <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
-            <Text style={S.label}>{t(language, 'years').toUpperCase()}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'years').toUpperCase()}</Text>
+              <InfoTip title="Strategy Duration (Years)" body={[
+                "Set how many years the simulation should run. Valid range: 1 to 30 years.",
+                "Longer duration = higher cumulative discounts and a larger final asset value. The monthly rebate curve also peaks later at higher amounts.",
+                "Tip: most advisers present 3, 5, 7, and 10-year scenarios to show the client the difference. Use the Compare feature to show two durations side by side."
+              ]} />
+            </View>
             <TextInput style={S.bigInput} value={years} onChangeText={v => { setYears(v); setInputErrors(e => ({ ...e, years: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
             {inputErrors.years && (
               <Text style={{ color: '#ef4444', fontSize: 11, marginTop: 4 }}>⚠️ {inputErrors.years}</Text>
@@ -1156,7 +1196,15 @@ export default function ScenarioToolScreen() {
 
         {/* Bulk Deposit */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language, 'deposit').toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
+            <Text style={[S.sectionLabel, { marginBottom: 0, marginTop: 0 }]}>{t(language, 'deposit').toUpperCase()}</Text>
+            <InfoTip title="Monthly Deposit" body={[
+              "Add an extra diamond purchase every month on top of the initial investment.",
+              "Example: Amount = $500, Till = 24 → you buy an additional $500 of diamonds per month for the first 2 years.",
+              "Each monthly deposit increases your capital base and therefore the monthly rebate in all future months.",
+              "Leave blank or set to 0 if you only want a one-time initial purchase."
+            ]} />
+          </View>
           <View style={S.bulkRow}>
             <TextInput style={S.bulkInput} value={bulkStortVal} onChangeText={setBulkStortVal} placeholder={t(language,'extraAmounts')} placeholderTextColor="#555" keyboardType="numeric" />
             <TextInput style={S.bulkSmall} value={bulkStortTo} onChangeText={setBulkStortTo} placeholder={t(language,'till')} placeholderTextColor="#555" keyboardType="numeric" />
@@ -1168,7 +1216,14 @@ export default function ScenarioToolScreen() {
               ? <Text style={{ color: '#475569', fontSize: 10, marginTop: 4 }}>${numVal(bulkStortVal).toLocaleString()} → Net: ${getNetDeposit(numVal(bulkStortVal)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
               : null
           }
-          <Text style={S.sectionLabel}>{t(language,'extraAmounts').toUpperCase()} {t(language,'annual').toUpperCase()} {t(language,'oneTime').toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
+            <Text style={[S.sectionLabel, { marginBottom: 0, marginTop: 0 }]}>{t(language,'extraAmounts').toUpperCase()} {t(language,'annual').toUpperCase()} {t(language,'oneTime').toUpperCase()}</Text>
+            <InfoTip title="Annual Bonus Deposit" body={[
+              "Adds a one-time extra purchase that repeats once per year (every 12 months).",
+              "Example: $2,000 → adds $2,000 to your diamond capital at months 12, 24, 36, etc.",
+              "Useful for clients who reinvest a year-end bonus, tax refund, or annual savings into Plan B."
+            ]} />
+          </View>
           <View style={S.bulkRow}>
             <TextInput style={S.bulkInput} value={annualVal} onChangeText={setAnnualVal} placeholder={t(language,'extraAmounts')} placeholderTextColor="#555" keyboardType="numeric" />
             <TouchableOpacity style={S.btnAmber} onPress={applyAnnual}><Text style={S.btnTextDark}>{t(language,'set')}</Text></TouchableOpacity>
@@ -1177,13 +1232,29 @@ export default function ScenarioToolScreen() {
 
         {/* Bulk Withdrawal */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language,'withdrawal').toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
+            <Text style={[S.sectionLabel, { marginBottom: 0, marginTop: 0 }]}>{t(language,'withdrawal').toUpperCase()}</Text>
+            <InfoTip title="Fixed Monthly Withdrawal" body={[
+              "Take a fixed dollar amount out of your monthly rebate every month, starting from a chosen month.",
+              "Example: Amount = $500, From = 25 → you receive $500/month in cash from month 25 onwards.",
+              "The withdrawal cannot exceed your monthly rebate. Any excess stays in your account.",
+              "The remaining rebate after withdrawal continues to compound (unless you also set Out %)."
+            ]} />
+          </View>
           <View style={S.bulkRow}>
             <TextInput style={S.bulkInput} value={bulkOpnVal} onChangeText={setBulkOpnVal} placeholder={t(language,'monthlyAmount')} placeholderTextColor="#555" keyboardType="numeric" />
             <TextInput style={S.bulkSmall} value={bulkOpnFrom} onChangeText={setBulkOpnFrom} placeholder={t(language,'from')} placeholderTextColor="#555" keyboardType="numeric" />
             <TouchableOpacity style={S.btnBlue} onPress={applyBulkOpn}><Text style={S.btnText}>{t(language,'ok')}</Text></TouchableOpacity>
           </View>
-          <Text style={S.sectionLabel}>{t(language,'outPercentage').toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
+            <Text style={[S.sectionLabel, { marginBottom: 0, marginTop: 0 }]}>{t(language,'outPercentage').toUpperCase()}</Text>
+            <InfoTip title="Out % — Percentage Withdrawal" body={[
+              "Instead of a fixed amount, take a percentage of your monthly rebate as cash.",
+              "Example: 75%, From = 1 → you always take 75% of your monthly rebate as cash and reinvest the remaining 25%.",
+              "This is the standard Plan B model: 75% out, 25% compounding. It balances income now with long-term growth.",
+              "You can combine this with a Fixed Withdrawal — the fixed amount is taken first, then the % is applied to the remainder."
+            ]} />
+          </View>
           <View style={S.bulkRow}>
             <TextInput style={S.bulkSmall} value={bulkOpnPVal} onChangeText={setBulkOpnPVal} placeholder="%" placeholderTextColor="#555" keyboardType="numeric" />
             <TextInput style={S.bulkSmall} value={bulkOpnPFrom} onChangeText={setBulkOpnPFrom} placeholder={t(language,'from')} placeholderTextColor="#555" keyboardType="numeric" />
@@ -1193,7 +1264,16 @@ export default function ScenarioToolScreen() {
 
         {/* Active Compounding Info */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>⚡ {t(language, 'compoundPercentage').toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
+            <Text style={[S.sectionLabel, { marginBottom: 0, marginTop: 0 }]}>⚡ {t(language, 'compoundPercentage').toUpperCase()}</Text>
+            <InfoTip title="Active Compounding %" body={[
+              "Controls how much of your monthly rebate is reinvested (compounded) into new diamond purchases versus paid out as cash.",
+              "100% = full compounding — no cash withdrawn. Your diamond portfolio grows fastest. Best for long-term wealth building.",
+              "0% = all rebate paid out as cash every month. No further growth from reinvestment.",
+              "You can edit individual months in the monthly table below the results by tapping the Comp% cell — useful for custom payout schedules.",
+              "Default is 100%. Most clients use 75% out (Out %) + 25% compounding for balanced income and growth."
+            ]} />
+          </View>
           <Text style={{ color: "#64748b", fontSize: 11, lineHeight: 16 }}>
             {t(language, 'activeCompInfo')}
           </Text>
@@ -1201,7 +1281,15 @@ export default function ScenarioToolScreen() {
 
         {/* Reverse Calculator */}
         <View style={S.reverseCard}>
-          <Text style={S.reverseTitle}>🔄 REVERSE CALCULATOR</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <Text style={[S.reverseTitle, { marginBottom: 0 }]}>🔄 REVERSE CALCULATOR</Text>
+            <InfoTip title="Reverse Calculator" body={[
+              "Answers the question: 'What is the minimum investment needed to reach my goal?'",
+              "It uses your current Goal ($) and Years settings, then runs a fast binary search to find the smallest starting amount that achieves the goal within the period.",
+              "The result shows the minimum gross investment, the SP tier it falls into, and which month the goal is first reached.",
+              "Tap Apply ↑ to copy the found amount directly into the Start Amount field and calculate the full scenario."
+            ]} />
+          </View>
           <Text style={S.reverseSub}>What is the minimum investment to reach your ${numVal(goal).toLocaleString()} goal in {years} years?</Text>
           <TouchableOpacity
             style={[S.reverseBtn, reverseSearching && { opacity: 0.6 }]}
@@ -1234,7 +1322,15 @@ export default function ScenarioToolScreen() {
         {history.length > 0 && (
           <View style={S.historyBlock}>
             <TouchableOpacity style={S.historyHeader} onPress={() => setShowHistory(h => !h)} activeOpacity={0.8}>
-              <Text style={S.historyHeaderText}>🕐 RECENT CALCULATIONS ({history.length})</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={S.historyHeaderText}>🕐 RECENT CALCULATIONS ({history.length})</Text>
+                <InfoTip title="Calculation History" body={[
+                  "The last 10 calculations are automatically saved every time you tap Calculate.",
+                  "Tap any entry to instantly restore its start amount, years, VIP status, and client name — without losing your current input.",
+                  "Each entry shows: client name (or amount if no name), SP tier, years, and peak monthly rebate.",
+                  "History is stored locally on this device and persists across sessions."
+                ]} />
+              </View>
               <Text style={S.historyChevron}>{showHistory ? '▲' : '▼'}</Text>
             </TouchableOpacity>
             {showHistory && history.map(entry => {
@@ -1288,7 +1384,13 @@ export default function ScenarioToolScreen() {
         {result && (
           <>
             {/* Currency Toggle */}
-            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10, justifyContent: 'flex-end' }}>
+            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10, justifyContent: 'flex-end', alignItems: 'center' }}>
+              <InfoTip title="Currency Display" body={[
+                "Switch the display currency for all summary values in the results section.",
+                "USD — US Dollar (base currency of Plan B)\nEUR — Euro (rate: 0.92)\nGBP — British Pound (rate: 0.79)\nAED — UAE Dirham (rate: 3.67)",
+                "Rates are fixed approximations for presentation purposes. Always verify live rates before presenting to clients.",
+                "The monthly table stays in USD. Only the main summary cards convert."
+              ]} />
               {CURRENCIES.map(cur => (
                 <TouchableOpacity
                   key={cur.code}
@@ -1300,6 +1402,17 @@ export default function ScenarioToolScreen() {
               ))}
             </View>
 
+            {/* PDF Info */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>PDF REPORT</Text>
+              <InfoTip title="PDF Export" body={[
+                "Generates a branded A4 PDF report for this client including: strategy parameters, monthly discount schedule, goal status, security guarantees, and a legal disclaimer.",
+                "On iOS: opens the share sheet — you can AirDrop, email, or save to Files.",
+                "On Android: opens the PDF directly via the system viewer.",
+                "On Web: opens in a new tab and triggers the browser print/save dialog.",
+                "The PDF filename includes the client's name and today's date for easy filing."
+              ]} />
+            </View>
             {/* PDF Export Button */}
             <TouchableOpacity
               style={[S.calcBtn, { backgroundColor: '#33C5FF', marginBottom: 8, opacity: pdfLoading ? 0.6 : 1 }]}
@@ -1681,6 +1794,15 @@ export default function ScenarioToolScreen() {
             </TouchableOpacity>
 
             {/* Create Letter (prefill) */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>LETTER OUTREACH</Text>
+              <InfoTip title="Create Letter — Auto Prefill" body={[
+                "Tapping this button saves the current client's name, SP tier, amount, and years, then navigates to the Letters hub.",
+                "In the Letters hub, a blue banner will appear showing the pre-filled client data.",
+                "The prefill is available for 30 minutes. Open any letter template and it will reference the client context from the Scenario Tool.",
+                "Use this when you have finished a calculation and want to immediately compose an invitation or proposal letter for that client."
+              ]} />
+            </View>
             <TouchableOpacity
               style={S.createLetterBtn}
               activeOpacity={0.85}
@@ -1698,7 +1820,15 @@ export default function ScenarioToolScreen() {
 
             {/* Scenario Chart */}
             <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e293b' }}>
-              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1, marginBottom: 8 }}>📈 MONTHLY REBATE CURVE</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>📈 MONTHLY REBATE CURVE</Text>
+                <InfoTip title="Scenario Chart" body={[
+                  "This chart shows how your monthly rebate (green line) grows over the full strategy period.",
+                  "The gold dashed line is your Goal — the moment the green line crosses it, the goal is reached.",
+                  "Year markers (Y1, Y2…) divide the chart so you can see progress by year at a glance.",
+                  "The curve rises faster with higher SP tiers, VIP enabled, and monthly deposits. A flat or slow curve usually means a low start amount or no compounding."
+                ]} />
+              </View>
               <MiniChart months={result.months} goal={numVal(goal)} chartW={Math.min(screenWidth - 64, 700)} />
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}><View style={{ width: 14, height: 2.5, backgroundColor: '#22c55e', borderRadius: 2 }} /><Text style={{ color: '#64748b', fontSize: 9 }}>Monthly Rebate</Text></View>
@@ -1708,15 +1838,26 @@ export default function ScenarioToolScreen() {
 
             {/* Compare */}
             {history.length > 1 && (
-              <TouchableOpacity
-                style={{ backgroundColor: '#0c1a2e', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginBottom: 8, borderWidth: 1, borderColor: '#1e3a5f' }}
-                onPress={() => setShowCompareModal(true)}
-                activeOpacity={0.8}
-              >
-                <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-                  {compareEntry ? `📊 Comparing: ${compareEntry.clientName || compareEntry.sp}` : '📊 Compare with Another Scenario'}
-                </Text>
-              </TouchableOpacity>
+              <>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                  <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>SCENARIO COMPARISON</Text>
+                  <InfoTip title="Compare Mode" body={[
+                    "Compare this calculation against any scenario from your history — side by side.",
+                    "Tap Compare, pick a past scenario from the list, and a comparison card appears with 5 key metrics: Peak Rebate, Total In, Total Out, Final Balance, Net Result.",
+                    "Green = winner. Use this to show clients the difference between SP tiers or different time periods.",
+                    "Tap 'Clear comparison' to dismiss the comparison card."
+                  ]} />
+                </View>
+                <TouchableOpacity
+                  style={{ backgroundColor: '#0c1a2e', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginBottom: 8, borderWidth: 1, borderColor: '#1e3a5f' }}
+                  onPress={() => setShowCompareModal(true)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
+                    {compareEntry ? `📊 Comparing: ${compareEntry.clientName || compareEntry.sp}` : '📊 Compare with Another Scenario'}
+                  </Text>
+                </TouchableOpacity>
+              </>
             )}
 
             {compareEntry && compareResult && result && (

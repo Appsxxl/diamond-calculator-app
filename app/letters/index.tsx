@@ -10,6 +10,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
+import { InfoTip } from "@/components/info-tip";
 
 interface ScenarioPrefill { clientName: string; spName: string; amount: string; years: string; savedAt: number; }
 
@@ -394,7 +395,19 @@ export default function LettersHubScreen() {
             </View>
           </View>
           <Text style={S.title}>{tx.title}</Text>
-          <Text style={S.sub}>{tx.sub}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
+            <Text style={S.sub}>{tx.sub}</Text>
+            <InfoTip title="Letters & Outreach Hub" body={[
+              "This hub gives you professional letter templates for every type of contact.",
+              "Customer Letters — invitation, presentation, and business opportunity letters for new clients.",
+              "Adviser Recruiting — passive and active letters to invite new advisers into your network.",
+              "Real Estate Partners — soft referral and joint-venture proposals for property professionals.",
+              "VIP / HNW Outreach — ultra-premium letters for high-net-worth individuals.",
+              "My Personal Letters — create and save your own custom letters with variable placeholders.",
+              "Sent Log — track who you sent to, what their response was, and schedule follow-ups.",
+              "Profile Setup (⚙) — add your name, company, and logo to pre-fill every letter automatically."
+            ]} />
+          </View>
         </View>
 
         {/* Scenario prefill banner */}
