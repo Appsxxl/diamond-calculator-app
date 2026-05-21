@@ -18,6 +18,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import * as Haptics from "expo-haptics";
 import { InfoTip } from "@/components/info-tip";
+import { getTip } from "@/lib/tip-content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface YouTubeVideo {
@@ -670,11 +671,7 @@ export default function VideosScreen() {
               <View style={{ flex: 1 }}>
                 <View style={S.sectionTitleRow}>
                   <Text style={S.sectionLabel}>{tx.companyVideos}</Text>
-                  <InfoTip title="Invitation Videos" body={[
-                    "These are official company introduction videos — suitable to share with new contacts who have never heard of Plan B.",
-                    "They are available to all users (no partner mode required).",
-                    "Share via WhatsApp or social media as a first introduction before a live presentation."
-                  ]} />
+                  <InfoTip {...getTip(language, 'invitationVideos')} />
                   {vimeoRefreshing && <ActivityIndicator size="small" color="#0ea5e9" style={{ marginLeft: 8 }} />}
                   {!vimeoRefreshing && (
                     <Text style={[S.liveTag, { color: vimeoLive ? "#22c55e" : "#64748b" }]}>
@@ -727,11 +724,7 @@ export default function VideosScreen() {
             <View style={S.sectionBlock}>
               <View style={S.sectionTitleRow}>
                 <Text style={S.sectionLabel}>ADVISER — PRESENTATIONS & COMPENSATION PLANS</Text>
-                <InfoTip title="Adviser Videos" body={[
-                  "These videos cover the business opportunity, compensation plan, and network structure.",
-                  "They are for qualified advisers only — not for sharing with general public contacts.",
-                  "Available in multiple languages. Filter by your preferred language using the language selector at the top."
-                ]} />
+                <InfoTip {...getTip(language, 'adviserVideos')} />
                 <View style={S.adviserBadge}>
                   <Text style={S.adviserBadgeText}>🔒 ADVISER</Text>
                 </View>
