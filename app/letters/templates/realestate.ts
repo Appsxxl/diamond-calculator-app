@@ -16,7 +16,7 @@ I hope this message finds you well.
 
 I am writing to explore whether there may be a natural connection between our respective work and client bases.
 
-I am an independent adviser affiliated with Plan B · Diamond Solution — a platform that works with high-net-worth individuals seeking to preserve and grow wealth through physical diamond investment, entirely outside traditional financial markets.
+I am an independent adviser affiliated with Plan B — a platform that works with high-net-worth individuals seeking to preserve and grow wealth through physical diamond investment, entirely outside traditional financial markets.
 
 The clients I work with tend to be financially sophisticated individuals and families who are actively managing wealth across multiple asset classes. A number of them hold or are seeking to acquire property — and when those conversations arise, I currently have no trusted referral partner in the real estate space to whom I can direct them confidently.
 
@@ -40,7 +40,7 @@ Dear [RECIPIENT_NAME],
 
 I am writing to you directly with a proposal I believe could be of genuine mutual benefit.
 
-I am an independent adviser with Plan B · Diamond Solution, working with a growing portfolio of high-net-worth clients across multiple jurisdictions. These are individuals and families with significant liquid assets — clients who are typically active in real estate, either as buyers, developers, or long-term investors.
+I am an independent adviser with Plan B, working with a growing portfolio of high-net-worth clients across multiple jurisdictions. These are individuals and families with significant liquid assets — clients who are typically active in real estate, either as buyers, developers, or long-term investors.
 
 I am interested in establishing a formal referral partnership with a select number of trusted real estate professionals. The arrangement I have in mind is straightforward: where I have a client with a relevant real estate need, I introduce them to you. Where you have a client seeking wealth preservation or alternative asset solutions outside traditional markets, you introduce them to me. No exclusivity. No complicated structure. Simply a professional relationship that serves both our clients better.
 
@@ -68,7 +68,7 @@ Ik hoop dat dit bericht u goed bereikt.
 
 Ik schrijf u om te verkennen of er een natuurlijke verbinding kan zijn tussen ons respectieve werk en klantenbestand.
 
-Ik ben een onafhankelijk adviseur geaffilieerd met Plan B · Diamond Solution — een platform dat werkt met vermogende particulieren die hun vermogen willen bewaren en laten groeien via fysieke diamantinvesteringen, volledig buiten traditionele financiële markten.
+Ik ben een onafhankelijk adviseur geaffilieerd met Plan B — een platform dat werkt met vermogende particulieren die hun vermogen willen bewaren en laten groeien via fysieke diamantinvesteringen, volledig buiten traditionele financiële markten.
 
 De klanten met wie ik werk, zijn financieel onderlegde particulieren en families die actief vermogen beheren over meerdere activaklassen. Een aantal van hen bezit onroerend goed of is op zoek naar vastgoed — en wanneer die gesprekken ontstaan, heb ik momenteel geen vertrouwde doorverwijspartner in de vastgoedsector.
 
@@ -92,7 +92,7 @@ Beste [RECIPIENT_NAME],
 
 Ik schrijf u direct met een voorstel waarvan ik geloof dat het voor beiden oprecht waardevol kan zijn.
 
-Ik ben een onafhankelijk adviseur bij Plan B · Diamond Solution en werk met een groeiend portfolio van vermogende klanten in meerdere rechtsgebieden. Dit zijn particulieren en families met aanzienlijke liquide middelen — klanten die doorgaans actief zijn in onroerend goed, als kopers, ontwikkelaars of langetermijninvesteerders.
+Ik ben een onafhankelijk adviseur bij Plan B en werk met een groeiend portfolio van vermogende klanten in meerdere rechtsgebieden. Dit zijn particulieren en families met aanzienlijke liquide middelen — klanten die doorgaans actief zijn in onroerend goed, als kopers, ontwikkelaars of langetermijninvesteerders.
 
 Ik ben geïnteresseerd in het opzetten van een formeel doorverwijspartnerschap met een selecte groep betrouwbare vastgoedprofessionals. De regeling die ik voor ogen heb, is eenvoudig: wanneer ik een klant heb met een relevante vastgoedbehoefte, verwijs ik deze naar u door. Wanneer u een klant heeft die op zoek is naar vermogensbehoud of alternatieve oplossingen buiten traditionele markten, verwijst u deze naar mij door. Geen exclusiviteit. Geen ingewikkelde structuur. Gewoon een professionele relatie die beide klanten beter bedient.
 
@@ -120,7 +120,7 @@ ich hoffe, diese Nachricht erreicht Sie in guter Verfassung.
 
 Ich schreibe Ihnen, um zu erkunden, ob es eine natürliche Verbindung zwischen unserer jeweiligen Arbeit und Kundenbasis geben könnte.
 
-Ich bin ein unabhängiger Berater, der mit Plan B · Diamond Solution verbunden ist — einer Plattform, die mit vermögenden Privatpersonen zusammenarbeitet, die ihr Vermögen durch physische Diamantinvestitionen erhalten und vermehren möchten, vollständig außerhalb traditioneller Finanzmärkte.
+Ich bin ein unabhängiger Berater, der mit Plan B verbunden ist — einer Plattform, die mit vermögenden Privatpersonen zusammenarbeitet, die ihr Vermögen durch physische Diamantinvestitionen erhalten und vermehren möchten, vollständig außerhalb traditioneller Finanzmärkte.
 
 Die Kunden, mit denen ich arbeite, sind finanziell versierte Privatpersonen und Familien, die aktiv Vermögen über mehrere Anlageklassen verwalten. Eine Reihe von ihnen besitzt Immobilien oder ist auf der Suche danach — und wenn diese Gespräche entstehen, habe ich derzeit keinen vertrauenswürdigen Empfehlungspartner im Immobilienbereich.
 
@@ -144,7 +144,7 @@ Sehr geehrte/r [RECIPIENT_NAME],
 
 ich schreibe Ihnen direkt mit einem Vorschlag, von dem ich glaube, dass er für beide Seiten echten Mehrwert schaffen kann.
 
-Ich bin ein unabhängiger Berater bei Plan B · Diamond Solution und arbeite mit einem wachsenden Portfolio vermögender Kunden in mehreren Jurisdiktionen. Es handelt sich um Privatpersonen und Familien mit erheblichen liquiden Mitteln — Kunden, die typischerweise in Immobilien aktiv sind, als Käufer, Entwickler oder langfristige Investoren.
+Ich bin ein unabhängiger Berater bei Plan B und arbeite mit einem wachsenden Portfolio vermögender Kunden in mehreren Jurisdiktionen. Es handelt sich um Privatpersonen und Familien mit erheblichen liquiden Mitteln — Kunden, die typischerweise in Immobilien aktiv sind, als Käufer, Entwickler oder langfristige Investoren.
 
 Ich bin daran interessiert, eine formelle Empfehlungspartnerschaft mit einer ausgewählten Anzahl vertrauenswürdiger Immobilienprofis aufzubauen. Die Vereinbarung, die ich mir vorstelle, ist unkompliziert: Wenn ich einen Kunden mit einem relevanten Immobilienbedarf habe, stelle ich ihn Ihnen vor. Wenn Sie einen Kunden haben, der nach Vermögenserhalt oder alternativen Lösungen außerhalb traditioneller Märkte sucht, stellen Sie ihn mir vor. Keine Exklusivität. Keine komplizierte Struktur. Einfach eine professionelle Beziehung, die beiden Kunden besser dient.
 
@@ -170,7 +170,7 @@ J'espère que ce message vous trouve en bonne santé.
 
 Je vous écris pour explorer s'il pourrait y avoir une connexion naturelle entre nos travaux respectifs et nos bases de clients.
 
-Je suis un conseiller indépendant affilié à Plan B · Diamond Solution — une plateforme qui travaille avec des particuliers fortunés cherchant à préserver et à développer leur patrimoine via l'investissement en diamants physiques, entièrement en dehors des marchés financiers traditionnels.
+Je suis un conseiller indépendant affilié à Plan B — une plateforme qui travaille avec des particuliers fortunés cherchant à préserver et à développer leur patrimoine via l'investissement en diamants physiques, entièrement en dehors des marchés financiers traditionnels.
 
 Les clients avec lesquels je travaille sont des particuliers et des familles financièrement avertis qui gèrent activement leur patrimoine sur plusieurs classes d'actifs. Un certain nombre d'entre eux possèdent ou cherchent à acquérir des biens immobiliers — et lorsque ces conversations surviennent, je n'ai actuellement aucun partenaire de référence de confiance dans le secteur immobilier.
 
@@ -194,7 +194,7 @@ Cher/Chère [RECIPIENT_NAME],
 
 Je vous écris directement avec une proposition que je crois pouvoir être d'un bénéfice mutuel réel.
 
-Je suis un conseiller indépendant chez Plan B · Diamond Solution, travaillant avec un portefeuille croissant de clients fortunés dans plusieurs juridictions. Ce sont des particuliers et des familles avec des actifs liquides importants — des clients qui sont généralement actifs dans l'immobilier, en tant qu'acheteurs, promoteurs ou investisseurs à long terme.
+Je suis un conseiller indépendant chez Plan B, travaillant avec un portefeuille croissant de clients fortunés dans plusieurs juridictions. Ce sont des particuliers et des familles avec des actifs liquides importants — des clients qui sont généralement actifs dans l'immobilier, en tant qu'acheteurs, promoteurs ou investisseurs à long terme.
 
 Je suis intéressé à établir un partenariat de référence formel avec un nombre sélectionné de professionnels immobiliers de confiance. L'arrangement que j'ai en tête est simple : lorsque j'ai un client avec un besoin immobilier pertinent, je vous le présente. Lorsque vous avez un client cherchant la préservation du patrimoine ou des solutions alternatives en dehors des marchés traditionnels, vous me le présentez. Pas d'exclusivité. Pas de structure compliquée. Simplement une relation professionnelle qui sert mieux nos deux clientèles.
 
@@ -220,7 +220,7 @@ Espero que este mensaje le encuentre bien.
 
 Le escribo para explorar si podría haber una conexión natural entre nuestros respectivos trabajos y bases de clientes.
 
-Soy un asesor independiente afiliado a Plan B · Diamond Solution — una plataforma que trabaja con personas de alto patrimonio que buscan preservar y hacer crecer su riqueza a través de la inversión en diamantes físicos, completamente fuera de los mercados financieros tradicionales.
+Soy un asesor independiente afiliado a Plan B — una plataforma que trabaja con personas de alto patrimonio que buscan preservar y hacer crecer su riqueza a través de la inversión en diamantes físicos, completamente fuera de los mercados financieros tradicionales.
 
 Los clientes con los que trabajo son personas y familias financieramente sofisticadas que gestionan activamente su patrimonio en múltiples clases de activos. Varios de ellos poseen o buscan adquirir propiedades — y cuando surgen esas conversaciones, actualmente no tengo un socio de referencia de confianza en el sector inmobiliario.
 
@@ -244,7 +244,7 @@ Estimado/a [RECIPIENT_NAME],
 
 Le escribo directamente con una propuesta que creo que podría ser de genuino beneficio mutuo.
 
-Soy un asesor independiente en Plan B · Diamond Solution, trabajando con una cartera creciente de clientes de alto patrimonio en múltiples jurisdicciones. Son personas y familias con activos líquidos significativos — clientes que típicamente son activos en bienes raíces, ya sea como compradores, promotores o inversores a largo plazo.
+Soy un asesor independiente en Plan B, trabajando con una cartera creciente de clientes de alto patrimonio en múltiples jurisdicciones. Son personas y familias con activos líquidos significativos — clientes que típicamente son activos en bienes raíces, ya sea como compradores, promotores o inversores a largo plazo.
 
 Estoy interesado en establecer una asociación de referencia formal con un número selecto de profesionales inmobiliarios de confianza. El acuerdo que tengo en mente es sencillo: cuando tengo un cliente con una necesidad inmobiliaria relevante, se lo presento. Cuando tiene un cliente que busca preservación patrimonial o soluciones alternativas fuera de los mercados tradicionales, me lo presenta. Sin exclusividad. Sin estructura complicada. Simplemente una relación profesional que sirva mejor a ambas clientelas.
 
@@ -270,7 +270,7 @@ Spero che questo messaggio la trovi in buona salute.
 
 Le scrivo per esplorare se potrebbe esserci una connessione naturale tra il nostro rispettivo lavoro e le nostre basi di clienti.
 
-Sono un consulente indipendente affiliato a Plan B · Diamond Solution — una piattaforma che lavora con individui ad alto patrimonio netto che cercano di preservare e far crescere la loro ricchezza attraverso investimenti in diamanti fisici, completamente al di fuori dei mercati finanziari tradizionali.
+Sono un consulente indipendente affiliato a Plan B — una piattaforma che lavora con individui ad alto patrimonio netto che cercano di preservare e far crescere la loro ricchezza attraverso investimenti in diamanti fisici, completamente al di fuori dei mercati finanziari tradizionali.
 
 I clienti con cui lavoro sono individui e famiglie finanziariamente sofisticati che gestiscono attivamente il patrimonio su più classi di asset. Un certo numero di loro possiede o cerca di acquisire proprietà immobiliari — e quando emergono queste conversazioni, attualmente non ho un partner di riferimento di fiducia nel settore immobiliare.
 
@@ -294,7 +294,7 @@ Gentile [RECIPIENT_NAME],
 
 Le scrivo direttamente con una proposta che ritengo possa essere di genuino vantaggio reciproco.
 
-Sono un consulente indipendente presso Plan B · Diamond Solution, che lavora con un portafoglio crescente di clienti ad alto patrimonio netto in più giurisdizioni. Sono individui e famiglie con attività liquide significative — clienti che sono tipicamente attivi nel settore immobiliare, come acquirenti, sviluppatori o investitori a lungo termine.
+Sono un consulente indipendente presso Plan B, che lavora con un portafoglio crescente di clienti ad alto patrimonio netto in più giurisdizioni. Sono individui e famiglie con attività liquide significative — clienti che sono tipicamente attivi nel settore immobiliare, come acquirenti, sviluppatori o investitori a lungo termine.
 
 Sono interessato a stabilire una partnership di referral formale con un numero selezionato di professionisti immobiliari di fiducia. L'accordo che ho in mente è semplice: quando ho un cliente con un'esigenza immobiliare rilevante, glielo presento. Quando ha un cliente che cerca la preservazione del patrimonio o soluzioni alternative al di fuori dei mercati tradizionali, me lo presenta. Nessuna esclusività. Nessuna struttura complicata. Semplicemente una relazione professionale che serve meglio entrambe le clientele.
 
@@ -320,7 +320,7 @@ Espero que esta mensagem o/a encontre bem.
 
 Escrevo-lhe para explorar se poderá existir uma conexão natural entre o nosso respetivo trabalho e bases de clientes.
 
-Sou um consultor independente afiliado ao Plan B · Diamond Solution — uma plataforma que trabalha com indivíduos de elevado patrimônio que procuram preservar e fazer crescer a sua riqueza através do investimento em diamantes físicos, completamente fora dos mercados financeiros tradicionais.
+Sou um consultor independente afiliado ao Plan B — uma plataforma que trabalha com indivíduos de elevado patrimônio que procuram preservar e fazer crescer a sua riqueza através do investimento em diamantes físicos, completamente fora dos mercados financeiros tradicionais.
 
 Os clientes com quem trabalho são indivíduos e famílias financeiramente sofisticados que gerem ativamente o patrimônio em múltiplas classes de ativos. Vários deles possuem ou procuram adquirir propriedades — e quando essas conversas surgem, atualmente não tenho um parceiro de referência de confiança no setor imobiliário.
 
@@ -344,7 +344,7 @@ Caro/a [RECIPIENT_NAME],
 
 Escrevo-lhe diretamente com uma proposta que acredito poder ser de genuíno benefício mútuo.
 
-Sou um consultor independente no Plan B · Diamond Solution, a trabalhar com uma carteira crescente de clientes de elevado patrimônio em múltiplas jurisdições. São indivíduos e famílias com ativos líquidos significativos — clientes que tipicamente são ativos no setor imobiliário, como compradores, promotores ou investidores de longo prazo.
+Sou um consultor independente no Plan B, a trabalhar com uma carteira crescente de clientes de elevado patrimônio em múltiplas jurisdições. São indivíduos e famílias com ativos líquidos significativos — clientes que tipicamente são ativos no setor imobiliário, como compradores, promotores ou investidores de longo prazo.
 
 Estou interessado em estabelecer uma parceria de referência formal com um número selecionado de profissionais imobiliários de confiança. O acordo que tenho em mente é simples: quando tenho um cliente com uma necessidade imobiliária relevante, apresento-o/a. Quando tem um cliente que procura preservação patrimonial ou soluções alternativas fora dos mercados tradicionais, apresenta-mo/a. Sem exclusividade. Sem estrutura complicada. Simplesmente uma relação profissional que serve melhor ambas as clientelas.
 
@@ -370,7 +370,7 @@ Com os melhores cumprimentos,
 
 Пишу Вам, чтобы изучить, может ли существовать естественная связь между нашей соответствующей работой и клиентской базой.
 
-Я независимый советник, аффилированный с Plan B · Diamond Solution — платформой, которая работает с состоятельными людьми, стремящимися сохранить и приумножить капитал через инвестиции в физические бриллианты, полностью за пределами традиционных финансовых рынков.
+Я независимый советник, аффилированный с Plan B — платформой, которая работает с состоятельными людьми, стремящимися сохранить и приумножить капитал через инвестиции в физические бриллианты, полностью за пределами традиционных финансовых рынков.
 
 Клиенты, с которыми я работаю, — это финансово грамотные физические лица и семьи, активно управляющие капиталом в нескольких классах активов. Часть из них владеет недвижимостью или намерена её приобрести — и когда возникают такие разговоры, у меня в настоящее время нет надёжного партнёра по рекомендациям в сфере недвижимости.
 
@@ -394,7 +394,7 @@ Com os melhores cumprimentos,
 
 Пишу Вам напрямую с предложением, которое, по моему убеждению, может принести реальную взаимную выгоду.
 
-Я независимый советник в Plan B · Diamond Solution, работающий с растущим портфелем состоятельных клиентов в нескольких юрисдикциях. Это физические лица и семьи со значительными ликвидными активами — клиенты, как правило, активно действующие на рынке недвижимости в качестве покупателей, застройщиков или долгосрочных инвесторов.
+Я независимый советник в Plan B, работающий с растущим портфелем состоятельных клиентов в нескольких юрисдикциях. Это физические лица и семьи со значительными ликвидными активами — клиенты, как правило, активно действующие на рынке недвижимости в качестве покупателей, застройщиков или долгосрочных инвесторов.
 
 Я заинтересован в установлении формального партнёрства по обмену рекомендациями с избранным числом надёжных профессионалов в сфере недвижимости. Схема, которую я предлагаю, проста: когда у меня есть клиент с актуальной потребностью в недвижимости, я направляю его к Вам. Когда у Вас есть клиент, заинтересованный в сохранении капитала или альтернативных решениях за пределами традиционных рынков, Вы направляете его ко мне. Никакой эксклюзивности. Никаких сложных структур. Просто профессиональные отношения, которые лучше служат обеим клиентским базам.
 
@@ -420,7 +420,7 @@ Com os melhores cumprimentos,
 
 我写信是为了探讨我们各自的工作和客户群之间是否存在自然的联系。
 
-我是Plan B · Diamond Solution的独立顾问——该平台与寻求通过实物钻石投资在传统金融市场之外保值和增值财富的高净值人士合作。
+我是Plan B的独立顾问——该平台与寻求通过实物钻石投资在传统金融市场之外保值和增值财富的高净值人士合作。
 
 与我合作的客户是在多个资产类别中积极管理财富的成熟投资者和家庭。其中一些人拥有房产或正在寻求购置房产——每当这类对话出现时，我目前在房地产领域还没有值得信赖的推介合作伙伴。
 
@@ -444,7 +444,7 @@ Com os melhores cumprimentos,
 
 我直接写信给您，提出一个我认为可能对双方都有真正益处的合作方案。
 
-我是Plan B · Diamond Solution的独立顾问，与多个司法管辖区不断增长的高净值客户群合作。这些是拥有大量流动资产的个人和家庭——通常作为买家、开发商或长期投资者活跃于房地产市场。
+我是Plan B的独立顾问，与多个司法管辖区不断增长的高净值客户群合作。这些是拥有大量流动资产的个人和家庭——通常作为买家、开发商或长期投资者活跃于房地产市场。
 
 我有意与少数值得信赖的房地产专业人士建立正式的推介合作关系。我设想的安排很简单：当我有客户有相关房地产需求时，我将其介绍给您；当您有客户寻求传统市场以外的财富保值或替代方案时，您将其介绍给我。没有排他性，没有复杂结构，只是一种更好地服务双方客户的专业关系。
 
@@ -470,7 +470,7 @@ Umaasa akong mabuti ang iyong kalagayan.
 
 Sumusulat ako upang tuklasin kung maaaring mayroong natural na koneksyon sa pagitan ng aming kani-kanilang trabaho at mga base ng kliyente.
 
-Ako ay isang independyenteng adviser na kaakibat ng Plan B · Diamond Solution — isang platform na nagtatrabaho sa mga high-net-worth na indibidwal na naghahanap na mapreserba at palakihin ang kanilang kayamanan sa pamamagitan ng pisikal na pamumuhunan sa brilyante, ganap na labas sa mga tradisyonal na pamilihang pinansyal.
+Ako ay isang independyenteng adviser na kaakibat ng Plan B — isang platform na nagtatrabaho sa mga high-net-worth na indibidwal na naghahanap na mapreserba at palakihin ang kanilang kayamanan sa pamamagitan ng pisikal na pamumuhunan sa brilyante, ganap na labas sa mga tradisyonal na pamilihang pinansyal.
 
 Ang mga kliyenteng aking pinagtratrabahuhan ay mga pinansyal na bihasa na indibidwal at pamilya na aktibong namamahala ng kayamanan sa maraming klase ng asset. Ang ilan sa kanila ay nagmamay-ari o naghahanap na makakuha ng ari-arian — at kapag lumitaw ang mga ganitong usapan, wala akong mapagkakatiwalaang referral partner sa larangan ng real estate.
 
@@ -494,7 +494,7 @@ Mahal na [RECIPIENT_NAME],
 
 Direkta akong sumusulat sa iyo na may mungkahi na naniniwala akong maaaring maging tunay na kapwa-kapaki-pakinabang.
 
-Ako ay isang independyenteng adviser sa Plan B · Diamond Solution, nagtatrabaho sa lumalaking portfolio ng mga high-net-worth na kliyente sa maraming hurisdiksyon. Sila ay mga indibidwal at pamilya na may malaking likidong assets — mga kliyenteng karaniwang aktibo sa real estate, bilang mga mamimili, developer, o pangmatagalang investor.
+Ako ay isang independyenteng adviser sa Plan B, nagtatrabaho sa lumalaking portfolio ng mga high-net-worth na kliyente sa maraming hurisdiksyon. Sila ay mga indibidwal at pamilya na may malaking likidong assets — mga kliyenteng karaniwang aktibo sa real estate, bilang mga mamimili, developer, o pangmatagalang investor.
 
 Interesado akong magtatag ng pormal na referral partnership sa isang piling bilang ng mga pinagkakatiwalaang propesyonal sa real estate. Ang kasunduan na iniisip ko ay simple: kapag mayroon akong kliyenteng may kaugnayan na pangangailangan sa real estate, ipapakilala ko siya sa iyo. Kapag mayroon kang kliyenteng naghahanap ng wealth preservation o alternatibong solusyon labas sa mga tradisyonal na merkado, ipapakilala mo siya sa akin. Walang exclusivity. Walang kumplikadong istraktura. Simpleng propesyonal na relasyon na mas mahusay na naglilingkod sa ating mga kliyente.
 
@@ -520,7 +520,7 @@ Taos-pusong paggalang,
 
 أكتب إليك لاستكشاف ما إذا كان يمكن أن يكون هناك ارتباط طبيعي بين عملنا ومجموعات عملائنا.
 
-أنا مستشار مستقل منتسب إلى Plan B · Diamond Solution — منصة تعمل مع أصحاب الثروات الكبيرة الساعين إلى الحفاظ على ثرواتهم وتنميتها من خلال الاستثمار في الألماس المادي، خارج الأسواق المالية التقليدية تماماً.
+أنا مستشار مستقل منتسب إلى Plan B — منصة تعمل مع أصحاب الثروات الكبيرة الساعين إلى الحفاظ على ثرواتهم وتنميتها من خلال الاستثمار في الألماس المادي، خارج الأسواق المالية التقليدية تماماً.
 
 العملاء الذين أعمل معهم هم أفراد وعائلات متمرسون مالياً يديرون الثروات بنشاط عبر فئات أصول متعددة. عدد منهم يمتلك عقارات أو يسعى إلى اقتنائها — وعندما تنشأ تلك المحادثات، لا يوجد لديّ حالياً شريك إحالة موثوق في قطاع العقارات.
 
@@ -544,7 +544,7 @@ Taos-pusong paggalang,
 
 أكتب إليك مباشرة بمقترح أعتقد أنه يمكن أن يكون ذا فائدة متبادلة حقيقية.
 
-أنا مستشار مستقل في Plan B · Diamond Solution، أعمل مع محفظة متنامية من العملاء ذوي الثروات الكبيرة في ولايات قضائية متعددة. هم أفراد وعائلات يمتلكون أصولاً سائلة ضخمة — عملاء نشطون في العقارات عادةً كمشترين أو مطورين أو مستثمرين على المدى البعيد.
+أنا مستشار مستقل في Plan B، أعمل مع محفظة متنامية من العملاء ذوي الثروات الكبيرة في ولايات قضائية متعددة. هم أفراد وعائلات يمتلكون أصولاً سائلة ضخمة — عملاء نشطون في العقارات عادةً كمشترين أو مطورين أو مستثمرين على المدى البعيد.
 
 أنا مهتم بإنشاء شراكة إحالة رسمية مع عدد محدد من المحترفين الموثوقين في قطاع العقارات. الترتيب الذي أتصوره بسيط: عندما يكون لديّ عميل بحاجة عقارية ذات صلة، أُعرّفه بك. وعندما يكون لديك عميل يبحث عن حفظ الثروة أو حلول بديلة خارج الأسواق التقليدية، تُعرّفه بي. لا حصرية. لا هيكل معقد. مجرد علاقة مهنية تخدم عملاء كلينا بشكل أفضل.
 
@@ -570,7 +570,7 @@ Taos-pusong paggalang,
 
 ฉันเขียนมาเพื่อสำรวจว่าอาจมีการเชื่อมโยงตามธรรมชาติระหว่างงานและฐานลูกค้าของเราหรือไม่
 
-ฉันเป็นที่ปรึกษาอิสระที่เกี่ยวข้องกับ Plan B · Diamond Solution — แพลตฟอร์มที่ทำงานกับบุคคลมั่งคั่งที่ต้องการรักษาและเพิ่มพูนความมั่งคั่งผ่านการลงทุนในเพชรจริง ซึ่งอยู่นอกตลาดการเงินแบบดั้งเดิมโดยสิ้นเชิง
+ฉันเป็นที่ปรึกษาอิสระที่เกี่ยวข้องกับ Plan B — แพลตฟอร์มที่ทำงานกับบุคคลมั่งคั่งที่ต้องการรักษาและเพิ่มพูนความมั่งคั่งผ่านการลงทุนในเพชรจริง ซึ่งอยู่นอกตลาดการเงินแบบดั้งเดิมโดยสิ้นเชิง
 
 ลูกค้าที่ฉันทำงานด้วยคือบุคคลและครอบครัวที่มีความเชี่ยวชาญด้านการเงินซึ่งจัดการความมั่งคั่งอย่างแข็งขันในหลายประเภทสินทรัพย์ หลายคนในนั้นมีหรือกำลังมองหาอสังหาริมทรัพย์ — และเมื่อการสนทนาเหล่านั้นเกิดขึ้น ฉันยังไม่มีพาร์ทเนอร์แนะนำที่เชื่อถือได้ในด้านอสังหาริมทรัพย์
 
@@ -594,7 +594,7 @@ Taos-pusong paggalang,
 
 ฉันเขียนถึงคุณโดยตรงพร้อมข้อเสนอที่ฉันเชื่อว่าจะเป็นประโยชน์ร่วมกันอย่างแท้จริง
 
-ฉันเป็นที่ปรึกษาอิสระที่ Plan B · Diamond Solution ทำงานกับลูกค้ามั่งคั่งที่เติบโตในหลายเขตอำนาจศาล พวกเขาคือบุคคลและครอบครัวที่มีสินทรัพย์สภาพคล่องสูง — ลูกค้าที่มักแข็งขันในอสังหาริมทรัพย์ไม่ว่าจะเป็นผู้ซื้อ นักพัฒนา หรือนักลงทุนระยะยาว
+ฉันเป็นที่ปรึกษาอิสระที่ Plan B ทำงานกับลูกค้ามั่งคั่งที่เติบโตในหลายเขตอำนาจศาล พวกเขาคือบุคคลและครอบครัวที่มีสินทรัพย์สภาพคล่องสูง — ลูกค้าที่มักแข็งขันในอสังหาริมทรัพย์ไม่ว่าจะเป็นผู้ซื้อ นักพัฒนา หรือนักลงทุนระยะยาว
 
 ฉันสนใจที่จะสร้างพาร์ทเนอร์ชิปการแนะนำที่เป็นทางการกับนักวิชาชีพด้านอสังหาริมทรัพย์ที่เชื่อถือได้จำนวนหนึ่ง ข้อตกลงที่ฉันคิดไว้นั้นตรงไปตรงมา: เมื่อฉันมีลูกค้าที่มีความต้องการด้านอสังหาริมทรัพย์ที่เกี่ยวข้อง ฉันจะแนะนำพวกเขาให้คุณ เมื่อคุณมีลูกค้าที่ต้องการการรักษาความมั่งคั่งหรือโซลูชันทางเลือกนอกตลาดแบบดั้งเดิม คุณแนะนำพวกเขาให้ฉัน ไม่มีสิทธิ์พิเศษ ไม่มีโครงสร้างซับซ้อน เพียงแค่ความสัมพันธ์ระดับมืออาชีพที่ให้บริการลูกค้าของเราทั้งคู่ได้ดียิ่งขึ้น
 
@@ -620,7 +620,7 @@ Taos-pusong paggalang,
 
 मैं यह पता लगाने के लिए लिख रहा हूँ कि क्या हमारे संबंधित काम और ग्राहक आधार के बीच कोई स्वाभाविक संबंध हो सकता है।
 
-मैं Plan B · Diamond Solution से संबद्ध एक स्वतंत्र सलाहकार हूँ — एक ऐसा प्लेटफ़ॉर्म जो उन उच्च-नेट-वर्थ व्यक्तियों के साथ काम करता है जो भौतिक हीरे के निवेश के माध्यम से पारंपरिक वित्तीय बाजारों के पूरी तरह बाहर अपनी संपत्ति को संरक्षित और बढ़ाना चाहते हैं।
+मैं Plan B से संबद्ध एक स्वतंत्र सलाहकार हूँ — एक ऐसा प्लेटफ़ॉर्म जो उन उच्च-नेट-वर्थ व्यक्तियों के साथ काम करता है जो भौतिक हीरे के निवेश के माध्यम से पारंपरिक वित्तीय बाजारों के पूरी तरह बाहर अपनी संपत्ति को संरक्षित और बढ़ाना चाहते हैं।
 
 मेरे ग्राहक वित्तीय रूप से परिष्कृत व्यक्ति और परिवार हैं जो कई परिसंपत्ति वर्गों में सक्रिय रूप से संपत्ति का प्रबंधन करते हैं। उनमें से कुछ संपत्ति रखते हैं या अधिग्रहण करना चाहते हैं — और जब ऐसी बातचीत होती है, तो मेरे पास वर्तमान में रियल एस्टेट क्षेत्र में कोई विश्वसनीय रेफरल पार्टनर नहीं है।
 
@@ -644,7 +644,7 @@ Taos-pusong paggalang,
 
 मैं आपको सीधे एक प्रस्ताव के साथ लिख रहा हूँ जिसे मुझे विश्वास है कि वास्तविक पारस्परिक लाभ का हो सकता है।
 
-मैं Plan B · Diamond Solution में एक स्वतंत्र सलाहकार हूँ, जो कई न्यायक्षेत्रों में उच्च-नेट-वर्थ ग्राहकों के बढ़ते पोर्टफोलियो के साथ काम कर रहा हूँ। ये महत्वपूर्ण तरल संपत्ति वाले व्यक्ति और परिवार हैं — ग्राहक जो आमतौर पर रियल एस्टेट में सक्रिय हैं, चाहे खरीदार, डेवलपर, या दीर्घकालिक निवेशक के रूप में।
+मैं Plan B में एक स्वतंत्र सलाहकार हूँ, जो कई न्यायक्षेत्रों में उच्च-नेट-वर्थ ग्राहकों के बढ़ते पोर्टफोलियो के साथ काम कर रहा हूँ। ये महत्वपूर्ण तरल संपत्ति वाले व्यक्ति और परिवार हैं — ग्राहक जो आमतौर पर रियल एस्टेट में सक्रिय हैं, चाहे खरीदार, डेवलपर, या दीर्घकालिक निवेशक के रूप में।
 
 मैं विश्वसनीय रियल एस्टेट पेशेवरों की एक चुनिंदा संख्या के साथ एक औपचारिक रेफरल पार्टनरशिप स्थापित करने में रुचि रखता हूँ। मेरे मन में जो व्यवस्था है वह सरल है: जब मेरे पास किसी प्रासंगिक रियल एस्टेट आवश्यकता वाला ग्राहक हो, तो मैं उन्हें आपसे परिचित कराता हूँ। जब आपके पास पारंपरिक बाजारों के बाहर धन संरक्षण या वैकल्पिक समाधान की तलाश करने वाला ग्राहक हो, तो आप उन्हें मुझसे परिचित कराते हैं। कोई विशेषाधिकार नहीं। कोई जटिल संरचना नहीं। बस एक पेशेवर संबंध जो हमारे दोनों ग्राहकों की बेहतर सेवा करता है।
 
@@ -670,7 +670,7 @@ Tôi hy vọng thư này đến tay bạn trong lúc bạn đang khỏe mạnh.
 
 Tôi viết để khám phá liệu có thể có sự kết nối tự nhiên giữa công việc và cơ sở khách hàng của chúng ta hay không.
 
-Tôi là một cố vấn độc lập liên kết với Plan B · Diamond Solution — một nền tảng làm việc với các cá nhân có tài sản ròng cao đang tìm kiếm để bảo toàn và phát triển tài sản thông qua đầu tư kim cương vật lý, hoàn toàn ngoài thị trường tài chính truyền thống.
+Tôi là một cố vấn độc lập liên kết với Plan B — một nền tảng làm việc với các cá nhân có tài sản ròng cao đang tìm kiếm để bảo toàn và phát triển tài sản thông qua đầu tư kim cương vật lý, hoàn toàn ngoài thị trường tài chính truyền thống.
 
 Các khách hàng tôi làm việc cùng là những cá nhân và gia đình am hiểu tài chính, đang tích cực quản lý tài sản qua nhiều loại tài sản. Một số trong họ sở hữu hoặc đang tìm mua bất động sản — và khi những cuộc trò chuyện đó phát sinh, hiện tại tôi chưa có đối tác giới thiệu đáng tin cậy trong lĩnh vực bất động sản.
 
@@ -694,7 +694,7 @@ Kính gửi [RECIPIENT_NAME],
 
 Tôi viết thư trực tiếp cho bạn với một đề xuất mà tôi tin rằng có thể mang lại lợi ích thực sự cho cả hai bên.
 
-Tôi là cố vấn độc lập tại Plan B · Diamond Solution, làm việc với danh mục khách hàng có tài sản ròng cao ngày càng tăng ở nhiều khu vực pháp lý. Đây là những cá nhân và gia đình có tài sản lỏng đáng kể — những khách hàng thường hoạt động tích cực trong bất động sản, dù là người mua, nhà phát triển hay nhà đầu tư dài hạn.
+Tôi là cố vấn độc lập tại Plan B, làm việc với danh mục khách hàng có tài sản ròng cao ngày càng tăng ở nhiều khu vực pháp lý. Đây là những cá nhân và gia đình có tài sản lỏng đáng kể — những khách hàng thường hoạt động tích cực trong bất động sản, dù là người mua, nhà phát triển hay nhà đầu tư dài hạn.
 
 Tôi quan tâm đến việc thiết lập quan hệ đối tác giới thiệu chính thức với một số chuyên gia bất động sản đáng tin cậy được lựa chọn. Thỏa thuận tôi nghĩ đến rất đơn giản: khi tôi có khách hàng có nhu cầu bất động sản liên quan, tôi giới thiệu họ với bạn. Khi bạn có khách hàng tìm kiếm bảo toàn tài sản hoặc các giải pháp thay thế ngoài thị trường truyền thống, bạn giới thiệu họ với tôi. Không độc quyền. Không cấu trúc phức tạp. Chỉ đơn giản là mối quan hệ chuyên nghiệp phục vụ khách hàng của cả hai chúng ta tốt hơn.
 

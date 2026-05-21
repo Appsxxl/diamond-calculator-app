@@ -601,6 +601,14 @@ export default function FaqScreen() {
           <Text style={S.pageSubtitle}>{t(language, "faqSubtitle")}</Text>
         </View>
 
+        {/* Source notice */}
+        <View style={S.sourceNotice}>
+          <Text style={S.sourceIcon}>📄</Text>
+          <Text style={S.sourceText}>
+            Information on this page is sourced from official Diamond Solution documentation and approved company materials.
+          </Text>
+        </View>
+
         {/* Accordion Items */}
         {items.map((item, idx) => (
           <TouchableOpacity
@@ -650,6 +658,20 @@ const S = StyleSheet.create({
     borderBottomColor: "#1e293b",
     marginBottom: 12,
   },
+  sourceNotice: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+    marginHorizontal: 16,
+    marginBottom: 14,
+    padding: 12,
+    backgroundColor: "rgba(56,189,248,0.06)",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(56,189,248,0.18)",
+  },
+  sourceIcon: { fontSize: 14, marginTop: 1 },
+  sourceText: { flex: 1, fontSize: 12, color: "#7dd3fc", lineHeight: 18 },
   backBtn: {
     marginBottom: 12,
   },
