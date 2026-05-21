@@ -254,7 +254,20 @@ function getPlanTier(amount: number, vipActive: boolean): PlanTier {
   return                       { name: 'SP1', rate: '2.2%' + v,  color: '#64748b', nextTier: { name: 'SP2', threshold: 1000,  rate: 2.45 } };
 }
 
-const CLIENTS_KEY = "plan_b_saved_clients";
+const CLIENTS_KEY   = "plan_b_saved_clients";
+const HISTORY_KEY   = "plan_b_calc_history";
+const HISTORY_LIMIT = 10;
+
+interface HistoryEntry {
+  id: string;
+  savedAt: number;
+  clientName: string;
+  startAmount: string;
+  years: string;
+  vipEnabled: boolean;
+  sp: string;
+  peakRebate: number;
+}
 
 interface SavedClient {
   id: string;
@@ -310,6 +323,8 @@ export default function ScenarioToolScreen() {
   const [savedClients, setSavedClients] = useState<SavedClient[]>([]);
   const [showClientsModal, setShowClientsModal] = useState(false);
   const [clientSearch, setClientSearch] = useState("");
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [autosaved, setAutosaved] = useState(false);
 
@@ -353,6 +368,9 @@ export default function ScenarioToolScreen() {
     }
     AsyncStorage.getItem(CLIENTS_KEY).then(raw => {
       if (raw) { try { setSavedClients(JSON.parse(raw)); } catch {} }
+    });
+    AsyncStorage.getItem(HISTORY_KEY).then(raw => {
+      if (raw) { try { setHistory(JSON.parse(raw)); } catch {} }
     });
     AsyncStorage.getItem('plan_b_scenario_backup').then(raw => {
       if (raw) {
@@ -701,6 +719,22 @@ export default function ScenarioToolScreen() {
     const res = runCalculation(params);
     setResult(res);
     setCalculating(false);
+
+    // Save to history
+    const sp = getSPLevel(params.startAmount);
+    const entry: HistoryEntry = {
+      id: Date.now().toString(),
+      savedAt: Date.now(),
+      clientName,
+      startAmount,
+      years,
+      vipEnabled,
+      sp: sp.name,
+      peakRebate: res.maxMonthlyOut,
+    };
+    const updated = [entry, ...history].slice(0, HISTORY_LIMIT);
+    setHistory(updated);
+    AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated)).catch(() => {});
   };
 
   const vipShadow = useMemo(() => {
@@ -1076,6 +1110,45 @@ export default function ScenarioToolScreen() {
           </Text>
         </View>
 
+        {/* Recent Calculations History */}
+        {history.length > 0 && (
+          <View style={S.historyBlock}>
+            <TouchableOpacity style={S.historyHeader} onPress={() => setShowHistory(h => !h)} activeOpacity={0.8}>
+              <Text style={S.historyHeaderText}>🕐 RECENT CALCULATIONS ({history.length})</Text>
+              <Text style={S.historyChevron}>{showHistory ? '▲' : '▼'}</Text>
+            </TouchableOpacity>
+            {showHistory && history.map(entry => {
+              const date = new Date(entry.savedAt);
+              const label = `${date.getDate()}/${date.getMonth()+1} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+              return (
+                <TouchableOpacity
+                  key={entry.id}
+                  style={S.historyEntry}
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    setStartAmount(entry.startAmount);
+                    setYears(entry.years);
+                    setVipEnabled(entry.vipEnabled);
+                    if (entry.clientName) setClientName(entry.clientName);
+                    setShowHistory(false);
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={S.historyEntryTitle}>
+                      {entry.clientName || `$${Number(entry.startAmount).toLocaleString()}`}
+                      {entry.vipEnabled ? ' · VIP' : ''}
+                    </Text>
+                    <Text style={S.historyEntryMeta}>
+                      {entry.sp} · {entry.years}y · Peak ${entry.peakRebate.toLocaleString()}/mo
+                    </Text>
+                  </View>
+                  <Text style={S.historyEntryDate}>{label}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+
         {/* Calculate + Reset */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 0 }}>
           <TouchableOpacity style={[S.calcBtn, { flex: 1, marginBottom: 0 }, calculating && { opacity: 0.7 }]} onPress={handleCalculate} disabled={calculating}>
@@ -1103,10 +1176,10 @@ export default function ScenarioToolScreen() {
                 setPdfLoading(true);
                 try {
                   const officeData: Record<string, { name: string; address: string; reg: string }> = {
-                    dubai: { name: 'Diamond Solution — Dubai Freezone', address: 'DMCC Business Centre, Jumeirah Lakes Towers, Dubai, UAE', reg: 'DMCC License No. 1007195 · SIRA Certified' },
-                    vienna: { name: 'Diamond Solution — Vienna, Austria', address: 'Vienna, Austria', reg: 'EU Operations Office' },
-                    manila: { name: 'Diamond Solution — Manila, Philippines', address: 'Manila, Philippines', reg: 'SEC Registration No. 2026030241228-02' },
-                    florida: { name: 'Diamond Solution — Florida, USA', address: 'Florida, United States', reg: 'US Operations Office' },
+                    dubai: { name: 'STIG International Gemstone', address: 'HDS Business Center, Cluster M, 26th Floor, Office 2602, Dubai, UAE', reg: 'DMCC License No. 1007195 · SIRA Certified' },
+                    vienna: { name: 'STIG International — Europe', address: 'Vienna, Austria', reg: 'EU Regional Office' },
+                    manila: { name: 'STIG International — Philippines', address: 'Manila, Philippines', reg: 'SEC Registration No. 2026030241228-02' },
+                    florida: { name: 'STIG International — Americas', address: 'Florida, United States', reg: 'Americas Regional Office' },
                   };
                   const office = officeData[officeLocation] ?? officeData.dubai;
                   const P = getPdfLabels(language);
@@ -1455,6 +1528,24 @@ export default function ScenarioToolScreen() {
                 <Text style={[S.calcText, { color: shared ? '#fff' : '#94a3b8', fontSize: 13 }]}>{shared ? '✅ ' + t(language, 'done') : '📤 ' + t(language, 'shareLink')}</Text>
               </TouchableOpacity>
             </View>
+
+            {/* WhatsApp Share */}
+            <TouchableOpacity
+              style={S.whatsappBtn}
+              activeOpacity={0.85}
+              onPress={() => {
+                const deposit = numVal(startAmount);
+                const net = getNetDeposit(deposit);
+                const sp = getSPLevel(net);
+                const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
+                const encoded = encodeURIComponent(text);
+                const url = `https://wa.me/?text=${encoded}`;
+                if (Platform.OS === 'web') { window.open(url, '_blank'); }
+                else { Linking.openURL(url).catch(() => {}); }
+              }}
+            >
+              <Text style={S.whatsappBtnText}>💬 Send via WhatsApp</Text>
+            </TouchableOpacity>
 
             {/* Summary Cards */}
             <View style={[S.card, { borderWidth: 1, borderColor: 'rgba(51,197,255,0.22)' }]}>
@@ -2360,6 +2451,18 @@ const S = StyleSheet.create({
   btnTextDark: { color: "#0f172a", fontWeight: "bold", fontSize: 14 },
   calcBtn: { backgroundColor: "#f59e0b", borderRadius: 12, padding: 14, alignItems: "center", marginBottom: 8 },
   calcText: { color: "#0f172a", fontWeight: "bold", fontSize: 17, letterSpacing: 1 },
+
+  whatsappBtn: { backgroundColor: "#25d366", borderRadius: 12, paddingVertical: 13, alignItems: "center", marginBottom: 8 },
+  whatsappBtnText: { color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 },
+
+  historyBlock: { backgroundColor: "#0f172a", borderRadius: 12, borderWidth: 1, borderColor: "#1e293b", marginBottom: 10, overflow: "hidden" },
+  historyHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, paddingVertical: 11 },
+  historyHeaderText: { color: "#64748b", fontSize: 11, fontWeight: "800", letterSpacing: 1 },
+  historyChevron: { color: "#64748b", fontSize: 12 },
+  historyEntry: { flexDirection: "row", alignItems: "center", paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#1e293b" },
+  historyEntryTitle: { color: "#e2e8f0", fontSize: 13, fontWeight: "700" },
+  historyEntryMeta: { color: "#64748b", fontSize: 11, marginTop: 2 },
+  historyEntryDate: { color: "#475569", fontSize: 11, marginLeft: 8 },
   summaryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   summaryItem: { backgroundColor: "#0f172a", borderRadius: 8, padding: 8, width: "48%" },
   summaryLabel: { color: "#94a3b8", fontSize: 13, marginBottom: 2 },
