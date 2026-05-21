@@ -1755,18 +1755,34 @@ export default function ScenarioToolScreen() {
                   const net = getNetDeposit(deposit);
                   const sp = getSPLevel(net);
                   const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
-                  const available = await Sharing.isAvailableAsync();
-                  if (!available) {
-                    await Clipboard.setStringAsync(text);
-                    setShared(true);
-                    setTimeout(() => setShared(false), 2500);
-                    return;
+                  try {
+                    if (Platform.OS === 'web') {
+                      const nav = typeof navigator !== 'undefined' ? (navigator as any) : null;
+                      if (nav?.share) {
+                        await nav.share({ title: '💎 Plan B Strategy Result', text });
+                      } else {
+                        await Clipboard.setStringAsync(text);
+                        Alert.alert('Copied', 'Result copied to clipboard.');
+                      }
+                    } else {
+                      const available = await Sharing.isAvailableAsync();
+                      if (!available) {
+                        await Clipboard.setStringAsync(text);
+                      } else {
+                        try {
+                          const file = new FileSystem.File(FileSystem.Paths.cache, 'planb-result.txt');
+                          file.create({ overwrite: true });
+                          file.write(text);
+                          await Sharing.shareAsync(file.uri, { mimeType: 'text/plain', dialogTitle: 'Share Strategy Result', UTI: 'public.plain-text' });
+                        } catch {
+                          await Clipboard.setStringAsync(text);
+                          Alert.alert('Copied', 'Result copied to clipboard.');
+                        }
+                      }
+                    }
+                  } catch {
+                    await Clipboard.setStringAsync(text).catch(() => {});
                   }
-                  // Write to a temp file so the share sheet has a proper text attachment
-                  const file = new FileSystem.File(FileSystem.Paths.cache, 'planb-result.txt');
-                  file.create({ overwrite: true });
-                  file.write(text);
-                  await Sharing.shareAsync(file.uri, { mimeType: 'text/plain', dialogTitle: 'Share Strategy Result', UTI: 'public.plain-text' });
                   setShared(true);
                   setTimeout(() => setShared(false), 2500);
                 }}
