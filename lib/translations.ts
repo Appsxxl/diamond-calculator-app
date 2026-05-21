@@ -529,6 +529,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Customer Discounts",
     transparencyNoteTitle: "TRANSPARENCY NOTE",
     transparencyNoteBody: "Monthly discounts are funded exclusively by our professional B2B trade margins on certified diamonds. We manage the full supply chain to capture profit layers usually lost to middlemen.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "REVERSE CALCULATOR",
+    reverseCalcSub: "What is the minimum investment to reach your goal?",
+    reverseCalcBtn: "FIND MINIMUM INVESTMENT",
+    reverseCalcSearching: "Searching...",
+    reverseCalcApply: "Apply ↑",
+    reverseCalcNotAchievable: "Not Achievable",
+    reverseCalcNotAchievableBody: "This goal cannot be reached within the selected years even at the maximum investment. Try increasing the years or lowering the goal.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECT",
+    statusMeeting: "MEETING",
+    statusProposal: "PROPOSAL",
+    statusSigned: "SIGNED",
+    statusActive: "ACTIVE",
+
+    // Client modal actions
+    exportClients: "Export",
+    noClientsMatch: "No clients match",
+    clientNotesPlaceholder: "Client notes (optional)",
+
+    // Comparison mode
+    compareBtn: "Compare with Another Scenario",
+    compareModalTitle: "Select scenario to compare",
+    compareNoHistory: "No other calculations in history",
+    thisScenario: "THIS SCENARIO",
+    peakRebate: "Peak Rebate",
+    clearComparison: "Clear comparison",
+
+    // Scenario results labels
+    createLetterBtn: "Create Letter for This Client",
+    sendWhatsApp: "Send via WhatsApp",
+    monthlyRebateCurve: "MONTHLY REBATE CURVE",
+    monthlyRebateLegend: "Monthly Rebate",
+    pdfReport: "PDF REPORT",
+    scenarioComparison: "SCENARIO COMPARISON",
+    letterOutreach: "LETTER OUTREACH",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "COMMISSION ESTIMATOR",
+    commissionEstimatorSub: "Estimate your monthly earnings based on team volume.",
+    commPersonalLabel: "Personal Client Volume ($/month)",
+    commTeamLabel: "Total Team Volume ($/month)",
+    calcEarningsBtn: "CALCULATE EARNINGS",
+    infinityBonus: "infinity bonus on",
   },
 
 
@@ -1040,6 +1086,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Klantenkortingen",
     transparencyNoteTitle: "TRANSPARANTIEVERKLARING",
     transparencyNoteBody: "Maandelijkse kortingen worden uitsluitend gefinancierd door onze professionele B2B-handelsmarges op gecertificeerde diamanten. Wij beheren de volledige toeleveringsketen om winstlagen te benutten die normaal verloren gaan aan tussenpersonen.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "OMGEKEERDE CALCULATOR",
+    reverseCalcSub: "Wat is de minimale investering om uw doel te bereiken?",
+    reverseCalcBtn: "VIND MINIMALE INVESTERING",
+    reverseCalcSearching: "Zoeken...",
+    reverseCalcApply: "Toepassen ↑",
+    reverseCalcNotAchievable: "Niet haalbaar",
+    reverseCalcNotAchievableBody: "Dit doel kan niet worden bereikt binnen de geselecteerde jaren, zelfs niet bij de maximale investering. Probeer de jaren te verhogen of het doel te verlagen.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECT",
+    statusMeeting: "AFSPRAAK",
+    statusProposal: "VOORSTEL",
+    statusSigned: "GETEKEND",
+    statusActive: "ACTIEF",
+
+    // Client modal actions
+    exportClients: "Exporteren",
+    noClientsMatch: "Geen klanten gevonden",
+    clientNotesPlaceholder: "Klantnotities (optioneel)",
+
+    // Comparison mode
+    compareBtn: "Vergelijk met een ander scenario",
+    compareModalTitle: "Selecteer scenario om te vergelijken",
+    compareNoHistory: "Geen andere berekeningen in geschiedenis",
+    thisScenario: "DIT SCENARIO",
+    peakRebate: "Piekkorting",
+    clearComparison: "Vergelijking wissen",
+
+    // Scenario results labels
+    createLetterBtn: "Brief maken voor deze klant",
+    sendWhatsApp: "Verstuur via WhatsApp",
+    monthlyRebateCurve: "MAANDELIJKSE KORTINGSCURVE",
+    monthlyRebateLegend: "Maandelijkse Korting",
+    pdfReport: "PDF RAPPORT",
+    scenarioComparison: "SCENARIOVERGELIJKING",
+    letterOutreach: "BRIEFCOMMUNICATIE",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "COMMISSIECALCULATOR",
+    commissionEstimatorSub: "Schat uw maandelijkse verdiensten op basis van teamvolume.",
+    commPersonalLabel: "Persoonlijk klantvolume ($/maand)",
+    commTeamLabel: "Totaal teamvolume ($/maand)",
+    calcEarningsBtn: "BEREKENEN",
+    infinityBonus: "infinitybonus op",
   },
 
 
@@ -1551,6 +1643,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Kundenrabatte",
     transparencyNoteTitle: "TRANSPARENZHINWEIS",
     transparencyNoteBody: "Monatliche Rabatte werden ausschließlich durch unsere professionellen B2B-Handelsmargen auf zertifizierte Diamanten finanziert. Wir verwalten die gesamte Lieferkette, um Gewinnschichten zu nutzen, die normalerweise an Mittelsleute verloren gehen.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "UMGEKEHRTER RECHNER",
+    reverseCalcSub: "Was ist die Mindestinvestition, um Ihr Ziel zu erreichen?",
+    reverseCalcBtn: "MINDESTINVESTITION FINDEN",
+    reverseCalcSearching: "Suche...",
+    reverseCalcApply: "Übernehmen ↑",
+    reverseCalcNotAchievable: "Nicht erreichbar",
+    reverseCalcNotAchievableBody: "Dieses Ziel kann innerhalb der gewählten Jahre auch bei maximaler Investition nicht erreicht werden. Versuchen Sie, die Jahre zu erhöhen oder das Ziel zu senken.",
+
+    // Client Pipeline statuses
+    statusProspect: "INTERESSENT",
+    statusMeeting: "TERMIN",
+    statusProposal: "ANGEBOT",
+    statusSigned: "UNTERZEICHNET",
+    statusActive: "AKTIV",
+
+    // Client modal actions
+    exportClients: "Exportieren",
+    noClientsMatch: "Keine Kunden gefunden",
+    clientNotesPlaceholder: "Kundennotizen (optional)",
+
+    // Comparison mode
+    compareBtn: "Mit anderem Szenario vergleichen",
+    compareModalTitle: "Szenario zum Vergleichen wählen",
+    compareNoHistory: "Keine weiteren Berechnungen in der Historie",
+    thisScenario: "DIESES SZENARIO",
+    peakRebate: "Höchster Rabatt",
+    clearComparison: "Vergleich löschen",
+
+    // Scenario results labels
+    createLetterBtn: "Brief für diesen Kunden erstellen",
+    sendWhatsApp: "Per WhatsApp senden",
+    monthlyRebateCurve: "MONATLICHE RABATTKURVE",
+    monthlyRebateLegend: "Monatlicher Rabatt",
+    pdfReport: "PDF BERICHT",
+    scenarioComparison: "SZENARIOVERGLEICH",
+    letterOutreach: "BRIEFKOMMUNIKATION",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "PROVISIONSRECHNER",
+    commissionEstimatorSub: "Schätzen Sie Ihr monatliches Einkommen basierend auf dem Teamvolumen.",
+    commPersonalLabel: "Persönliches Kundenvolumen ($/Monat)",
+    commTeamLabel: "Gesamtes Teamvolumen ($/Monat)",
+    calcEarningsBtn: "VERDIENST BERECHNEN",
+    infinityBonus: "Infinity-Bonus auf",
   },
 
 
@@ -2062,6 +2200,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Remises Clients",
     transparencyNoteTitle: "NOTE DE TRANSPARENCE",
     transparencyNoteBody: "Les remises mensuelles sont financées exclusivement par nos marges commerciales B2B professionnelles sur des diamants certifiés. Nous gérons toute la chaîne d'approvisionnement pour capturer les couches de profit généralement perdues aux intermédiaires.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "CALCULATEUR INVERSÉ",
+    reverseCalcSub: "Quel est l'investissement minimum pour atteindre votre objectif ?",
+    reverseCalcBtn: "TROUVER L'INVESTISSEMENT MINIMUM",
+    reverseCalcSearching: "Recherche...",
+    reverseCalcApply: "Appliquer ↑",
+    reverseCalcNotAchievable: "Non réalisable",
+    reverseCalcNotAchievableBody: "Cet objectif ne peut pas être atteint dans les années sélectionnées même avec l'investissement maximum. Essayez d'augmenter les années ou de réduire l'objectif.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECT",
+    statusMeeting: "RENDEZ-VOUS",
+    statusProposal: "PROPOSITION",
+    statusSigned: "SIGNÉ",
+    statusActive: "ACTIF",
+
+    // Client modal actions
+    exportClients: "Exporter",
+    noClientsMatch: "Aucun client trouvé",
+    clientNotesPlaceholder: "Notes client (optionnel)",
+
+    // Comparison mode
+    compareBtn: "Comparer avec un autre scénario",
+    compareModalTitle: "Sélectionner un scénario à comparer",
+    compareNoHistory: "Aucun autre calcul dans l'historique",
+    thisScenario: "CE SCÉNARIO",
+    peakRebate: "Remise maximale",
+    clearComparison: "Effacer la comparaison",
+
+    // Scenario results labels
+    createLetterBtn: "Créer une lettre pour ce client",
+    sendWhatsApp: "Envoyer via WhatsApp",
+    monthlyRebateCurve: "COURBE DE REMISE MENSUELLE",
+    monthlyRebateLegend: "Remise Mensuelle",
+    pdfReport: "RAPPORT PDF",
+    scenarioComparison: "COMPARAISON DE SCÉNARIOS",
+    letterOutreach: "COMMUNICATION PAR LETTRE",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "ESTIMATEUR DE COMMISSIONS",
+    commissionEstimatorSub: "Estimez vos revenus mensuels basés sur le volume d'équipe.",
+    commPersonalLabel: "Volume client personnel ($/mois)",
+    commTeamLabel: "Volume total de l'équipe ($/mois)",
+    calcEarningsBtn: "CALCULER LES REVENUS",
+    infinityBonus: "bonus infinity sur",
   },
 
 
@@ -2573,6 +2757,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Descuentos para Clientes",
     transparencyNoteTitle: "NOTA DE TRANSPARENCIA",
     transparencyNoteBody: "Los descuentos mensuales son financiados exclusivamente por nuestros márgenes comerciales B2B profesionales sobre diamantes certificados. Gestionamos toda la cadena de suministro para capturar capas de ganancias generalmente perdidas ante intermediarios.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "CALCULADORA INVERSA",
+    reverseCalcSub: "¿Cuál es la inversión mínima para alcanzar su objetivo?",
+    reverseCalcBtn: "ENCONTRAR INVERSIÓN MÍNIMA",
+    reverseCalcSearching: "Buscando...",
+    reverseCalcApply: "Aplicar ↑",
+    reverseCalcNotAchievable: "No alcanzable",
+    reverseCalcNotAchievableBody: "Este objetivo no se puede alcanzar dentro de los años seleccionados incluso con la inversión máxima. Intente aumentar los años o reducir el objetivo.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECTO",
+    statusMeeting: "REUNIÓN",
+    statusProposal: "PROPUESTA",
+    statusSigned: "FIRMADO",
+    statusActive: "ACTIVO",
+
+    // Client modal actions
+    exportClients: "Exportar",
+    noClientsMatch: "No se encontraron clientes",
+    clientNotesPlaceholder: "Notas del cliente (opcional)",
+
+    // Comparison mode
+    compareBtn: "Comparar con otro escenario",
+    compareModalTitle: "Seleccionar escenario para comparar",
+    compareNoHistory: "No hay otros cálculos en el historial",
+    thisScenario: "ESTE ESCENARIO",
+    peakRebate: "Descuento máximo",
+    clearComparison: "Borrar comparación",
+
+    // Scenario results labels
+    createLetterBtn: "Crear carta para este cliente",
+    sendWhatsApp: "Enviar por WhatsApp",
+    monthlyRebateCurve: "CURVA DE DESCUENTO MENSUAL",
+    monthlyRebateLegend: "Descuento Mensual",
+    pdfReport: "INFORME PDF",
+    scenarioComparison: "COMPARACIÓN DE ESCENARIOS",
+    letterOutreach: "COMUNICACIÓN POR CARTA",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "CALCULADORA DE COMISIONES",
+    commissionEstimatorSub: "Estime sus ganancias mensuales basadas en el volumen del equipo.",
+    commPersonalLabel: "Volumen de clientes personales ($/mes)",
+    commTeamLabel: "Volumen total del equipo ($/mes)",
+    calcEarningsBtn: "CALCULAR GANANCIAS",
+    infinityBonus: "bono infinity en",
   },
 
   ru: {
@@ -3080,6 +3310,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Скидки для Клиентов",
     transparencyNoteTitle: "ПРИМЕЧАНИЕ О ПРОЗРАЧНОСТИ",
     transparencyNoteBody: "Ежемесячные скидки финансируются исключительно за счёт наших профессиональных B2B торговых наценок на сертифицированные бриллианты. Мы управляем всей цепочкой поставок, чтобы получить прибыльные слои, обычно теряемые из-за посредников.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "ОБРАТНЫЙ КАЛЬКУЛЯТОР",
+    reverseCalcSub: "Какова минимальная инвестиция для достижения вашей цели?",
+    reverseCalcBtn: "НАЙТИ МИНИМАЛЬНУЮ ИНВЕСТИЦИЮ",
+    reverseCalcSearching: "Поиск...",
+    reverseCalcApply: "Применить ↑",
+    reverseCalcNotAchievable: "Недостижимо",
+    reverseCalcNotAchievableBody: "Эта цель не может быть достигнута в течение выбранного периода даже при максимальных инвестициях. Попробуйте увеличить срок или снизить цель.",
+
+    // Client Pipeline statuses
+    statusProspect: "ЛИДЕР",
+    statusMeeting: "ВСТРЕЧА",
+    statusProposal: "ПРЕДЛОЖЕНИЕ",
+    statusSigned: "ПОДПИСАНО",
+    statusActive: "АКТИВЕН",
+
+    // Client modal actions
+    exportClients: "Экспорт",
+    noClientsMatch: "Клиенты не найдены",
+    clientNotesPlaceholder: "Заметки о клиенте (необязательно)",
+
+    // Comparison mode
+    compareBtn: "Сравнить с другим сценарием",
+    compareModalTitle: "Выберите сценарий для сравнения",
+    compareNoHistory: "Нет других расчётов в истории",
+    thisScenario: "ЭТОТ СЦЕНАРИЙ",
+    peakRebate: "Макс. скидка",
+    clearComparison: "Очистить сравнение",
+
+    // Scenario results labels
+    createLetterBtn: "Создать письмо для клиента",
+    sendWhatsApp: "Отправить через WhatsApp",
+    monthlyRebateCurve: "КРИВАЯ ЕЖЕМЕСЯЧНОЙ СКИДКИ",
+    monthlyRebateLegend: "Ежемесячная скидка",
+    pdfReport: "PDF ОТЧЁТ",
+    scenarioComparison: "СРАВНЕНИЕ СЦЕНАРИЕВ",
+    letterOutreach: "ПИСЬМЕННАЯ КОММУНИКАЦИЯ",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "КАЛЬКУЛЯТОР КОМИССИЙ",
+    commissionEstimatorSub: "Оцените ваш ежемесячный доход на основе объёма команды.",
+    commPersonalLabel: "Личный объём клиентов ($/месяц)",
+    commTeamLabel: "Общий объём команды ($/месяц)",
+    calcEarningsBtn: "РАССЧИТАТЬ ДОХОД",
+    infinityBonus: "бонус инфинити на",
   },
 
   zh: {
@@ -3587,6 +3863,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "客户折扣",
     transparencyNoteTitle: "透明度说明",
     transparencyNoteBody: "月度折扣完全由我们在认证钒石上的专业B2B贸易利润资助。我们管理整个供应钉，以获取通常因中间商而损失的利润层。",
+
+    // Reverse Calculator
+    reverseCalcTitle: "反向计算器",
+    reverseCalcSub: "达到目标所需的最低投资是多少？",
+    reverseCalcBtn: "查找最低投资额",
+    reverseCalcSearching: "搜索中...",
+    reverseCalcApply: "应用 ↑",
+    reverseCalcNotAchievable: "无法实现",
+    reverseCalcNotAchievableBody: "即使以最大投资额，也无法在所选年限内达到此目标。请尝试增加年限或降低目标。",
+
+    // Client Pipeline statuses
+    statusProspect: "潜在客户",
+    statusMeeting: "会议",
+    statusProposal: "提案",
+    statusSigned: "已签约",
+    statusActive: "活跃",
+
+    // Client modal actions
+    exportClients: "导出",
+    noClientsMatch: "未找到客户",
+    clientNotesPlaceholder: "客户备注（可选）",
+
+    // Comparison mode
+    compareBtn: "与其他方案对比",
+    compareModalTitle: "选择对比方案",
+    compareNoHistory: "历史记录中没有其他计算",
+    thisScenario: "当前方案",
+    peakRebate: "最高折扣",
+    clearComparison: "清除对比",
+
+    // Scenario results labels
+    createLetterBtn: "为该客户创建信函",
+    sendWhatsApp: "通过WhatsApp发送",
+    monthlyRebateCurve: "月度折扣曲线",
+    monthlyRebateLegend: "月度折扣",
+    pdfReport: "PDF报告",
+    scenarioComparison: "方案对比",
+    letterOutreach: "信函推广",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "佣金估算器",
+    commissionEstimatorSub: "根据团队业绩估算您的月收入。",
+    commPersonalLabel: "个人客户业绩（美元/月）",
+    commTeamLabel: "团队总业绩（美元/月）",
+    calcEarningsBtn: "计算收入",
+    infinityBonus: "无限奖金于",
   },
 
   // ─── Filipino / Tagalog ──────────────────────────────────────────────────
@@ -4066,6 +4388,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Diskwento para sa mga Kliyente",
     transparencyNoteTitle: "TALA NG TRANSPARENCY",
     transparencyNoteBody: "Ang mga buwanang diskwento ay eksklusibong pinondohan ng aming propesyonal na B2B na margin sa sertipikadong mga brilyante. Pinamamahalaan namin ang buong kadena ng suplay upang makuha ang mga layer ng kita na karaniwang nawawala sa mga tagapamagitan.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "REVERSE CALCULATOR",
+    reverseCalcSub: "Ano ang pinakamababang investment para maabot ang iyong layunin?",
+    reverseCalcBtn: "HANAPIN ANG PINAKAMABABANG INVESTMENT",
+    reverseCalcSearching: "Naghahanap...",
+    reverseCalcApply: "Ilapat ↑",
+    reverseCalcNotAchievable: "Hindi Makakamit",
+    reverseCalcNotAchievableBody: "Ang layuning ito ay hindi maaabot sa loob ng napiling taon kahit sa pinakamataas na investment. Subukan ang mas maraming taon o bawasan ang layunin.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECT",
+    statusMeeting: "PULONG",
+    statusProposal: "PANUKALA",
+    statusSigned: "NAPIRMAHAN",
+    statusActive: "AKTIBO",
+
+    // Client modal actions
+    exportClients: "I-export",
+    noClientsMatch: "Walang katugmang kliyente",
+    clientNotesPlaceholder: "Mga tala ng kliyente (opsyonal)",
+
+    // Comparison mode
+    compareBtn: "Ihambing sa ibang scenario",
+    compareModalTitle: "Piliin ang scenario para ihambing",
+    compareNoHistory: "Walang ibang kalkulasyon sa kasaysayan",
+    thisScenario: "KASALUKUYANG SCENARIO",
+    peakRebate: "Pinakamataas na Diskwento",
+    clearComparison: "Alisin ang paghahambing",
+
+    // Scenario results labels
+    createLetterBtn: "Gumawa ng liham para sa kliyenteng ito",
+    sendWhatsApp: "Ipadala sa WhatsApp",
+    monthlyRebateCurve: "BUWANANG DISKWENTO CURVE",
+    monthlyRebateLegend: "Buwanang Diskwento",
+    pdfReport: "PDF ULAT",
+    scenarioComparison: "PAGHAHAMBING NG SCENARIO",
+    letterOutreach: "LIHAM NA OUTREACH",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "KOMISYON CALCULATOR",
+    commissionEstimatorSub: "Tantiyahin ang iyong buwanang kita batay sa dami ng koponan.",
+    commPersonalLabel: "Personal na dami ng kliyente ($/buwan)",
+    commTeamLabel: "Kabuuang dami ng koponan ($/buwan)",
+    calcEarningsBtn: "KALKULAHIN ANG KITA",
+    infinityBonus: "infinity bonus sa",
   },
 
   // ─── Portuguese ──────────────────────────────────────────────────────────
@@ -4545,6 +4913,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Descontos para Clientes",
     transparencyNoteTitle: "NOTA DE TRANSPARÊNCIA",
     transparencyNoteBody: "Os descontos mensais são financiados exclusivamente pelas nossas margens comerciais B2B profissionais em diamantes certificados. Gerimos toda a cadeia de suprimentos para capturar camadas de lucro normalmente perdidas para intermediários.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "CALCULADORA INVERSA",
+    reverseCalcSub: "Qual é o investimento mínimo para atingir o seu objetivo?",
+    reverseCalcBtn: "ENCONTRAR INVESTIMENTO MÍNIMO",
+    reverseCalcSearching: "Pesquisando...",
+    reverseCalcApply: "Aplicar ↑",
+    reverseCalcNotAchievable: "Não atingível",
+    reverseCalcNotAchievableBody: "Este objetivo não pode ser alcançado dentro dos anos selecionados mesmo com o investimento máximo. Tente aumentar os anos ou reduzir o objetivo.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPETO",
+    statusMeeting: "REUNIÃO",
+    statusProposal: "PROPOSTA",
+    statusSigned: "ASSINADO",
+    statusActive: "ATIVO",
+
+    // Client modal actions
+    exportClients: "Exportar",
+    noClientsMatch: "Nenhum cliente encontrado",
+    clientNotesPlaceholder: "Notas do cliente (opcional)",
+
+    // Comparison mode
+    compareBtn: "Comparar com outro cenário",
+    compareModalTitle: "Selecionar cenário para comparar",
+    compareNoHistory: "Nenhum outro cálculo no histórico",
+    thisScenario: "ESTE CENÁRIO",
+    peakRebate: "Desconto máximo",
+    clearComparison: "Limpar comparação",
+
+    // Scenario results labels
+    createLetterBtn: "Criar carta para este cliente",
+    sendWhatsApp: "Enviar via WhatsApp",
+    monthlyRebateCurve: "CURVA DE DESCONTO MENSAL",
+    monthlyRebateLegend: "Desconto Mensal",
+    pdfReport: "RELATÓRIO PDF",
+    scenarioComparison: "COMPARAÇÃO DE CENÁRIOS",
+    letterOutreach: "COMUNICAÇÃO POR CARTA",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "CALCULADORA DE COMISSÕES",
+    commissionEstimatorSub: "Estime os seus ganhos mensais com base no volume da equipa.",
+    commPersonalLabel: "Volume de clientes pessoais ($/mês)",
+    commTeamLabel: "Volume total da equipa ($/mês)",
+    calcEarningsBtn: "CALCULAR GANHOS",
+    infinityBonus: "bónus infinity em",
   },
 
   // ─── Arabic ──────────────────────────────────────────────────────────────
@@ -5024,6 +5438,51 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "خصومات العملاء",
     transparencyNoteTitle: "ملاحظة الشفافية",
     transparencyNoteBody: "تُمَوَّل الخصومات الشهرية حصرياً من هوامش تجارتنا B2B المهنية على الماس المعتمد. ندير سلسلة التوريد بالكامل للاستحواذ على طبقات الربح التي تضيع عادةً للوسطاء.",
+    // Reverse Calculator
+    reverseCalcTitle: "الحاسبة العكسية",
+    reverseCalcSub: "ما هو الحد الأدنى للاستثمار للوصول إلى هدفك؟",
+    reverseCalcBtn: "إيجاد الحد الأدنى للاستثمار",
+    reverseCalcSearching: "جاري البحث...",
+    reverseCalcApply: "تطبيق ↑",
+    reverseCalcNotAchievable: "غير قابل للتحقيق",
+    reverseCalcNotAchievableBody: "لا يمكن تحقيق هذا الهدف خلال السنوات المحددة حتى مع الاستثمار الأقصى. حاول زيادة السنوات أو تخفيض الهدف.",
+
+    // Client Pipeline statuses
+    statusProspect: "عميل محتمل",
+    statusMeeting: "اجتماع",
+    statusProposal: "عرض",
+    statusSigned: "موقّع",
+    statusActive: "نشط",
+
+    // Client modal actions
+    exportClients: "تصدير",
+    noClientsMatch: "لا يوجد عملاء",
+    clientNotesPlaceholder: "ملاحظات العميل (اختياري)",
+
+    // Comparison mode
+    compareBtn: "مقارنة مع سيناريو آخر",
+    compareModalTitle: "اختر سيناريو للمقارنة",
+    compareNoHistory: "لا توجد حسابات أخرى في السجل",
+    thisScenario: "هذا السيناريو",
+    peakRebate: "أعلى خصم",
+    clearComparison: "مسح المقارنة",
+
+    // Scenario results labels
+    createLetterBtn: "إنشاء رسالة لهذا العميل",
+    sendWhatsApp: "إرسال عبر واتساب",
+    monthlyRebateCurve: "منحنى الخصم الشهري",
+    monthlyRebateLegend: "الخصم الشهري",
+    pdfReport: "تقرير PDF",
+    scenarioComparison: "مقارنة السيناريوهات",
+    letterOutreach: "تواصل بالرسائل",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "حاسبة العمولات",
+    commissionEstimatorSub: "تقدير أرباحك الشهرية بناءً على حجم الفريق.",
+    commPersonalLabel: "حجم العملاء الشخصيين ($/شهر)",
+    commTeamLabel: "إجمالي حجم الفريق ($/شهر)",
+    calcEarningsBtn: "احسب الأرباح",
+    infinityBonus: "مكافأة إنفينيتي على",
   },
 
   // ─── Thai ─────────────────────────────────────────────────────────────────
@@ -5503,6 +5962,51 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "ส่วนลดสำหรับลูกค้า",
     transparencyNoteTitle: "หมายเหตุความโปร่งใส",
     transparencyNoteBody: "ส่วนลดรายเดือนได้รับทุนจากอัตรากำไร B2B เชิงพาณิชย์ของเราบนเพชรที่ผ่านการรับรองเท่านั้น เราจัดการห่วงโซ่อุปทานทั้งหมดเพื่อดักจับชั้นกำไรที่มักสูญเสียให้กับตัวกลาง",
+    // Reverse Calculator
+    reverseCalcTitle: "เครื่องคำนวณย้อนกลับ",
+    reverseCalcSub: "การลงทุนขั้นต่ำเท่าไหร่เพื่อบรรลุเป้าหมายของคุณ?",
+    reverseCalcBtn: "หาการลงทุนขั้นต่ำ",
+    reverseCalcSearching: "กำลังค้นหา...",
+    reverseCalcApply: "นำไปใช้ ↑",
+    reverseCalcNotAchievable: "ไม่สามารถบรรลุได้",
+    reverseCalcNotAchievableBody: "ไม่สามารถบรรลุเป้าหมายนี้ภายในปีที่เลือกได้แม้จะลงทุนสูงสุด ลองเพิ่มจำนวนปีหรือลดเป้าหมาย",
+
+    // Client Pipeline statuses
+    statusProspect: "ผู้มุ่งหวัง",
+    statusMeeting: "นัดหมาย",
+    statusProposal: "ข้อเสนอ",
+    statusSigned: "ลงนามแล้ว",
+    statusActive: "ใช้งาน",
+
+    // Client modal actions
+    exportClients: "ส่งออก",
+    noClientsMatch: "ไม่พบลูกค้า",
+    clientNotesPlaceholder: "บันทึกลูกค้า (ไม่บังคับ)",
+
+    // Comparison mode
+    compareBtn: "เปรียบเทียบกับสถานการณ์อื่น",
+    compareModalTitle: "เลือกสถานการณ์เพื่อเปรียบเทียบ",
+    compareNoHistory: "ไม่มีการคำนวณอื่นในประวัติ",
+    thisScenario: "สถานการณ์นี้",
+    peakRebate: "ส่วนลดสูงสุด",
+    clearComparison: "ล้างการเปรียบเทียบ",
+
+    // Scenario results labels
+    createLetterBtn: "สร้างจดหมายสำหรับลูกค้านี้",
+    sendWhatsApp: "ส่งผ่าน WhatsApp",
+    monthlyRebateCurve: "กราฟส่วนลดรายเดือน",
+    monthlyRebateLegend: "ส่วนลดรายเดือน",
+    pdfReport: "รายงาน PDF",
+    scenarioComparison: "เปรียบเทียบสถานการณ์",
+    letterOutreach: "การสื่อสารทางจดหมาย",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "เครื่องคำนวณค่าคอมมิชชั่น",
+    commissionEstimatorSub: "ประมาณรายได้ต่อเดือนของคุณตามยอดทีม",
+    commPersonalLabel: "ยอดลูกค้าส่วนตัว ($/เดือน)",
+    commTeamLabel: "ยอดทีมรวม ($/เดือน)",
+    calcEarningsBtn: "คำนวณรายได้",
+    infinityBonus: "โบนัสอินฟินิตี้บน",
   },
 
   // ─── Hindi ────────────────────────────────────────────────────────────────
@@ -5982,6 +6486,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "ग्राहक छूट",
     transparencyNoteTitle: "पारदर्शिता नोट",
     transparencyNoteBody: "मासिक छूट विशेष रूप से प्रमाणित हीरों पर हमारे पेशेवर B2B व्यापार मार्जिन द्वारा वित्तपोषित हैं. हम बिचौलियों को खो जाने वाली लाभ परतों को पकड़ने के लिए पूरी आपूर्ति शृंखला का प्रबंधन करते हैं.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "रिवर्स कैलकुलेटर",
+    reverseCalcSub: "अपना लक्ष्य पाने के लिए न्यूनतम निवेश क्या है?",
+    reverseCalcBtn: "न्यूनतम निवेश खोजें",
+    reverseCalcSearching: "खोज रहे हैं...",
+    reverseCalcApply: "लागू करें ↑",
+    reverseCalcNotAchievable: "प्राप्त नहीं हो सकता",
+    reverseCalcNotAchievableBody: "यह लक्ष्य अधिकतम निवेश के साथ भी चुने गए वर्षों में प्राप्त नहीं हो सकता। वर्ष बढ़ाएं या लक्ष्य कम करें।",
+
+    // Client Pipeline statuses
+    statusProspect: "संभावित",
+    statusMeeting: "बैठक",
+    statusProposal: "प्रस्ताव",
+    statusSigned: "हस्ताक्षरित",
+    statusActive: "सक्रिय",
+
+    // Client modal actions
+    exportClients: "निर्यात",
+    noClientsMatch: "कोई ग्राहक नहीं मिला",
+    clientNotesPlaceholder: "ग्राहक नोट्स (वैकल्पिक)",
+
+    // Comparison mode
+    compareBtn: "अन्य परिदृश्य से तुलना करें",
+    compareModalTitle: "तुलना के लिए परिदृश्य चुनें",
+    compareNoHistory: "इतिहास में कोई अन्य गणना नहीं",
+    thisScenario: "यह परिदृश्य",
+    peakRebate: "अधिकतम छूट",
+    clearComparison: "तुलना साफ करें",
+
+    // Scenario results labels
+    createLetterBtn: "इस ग्राहक के लिए पत्र बनाएं",
+    sendWhatsApp: "WhatsApp पर भेजें",
+    monthlyRebateCurve: "मासिक छूट वक्र",
+    monthlyRebateLegend: "मासिक छूट",
+    pdfReport: "PDF रिपोर्ट",
+    scenarioComparison: "परिदृश्य तुलना",
+    letterOutreach: "पत्र आउटरीच",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "कमीशन अनुमानक",
+    commissionEstimatorSub: "टीम वॉल्यूम के आधार पर मासिक आय का अनुमान लगाएं।",
+    commPersonalLabel: "व्यक्तिगत ग्राहक वॉल्यूम ($/माह)",
+    commTeamLabel: "कुल टीम वॉल्यूम ($/माह)",
+    calcEarningsBtn: "आय की गणना करें",
+    infinityBonus: "इन्फिनिटी बोनस पर",
   },
 
   // ─── Vietnamese ──────────────────────────────────────────────────────────
@@ -6460,6 +7010,52 @@ export const translations: Record<Language, Record<string, string>> = {
     amountLabel: "Importo Acquisto",
     noPartners: "Nessun membro ancora",
     pdfClientName: "Nome Cliente",
+
+    // Reverse Calculator
+    reverseCalcTitle: "CALCOLATORE INVERSO",
+    reverseCalcSub: "Qual è l'investimento minimo per raggiungere il tuo obiettivo?",
+    reverseCalcBtn: "TROVA INVESTIMENTO MINIMO",
+    reverseCalcSearching: "Ricerca...",
+    reverseCalcApply: "Applica ↑",
+    reverseCalcNotAchievable: "Non raggiungibile",
+    reverseCalcNotAchievableBody: "Questo obiettivo non può essere raggiunto entro gli anni selezionati anche con l'investimento massimo. Prova ad aumentare gli anni o ridurre l'obiettivo.",
+
+    // Client Pipeline statuses
+    statusProspect: "PROSPECT",
+    statusMeeting: "APPUNTAMENTO",
+    statusProposal: "PROPOSTA",
+    statusSigned: "FIRMATO",
+    statusActive: "ATTIVO",
+
+    // Client modal actions
+    exportClients: "Esporta",
+    noClientsMatch: "Nessun cliente trovato",
+    clientNotesPlaceholder: "Note cliente (opzionale)",
+
+    // Comparison mode
+    compareBtn: "Confronta con un altro scenario",
+    compareModalTitle: "Seleziona scenario da confrontare",
+    compareNoHistory: "Nessun altro calcolo nella cronologia",
+    thisScenario: "QUESTO SCENARIO",
+    peakRebate: "Sconto massimo",
+    clearComparison: "Cancella confronto",
+
+    // Scenario results labels
+    createLetterBtn: "Crea lettera per questo cliente",
+    sendWhatsApp: "Invia via WhatsApp",
+    monthlyRebateCurve: "CURVA SCONTO MENSILE",
+    monthlyRebateLegend: "Sconto Mensile",
+    pdfReport: "RAPPORTO PDF",
+    scenarioComparison: "CONFRONTO SCENARI",
+    letterOutreach: "COMUNICAZIONE LETTERE",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "CALCOLATORE COMMISSIONI",
+    commissionEstimatorSub: "Stima i tuoi guadagni mensili basati sul volume del team.",
+    commPersonalLabel: "Volume clienti personali ($/mese)",
+    commTeamLabel: "Volume totale del team ($/mese)",
+    calcEarningsBtn: "CALCOLA GUADAGNI",
+    infinityBonus: "bonus infinity su",
   },
 
   vi: {
@@ -6938,6 +7534,52 @@ export const translations: Record<Language, Record<string, string>> = {
     customerDiscountsLabel: "Chiết khấu Khách hàng",
     transparencyNoteTitle: "GHI CHÚ MINH BẠCH",
     transparencyNoteBody: "Chiết khấu hàng tháng được tài trợ độc quyền bởi biên lợi nhuận thương mại B2B chuyên nghiệp của chúng tôi trên kim cương được chứng nhận. Chúng tôi quản lý toàn bộ chuỗi cung ứng để thu nắm các tầng lợi nhuận thường bị mất vào tay trung gian.",
+
+    // Reverse Calculator
+    reverseCalcTitle: "MÁY TÍNH NGƯỢC",
+    reverseCalcSub: "Khoản đầu tư tối thiểu để đạt mục tiêu của bạn là bao nhiêu?",
+    reverseCalcBtn: "TÌM ĐẦU TƯ TỐI THIỂU",
+    reverseCalcSearching: "Đang tìm kiếm...",
+    reverseCalcApply: "Áp dụng ↑",
+    reverseCalcNotAchievable: "Không thể đạt được",
+    reverseCalcNotAchievableBody: "Mục tiêu này không thể đạt được trong số năm đã chọn ngay cả với đầu tư tối đa. Hãy thử tăng số năm hoặc giảm mục tiêu.",
+
+    // Client Pipeline statuses
+    statusProspect: "TRIỂN VỌNG",
+    statusMeeting: "CUỘC HỌP",
+    statusProposal: "ĐỀ XUẤT",
+    statusSigned: "ĐÃ KÝ",
+    statusActive: "HOẠT ĐỘNG",
+
+    // Client modal actions
+    exportClients: "Xuất",
+    noClientsMatch: "Không tìm thấy khách hàng",
+    clientNotesPlaceholder: "Ghi chú khách hàng (tùy chọn)",
+
+    // Comparison mode
+    compareBtn: "So sánh với kịch bản khác",
+    compareModalTitle: "Chọn kịch bản để so sánh",
+    compareNoHistory: "Không có tính toán nào khác trong lịch sử",
+    thisScenario: "KỊCH BẢN NÀY",
+    peakRebate: "Chiết khấu tối đa",
+    clearComparison: "Xóa so sánh",
+
+    // Scenario results labels
+    createLetterBtn: "Tạo thư cho khách hàng này",
+    sendWhatsApp: "Gửi qua WhatsApp",
+    monthlyRebateCurve: "ĐƯỜNG CONG CHIẾT KHẤU HÀNG THÁNG",
+    monthlyRebateLegend: "Chiết khấu hàng tháng",
+    pdfReport: "BÁO CÁO PDF",
+    scenarioComparison: "SO SÁNH KỊCH BẢN",
+    letterOutreach: "TIẾP CẬN BẰNG THƯ",
+
+    // Commission Estimator
+    commissionEstimatorTitle: "MÁY TÍNH HOA HỒNG",
+    commissionEstimatorSub: "Ước tính thu nhập hàng tháng của bạn dựa trên khối lượng nhóm.",
+    commPersonalLabel: "Khối lượng khách hàng cá nhân ($/tháng)",
+    commTeamLabel: "Tổng khối lượng nhóm ($/tháng)",
+    calcEarningsBtn: "TÍNH THU NHẬP",
+    infinityBonus: "thưởng infinity trên",
   },
 };
 

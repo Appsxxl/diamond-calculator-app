@@ -2906,7 +2906,7 @@ export default function PartnerToolsScreen() {
         <View style={{ paddingHorizontal: 16, paddingBottom: 4 }}>
           <View style={{ backgroundColor: '#0c1a2e', borderRadius: 14, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#1e3a5f' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <Text style={{ color: '#f59e0b', fontSize: 13, fontWeight: '800', letterSpacing: 1 }}>💰 COMMISSION ESTIMATOR</Text>
+              <Text style={{ color: '#f59e0b', fontSize: 13, fontWeight: '800', letterSpacing: 1 }}>💰 {t(language, 'commissionEstimatorTitle')}</Text>
               <InfoTip title="Commission Estimator" body={[
                 "Estimates your monthly earnings from the Plan B infinity bonus system.",
                 "Team Volume: the total monthly value of all purchases across your entire downline network (all levels combined).",
@@ -2915,9 +2915,9 @@ export default function PartnerToolsScreen() {
                 "The infinity bonus is a monthly percentage of your team volume. As your team grows, your rank and earnings grow automatically."
               ]} />
             </View>
-            <Text style={{ color: '#475569', fontSize: 11, marginBottom: 12 }}>Estimate your monthly earnings based on team volume.</Text>
+            <Text style={{ color: '#475569', fontSize: 11, marginBottom: 12 }}>{t(language, 'commissionEstimatorSub')}</Text>
 
-            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>Personal Client Volume ($/month total)</Text>
+            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>{t(language, 'commPersonalLabel')}</Text>
             <TextInput
               style={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: 8, padding: 10, fontSize: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 10 }}
               value={commPersonal}
@@ -2927,7 +2927,7 @@ export default function PartnerToolsScreen() {
               placeholderTextColor="#334155"
             />
 
-            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>Total Team Volume ($/month all levels)</Text>
+            <Text style={{ color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 4 }}>{t(language, 'commTeamLabel')}</Text>
             <TextInput
               style={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: 8, padding: 10, fontSize: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 12 }}
               value={commTeam}
@@ -2940,7 +2940,7 @@ export default function PartnerToolsScreen() {
             {commResult && (
               <View style={{ backgroundColor: '#0f172a', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#22c55e', marginBottom: 10 }}>
                 <Text style={{ color: '#22c55e', fontSize: 18, fontWeight: 'bold', marginBottom: 4 }}>${commResult.monthly.toLocaleString()}/month</Text>
-                <Text style={{ color: '#64748b', fontSize: 11 }}>Rank: {commResult.rank} {commResult.emoji} · {commResult.pct}% infinity bonus on ${Number(commTeam).toLocaleString()} team volume</Text>
+                <Text style={{ color: '#64748b', fontSize: 11 }}>Rank: {commResult.rank} {commResult.emoji} · {commResult.pct}% {t(language, 'infinityBonus')} ${Number(commTeam).toLocaleString()}</Text>
                 {commResult.bonus > 0 && <Text style={{ color: '#f59e0b', fontSize: 11, marginTop: 4 }}>🎁 Rank Bonus: ${commResult.bonus.toLocaleString()} (one-time)</Text>}
               </View>
             )}
@@ -2950,7 +2950,7 @@ export default function PartnerToolsScreen() {
               onPress={calcCommission}
               activeOpacity={0.8}
             >
-              <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13 }}>CALCULATE EARNINGS</Text>
+              <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13 }}>{t(language, 'calcEarningsBtn')}</Text>
             </TouchableOpacity>
           </View>
         </View>

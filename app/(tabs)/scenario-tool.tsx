@@ -1012,7 +1012,7 @@ export default function ScenarioToolScreen() {
             style={S.notesInput}
             value={clientNotes}
             onChangeText={setClientNotes}
-            placeholder="Client notes (optional)"
+            placeholder={t(language, 'clientNotesPlaceholder')}
             placeholderTextColor="#334155"
             multiline
             numberOfLines={2}
@@ -1282,7 +1282,7 @@ export default function ScenarioToolScreen() {
         {/* Reverse Calculator */}
         <View style={S.reverseCard}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            <Text style={[S.reverseTitle, { marginBottom: 0 }]}>🔄 REVERSE CALCULATOR</Text>
+            <Text style={[S.reverseTitle, { marginBottom: 0 }]}>🔄 {t(language, 'reverseCalcTitle')}</Text>
             <InfoTip title="Reverse Calculator" body={[
               "Answers the question: 'What is the minimum investment needed to reach my goal?'",
               "It uses your current Goal ($) and Years settings, then runs a fast binary search to find the smallest starting amount that achieves the goal within the period.",
@@ -1290,14 +1290,14 @@ export default function ScenarioToolScreen() {
               "Tap Apply ↑ to copy the found amount directly into the Start Amount field and calculate the full scenario."
             ]} />
           </View>
-          <Text style={S.reverseSub}>What is the minimum investment to reach your ${numVal(goal).toLocaleString()} goal in {years} years?</Text>
+          <Text style={S.reverseSub}>{t(language, 'reverseCalcSub')}</Text>
           <TouchableOpacity
             style={[S.reverseBtn, reverseSearching && { opacity: 0.6 }]}
             onPress={handleReverseSearch}
             disabled={reverseSearching}
             activeOpacity={0.8}
           >
-            <Text style={S.reverseBtnText}>{reverseSearching ? '⏳ Searching...' : '🔍 FIND MINIMUM INVESTMENT'}</Text>
+            <Text style={S.reverseBtnText}>{reverseSearching ? `⏳ ${t(language, 'reverseCalcSearching')}` : `🔍 ${t(language, 'reverseCalcBtn')}`}</Text>
           </TouchableOpacity>
           {reverseResult && (
             <View style={S.reverseResultBox}>
@@ -1311,7 +1311,7 @@ export default function ScenarioToolScreen() {
                   onPress={() => { setStartAmount(String(reverseResult.gross)); setReverseResult(null); }}
                   activeOpacity={0.8}
                 >
-                  <Text style={S.reverseApplyBtnText}>Apply ↑</Text>
+                  <Text style={S.reverseApplyBtnText}>{t(language, 'reverseCalcApply')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1806,12 +1806,12 @@ export default function ScenarioToolScreen() {
                 else { Linking.openURL(url).catch(() => {}); }
               }}
             >
-              <Text style={S.whatsappBtnText}>💬 Send via WhatsApp</Text>
+              <Text style={S.whatsappBtnText}>💬 {t(language, 'sendWhatsApp')}</Text>
             </TouchableOpacity>
 
             {/* Create Letter (prefill) */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>LETTER OUTREACH</Text>
+              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>{t(language, 'letterOutreach')}</Text>
               <InfoTip title="Create Letter — Auto Prefill" body={[
                 "Tapping this button saves the current client's name, SP tier, amount, and years, then navigates to the Letters hub.",
                 "In the Letters hub, a blue banner will appear showing the pre-filled client data.",
@@ -1831,13 +1831,13 @@ export default function ScenarioToolScreen() {
                 router.push('/letters' as any);
               }}
             >
-              <Text style={S.createLetterBtnText}>📝 Create Letter for This Client</Text>
+              <Text style={S.createLetterBtnText}>📝 {t(language, 'createLetterBtn')}</Text>
             </TouchableOpacity>
 
             {/* Scenario Chart */}
             <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e293b' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>📈 MONTHLY REBATE CURVE</Text>
+                <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>📈 {t(language, 'monthlyRebateCurve')}</Text>
                 <InfoTip title="Scenario Chart" body={[
                   "This chart shows how your monthly rebate (green line) grows over the full strategy period.",
                   "The gold dashed line is your Goal — the moment the green line crosses it, the goal is reached.",
@@ -1856,7 +1856,7 @@ export default function ScenarioToolScreen() {
             {history.length > 1 && (
               <>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>SCENARIO COMPARISON</Text>
+                  <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>{t(language, 'scenarioComparison')}</Text>
                   <InfoTip title="Compare Mode" body={[
                     "Compare this calculation against any scenario from your history — side by side.",
                     "Tap Compare, pick a past scenario from the list, and a comparison card appears with 5 key metrics: Peak Rebate, Total In, Total Out, Final Balance, Net Result.",
@@ -1870,7 +1870,7 @@ export default function ScenarioToolScreen() {
                   activeOpacity={0.8}
                 >
                   <Text style={{ color: '#60a5fa', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-                    {compareEntry ? `📊 Comparing: ${compareEntry.clientName || compareEntry.sp}` : '📊 Compare with Another Scenario'}
+                    {compareEntry ? `📊 Comparing: ${compareEntry.clientName || compareEntry.sp}` : `📊 ${t(language, 'compareBtn')}`}
                   </Text>
                 </TouchableOpacity>
               </>
@@ -1879,24 +1879,24 @@ export default function ScenarioToolScreen() {
             {compareEntry && compareResult && result && (
               <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e3a5f' }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: '800', letterSpacing: 1, flex: 1, textAlign: 'center' }}>THIS SCENARIO</Text>
+                  <Text style={{ color: '#f59e0b', fontSize: 10, fontWeight: '800', letterSpacing: 1, flex: 1, textAlign: 'center' }}>{t(language, 'thisScenario')}</Text>
                   <Text style={{ color: '#60a5fa', fontSize: 10, fontWeight: '800', letterSpacing: 1, flex: 1, textAlign: 'center' }}>{(compareEntry.clientName || compareEntry.sp).toUpperCase()}</Text>
                 </View>
                 {[
-                  { label: 'Peak Rebate', a: result.maxMonthlyOut, b: compareResult.maxMonthlyOut },
-                  { label: 'Total In',    a: result.totalIn,        b: compareResult.totalIn },
-                  { label: 'Total Out',   a: result.totalOut,       b: compareResult.totalOut },
-                  { label: 'Final Balance', a: result.finalCap,     b: compareResult.finalCap },
-                  { label: 'Net Result',  a: result.netResult,      b: compareResult.netResult },
+                  { labelKey: 'peakRebate',    a: result.maxMonthlyOut, b: compareResult.maxMonthlyOut },
+                  { labelKey: 'totalIn',       a: result.totalIn,        b: compareResult.totalIn },
+                  { labelKey: 'totalOut',      a: result.totalOut,       b: compareResult.totalOut },
+                  { labelKey: 'finalBalance',  a: result.finalCap,       b: compareResult.finalCap },
+                  { labelKey: 'netResult',     a: result.netResult,      b: compareResult.netResult },
                 ].map(row => (
-                  <View key={row.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#1e293b' }}>
-                    <Text style={{ color: '#64748b', fontSize: 11, width: 88 }}>{row.label}</Text>
+                  <View key={row.labelKey} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#1e293b' }}>
+                    <Text style={{ color: '#64748b', fontSize: 11, width: 88 }}>{t(language, row.labelKey)}</Text>
                     <Text style={{ flex: 1, color: row.a >= row.b ? '#22c55e' : '#f87171', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{cx(row.a)}</Text>
                     <Text style={{ flex: 1, color: row.b >= row.a ? '#22c55e' : '#f87171', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{cx(row.b)}</Text>
                   </View>
                 ))}
                 <TouchableOpacity onPress={() => { setCompareEntry(null); setCompareResult(null); }} style={{ marginTop: 8, alignSelf: 'center' }}>
-                  <Text style={{ color: '#475569', fontSize: 11 }}>✕ Clear comparison</Text>
+                  <Text style={{ color: '#475569', fontSize: 11 }}>✕ {t(language, 'clearComparison')}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -2320,7 +2320,7 @@ export default function ScenarioToolScreen() {
                   onPress={handleExportClients}
                   style={{ backgroundColor: '#1e293b', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 7, borderWidth: 1, borderColor: '#334155' }}
                 >
-                  <Text style={{ color: '#64748b', fontSize: 12, fontWeight: 'bold' }}>⬇ Export</Text>
+                  <Text style={{ color: '#64748b', fontSize: 12, fontWeight: 'bold' }}>⬇ {t(language, 'exportClients')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { setShowClientsModal(false); setClientSearch(""); }}>
                   <Text style={{ color: '#64748b', fontSize: 22, lineHeight: 26 }}>✕</Text>
@@ -2343,7 +2343,7 @@ export default function ScenarioToolScreen() {
                     const m = STATUS_META[s];
                     return (
                       <View key={s} style={{ backgroundColor: m.bg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: count > 0 ? m.color : '#1e293b', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <Text style={{ color: count > 0 ? m.color : '#475569', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 }}>{m.label}</Text>
+                        <Text style={{ color: count > 0 ? m.color : '#475569', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 }}>{t(language, ('status' + s.charAt(0).toUpperCase() + s.slice(1)) as any)}</Text>
                         <Text style={{ color: count > 0 ? m.color : '#475569', fontSize: 10, fontWeight: 'bold' }}>{count}</Text>
                       </View>
                     );
@@ -2361,7 +2361,7 @@ export default function ScenarioToolScreen() {
                 data={savedClients.filter(c => c.name.toLowerCase().includes(clientSearch.toLowerCase()))}
                 keyExtractor={c => c.id}
                 contentContainerStyle={{ padding: 12 }}
-                ListEmptyComponent={<View style={{ padding: 24, alignItems: 'center' }}><Text style={{ color: '#475569', fontSize: 13 }}>No clients match "{clientSearch}"</Text></View>}
+                ListEmptyComponent={<View style={{ padding: 24, alignItems: 'center' }}><Text style={{ color: '#475569', fontSize: 13 }}>{t(language, 'noClientsMatch')} "{clientSearch}"</Text></View>}
                 renderItem={({ item }) => {
                   const sp = getSPLevel(getNetDeposit(parseFloat(item.startAmount) || 0));
                   const date = new Date(item.savedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -2392,7 +2392,7 @@ export default function ScenarioToolScreen() {
                             const st = (item.status as ClientStatus) ?? 'prospect';
                             const m = STATUS_META[st];
                             return <View style={{ backgroundColor: m.bg, borderRadius: 5, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1, borderColor: m.color }}>
-                              <Text style={{ color: m.color, fontSize: 9, fontWeight: '800', letterSpacing: 1 }}>{m.label} ›</Text>
+                              <Text style={{ color: m.color, fontSize: 9, fontWeight: '800', letterSpacing: 1 }}>{t(language, ('status' + st.charAt(0).toUpperCase() + st.slice(1)) as any)} ›</Text>
                             </View>;
                           })()}
                         </TouchableOpacity>
@@ -2413,7 +2413,7 @@ export default function ScenarioToolScreen() {
       <Modal visible={showCompareModal} transparent animationType="slide" onRequestClose={() => setShowCompareModal(false)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' }}>
           <View style={{ backgroundColor: '#0f172a', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, maxHeight: '70%' }}>
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 14 }}>Select scenario to compare</Text>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 14 }}>{t(language, 'compareModalTitle')}</Text>
             <FlatList
               data={history.filter(e => e.id !== (history[0]?.id ?? ''))}
               keyExtractor={e => e.id}
@@ -2431,7 +2431,7 @@ export default function ScenarioToolScreen() {
                   <Text style={{ color: '#64748b', fontSize: 11, marginTop: 2 }}>{item.sp}{item.vipEnabled ? ' +VIP' : ''} · {item.years}y · Peak ${item.peakRebate.toLocaleString()}</Text>
                 </TouchableOpacity>
               )}
-              ListEmptyComponent={<Text style={{ color: '#475569', textAlign: 'center', padding: 20 }}>No other calculations in history</Text>}
+              ListEmptyComponent={<Text style={{ color: '#475569', textAlign: 'center', padding: 20 }}>{t(language, 'compareNoHistory')}</Text>}
             />
             <TouchableOpacity onPress={() => setShowCompareModal(false)} style={{ marginTop: 8, alignItems: 'center', padding: 12 }}>
               <Text style={{ color: '#60a5fa', fontWeight: 'bold' }}>Cancel</Text>
