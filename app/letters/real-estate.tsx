@@ -18,6 +18,7 @@ import type { RealEstateLetterType } from "./templates/realestate";
 import type { Language } from "@/lib/translations";
 import { LettersLangPicker } from "@/components/letters-lang-picker";
 import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
+import { LogToPipelineModal } from "@/components/log-to-pipeline-modal";
 
 const NAVY = "#0a1628";
 const GOLD = "#e67e22";
@@ -267,6 +268,8 @@ export default function RealEstateScreen() {
   const [copied, setCopied] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null);
+  const [logModalVisible, setLogModalVisible] = useState(false);
+  const [loggedSuccess, setLoggedSuccess] = useState(false);
 
   const profileQuery = trpc.advisor.getProfile.useQuery(undefined, { retry: false });
 
@@ -435,7 +438,24 @@ export default function RealEstateScreen() {
             </TouchableOpacity>
           </View>
 
+          <TouchableOpacity
+            style={S.logBtn}
+            onPress={() => setLogModalVisible(true)}
+            activeOpacity={0.85}
+          >
+            <Text style={S.logBtnText}>{loggedSuccess ? "✓  Logged to Pipeline" : "📋  Log to Sent Pipeline"}</Text>
+          </TouchableOpacity>
+
           <Text style={S.disclaimer}>{tx.disclaimer}</Text>
+
+          <LogToPipelineModal
+            visible={logModalVisible}
+            onClose={() => setLogModalVisible(false)}
+            recipientName={recipientName}
+            letterTitle={TYPE_OPTIONS.find(o => o.key === letterType)?.label ?? letterType}
+            letterCategory="Real Estate"
+            onLogged={() => { setLoggedSuccess(true); setTimeout(() => setLoggedSuccess(false), 3000); }}
+          />
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -472,6 +492,8 @@ const S = StyleSheet.create({
 
   actionRow: { flexDirection: "row", gap: 10, paddingHorizontal: 16, marginTop: 20 },
   actionBtn: { flex: 1, paddingVertical: 15, borderRadius: 12, alignItems: "center" },
+  logBtn: { marginHorizontal: 16, marginTop: 10, paddingVertical: 13, borderRadius: 12, alignItems: "center", backgroundColor: "#0d2212", borderWidth: 1, borderColor: "#22c55e" },
+  logBtnText: { color: "#22c55e", fontFamily: FONT, fontSize: 14 },
   copyBtn: { backgroundColor: GOLD },
   shareBtn: { backgroundColor: "#065f46", borderWidth: 1, borderColor: "#10b981" },
   pdfBtn: { backgroundColor: "#1e40af", borderWidth: 1, borderColor: "#3b82f6" },

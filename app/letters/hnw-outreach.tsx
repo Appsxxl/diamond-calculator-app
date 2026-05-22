@@ -14,6 +14,7 @@ import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
 import { LettersLangPicker } from "@/components/letters-lang-picker";
 import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
+import { LogToPipelineModal } from "@/components/log-to-pipeline-modal";
 import {
   buildHnwLetter,
   type HnwFormality,
@@ -349,6 +350,8 @@ export default function HnwOutreachScreen() {
   const [letterText, setLetterText] = useState("");
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [logModalVisible, setLogModalVisible] = useState(false);
+  const [loggedSuccess, setLoggedSuccess] = useState(false);
 
   const profileQuery = trpc.advisor.getProfile.useQuery(undefined, { retry: false });
 
@@ -608,6 +611,23 @@ export default function HnwOutreachScreen() {
                   }
                 </TouchableOpacity>
               </View>
+
+              <TouchableOpacity
+                style={S.logBtn}
+                onPress={() => setLogModalVisible(true)}
+                activeOpacity={0.85}
+              >
+                <Text style={S.logBtnText}>{loggedSuccess ? "✓  Logged to Pipeline" : "📋  Log to Sent Pipeline"}</Text>
+              </TouchableOpacity>
+
+              <LogToPipelineModal
+                visible={logModalVisible}
+                onClose={() => setLogModalVisible(false)}
+                recipientName={recipientName}
+                letterTitle="VIP / HNW Outreach"
+                letterCategory="HNW"
+                onLogged={() => { setLoggedSuccess(true); setTimeout(() => setLoggedSuccess(false), 3000); }}
+              />
             </>
           )}
 
@@ -670,4 +690,6 @@ const S = StyleSheet.create({
   },
   actionBtnDisabled: { opacity: 0.5 },
   actionBtnText: { fontFamily: FONT, fontSize: 12 },
+  logBtn: { marginTop: 12, paddingVertical: 13, borderRadius: 12, alignItems: "center", backgroundColor: "#0d2212", borderWidth: 1, borderColor: "#22c55e" },
+  logBtnText: { color: "#22c55e", fontFamily: FONT, fontSize: 14 },
 });
