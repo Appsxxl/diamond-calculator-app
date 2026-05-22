@@ -25,6 +25,7 @@ const FONT = "ArialRoundedMTBold";
 type ScreenText = {
   back: string; title: string; sub: string;
   sectionType: string;
+  typeWealth: string; typeWealthSub: string;
   typeReferral: string; typeReferralSub: string;
   typeJv: string; typeJvSub: string;
   sectionYou: string; autoSaved: string;
@@ -40,6 +41,7 @@ const TX: Record<Language, ScreenText> = {
   en: {
     back: "← Back", title: "REAL ESTATE PARTNERS", sub: "Professional letters for real estate agents and property professionals.",
     sectionType: "LETTER TYPE",
+    typeWealth: "HNW Wealth Preservation", typeWealthSub: "For brokers · Position beyond the deal · 15-min call request",
     typeReferral: "Soft Referral Introduction", typeReferralSub: "Explore a mutual fit · No formal commitment · Open a relationship",
     typeJv: "Joint-Venture Proposal", typeJvSub: "Formal two-way referral · 30-min meeting request · Select partnership",
     sectionYou: "YOUR DETAILS", autoSaved: "(from profile)",
@@ -53,6 +55,7 @@ const TX: Record<Language, ScreenText> = {
   nl: {
     back: "← Terug", title: "VASTGOEDPARTNERS", sub: "Professionele brieven voor vastgoedagenten en vastgoedprofessionals.",
     sectionType: "TYPE BRIEF",
+    typeWealth: "Vermogensbehoud voor VIP-Cliënten", typeWealthSub: "Voor makelaars · Meer dan alleen de woning · 15 min gesprek",
     typeReferral: "Zachte Doorverwijsintroductie", typeReferralSub: "Verken wederzijdse aansluiting · Geen formele verplichting · Relatie openen",
     typeJv: "Joint-Venture Voorstel", typeJvSub: "Formele tweerichtingsdoorverwijzing · 30 minuten vergaderverzoek · Selectief partnerschap",
     sectionYou: "UW GEGEVENS", autoSaved: "(uit profiel)",
@@ -66,6 +69,7 @@ const TX: Record<Language, ScreenText> = {
   de: {
     back: "← Zurück", title: "IMMOBILIENPARTNER", sub: "Professionelle Briefe für Immobilienmakler und Immobilienprofis.",
     sectionType: "BRIEFTYP",
+    typeWealth: "Vermögensschutz für HNW-Kunden", typeWealthSub: "Für Makler · Mehr als nur die Immobilie · 15 Min. Gespräch",
     typeReferral: "Sanfte Empfehlungseinführung", typeReferralSub: "Gegenseitige Eignung erkunden · Keine formelle Verpflichtung · Beziehung aufbauen",
     typeJv: "Joint-Venture-Vorschlag", typeJvSub: "Formelle gegenseitige Empfehlung · 30-Minuten-Meetingbitte · Selektive Partnerschaft",
     sectionYou: "IHRE DATEN", autoSaved: "(aus Profil)",
@@ -79,6 +83,7 @@ const TX: Record<Language, ScreenText> = {
   fr: {
     back: "← Retour", title: "PARTENAIRES IMMOBILIERS", sub: "Lettres professionnelles pour agents immobiliers et professionnels de l'immobilier.",
     sectionType: "TYPE DE LETTRE",
+    typeWealth: "Préservation du patrimoine HNW", typeWealthSub: "Pour les courtiers · Au-delà de la transaction · Appel 15 min",
     typeReferral: "Introduction de Référence Douce", typeReferralSub: "Explorer une compatibilité mutuelle · Aucun engagement formel · Ouvrir une relation",
     typeJv: "Proposition Joint-Venture", typeJvSub: "Référence formelle bidirectionnelle · Demande de réunion 30 min · Partenariat sélectif",
     sectionYou: "VOS COORDONNÉES", autoSaved: "(depuis le profil)",
@@ -92,6 +97,7 @@ const TX: Record<Language, ScreenText> = {
   es: {
     back: "← Volver", title: "SOCIOS INMOBILIARIOS", sub: "Cartas profesionales para agentes inmobiliarios y profesionales del sector.",
     sectionType: "TIPO DE CARTA",
+    typeWealth: "Preservación del Patrimonio HNW", typeWealthSub: "Para agentes · Más allá de la transacción · Llamada 15 min",
     typeReferral: "Introducción de Referido Suave", typeReferralSub: "Explorar encaje mutuo · Sin compromiso formal · Abrir una relación",
     typeJv: "Propuesta Joint-Venture", typeJvSub: "Referido formal bidireccional · Solicitud de reunión 30 min · Asociación selectiva",
     sectionYou: "SUS DATOS", autoSaved: "(desde perfil)",
@@ -105,6 +111,7 @@ const TX: Record<Language, ScreenText> = {
   it: {
     back: "← Indietro", title: "PARTNER IMMOBILIARI", sub: "Lettere professionali per agenti immobiliari e professionisti del settore.",
     sectionType: "TIPO DI LETTERA",
+    typeWealth: "Preservazione Patrimonio HNW", typeWealthSub: "Per agenti immobiliari · Oltre la transazione · Chiamata 15 min",
     typeReferral: "Introduzione Referral Soft", typeReferralSub: "Esplorare un'adeguatezza reciproca · Nessun impegno formale · Aprire una relazione",
     typeJv: "Proposta Joint-Venture", typeJvSub: "Referral formale bidirezionale · Richiesta riunione 30 min · Partnership selettiva",
     sectionYou: "I TUOI DATI", autoSaved: "(dal profilo)",
@@ -118,6 +125,7 @@ const TX: Record<Language, ScreenText> = {
   pt: {
     back: "← Voltar", title: "PARCEIROS IMOBILIÁRIOS", sub: "Cartas profissionais para agentes imobiliários e profissionais do setor.",
     sectionType: "TIPO DE CARTA",
+    typeWealth: "Preservação de Patrimônio HNW", typeWealthSub: "Para corretores · Além da transação · Chamada 15 min",
     typeReferral: "Introdução de Referência Suave", typeReferralSub: "Explorar compatibilidade mútua · Sem compromisso formal · Abrir uma relação",
     typeJv: "Proposta de Joint-Venture", typeJvSub: "Referência formal bidirecional · Pedido de reunião 30 min · Parceria seletiva",
     sectionYou: "OS SEUS DADOS", autoSaved: "(do perfil)",
@@ -131,6 +139,7 @@ const TX: Record<Language, ScreenText> = {
   ru: {
     back: "← Назад", title: "ПАРТНЁРЫ ПО НЕДВИЖИМОСТИ", sub: "Профессиональные письма для агентов и специалистов по недвижимости.",
     sectionType: "ТИП ПИСЬМА",
+    typeWealth: "Сохранение Капитала для VIP-Клиентов", typeWealthSub: "Для агентов · За рамками сделки · Звонок 15 мин",
     typeReferral: "Мягкое Реферальное Знакомство", typeReferralSub: "Исследовать взаимное соответствие · Без формальных обязательств · Открыть отношения",
     typeJv: "Предложение о Совместном Предприятии", typeJvSub: "Формальная двусторонняя рекомендация · Запрос встречи на 30 мин · Избирательное партнёрство",
     sectionYou: "ВАШИ ДАННЫЕ", autoSaved: "(из профиля)",
@@ -144,6 +153,7 @@ const TX: Record<Language, ScreenText> = {
   zh: {
     back: "← 返回", title: "房地产合作伙伴", sub: "面向房地产经纪人和房产专业人士的专业信函。",
     sectionType: "信函类型",
+    typeWealth: "高净值客户财富保全", typeWealthSub: "面向经纪人 · 超越交易本身 · 15分钟通话",
     typeReferral: "软性推介介绍", typeReferralSub: "探索相互契合 · 无正式承诺 · 建立关系",
     typeJv: "合资提案", typeJvSub: "正式双向推介 · 申请30分钟会面 · 精选合作",
     sectionYou: "您的信息", autoSaved: "（来自资料）",
@@ -157,6 +167,7 @@ const TX: Record<Language, ScreenText> = {
   tl: {
     back: "← Bumalik", title: "MGA KASOSYO SA REAL ESTATE", sub: "Mga propesyonal na liham para sa mga ahente at propesyonal sa real estate.",
     sectionType: "URI NG LIHAM",
+    typeWealth: "Pagpapanatili ng Kayamanan ng HNW", typeWealthSub: "Para sa mga broker · Higit sa transaksyon · 15-min na tawag",
     typeReferral: "Malambot na Pagpapakilala sa Referral", typeReferralSub: "Tuklasin ang magkaparehong angkop · Walang pormal na pangako · Buksan ang relasyon",
     typeJv: "Panukala sa Joint-Venture", typeJvSub: "Pormal na dalawang-direksyong referral · Kahilingan sa 30-min na pagpupulong · Piling pakikipagsosyo",
     sectionYou: "IYONG MGA DETALYE", autoSaved: "(mula sa profile)",
@@ -170,6 +181,7 @@ const TX: Record<Language, ScreenText> = {
   ar: {
     back: "→ رجوع", title: "شركاء العقارات", sub: "رسائل احترافية لوكلاء العقارات والمحترفين في القطاع.",
     sectionType: "نوع الرسالة",
+    typeWealth: "الحفاظ على ثروة العملاء المميزين", typeWealthSub: "للوسطاء العقاريين · أبعد من الصفقة · مكالمة 15 دقيقة",
     typeReferral: "تعريف إحالة لطيف", typeReferralSub: "استكشاف الملاءمة المتبادلة · بلا التزام رسمي · فتح علاقة",
     typeJv: "اقتراح مشروع مشترك", typeJvSub: "إحالة رسمية ثنائية الاتجاه · طلب اجتماع 30 دقيقة · شراكة انتقائية",
     sectionYou: "بياناتك", autoSaved: "(من الملف)",
@@ -183,6 +195,7 @@ const TX: Record<Language, ScreenText> = {
   th: {
     back: "← กลับ", title: "พันธมิตรอสังหาริมทรัพย์", sub: "จดหมายระดับมืออาชีพสำหรับตัวแทนและผู้เชี่ยวชาญด้านอสังหาริมทรัพย์",
     sectionType: "ประเภทจดหมาย",
+    typeWealth: "การรักษาความมั่งคั่งสำหรับลูกค้า HNW", typeWealthSub: "สำหรับนายหน้า · เกินกว่าการทำธุรกรรม · โทร 15 นาที",
     typeReferral: "การแนะนำการส่งต่ออย่างอ่อนโยน", typeReferralSub: "สำรวจความเหมาะสมร่วมกัน · ไม่มีข้อผูกมัดอย่างเป็นทางการ · เปิดความสัมพันธ์",
     typeJv: "ข้อเสนอร่วมทุน", typeJvSub: "การส่งต่อสองทางอย่างเป็นทางการ · ขอประชุม 30 นาที · หุ้นส่วนแบบคัดสรร",
     sectionYou: "ข้อมูลของคุณ", autoSaved: "(จากโปรไฟล์)",
@@ -196,6 +209,7 @@ const TX: Record<Language, ScreenText> = {
   hi: {
     back: "← वापस", title: "रियल एस्टेट साझेदार", sub: "रियल एस्टेट एजेंटों और संपत्ति पेशेवरों के लिए पेशेवर पत्र।",
     sectionType: "पत्र प्रकार",
+    typeWealth: "HNW संपत्ति संरक्षण पत्र", typeWealthSub: "ब्रोकर्स के लिए · लेनदेन से परे · 15 मिनट कॉल",
     typeReferral: "सॉफ्ट रेफरल परिचय", typeReferralSub: "पारस्परिक उपयुक्तता का पता लगाएं · कोई औपचारिक प्रतिबद्धता नहीं · संबंध खोलें",
     typeJv: "संयुक्त उद्यम प्रस्ताव", typeJvSub: "औपचारिक द्विदिशात्मक रेफरल · 30 मिनट की बैठक अनुरोध · चुनिंदा साझेदारी",
     sectionYou: "आपका विवरण", autoSaved: "(प्रोफ़ाइल से)",
@@ -209,6 +223,7 @@ const TX: Record<Language, ScreenText> = {
   vi: {
     back: "← Quay lại", title: "ĐỐI TÁC BẤT ĐỘNG SẢN", sub: "Thư chuyên nghiệp cho các đại lý bất động sản và chuyên gia bất động sản.",
     sectionType: "LOẠI THƯ",
+    typeWealth: "Bảo Toàn Tài Sản Khách Hàng HNW", typeWealthSub: "Cho môi giới · Vượt ra ngoài giao dịch · Cuộc gọi 15 phút",
     typeReferral: "Giới Thiệu Referral Nhẹ Nhàng", typeReferralSub: "Khám phá sự phù hợp lẫn nhau · Không cam kết chính thức · Mở mối quan hệ",
     typeJv: "Đề Xuất Liên Doanh", typeJvSub: "Giới thiệu hai chiều chính thức · Yêu cầu họp 30 phút · Đối tác được lựa chọn",
     sectionYou: "THÔNG TIN CỦA BẠN", autoSaved: "(từ hồ sơ)",
@@ -316,8 +331,9 @@ export default function RealEstateScreen() {
   }, [letter, customLogoUrl, recipientName, date]);
 
   const TYPE_OPTIONS: { key: RealEstateLetterType; icon: string; label: string; sub: string }[] = [
+    { key: "wealth",   icon: "💎", label: tx.typeWealth,   sub: tx.typeWealthSub   },
     { key: "referral", icon: "🏢", label: tx.typeReferral, sub: tx.typeReferralSub },
-    { key: "jv",       icon: "🤝", label: tx.typeJv,      sub: tx.typeJvSub       },
+    { key: "jv",       icon: "🤝", label: tx.typeJv,       sub: tx.typeJvSub       },
   ];
 
   return (

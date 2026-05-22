@@ -1,12 +1,46 @@
 import type { Language } from "@/lib/translations";
 
-export type RealEstateLetterType = "referral" | "jv";
+export type RealEstateLetterType = "referral" | "jv" | "wealth";
 
 // Placeholders: [DATE] [RECIPIENT_NAME] [ADVISER_NAME] [ADVISER_COMPANY] [ADVISER_MOBILE] [ADVISER_CONTACT]
 
-const T: Partial<Record<Language, Record<RealEstateLetterType, string>>> & { en: Record<RealEstateLetterType, string> } = {
+const T: Partial<Record<Language, Partial<Record<RealEstateLetterType, string>>>> & { en: Record<RealEstateLetterType, string> } = {
 
   en: {
+    wealth:
+`[DATE]
+
+Subject: A valuable opportunity for your high-net-worth clients: Wealth preservation with physical diamonds
+
+Dear Mr./Ms. [RECIPIENT_NAME],
+
+As a trusted advisor to high-net-worth clients, you know better than anyone how important it is to think beyond the property transaction itself and consider broader wealth protection.
+
+Many of your clients are looking for discreet, tangible ways to position part of their capital stably — especially around the time of a home purchase.
+
+What this means for you as a broker:
+
+• You position yourself as a complete advisor who looks further than just the property deal.
+• You build deeper, long-term relationships instead of one-off transactions.
+• Satisfied clients are more likely to return for future sales or purchases and actively refer you to their network.
+
+Key benefits for your clients:
+• Independence – unaffected by interest rate news or geopolitical events
+• Stability & the ability to build returns through ongoing 12-month contracts
+• Discretion & physical portability
+• Excellent diversification
+
+I would be happy to schedule a no-obligation call of maximum 15 minutes. I will show you how easily you can offer our Plan B system to your clients.
+
+Does next week work for you?
+
+Kind regards,
+
+[ADVISER_NAME]
+[ADVISER_COMPANY]
+[ADVISER_MOBILE]
+[ADVISER_CONTACT]`,
+
     referral:
 `[DATE]
 
@@ -59,6 +93,40 @@ Warm regards,
   },
 
   nl: {
+    wealth:
+`[DATE]
+
+Onderwerp: Een waardevolle overweging voor uw vermogende cliënten: Vermogensbehoud met fysieke diamanten
+
+Geachte heer/mevrouw [RECIPIENT_NAME],
+
+Als trusted advisor voor vermogende cliënten weet u als geen ander hoe belangrijk het is om naast de woningtransactie ook na te denken over brede vermogensbescherming.
+
+Veel van uw cliënten zoeken naar discrete, tastbare manieren om kapitaal stabiel te positioneren — zeker rond de aankoop van een woning.
+
+Wat dit voor u als makelaar waardevol maakt:
+
+• U positioneert uzelf als complete adviseur die verder kijkt dan alleen de woning.
+• U bouwt diepere, langdurige relaties in plaats van eenmalige transacties.
+• Tevreden cliënten komen sneller terug en bevelen u actiever aan in hun netwerk.
+
+Belangrijkste voordelen voor uw cliënten:
+• Onafhankelijkheid – immuun voor rentenieuws en geopolitiek
+• Stabiliteit & de mogelijkheid om rendement op te bouwen via doorlopende 12-maanden contracten
+• Discretie & fysieke draagbaarheid
+• Uitstekende diversificatie
+
+Graag nodig ik u uit voor een vrijblijvend gesprek van maximaal 15 minuten. Ik laat u zien hoe eenvoudig u ons systeem Plan B aan uw cliënten kunt aanbieden.
+
+Past volgende week een moment in uw agenda?
+
+Met vriendelijke groet,
+
+[ADVISER_NAME]
+[ADVISER_COMPANY]
+[ADVISER_MOBILE]
+[ADVISER_CONTACT]`,
+
     referral:
 `[DATE]
 
@@ -111,6 +179,40 @@ Met vriendelijke groet,
   },
 
   de: {
+    wealth:
+`[DATE]
+
+Betreff: Eine wertvolle Überlegung für Ihre vermögenden Kunden: Vermögensschutz mit physischen Diamanten
+
+Sehr geehrter Herr / Sehr geehrte Frau [RECIPIENT_NAME],
+
+Als vertrauensvoller Berater vermögender Kunden wissen Sie besser als jeder andere, wie wichtig es ist, über die eigentliche Immobilientransaktion hinauszudenken und eine breitere Vermögensabsicherung zu berücksichtigen.
+
+Viele Ihrer Kunden suchen derzeit nach diskreten, physischen Möglichkeiten, einen Teil ihres Kapitals stabil anzulegen — besonders im Zusammenhang mit dem Kauf einer Immobilie.
+
+Was das für Sie als Makler bedeutet:
+
+• Sie positionieren sich als kompletter Berater, der weiter denkt als nur bis zum Notartermin.
+• Statt einer einmaligen Transaktion bauen Sie tiefere, langfristige Beziehungen auf.
+• Zufriedene Kunden kommen eher für einen späteren Verkauf oder Neukauf zu Ihnen zurück und empfehlen Sie aktiv weiter in ihrem Netzwerk.
+
+Wichtige Vorteile für Ihre Kunden:
+• Unabhängigkeit – unbeeinflusst von Zinsnachrichten oder geopolitischen Ereignissen
+• Stabilität & die Möglichkeit, Rendite aufzubauen durch laufende 12-Monats-Verträge
+• Diskretion & physische Tragbarkeit
+• Hervorragende Diversifikation
+
+Gerne vereinbare ich mit Ihnen ein unverbindliches Gespräch von maximal 15 Minuten. Ich zeige Ihnen, wie einfach Sie unseren Plan B Ihren Kunden anbieten können.
+
+Passt Ihnen nächste Woche ein Termin?
+
+Mit freundlichen Grüßen,
+
+[ADVISER_NAME]
+[ADVISER_COMPANY]
+[ADVISER_MOBILE]
+[ADVISER_CONTACT]`,
+
     referral:
 `[DATE]
 
