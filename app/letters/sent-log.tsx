@@ -17,6 +17,8 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
+import { InfoTip } from "@/components/info-tip";
+import { getTip } from "@/lib/tip-content";
 
 const NAVY = "#0a1628";
 const GOLD = "#e67e22";
@@ -365,7 +367,10 @@ export default function SentLogScreen() {
             <Text style={S.logBtnText}>+ Log Sent</Text>
           </TouchableOpacity>
         </View>
-        <Text style={S.screenTitle}>SENT LOG & PIPELINE</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <Text style={[S.screenTitle, { marginBottom: 0 }]}>SENT LOG & PIPELINE</Text>
+          <InfoTip {...getTip(language, 'sentLog')} />
+        </View>
         <Text style={S.screenSub}>Track letters sent to prospects and clients.</Text>
       </View>
 

@@ -7,7 +7,7 @@ export type TipKey =
   | 'currencyDisplay' | 'pdfExport' | 'createLetter' | 'scenarioChart'
   | 'compareMode' | 'rankTiers' | 'partnerList' | 'commissionEstimator'
   | 'invitationVideos' | 'adviserVideos' | 'lettersHub'
-  | 'assetGoalPlanner' | 'projectedRevenueModel';
+  | 'assetGoalPlanner' | 'projectedRevenueModel' | 'sentLog';
 
 export type TipContent = { title: string; body: string[] };
 type TipMap = Record<TipKey, TipContent>;
@@ -242,6 +242,14 @@ const en: TipMap = {
       'My Pool Parts = your share in the global bonus pool. The 36-month timeline shows how your passive income builds over time as the team compounds.',
     ],
   },
+  sentLog: {
+    title: 'Sent Log & Pipeline',
+    body: [
+      'Log every letter or outreach you send. Record the recipient\'s name, letter type, sent date, and an optional follow-up date to stay on top of your pipeline.',
+      'Tap the outcome badge on any entry to cycle through the pipeline stages: Pending → Responded → Meeting → Converted → No Response. This gives you a live view of where each contact stands.',
+      'Set a follow-up date to get an OVERDUE alert when the date has passed. Mark it Done once you have followed up. Overdue entries appear at the top in red so nothing slips through.',
+    ],
+  },
 };
 
 const nl: TipMap = {
@@ -472,6 +480,14 @@ const nl: TipMap = {
       'Databasegrootte = totaal aantal contacten dat u kunt bereiken. Conversiepercentage = percentage dat u verwacht te converteren. Samen berekenen deze uw geschatte teamgrootte en totale portefeuillewaarde.',
       'Korting Hergebruik % — hoeveel van hun maandelijkse diamantkorting klanten herinvesteren in nieuwe aankopen. Hoger hergebruik betekent snellere groei en hogere residuele inkomsten voor u.',
       'Mijn Pool Aandelen = uw aandeel in de globale bonuspool. De 36-maanden tijdlijn toont hoe uw passief inkomen opbouwt naarmate het team groeit.',
+    ],
+  },
+  sentLog: {
+    title: 'Verzonden log & pijplijn',
+    body: [
+      'Log elke brief of outreach die u verstuurt. Noteer de naam van de ontvanger, het type brief, de verzenddatum en optioneel een follow-updatum om uw pijplijn bij te houden.',
+      'Tik op de uitkomst-badge van een item om door de pijplijnfasen te bladeren: In behandeling → Gereageerd → Vergadering → Geconverteerd → Geen reactie.',
+      'Stel een follow-updatum in voor een ACHTERSTALLIG-melding zodra de datum verstreken is. Markeer als Klaar na opvolging. Achterstallige items verschijnen bovenaan in rood zodat niets wordt gemist.',
     ],
   },
 };
@@ -706,6 +722,14 @@ const de: TipMap = {
       'Meine Pool-Anteile = Ihr Anteil am globalen Bonuspool. Die 36-Monats-Timeline zeigt, wie Ihr passives Einkommen wächst, während das Team wächst.',
     ],
   },
+  sentLog: {
+    title: 'Gesendetes Protokoll & Pipeline',
+    body: [
+      'Protokollieren Sie jeden Brief oder jede Kontaktaufnahme. Tragen Sie Namen, Brieftyp, Sendedatum und optional ein Nachfassdatum ein, um Ihre Pipeline im Blick zu behalten.',
+      'Tippen Sie auf das Ergebnis-Badge eines Eintrags, um durch die Pipeline-Phasen zu wechseln: Ausstehend → Beantwortet → Meeting → Konvertiert → Keine Antwort.',
+      'Setzen Sie ein Nachfassdatum, um eine ÜBERFÄLLIG-Warnung zu erhalten. Markieren Sie es als Erledigt nach dem Nachfassen. Überfällige Einträge erscheinen oben in Rot, damit nichts übersehen wird.',
+    ],
+  },
 };
 
 const fr: TipMap = {
@@ -936,6 +960,14 @@ const fr: TipMap = {
       'Taille de la base de données = nombre total de contacts que vous pouvez atteindre. Taux de conversion = pourcentage que vous espérez convertir en clients. Ensemble ils calculent la taille estimée de votre équipe et le volume total du portefeuille.',
       'Réutilisation des remises % — quelle part de leur remise mensuelle sur les diamants les clients réinvestissent dans de nouveaux achats. Une réutilisation plus élevée signifie une croissance plus rapide et des revenus résiduels plus élevés pour vous.',
       'Mes parts de pool = votre part dans le pool de bonus mondial. La chronologie sur 36 mois montre comment vos revenus passifs s\'accumulent à mesure que l\'équipe se développe.',
+    ],
+  },
+  sentLog: {
+    title: 'Journal d\'envoi & pipeline',
+    body: [
+      'Enregistrez chaque lettre ou démarche envoyée. Notez le nom du destinataire, le type de lettre, la date d\'envoi et une date de suivi facultative pour garder le contrôle de votre pipeline.',
+      'Appuyez sur le badge de résultat d\'une entrée pour faire défiler les étapes du pipeline : En attente → Répondu → Réunion → Converti → Sans réponse.',
+      'Définissez une date de suivi pour recevoir une alerte EN RETARD lorsque la date est dépassée. Marquez-la Terminé après le suivi. Les entrées en retard apparaissent en rouge en haut de l\'écran.',
     ],
   },
 };
@@ -1170,6 +1202,14 @@ const es: TipMap = {
       'Mis partes de pool = tu participación en el pool de bonos global. La línea de tiempo de 36 meses muestra cómo crecen tus ingresos pasivos a medida que el equipo se capitaliza.',
     ],
   },
+  sentLog: {
+    title: 'Registro enviado y canal',
+    body: [
+      'Registra cada carta o comunicación enviada. Anota el nombre del destinatario, el tipo de carta, la fecha de envío y opcionalmente una fecha de seguimiento para controlar tu canal.',
+      'Toca el badge de resultado de una entrada para avanzar por las etapas del canal: Pendiente → Respondió → Reunión → Convertido → Sin respuesta.',
+      'Establece una fecha de seguimiento para recibir una alerta de VENCIDO cuando la fecha haya pasado. Márcalo como Hecho tras el seguimiento. Las entradas vencidas aparecen en rojo en la parte superior.',
+    ],
+  },
 };
 
 const it: TipMap = {
@@ -1400,6 +1440,14 @@ const it: TipMap = {
       'Dimensione database = totale contatti raggiungibili. Tasso di conversione = percentuale che prevedi di convertire in clienti. Insieme calcolano la dimensione stimata del team e il volume totale del portafoglio.',
       'Riutilizzo rimborso % — quanta parte del loro sconto mensile sui diamanti i clienti reinvestono in nuovi acquisti. Maggiore riutilizzo significa crescita più rapida del portafoglio e entrate residue più alte per te.',
       'Mie parti del pool = la tua quota nel pool di bonus globale. La timeline di 36 mesi mostra come il tuo reddito passivo cresce man mano che il team si sviluppa.',
+    ],
+  },
+  sentLog: {
+    title: 'Registro inviato e pipeline',
+    body: [
+      'Registra ogni lettera o comunicazione inviata. Inserisci il nome del destinatario, il tipo di lettera, la data di invio e facoltativamente una data di follow-up per gestire la tua pipeline.',
+      'Tocca il badge risultato di una voce per scorrere le fasi della pipeline: In attesa → Risposto → Riunione → Convertito → Nessuna risposta.',
+      'Imposta una data di follow-up per ricevere un avviso IN SCADENZA quando la data è superata. Contrassegnala come Fatto dopo il follow-up. Le voci scadute appaiono in rosso in cima alla schermata.',
     ],
   },
 };
@@ -1634,6 +1682,14 @@ const pt: TipMap = {
       'Minhas partes no pool = sua participação no pool de bônus global. A linha do tempo de 36 meses mostra como sua renda passiva cresce à medida que a equipe se capitaliza.',
     ],
   },
+  sentLog: {
+    title: 'Registro enviado e pipeline',
+    body: [
+      'Registre cada carta ou contato enviado. Anote o nome do destinatário, tipo de carta, data de envio e opcionalmente uma data de acompanhamento para gerenciar seu pipeline.',
+      'Toque no badge de resultado de uma entrada para avançar pelas etapas do pipeline: Pendente → Respondeu → Reunião → Convertido → Sem resposta.',
+      'Defina uma data de acompanhamento para receber um alerta de ATRASADO quando a data passar. Marque como Concluído após o acompanhamento. Entradas atrasadas aparecem em vermelho no topo da tela.',
+    ],
+  },
 };
 
 const ru: TipMap = {
@@ -1835,6 +1891,14 @@ const ru: TipMap = {
       'Размер базы данных = общее количество контактов. Коэффициент конверсии = процент, который вы ожидаете превратить в клиентов. Вместе они рассчитывают предполагаемый размер команды и общий объём портфеля.',
       'Повторное использование скидки % — какую часть ежемесячной скидки на алмазы клиенты реинвестируют в новые покупки. Более высокий показатель означает более быстрый рост портфеля и более высокий остаточный доход для вас.',
       'Мои доли в пуле = ваша доля в глобальном бонусном пуле. График на 36 месяцев показывает, как растёт ваш пассивный доход по мере роста команды.',
+    ],
+  },
+  sentLog: {
+    title: 'Журнал отправленных и воронка',
+    body: [
+      'Фиксируйте каждое отправленное письмо или обращение. Укажите имя получателя, тип письма, дату отправки и при необходимости дату напоминания для контроля воронки.',
+      'Нажмите на значок результата записи, чтобы переключаться по этапам воронки: Ожидание → Ответил → Встреча → Конвертирован → Нет ответа.',
+      'Установите дату напоминания, чтобы получить предупреждение ПРОСРОЧЕНО. Отметьте как Выполнено после контакта. Просроченные записи отображаются вверху в красном цвете.',
     ],
   },
 };
@@ -2040,6 +2104,14 @@ const zh: TipMap = {
       '我的矿池份额=您在全球奖金池中的份额。36个月时间线显示随着团队增长，您的被动收入如何积累。',
     ],
   },
+  sentLog: {
+    title: '已发送日志与管道',
+    body: [
+      '记录每封发送的信件或联络。填写收件人姓名、信件类型、发送日期，以及可选的跟进日期，以掌控您的业务管道。',
+      '点击任意条目的结果标签，在管道阶段间循环切换：待处理 → 已回复 → 会议 → 已转化 → 无回应。',
+      '设置跟进日期，当日期过后将收到逾期警告。跟进完成后标记为已完成。逾期条目以红色显示在屏幕顶部，确保不遗漏任何事项。',
+    ],
+  },
 };
 
 const tl: TipMap = {
@@ -2241,6 +2313,14 @@ const tl: TipMap = {
       'Laki ng Database = kabuuang bilang ng mga contact na maaari mong maabot. Rate ng Conversion = porsyento na inaasahan mong i-convert sa mga kliyente. Magkasama, kinakalkula nila ang iyong tinantyang laki ng koponan at kabuuang dami ng portfolio.',
       'Muling Paggamit ng Rebate % — kung gaano karaming buwanang diskwento sa brilyante ang muling ini-invest ng mga kliyente sa mga bagong pagbili. Mas mataas na muling paggamit ay nangangahulugang mas mabilis na paglago ng portfolio at mas mataas na kita para sa iyo.',
       'Aking Mga Bahagi sa Pool = ang iyong bahagi sa global na bonus pool. Ipinapakita ng 36-buwang timeline kung paano lumalaki ang iyong passive na kita habang nagko-compound ang koponan.',
+    ],
+  },
+  sentLog: {
+    title: 'Sent Log at Pipeline',
+    body: [
+      'I-log ang bawat liham o outreach na iyong naipadala. Itala ang pangalan ng tatanggap, uri ng liham, petsa ng pagpapadala, at opsyonal na petsa ng follow-up para kontrolin ang iyong pipeline.',
+      'I-tap ang outcome badge ng isang entry para mag-cycle sa mga yugto ng pipeline: Nakabinbin → Sumagot → Pulong → Na-convert → Walang Tugon.',
+      'Magtakda ng petsa ng follow-up para makatanggap ng alerto ng NAANTALA kapag lumipas na ang petsa. Markahan bilang Tapos na pagkatapos mag-follow up. Ang mga naantalang entry ay lumalabas sa itaas sa pulang kulay.',
     ],
   },
 };
@@ -2446,6 +2526,14 @@ const ar: TipMap = {
       'حصصي في المجموعة = حصتك في مجموعة المكافآت العالمية. يُظهر الجدول الزمني المؤلف من 36 شهراً كيف ينمو دخلك السلبي مع نمو الفريق.',
     ],
   },
+  sentLog: {
+    title: 'سجل المرسل والخط',
+    body: [
+      'سجّل كل رسالة أو تواصل ترسله. أدخل اسم المستلم ونوع الرسالة وتاريخ الإرسال وتاريخ المتابعة الاختياري للتحكم في خطك.',
+      'اضغط على شارة النتيجة لأي إدخال للتنقل بين مراحل الخط: قيد الانتظار → استجاب → اجتماع → تحوّل → لا استجابة.',
+      'حدد تاريخ متابعة لتلقي تنبيه متأخر عند مرور التاريخ. اضغط تم بعد المتابعة. تظهر الإدخالات المتأخرة باللون الأحمر في أعلى الشاشة.',
+    ],
+  },
 };
 
 const th: TipMap = {
@@ -2647,6 +2735,14 @@ const th: TipMap = {
       'ขนาดฐานข้อมูล = จำนวนผู้ติดต่อทั้งหมดที่คุณสามารถเข้าถึงได้ อัตราการแปลง = เปอร์เซ็นต์ที่คุณคาดว่าจะเปลี่ยนเป็นลูกค้า ทั้งสองอย่างช่วยคำนวณขนาดทีมโดยประมาณและปริมาณพอร์ตโฟลิโอรวม',
       'การนำส่วนลดกลับมาใช้ใหม่ % — ลูกค้านำส่วนลดเพชรรายเดือนกี่เปอร์เซ็นต์ไปลงทุนซื้อใหม่ การนำกลับมาใช้ใหม่ที่สูงขึ้นหมายถึงการเติบโตของพอร์ตโฟลิโอที่เร็วขึ้นและรายได้คงเหลือที่สูงขึ้นสำหรับคุณ',
       'ส่วนแบ่งพูลของฉัน = ส่วนแบ่งของคุณในพูลโบนัสทั่วโลก ไทม์ไลน์ 36 เดือนแสดงให้เห็นว่ารายได้ passive ของคุณเติบโตอย่างไรเมื่อทีมเติบโต',
+    ],
+  },
+  sentLog: {
+    title: 'บันทึกที่ส่งและไปป์ไลน์',
+    body: [
+      'บันทึกจดหมายหรือการติดต่อทุกฉบับที่คุณส่ง ระบุชื่อผู้รับ ประเภทจดหมาย วันที่ส่ง และวันติดตามผลหากต้องการ เพื่อควบคุมไปป์ไลน์ของคุณ',
+      'แตะที่แบดจ์ผลลัพธ์ของรายการเพื่อวนผ่านขั้นตอนไปป์ไลน์: รอดำเนินการ → ตอบกลับแล้ว → นัดประชุม → แปลงแล้ว → ไม่มีการตอบกลับ',
+      'ตั้งวันติดตามผลเพื่อรับการแจ้งเตือนเกินกำหนดเมื่อวันผ่านไป กดเสร็จสิ้นหลังติดตามผล รายการที่เกินกำหนดจะแสดงสีแดงที่ด้านบนของหน้าจอ',
     ],
   },
 };
@@ -2852,6 +2948,14 @@ const hi: TipMap = {
       'मेरे पूल हिस्से = वैश्विक बोनस पूल में आपका हिस्सा। 36-महीने की टाइमलाइन दर्शाती है कि जैसे-जैसे टीम बढ़ती है, आपकी निष्क्रिय आय कैसे बढ़ती है।',
     ],
   },
+  sentLog: {
+    title: 'भेजा गया लॉग और पाइपलाइन',
+    body: [
+      'हर भेजे गए पत्र या संपर्क को लॉग करें। प्राप्तकर्ता का नाम, पत्र का प्रकार, भेजने की तारीख और वैकल्पिक फॉलो-अप तारीख दर्ज करें।',
+      'किसी भी एंट्री के परिणाम बैज पर टैप करें और पाइपलाइन चरणों में आगे बढ़ें: लंबित → उत्तर दिया → बैठक → रूपांतरित → कोई प्रतिक्रिया नहीं।',
+      'फॉलो-अप तारीख सेट करें ताकि तारीख निकलने पर OVERDUE अलर्ट मिले। फॉलो-अप के बाद Done मार्क करें। अतिदेय एंट्री स्क्रीन के ऊपर लाल रंग में दिखती हैं।',
+    ],
+  },
 };
 
 const vi: TipMap = {
@@ -3053,6 +3157,14 @@ const vi: TipMap = {
       'Kích thước cơ sở dữ liệu = tổng số liên hệ bạn có thể tiếp cận. Tỷ lệ chuyển đổi = phần trăm bạn kỳ vọng chuyển thành khách hàng. Cùng nhau chúng tính toán quy mô ước tính của nhóm và tổng khối lượng danh mục đầu tư.',
       'Tỷ lệ tái sử dụng chiết khấu % — khách hàng tái đầu tư bao nhiêu phần chiết khấu kim cương hàng tháng vào mua hàng mới. Tái sử dụng cao hơn có nghĩa là danh mục đầu tư tăng trưởng nhanh hơn và thu nhập thụ động cao hơn cho bạn.',
       'Phần pool của tôi = phần của bạn trong pool thưởng toàn cầu. Dòng thời gian 36 tháng cho thấy thu nhập thụ động của bạn tăng như thế nào khi nhóm phát triển.',
+    ],
+  },
+  sentLog: {
+    title: 'Nhật ký đã gửi và quy trình',
+    body: [
+      'Ghi lại mọi thư hoặc liên hệ bạn đã gửi. Nhập tên người nhận, loại thư, ngày gửi và tùy chọn ngày theo dõi để quản lý quy trình của bạn.',
+      'Nhấn vào huy hiệu kết quả của một mục để chuyển qua các giai đoạn quy trình: Đang chờ → Đã phản hồi → Cuộc họp → Đã chuyển đổi → Không phản hồi.',
+      'Đặt ngày theo dõi để nhận cảnh báo QUÁ HẠN khi ngày đó đã qua. Đánh dấu là Hoàn thành sau khi theo dõi. Các mục quá hạn hiển thị màu đỏ ở đầu màn hình.',
     ],
   },
 };
