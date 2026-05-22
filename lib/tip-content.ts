@@ -6,7 +6,8 @@ export type TipKey =
   | 'outPercentage' | 'activeCompounding' | 'reverseCalculator' | 'calcHistory'
   | 'currencyDisplay' | 'pdfExport' | 'createLetter' | 'scenarioChart'
   | 'compareMode' | 'rankTiers' | 'partnerList' | 'commissionEstimator'
-  | 'invitationVideos' | 'adviserVideos' | 'lettersHub';
+  | 'invitationVideos' | 'adviserVideos' | 'lettersHub'
+  | 'assetGoalPlanner' | 'projectedRevenueModel';
 
 export type TipContent = { title: string; body: string[] };
 type TipMap = Record<TipKey, TipContent>;
@@ -225,6 +226,22 @@ const en: TipMap = {
       'Profile Setup (⚙) — add your name, company, and logo to pre-fill every letter automatically.',
     ],
   },
+  assetGoalPlanner: {
+    title: 'Asset Goal Planner',
+    body: [
+      'Enter the asset value you want to reach (e.g. $250,000). The planner calculates whether your start amount and monthly deposits get you there within the chosen timeframe.',
+      'Use the quick-select chips to jump to common target values. The progress bar shows how close you are to the goal with current settings.',
+      'Tip: combine with the Strategy tab to show a client the exact deposit amount needed to hit their target in 5 or 10 years.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Projected Revenue Model',
+    body: [
+      'Database Size = total contacts you can reach. Conversion Rate = percentage you expect to convert to clients. Together these calculate your estimated team size and total portfolio volume.',
+      'Rebate Re-Use % — how much of their monthly diamond discount clients reinvest into new purchases. Higher re-use means faster portfolio growth and higher residual income for you.',
+      'My Pool Parts = your share in the global bonus pool. The 36-month timeline shows how your passive income builds over time as the team compounds.',
+    ],
+  },
 };
 
 const nl: TipMap = {
@@ -439,6 +456,22 @@ const nl: TipMap = {
       'Mijn Persoonlijke Brieven — maak en sla uw eigen aangepaste brieven op met variabele plaatshouders.',
       'Verzendlog — volg wie u heeft verzonden, wat hun reactie was en plan vervolgacties.',
       'Profielinstellingen (⚙) — voeg uw naam, bedrijf en logo toe om elke brief automatisch voor te vullen.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Vermogensdoelplanner',
+    body: [
+      'Voer de vermogenswaarde in die u wilt bereiken (bijv. $250.000). De planner berekent of uw startbedrag en maandelijkse stortingen u daar binnen het gekozen tijdsbestek brengen.',
+      'Gebruik de snelkeuze-chips om naar veelgebruikte doelwaarden te springen. De voortgangsbalk toont hoe dicht u bij het doel bent met de huidige instellingen.',
+      'Tip: combineer met het Strategie-tabblad om een klant het exacte stortingsbedrag te tonen dat nodig is om zijn doel in 5 of 10 jaar te bereiken.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Geprojecteerd inkomstenmodel',
+    body: [
+      'Databasegrootte = totaal aantal contacten dat u kunt bereiken. Conversiepercentage = percentage dat u verwacht te converteren. Samen berekenen deze uw geschatte teamgrootte en totale portefeuillewaarde.',
+      'Korting Hergebruik % — hoeveel van hun maandelijkse diamantkorting klanten herinvesteren in nieuwe aankopen. Hoger hergebruik betekent snellere groei en hogere residuele inkomsten voor u.',
+      'Mijn Pool Aandelen = uw aandeel in de globale bonuspool. De 36-maanden tijdlijn toont hoe uw passief inkomen opbouwt naarmate het team groeit.',
     ],
   },
 };
@@ -657,6 +690,22 @@ const de: TipMap = {
       'Profileinstellungen (⚙) — fügen Sie Ihren Namen, Ihr Unternehmen und Ihr Logo hinzu, um jeden Brief automatisch auszufüllen.',
     ],
   },
+  assetGoalPlanner: {
+    title: 'Vermögenszielplaner',
+    body: [
+      'Geben Sie den Vermögenswert ein, den Sie erreichen möchten (z.B. $250.000). Der Planer berechnet, ob Ihr Startbetrag und Ihre monatlichen Einzahlungen Sie innerhalb des gewählten Zeitrahmens dorthin bringen.',
+      'Nutzen Sie die Schnellauswahl-Chips, um zu gängigen Zielwerten zu springen. Der Fortschrittsbalken zeigt, wie nah Sie dem Ziel mit den aktuellen Einstellungen sind.',
+      'Tipp: Kombinieren Sie dies mit der Strategie-Registerkarte, um einem Kunden den genauen Einzahlungsbetrag zu zeigen, der benötigt wird, um sein Ziel in 5 oder 10 Jahren zu erreichen.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Prognoseeinnahmenmodell',
+    body: [
+      'Datenbankgröße = Gesamtzahl der Kontakte, die Sie erreichen können. Konversionsrate = Prozentsatz, den Sie voraussichtlich in Kunden umwandeln. Zusammen berechnen diese Ihre geschätzte Teamgröße und das Gesamtportfolievolumen.',
+      'Rabatt-Wiederverwendung % — wie viel ihres monatlichen Diamantrabattes Kunden in neue Käufe reinvestieren. Höhere Wiederverwendung bedeutet schnelleres Portfoliowachstum und höhere Residualeinnahmen für Sie.',
+      'Meine Pool-Anteile = Ihr Anteil am globalen Bonuspool. Die 36-Monats-Timeline zeigt, wie Ihr passives Einkommen wächst, während das Team wächst.',
+    ],
+  },
 };
 
 const fr: TipMap = {
@@ -871,6 +920,22 @@ const fr: TipMap = {
       'Mes Lettres Personnelles — créez et sauvegardez vos propres lettres avec des espaces réservés variables.',
       'Journal d\'Envoi — suivez à qui vous avez envoyé, leur réponse et planifiez les relances.',
       'Configuration du Profil (⚙) — ajoutez votre nom, entreprise et logo pour préremplir chaque lettre automatiquement.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Planificateur d\'objectif patrimonial',
+    body: [
+      'Entrez la valeur patrimoniale que vous souhaitez atteindre (p.ex. 250 000 $). Le planificateur calcule si votre montant de départ et vos dépôts mensuels vous y amèneront dans le délai choisi.',
+      'Utilisez les puces de sélection rapide pour accéder aux valeurs cibles courantes. La barre de progression indique votre proximité par rapport à l\'objectif avec les paramètres actuels.',
+      'Conseil : combinez avec l\'onglet Stratégie pour montrer à un client le montant exact de dépôt nécessaire pour atteindre son objectif en 5 ou 10 ans.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Modèle de revenus projetés',
+    body: [
+      'Taille de la base de données = nombre total de contacts que vous pouvez atteindre. Taux de conversion = pourcentage que vous espérez convertir en clients. Ensemble ils calculent la taille estimée de votre équipe et le volume total du portefeuille.',
+      'Réutilisation des remises % — quelle part de leur remise mensuelle sur les diamants les clients réinvestissent dans de nouveaux achats. Une réutilisation plus élevée signifie une croissance plus rapide et des revenus résiduels plus élevés pour vous.',
+      'Mes parts de pool = votre part dans le pool de bonus mondial. La chronologie sur 36 mois montre comment vos revenus passifs s\'accumulent à mesure que l\'équipe se développe.',
     ],
   },
 };
@@ -1089,6 +1154,22 @@ const es: TipMap = {
       'Configuración de Perfil (⚙) — agregue su nombre, empresa y logo para pre-rellenar cada carta automáticamente.',
     ],
   },
+  assetGoalPlanner: {
+    title: 'Planificador de metas de activos',
+    body: [
+      'Introduce el valor de activo que deseas alcanzar (p.ej. $250,000). El planificador calcula si tu cantidad inicial y los depósitos mensuales te llevarán allí dentro del plazo elegido.',
+      'Usa los chips de selección rápida para saltar a valores objetivo comunes. La barra de progreso muestra lo cerca que estás de la meta con la configuración actual.',
+      'Consejo: combina con la pestaña Estrategia para mostrar a un cliente el monto exacto de depósito necesario para alcanzar su objetivo en 5 o 10 años.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Modelo de ingresos proyectados',
+    body: [
+      'Tamaño de base de datos = total de contactos a los que puedes llegar. Tasa de conversión = porcentaje que esperas convertir en clientes. Juntos calculan el tamaño estimado de tu equipo y el volumen total de cartera.',
+      'Reutilización de descuento % — qué parte del descuento mensual en diamantes los clientes reinvierten en nuevas compras. Mayor reutilización significa crecimiento más rápido de la cartera e ingresos residuales más altos para ti.',
+      'Mis partes de pool = tu participación en el pool de bonos global. La línea de tiempo de 36 meses muestra cómo crecen tus ingresos pasivos a medida que el equipo se capitaliza.',
+    ],
+  },
 };
 
 const it: TipMap = {
@@ -1303,6 +1384,22 @@ const it: TipMap = {
       'Le Mie Lettere Personali — create e salvate lettere personalizzate con segnaposto variabili.',
       'Registro Invii — monitorate a chi avete inviato, la risposta e pianificate i follow-up.',
       'Configurazione Profilo (⚙) — aggiungete nome, azienda e logo per precompilare ogni lettera automaticamente.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Pianificatore obiettivi patrimoniali',
+    body: [
+      'Inserisci il valore patrimoniale che vuoi raggiungere (es. $250.000). Il pianificatore calcola se il tuo importo iniziale e i depositi mensili ti porteranno lì entro il periodo scelto.',
+      'Usa i chip di selezione rapida per passare ai valori target comuni. La barra di avanzamento mostra quanto sei vicino all\'obiettivo con le impostazioni attuali.',
+      'Suggerimento: combina con la scheda Strategia per mostrare a un cliente l\'importo esatto del deposito necessario per raggiungere il suo obiettivo in 5 o 10 anni.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Modello di entrate proiettate',
+    body: [
+      'Dimensione database = totale contatti raggiungibili. Tasso di conversione = percentuale che prevedi di convertire in clienti. Insieme calcolano la dimensione stimata del team e il volume totale del portafoglio.',
+      'Riutilizzo rimborso % — quanta parte del loro sconto mensile sui diamanti i clienti reinvestono in nuovi acquisti. Maggiore riutilizzo significa crescita più rapida del portafoglio e entrate residue più alte per te.',
+      'Mie parti del pool = la tua quota nel pool di bonus globale. La timeline di 36 mesi mostra come il tuo reddito passivo cresce man mano che il team si sviluppa.',
     ],
   },
 };
@@ -1521,6 +1618,22 @@ const pt: TipMap = {
       'Configuração de Perfil (⚙) — adicione seu nome, empresa e logo para pré-preencher cada carta automaticamente.',
     ],
   },
+  assetGoalPlanner: {
+    title: 'Planejador de metas de ativos',
+    body: [
+      'Insira o valor do ativo que deseja alcançar (ex. $250.000). O planejador calcula se o seu valor inicial e os depósitos mensais vão te levar lá dentro do prazo escolhido.',
+      'Use os chips de seleção rápida para pular para valores de meta comuns. A barra de progresso mostra o quão perto você está da meta com as configurações atuais.',
+      'Dica: combine com a aba Estratégia para mostrar a um cliente o valor exato de depósito necessário para atingir seu objetivo em 5 ou 10 anos.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Modelo de receita projetada',
+    body: [
+      'Tamanho do banco de dados = total de contatos que você pode alcançar. Taxa de conversão = porcentagem que você espera converter em clientes. Juntos calculam o tamanho estimado da equipe e o volume total da carteira.',
+      'Reutilização de desconto % — quanto do desconto mensal em diamantes os clientes reinvestem em novas compras. Maior reutilização significa crescimento mais rápido da carteira e receita residual mais alta para você.',
+      'Minhas partes no pool = sua participação no pool de bônus global. A linha do tempo de 36 meses mostra como sua renda passiva cresce à medida que a equipe se capitaliza.',
+    ],
+  },
 };
 
 const ru: TipMap = {
@@ -1706,6 +1819,22 @@ const ru: TipMap = {
       'Создавайте и управляйте персонализированными письмами для клиентов.',
       'Журнал отправок — отслеживайте кому, что и когда отправлено.',
       'Настройка профиля (⚙) — добавьте имя, компанию и логотип для автозаполнения.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Планировщик целевых активов',
+    body: [
+      'Введите целевую стоимость активов (например, $250 000). Планировщик рассчитывает, достигнет ли ваша начальная сумма и ежемесячные взносы этой цели в выбранные сроки.',
+      'Используйте быстрые чипы для выбора распространённых целевых значений. Индикатор прогресса показывает, насколько близко вы к цели при текущих настройках.',
+      'Совет: сочетайте с вкладкой «Стратегия», чтобы показать клиенту точную сумму депозита для достижения цели за 5 или 10 лет.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Прогнозируемая модель доходов',
+    body: [
+      'Размер базы данных = общее количество контактов. Коэффициент конверсии = процент, который вы ожидаете превратить в клиентов. Вместе они рассчитывают предполагаемый размер команды и общий объём портфеля.',
+      'Повторное использование скидки % — какую часть ежемесячной скидки на алмазы клиенты реинвестируют в новые покупки. Более высокий показатель означает более быстрый рост портфеля и более высокий остаточный доход для вас.',
+      'Мои доли в пуле = ваша доля в глобальном бонусном пуле. График на 36 месяцев показывает, как растёт ваш пассивный доход по мере роста команды.',
     ],
   },
 };
@@ -1895,6 +2024,22 @@ const zh: TipMap = {
       '个人资料设置(⚙) — 添加姓名、公司和徽标以自动填写每封信。',
     ],
   },
+  assetGoalPlanner: {
+    title: '资产目标规划器',
+    body: [
+      '输入您想要达到的资产价值（例如$250,000）。规划器会计算您的起始金额和每月存款是否能在所选时间范围内实现该目标。',
+      '使用快速选择芯片跳转到常用目标值。进度条显示在当前设置下您距目标有多近。',
+      '提示：结合策略选项卡，向客户展示在5年或10年内达到目标所需的确切存款金额。',
+    ],
+  },
+  projectedRevenueModel: {
+    title: '预计收入模型',
+    body: [
+      '数据库大小=您可以联系到的总联系人数。转化率=您预计转化为客户的百分比。两者共同计算您的预计团队规模和总投资组合量。',
+      '折扣再利用%—客户每月将多少钻石折扣再投资于新购买。再利用率越高意味着投资组合增长越快，您的被动收入越高。',
+      '我的矿池份额=您在全球奖金池中的份额。36个月时间线显示随着团队增长，您的被动收入如何积累。',
+    ],
+  },
 };
 
 const tl: TipMap = {
@@ -2080,6 +2225,22 @@ const tl: TipMap = {
       'Gumawa at pamahalaan ang mga personalisadong liham para sa mga kliyente.',
       'Log ng Pagpapadala — subaybayan kung kanino, ano ang tugon at mag-iskedyul ng mga follow-up.',
       'Pag-setup ng Profile (⚙) — idagdag ang iyong pangalan, kumpanya at logo para awtomatikong mapunan ang bawat liham.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Tagaplano ng Layunin sa Asset',
+    body: [
+      'Ilagay ang halaga ng asset na nais mong maabot (hal. $250,000). Kinakalkula ng planner kung ang iyong panimulang halaga at buwanang deposito ay magdadala sa iyo doon sa loob ng napiling timeframe.',
+      'Gamitin ang mga mabilis na chip para lumipat sa mga karaniwang target na halaga. Ipinapakita ng progress bar kung gaano ka na kalapit sa layunin gamit ang mga kasalukuyang setting.',
+      'Tip: pagsamahin sa tab ng Strategy upang ipakita sa isang kliyente ang eksaktong halaga ng deposito na kailangan para maabot ang kanilang layunin sa loob ng 5 o 10 taon.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Inaasahang Modelo ng Kita',
+    body: [
+      'Laki ng Database = kabuuang bilang ng mga contact na maaari mong maabot. Rate ng Conversion = porsyento na inaasahan mong i-convert sa mga kliyente. Magkasama, kinakalkula nila ang iyong tinantyang laki ng koponan at kabuuang dami ng portfolio.',
+      'Muling Paggamit ng Rebate % — kung gaano karaming buwanang diskwento sa brilyante ang muling ini-invest ng mga kliyente sa mga bagong pagbili. Mas mataas na muling paggamit ay nangangahulugang mas mabilis na paglago ng portfolio at mas mataas na kita para sa iyo.',
+      'Aking Mga Bahagi sa Pool = ang iyong bahagi sa global na bonus pool. Ipinapakita ng 36-buwang timeline kung paano lumalaki ang iyong passive na kita habang nagko-compound ang koponan.',
     ],
   },
 };
@@ -2269,6 +2430,22 @@ const ar: TipMap = {
       'إعداد الملف الشخصي (⚙) — أضف اسمك وشركتك وشعارك لملء كل خطاب تلقائياً.',
     ],
   },
+  assetGoalPlanner: {
+    title: 'مخطط أهداف الأصول',
+    body: [
+      'أدخل قيمة الأصول التي تريد الوصول إليها (مثل 250,000$). يحسب المخطط ما إذا كانت مبلغك الابتدائي وودائعك الشهرية ستوصلك إلى هناك ضمن الإطار الزمني المختار.',
+      'استخدم رقائق الاختيار السريع للانتقال إلى القيم المستهدفة الشائعة. يُظهر شريط التقدم مدى قربك من الهدف بالإعدادات الحالية.',
+      'نصيحة: اجمع مع علامة تبويب الاستراتيجية لإظهار المبلغ الدقيق للإيداع الذي يحتاجه العميل للوصول إلى هدفه في 5 أو 10 سنوات.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'نموذج الإيرادات المتوقعة',
+    body: [
+      'حجم قاعدة البيانات = إجمالي جهات الاتصال التي يمكنك الوصول إليها. معدل التحويل = النسبة المئوية التي تتوقع تحويلها إلى عملاء. معاً يحسبان الحجم التقديري لفريقك وإجمالي حجم المحفظة.',
+      'نسبة إعادة استخدام الخصم % — كم من خصمهم الشهري على الماس يعيد العملاء استثماره في مشتريات جديدة. إعادة الاستخدام الأعلى تعني نمواً أسرع للمحفظة وعائداً متبقياً أعلى لك.',
+      'حصصي في المجموعة = حصتك في مجموعة المكافآت العالمية. يُظهر الجدول الزمني المؤلف من 36 شهراً كيف ينمو دخلك السلبي مع نمو الفريق.',
+    ],
+  },
 };
 
 const th: TipMap = {
@@ -2454,6 +2631,22 @@ const th: TipMap = {
       'สร้างและจัดการจดหมายส่วนตัวสำหรับลูกค้า',
       'บันทึกการส่ง — ติดตามว่าส่งให้ใคร การตอบกลับ และกำหนดการติดตาม',
       'การตั้งค่าโปรไฟล์ (⚙) — เพิ่มชื่อ บริษัท และโลโก้เพื่อกรอกจดหมายแต่ละฉบับโดยอัตโนมัติ',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'เครื่องมือวางแผนเป้าหมายสินทรัพย์',
+    body: [
+      'ป้อนมูลค่าสินทรัพย์ที่คุณต้องการบรรลุ (เช่น $250,000) เครื่องมือวางแผนจะคำนวณว่าจำนวนเงินเริ่มต้นและเงินฝากรายเดือนของคุณจะพาคุณไปถึงเป้าหมายภายในกรอบเวลาที่เลือกหรือไม่',
+      'ใช้ชิปเลือกด่วนเพื่อข้ามไปยังมูลค่าเป้าหมายทั่วไป แถบความคืบหน้าแสดงให้เห็นว่าคุณใกล้เคียงกับเป้าหมายแค่ไหนด้วยการตั้งค่าปัจจุบัน',
+      'เคล็ดลับ: ใช้ร่วมกับแท็บกลยุทธ์เพื่อแสดงให้ลูกค้าเห็นจำนวนเงินฝากที่แน่นอนที่จำเป็นเพื่อบรรลุเป้าหมายใน 5 หรือ 10 ปี',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'แบบจำลองรายได้ที่คาดการณ์',
+    body: [
+      'ขนาดฐานข้อมูล = จำนวนผู้ติดต่อทั้งหมดที่คุณสามารถเข้าถึงได้ อัตราการแปลง = เปอร์เซ็นต์ที่คุณคาดว่าจะเปลี่ยนเป็นลูกค้า ทั้งสองอย่างช่วยคำนวณขนาดทีมโดยประมาณและปริมาณพอร์ตโฟลิโอรวม',
+      'การนำส่วนลดกลับมาใช้ใหม่ % — ลูกค้านำส่วนลดเพชรรายเดือนกี่เปอร์เซ็นต์ไปลงทุนซื้อใหม่ การนำกลับมาใช้ใหม่ที่สูงขึ้นหมายถึงการเติบโตของพอร์ตโฟลิโอที่เร็วขึ้นและรายได้คงเหลือที่สูงขึ้นสำหรับคุณ',
+      'ส่วนแบ่งพูลของฉัน = ส่วนแบ่งของคุณในพูลโบนัสทั่วโลก ไทม์ไลน์ 36 เดือนแสดงให้เห็นว่ารายได้ passive ของคุณเติบโตอย่างไรเมื่อทีมเติบโต',
     ],
   },
 };
@@ -2643,6 +2836,22 @@ const hi: TipMap = {
       'प्रोफ़ाइल सेटअप (⚙) — प्रत्येक पत्र को स्वचालित रूप से भरने के लिए अपना नाम, कंपनी और लोगो जोड़ें।',
     ],
   },
+  assetGoalPlanner: {
+    title: 'संपत्ति लक्ष्य योजनाकार',
+    body: [
+      'वह संपत्ति मूल्य दर्ज करें जिसे आप प्राप्त करना चाहते हैं (उदा. $250,000)। योजनाकार गणना करता है कि आपकी प्रारंभिक राशि और मासिक जमा आपको चुनी गई समय-सीमा के भीतर वहां पहुंचाएंगे या नहीं।',
+      'सामान्य लक्ष्य मूल्यों पर जाने के लिए त्वरित-चयन चिप्स का उपयोग करें। प्रगति बार दर्शाता है कि वर्तमान सेटिंग्स के साथ आप लक्ष्य के कितने करीब हैं।',
+      'टिप: किसी ग्राहक को 5 या 10 वर्षों में उनका लक्ष्य प्राप्त करने के लिए आवश्यक सटीक जमा राशि दिखाने के लिए रणनीति टैब के साथ संयोजित करें।',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'अनुमानित राजस्व मॉडल',
+    body: [
+      'डेटाबेस आकार = आप जिन कुल संपर्कों तक पहुंच सकते हैं। रूपांतरण दर = जितने प्रतिशत को आप ग्राहक में बदलने की उम्मीद करते हैं। साथ मिलकर ये आपके अनुमानित टीम आकार और कुल पोर्टफोलियो वॉल्यूम की गणना करते हैं।',
+      'छूट पुनः उपयोग % — ग्राहक अपनी मासिक हीरे की छूट का कितना हिस्सा नई खरीदारी में पुनर्निवेश करते हैं। अधिक पुनः उपयोग का अर्थ है तेज़ पोर्टफोलियो वृद्धि और आपके लिए अधिक अवशिष्ट आय।',
+      'मेरे पूल हिस्से = वैश्विक बोनस पूल में आपका हिस्सा। 36-महीने की टाइमलाइन दर्शाती है कि जैसे-जैसे टीम बढ़ती है, आपकी निष्क्रिय आय कैसे बढ़ती है।',
+    ],
+  },
 };
 
 const vi: TipMap = {
@@ -2828,6 +3037,22 @@ const vi: TipMap = {
       'Tạo và quản lý thư cá nhân hóa cho khách hàng.',
       'Nhật ký gửi — theo dõi gửi cho ai, phản hồi là gì và lên lịch theo dõi.',
       'Thiết lập Hồ sơ (⚙) — thêm tên, công ty và logo để tự động điền vào từng thư.',
+    ],
+  },
+  assetGoalPlanner: {
+    title: 'Công cụ lập kế hoạch mục tiêu tài sản',
+    body: [
+      'Nhập giá trị tài sản bạn muốn đạt được (ví dụ: $250.000). Công cụ tính toán liệu số tiền ban đầu và khoản tiền gửi hàng tháng của bạn có đưa bạn đến đó trong khung thời gian đã chọn hay không.',
+      'Sử dụng các chip chọn nhanh để nhảy đến các giá trị mục tiêu phổ biến. Thanh tiến trình cho thấy bạn gần đạt mục tiêu đến đâu với các cài đặt hiện tại.',
+      'Mẹo: kết hợp với tab Chiến lược để cho khách hàng thấy số tiền gửi chính xác cần thiết để đạt mục tiêu trong 5 hoặc 10 năm.',
+    ],
+  },
+  projectedRevenueModel: {
+    title: 'Mô hình doanh thu dự kiến',
+    body: [
+      'Kích thước cơ sở dữ liệu = tổng số liên hệ bạn có thể tiếp cận. Tỷ lệ chuyển đổi = phần trăm bạn kỳ vọng chuyển thành khách hàng. Cùng nhau chúng tính toán quy mô ước tính của nhóm và tổng khối lượng danh mục đầu tư.',
+      'Tỷ lệ tái sử dụng chiết khấu % — khách hàng tái đầu tư bao nhiêu phần chiết khấu kim cương hàng tháng vào mua hàng mới. Tái sử dụng cao hơn có nghĩa là danh mục đầu tư tăng trưởng nhanh hơn và thu nhập thụ động cao hơn cho bạn.',
+      'Phần pool của tôi = phần của bạn trong pool thưởng toàn cầu. Dòng thời gian 36 tháng cho thấy thu nhập thụ động của bạn tăng như thế nào khi nhóm phát triển.',
     ],
   },
 };

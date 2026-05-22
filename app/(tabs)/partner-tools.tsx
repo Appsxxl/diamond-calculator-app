@@ -1355,11 +1355,11 @@ export default function PartnerToolsScreen() {
   const [tempCode, setTempCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [globalStats, setGlobalStats] = useState({ globalTurnover: 10_000_000, pool1Parts: 4, pool2Parts: 2, pool3Parts: 1 });
-  const [revenueDb, setRevenueDb] = useState("200");
-  const [revenueConv, setRevenueConv] = useState("10");
+  const [revenueDb, setRevenueDb] = useState("800");
+  const [revenueConv, setRevenueConv] = useState("5");
   const [revenueAvg, setRevenueAvg] = useState("10000");
-  const [revenueReuse, setRevenueReuse] = useState("50");
-  const [revenueParts, setRevenueParts] = useState("1");
+  const [revenueReuse, setRevenueReuse] = useState("90");
+  const [revenueParts, setRevenueParts] = useState("0");
   const [revenueResult, setRevenueResult] = useState<ReturnType<typeof calcTimeline> | null>(null);
   const [calcPropertyLoading, setCalcPropertyLoading] = useState(false);
   const [calcSavingsLoading, setCalcSavingsLoading] = useState(false);
@@ -2606,7 +2606,10 @@ export default function PartnerToolsScreen() {
             )}
             {toolKey === 'asset' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: BLUE + "44", marginBottom: 12, borderTopWidth: 2, borderTopColor: BLUE }]}>
-          <Text style={[S.sectionTitle, { color: BLUE }]}>{tx.assetTitle}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 2 }}>
+            <Text style={[S.sectionTitle, { color: BLUE, marginBottom: 0 }]}>{tx.assetTitle}</Text>
+            <InfoTip {...getTip(language, 'assetGoalPlanner')} />
+          </View>
           <View style={S.card}>
             <Text style={S.cardDesc}>{tx.assetDesc}</Text>
 
@@ -2703,7 +2706,10 @@ export default function PartnerToolsScreen() {
             )}
             {toolKey === 'revenue' && (
         <View style={[S.section, { backgroundColor: "#0f2035", borderRadius: 14, padding: 14, borderWidth: 1, borderColor: GOLD + "44", marginBottom: 12 }]}>
-          <Text style={[S.sectionTitle, { color: GOLD }]}>{tx.projRevTitle}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 2 }}>
+            <Text style={[S.sectionTitle, { color: GOLD, marginBottom: 0 }]}>{tx.projRevTitle}</Text>
+            <InfoTip {...getTip(language, 'projectedRevenueModel')} />
+          </View>
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 12 }}>
             {tx.projRevDesc}
           </Text>
