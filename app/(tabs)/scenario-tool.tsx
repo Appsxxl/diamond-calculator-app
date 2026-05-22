@@ -319,7 +319,7 @@ export default function ScenarioToolScreen() {
     propWithdrawal?: string;
     propWithdrawalFrom?: string;
   }>();
-  const { language, officeLocation } = useCalculator();
+  const { language, officeLocation, partnerMode, lettersAccess } = useCalculator();
   const { width: screenWidth } = useWindowDimensions();
   // Compute table column widths: 96% of screen, minus outer content padding (32) and card padding (24)
   const TW = Math.max(Math.round(Math.min(screenWidth * 0.96, 1450) - 56), 788);
@@ -1722,43 +1722,49 @@ export default function ScenarioToolScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* WhatsApp Share */}
-            <TouchableOpacity
-              style={S.whatsappBtn}
-              activeOpacity={0.85}
-              onPress={() => {
-                const deposit = numVal(startAmount);
-                const net = getNetDeposit(deposit);
-                const sp = getSPLevel(net);
-                const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
-                const encoded = encodeURIComponent(text);
-                const url = `https://wa.me/?text=${encoded}`;
-                if (Platform.OS === 'web') { window.open(url, '_blank'); }
-                else { Linking.openURL(url).catch(() => {}); }
-              }}
-            >
-              <Text style={S.whatsappBtnText}>💬 {t(language, 'sendWhatsApp')}</Text>
-            </TouchableOpacity>
+            {/* WhatsApp Share — partner mode only */}
+            {partnerMode && (
+              <TouchableOpacity
+                style={S.whatsappBtn}
+                activeOpacity={0.85}
+                onPress={() => {
+                  const deposit = numVal(startAmount);
+                  const net = getNetDeposit(deposit);
+                  const sp = getSPLevel(net);
+                  const text = buildCopyText(language, { deposit, net, sp, vipEnabled, years, goal, clientName, result });
+                  const encoded = encodeURIComponent(text);
+                  const url = `https://wa.me/?text=${encoded}`;
+                  if (Platform.OS === 'web') { window.open(url, '_blank'); }
+                  else { Linking.openURL(url).catch(() => {}); }
+                }}
+              >
+                <Text style={S.whatsappBtnText}>💬 {t(language, 'sendWhatsApp')}</Text>
+              </TouchableOpacity>
+            )}
 
-            {/* Create Letter (prefill) */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>{t(language, 'letterOutreach')}</Text>
-              <InfoTip {...getTip(language, 'createLetter')} />
-            </View>
-            <TouchableOpacity
-              style={S.createLetterBtn}
-              activeOpacity={0.85}
-              onPress={async () => {
-                const sp = getSPLevel(getNetDeposit(numVal(startAmount)));
-                await AsyncStorage.setItem('letter_prefill', JSON.stringify({
-                  clientName, spName: sp.name, amount: startAmount, years,
-                  savedAt: Date.now(),
-                }));
-                router.push('/letters' as any);
-              }}
-            >
-              <Text style={S.createLetterBtnText}>📝 {t(language, 'createLetterBtn')}</Text>
-            </TouchableOpacity>
+            {/* Create Letter — letters access only */}
+            {partnerMode && lettersAccess && (
+              <>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                  <Text style={{ color: '#64748b', fontSize: 10, fontWeight: '800', letterSpacing: 1 }}>{t(language, 'letterOutreach')}</Text>
+                  <InfoTip {...getTip(language, 'createLetter')} />
+                </View>
+                <TouchableOpacity
+                  style={S.createLetterBtn}
+                  activeOpacity={0.85}
+                  onPress={async () => {
+                    const sp = getSPLevel(getNetDeposit(numVal(startAmount)));
+                    await AsyncStorage.setItem('letter_prefill', JSON.stringify({
+                      clientName, spName: sp.name, amount: startAmount, years,
+                      savedAt: Date.now(),
+                    }));
+                    router.push('/letters' as any);
+                  }}
+                >
+                  <Text style={S.createLetterBtnText}>📝 {t(language, 'createLetterBtn')}</Text>
+                </TouchableOpacity>
+              </>
+            )}
 
             {/* Scenario Chart */}
             <View style={{ backgroundColor: '#0c1520', borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: '#1e293b' }}>
