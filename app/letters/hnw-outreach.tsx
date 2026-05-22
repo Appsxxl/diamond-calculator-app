@@ -12,6 +12,8 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
+import { LettersLangPicker } from "@/components/letters-lang-picker";
+import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
 import {
   buildHnwLetter,
   type HnwFormality,
@@ -314,6 +316,21 @@ export default function HnwOutreachScreen() {
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
 
+  const [letterLang, setLetterLang] = useState<Language>(language);
+  const [topLangs, setTopLangs] = useState<Language[]>(["en", "nl", "de", "fr", "es", "it"]);
+
+  useEffect(() => {
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
+  useEffect(() => { setLetterLang(language); }, [language]);
+
+  const handleLangSelect = useCallback((lang: Language) => {
+    setLetterLang(lang);
+    recordLetterLangUsage(lang);
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
   const [recipientName, setRecipientName] = useState("");
   const [formalAddress, setFormalAddress] = useState("");
   const [relationship, setRelationship] = useState<HnwRelationship>("cold");
@@ -358,8 +375,8 @@ export default function HnwOutreachScreen() {
 
   const generateLetter = useCallback(() => {
     if (!recipientName.trim()) return;
-    const date = formatLetterDate(language);
-    const text = buildHnwLetter(language, {
+    const date = formatLetterDate(letterLang);
+    const text = buildHnwLetter(letterLang, {
       recipientName: recipientName.trim(),
       formalAddress: formalAddress.trim() || "Mr./Ms.",
       relationship,
@@ -378,7 +395,7 @@ export default function HnwOutreachScreen() {
   }, [
     recipientName, formalAddress, relationship, referredBy,
     assetInterest, netWorth, formality,
-    adviserName, company, mobile, contact, language,
+    adviserName, company, mobile, contact, letterLang,
   ]);
 
   const handleCopy = async () => {
@@ -403,7 +420,7 @@ export default function HnwOutreachScreen() {
     setExporting(true);
     try {
       const logoSrc = await resolveLogoForPdf(customLogoUrl);
-      const date = formatLetterDate(language);
+      const date = formatLetterDate(letterLang);
       const html = buildLetterHtml(letterText, logoSrc, recipientName || "VIP Recipient", date);
       if (Platform.OS === "web") {
         const win = window.open("", "_blank");
@@ -434,6 +451,10 @@ export default function HnwOutreachScreen() {
         </View>
 
         <View style={S.body}>
+
+          {/* Language picker */}
+          <Text style={S.sectionLabel}>LETTER LANGUAGE</Text>
+          <LettersLangPicker languages={topLangs} selected={letterLang} onSelect={handleLangSelect} />
 
           {/* Recipient */}
           <Text style={S.sectionLabel}>{tx.sectionRecipient}</Text>

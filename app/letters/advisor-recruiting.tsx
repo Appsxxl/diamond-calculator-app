@@ -15,6 +15,8 @@ import { trpc } from "@/lib/trpc";
 import { buildAdvisorLetter, resolveLogoForPdf, buildLetterHtml, loadLocalProfile } from "./shared";
 import type { AdvisorLetterType } from "./templates/advisor";
 import type { Language } from "@/lib/translations";
+import { LettersLangPicker } from "@/components/letters-lang-picker";
+import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
 
 const NAVY = "#0a1628";
 const GOLD = "#e67e22";
@@ -225,6 +227,21 @@ export default function AdvisorRecruitingScreen() {
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
 
+  const [letterLang, setLetterLang] = useState<Language>(language);
+  const [topLangs, setTopLangs] = useState<Language[]>(["en", "nl", "de", "fr", "es", "it"]);
+
+  useEffect(() => {
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
+  useEffect(() => { setLetterLang(language); }, [language]);
+
+  const handleLangSelect = useCallback((lang: Language) => {
+    setLetterLang(lang);
+    recordLetterLangUsage(lang);
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
   const [letterType, setLetterType] = useState<AdvisorLetterType>("passive");
   const [recipientName, setRecipientName] = useState("");
   const [adviserName, setAdviserName] = useState("");
@@ -258,9 +275,9 @@ export default function AdvisorRecruitingScreen() {
     }
   }, [profileQuery.data, profileQuery.isLoading]);
 
-  const date = new Date().toLocaleDateString(language === "ar" ? "ar-SA" : language === "zh" ? "zh-CN" : language === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const date = new Date().toLocaleDateString(letterLang === "ar" ? "ar-SA" : letterLang === "zh" ? "zh-CN" : letterLang === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
 
-  const letter = buildAdvisorLetter(language, letterType, recipientName, adviserName, adviserCompany, adviserMobile, adviserContact, date);
+  const letter = buildAdvisorLetter(letterLang, letterType, recipientName, adviserName, adviserCompany, adviserMobile, adviserContact, date);
 
   const handleCopy = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -341,6 +358,12 @@ export default function AdvisorRecruitingScreen() {
             </View>
             <Text style={S.screenTitle}>{tx.title}</Text>
             <Text style={S.screenSub}>{tx.sub}</Text>
+          </View>
+
+          {/* Language picker */}
+          <View style={[S.section, { paddingBottom: 4 }]}>
+            <Text style={S.sectionLabel}>LETTER LANGUAGE</Text>
+            <LettersLangPicker languages={topLangs} selected={letterLang} onSelect={handleLangSelect} />
           </View>
 
           {/* Type selector */}

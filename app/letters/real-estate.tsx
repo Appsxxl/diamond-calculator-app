@@ -16,6 +16,8 @@ import { buildRealEstateLetter } from "./templates/realestate";
 import { resolveLogoForPdf, buildLetterHtml, formatLetterDate, loadLocalProfile } from "./shared";
 import type { RealEstateLetterType } from "./templates/realestate";
 import type { Language } from "@/lib/translations";
+import { LettersLangPicker } from "@/components/letters-lang-picker";
+import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
 
 const NAVY = "#0a1628";
 const GOLD = "#e67e22";
@@ -241,6 +243,21 @@ export default function RealEstateScreen() {
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
 
+  const [letterLang, setLetterLang] = useState<Language>(language);
+  const [topLangs, setTopLangs] = useState<Language[]>(["en", "nl", "de", "fr", "es", "it"]);
+
+  useEffect(() => {
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
+  useEffect(() => { setLetterLang(language); }, [language]);
+
+  const handleLangSelect = useCallback((lang: Language) => {
+    setLetterLang(lang);
+    recordLetterLangUsage(lang);
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
   const [letterType, setLetterType] = useState<RealEstateLetterType>("referral");
   const [recipientName, setRecipientName] = useState("");
   const [adviserName, setAdviserName] = useState("");
@@ -274,8 +291,8 @@ export default function RealEstateScreen() {
     }
   }, [profileQuery.data, profileQuery.isLoading]);
 
-  const date = formatLetterDate(language);
-  const letter = buildRealEstateLetter(language, letterType, recipientName, adviserName, adviserCompany, adviserMobile, adviserContact, date);
+  const date = formatLetterDate(letterLang);
+  const letter = buildRealEstateLetter(letterLang, letterType, recipientName, adviserName, adviserCompany, adviserMobile, adviserContact, date);
 
   const handleCopy = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -353,6 +370,12 @@ export default function RealEstateScreen() {
             </View>
             <Text style={S.screenTitle}>{tx.title}</Text>
             <Text style={S.screenSub}>{tx.sub}</Text>
+          </View>
+
+          {/* Language picker */}
+          <View style={[S.section, { paddingBottom: 4 }]}>
+            <Text style={S.sectionLabel}>LETTER LANGUAGE</Text>
+            <LettersLangPicker languages={topLangs} selected={letterLang} onSelect={handleLangSelect} />
           </View>
 
           {/* Type selector */}
