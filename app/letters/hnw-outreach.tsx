@@ -3,7 +3,7 @@ import {
   ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet,
   ActivityIndicator, Linking, Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
@@ -314,6 +314,7 @@ const TX: Record<Language, ScreenText> = {
 
 export default function HnwOutreachScreen() {
   const router = useRouter();
+  const { recipient } = useLocalSearchParams<{ recipient?: string }>();
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
 
@@ -332,7 +333,7 @@ export default function HnwOutreachScreen() {
     getTopLetterLanguages(6).then(setTopLangs);
   }, []);
 
-  const [recipientName, setRecipientName] = useState("");
+  const [recipientName, setRecipientName] = useState(typeof recipient === "string" ? recipient : "");
   const [formalAddress, setFormalAddress] = useState("");
   const [relationship, setRelationship] = useState<HnwRelationship>("cold");
   const [referredBy, setReferredBy] = useState("");

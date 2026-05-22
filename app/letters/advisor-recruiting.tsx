@@ -8,7 +8,7 @@ import * as Haptics from "expo-haptics";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system/legacy";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
@@ -225,6 +225,7 @@ const TX: Record<Language, ScreenText> = {
 
 export default function AdvisorRecruitingScreen() {
   const router = useRouter();
+  const { recipient } = useLocalSearchParams<{ recipient?: string }>();
   const { language } = useCalculator();
   const tx = TX[language] ?? TX.en;
 
@@ -244,7 +245,7 @@ export default function AdvisorRecruitingScreen() {
   }, []);
 
   const [letterType, setLetterType] = useState<AdvisorLetterType>("passive");
-  const [recipientName, setRecipientName] = useState("");
+  const [recipientName, setRecipientName] = useState(typeof recipient === "string" ? recipient : "");
   const [adviserName, setAdviserName] = useState("");
   const [adviserCompany, setAdviserCompany] = useState("");
   const [adviserMobile, setAdviserMobile] = useState("");

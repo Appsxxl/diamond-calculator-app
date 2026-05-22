@@ -34,6 +34,8 @@ interface SentEntry {
   letterType: string;
   recipientName: string;
   recipientWhatsapp: string;
+  mobile: string;
+  website: string;
   sentAt: string;
   followUpDate: string;
   followUpDone: boolean;
@@ -109,7 +111,16 @@ function formatDisplayDate(iso: string): string {
 
 function isOverdue(iso: string): boolean {
   if (!iso) return false;
-  return new Date(iso) < new Date();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(iso) < today;
+}
+
+function isDueToday(iso: string): boolean {
+  if (!iso) return false;
+  const d = new Date(iso);
+  const t = new Date();
+  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
 }
 
 function isSameMonth(iso: string, now: Date): boolean {
@@ -135,9 +146,18 @@ export default function SentLogScreen() {
   const [editLetterType, setEditLetterType] = useState("Customer");
   const [editRecipientName, setEditRecipientName] = useState("");
   const [editWhatsapp, setEditWhatsapp] = useState("");
+  const [editMobile, setEditMobile] = useState("");
+  const [editWebsite, setEditWebsite] = useState("");
   const [editSentDate, setEditSentDate] = useState(todayDMY());
   const [editFollowUpDate, setEditFollowUpDate] = useState("");
   const [editNotes, setEditNotes] = useState("");
+
+  const [actionEntry, setActionEntry] = useState<SentEntry | null>(null);
+  const [actionOutcome, setActionOutcome] = useState<OutcomeType>("pending");
+  const [actionMobile, setActionMobile] = useState("");
+  const [actionWebsite, setActionWebsite] = useState("");
+  const [actionFollowUp, setActionFollowUp] = useState("");
+  const [actionContactSaved, setActionContactSaved] = useState(false);
 
   useEffect(() => {
     loadEntries();
@@ -163,6 +183,8 @@ export default function SentLogScreen() {
     setEditLetterType("Customer");
     setEditRecipientName("");
     setEditWhatsapp("");
+    setEditMobile("");
+    setEditWebsite("");
     setEditSentDate(todayDMY());
     setEditFollowUpDate("");
     setEditNotes("");
@@ -175,10 +197,59 @@ export default function SentLogScreen() {
     setEditLetterType(entry.letterType);
     setEditRecipientName(entry.recipientName);
     setEditWhatsapp(entry.recipientWhatsapp);
+    setEditMobile(entry.mobile ?? "");
+    setEditWebsite(entry.website ?? "");
     setEditSentDate(isoToDMY(entry.sentAt) || todayDMY());
     setEditFollowUpDate(isoToDMY(entry.followUpDate));
     setEditNotes(entry.notes);
     setLogModalVisible(true);
+  };
+
+  const openAction = (entry: SentEntry) => {
+    setActionEntry(entry);
+    setActionOutcome(entry.outcome);
+    setActionMobile(entry.mobile ?? "");
+    setActionWebsite(entry.website ?? "");
+    setActionFollowUp(isoToDMY(entry.followUpDate));
+    setActionContactSaved(false);
+  };
+
+  const handleSaveContact = async () => {
+    if (!actionEntry) return;
+    const updated = entries.map(e =>
+      e.id === actionEntry.id ? { ...e, mobile: actionMobile, website: actionWebsite, outcome: actionOutcome } : e
+    );
+    await saveEntries(updated);
+    setActionEntry(prev => prev ? { ...prev, mobile: actionMobile, website: actionWebsite, outcome: actionOutcome } : null);
+    setActionContactSaved(true);
+    setTimeout(() => setActionContactSaved(false), 2000);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const handleActionOutcomeChange = async (outcome: OutcomeType) => {
+    if (!actionEntry) return;
+    setActionOutcome(outcome);
+    const updated = entries.map(e => e.id === actionEntry.id ? { ...e, outcome } : e);
+    await saveEntries(updated);
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleActionMarkFollowUpDone = async () => {
+    if (!actionEntry) return;
+    const updated = entries.map(e => e.id === actionEntry.id ? { ...e, followUpDone: true } : e);
+    await saveEntries(updated);
+    setActionEntry(prev => prev ? { ...prev, followUpDone: true } : null);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const handleActionUpdateFollowUp = async () => {
+    if (!actionEntry || !actionFollowUp.trim()) return;
+    const iso = dmyToISO(actionFollowUp.trim());
+    if (!iso) return;
+    const updated = entries.map(e => e.id === actionEntry.id ? { ...e, followUpDate: iso, followUpDone: false } : e);
+    await saveEntries(updated);
+    setActionEntry(prev => prev ? { ...prev, followUpDate: iso, followUpDone: false } : null);
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   const handleSave = async () => {
@@ -202,6 +273,8 @@ export default function SentLogScreen() {
               letterType: editLetterType,
               recipientName: editRecipientName.trim(),
               recipientWhatsapp: editWhatsapp.trim(),
+              mobile: editMobile.trim(),
+              website: editWebsite.trim(),
               sentAt: sentISO,
               followUpDate: followISO,
               notes: editNotes.trim(),
@@ -216,6 +289,8 @@ export default function SentLogScreen() {
         letterType: editLetterType,
         recipientName: editRecipientName.trim(),
         recipientWhatsapp: editWhatsapp.trim(),
+        mobile: editMobile.trim(),
+        website: editWebsite.trim(),
         sentAt: sentISO,
         followUpDate: followISO,
         followUpDone: false,
@@ -290,15 +365,29 @@ export default function SentLogScreen() {
     { key: "converted", label: "Converted" },
   ];
 
+  const NEXT_LETTER_OPTIONS = [
+    { label: "Customer", route: "/client-letter" },
+    { label: "Real Estate", route: "/letters/real-estate" },
+    { label: "HNW", route: "/letters/hnw-outreach" },
+    { label: "Advisor", route: "/letters/advisor-recruiting" },
+    { label: "Personal", route: "/letters/personal" },
+  ];
+
   const renderEntry = (entry: SentEntry) => {
     const notesExpanded = expandedNotes.includes(entry.id);
     const outcomeColor = OUTCOME_COLORS[entry.outcome];
     const hasFollowUp = !!entry.followUpDate;
     const fuOverdue = hasFollowUp && !entry.followUpDone && isOverdue(entry.followUpDate);
-    const fuUpcoming = hasFollowUp && !entry.followUpDone && !isOverdue(entry.followUpDate);
+    const fuToday = hasFollowUp && !entry.followUpDone && isDueToday(entry.followUpDate);
     const fuDone = hasFollowUp && entry.followUpDone;
-
-    const fuColor = fuOverdue ? "#ef4444" : fuDone ? GREEN : "#f97316";
+    const fuColor = fuOverdue ? "#ef4444" : fuToday ? "#f97316" : fuDone ? GREEN : "#64748b";
+    const fuLabel = fuDone
+      ? "✓ Follow-up done"
+      : fuOverdue
+        ? `Follow-up: ${formatDisplayDate(entry.followUpDate)} · OVERDUE`
+        : fuToday
+          ? `Follow-up: Today`
+          : `Follow-up: ${formatDisplayDate(entry.followUpDate)}`;
 
     return (
       <View key={entry.id} style={S.card}>
@@ -307,6 +396,11 @@ export default function SentLogScreen() {
             <Text style={S.recipientName}>{entry.recipientName}</Text>
             <Text style={S.letterTitle} numberOfLines={1}>{entry.letterTitle}</Text>
             <Text style={S.sentDate}>Sent {formatDisplayDate(entry.sentAt)} · {entry.letterType}</Text>
+            {(entry.mobile || entry.website) && (
+              <Text style={S.contactLine}>
+                {[entry.mobile, entry.website].filter(Boolean).join("  ·  ")}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             style={[S.outcomeBadge, { backgroundColor: `${outcomeColor}22`, borderColor: outcomeColor }]}
@@ -320,10 +414,8 @@ export default function SentLogScreen() {
 
         {hasFollowUp && (
           <View style={S.followUpRow}>
-            <View style={[S.fuChip, { backgroundColor: `${fuColor}18`, borderColor: fuColor }]}>
-              <Text style={[S.fuChipText, { color: fuColor }]}>
-                {fuDone ? "✓ Follow-up done" : `Follow-up: ${formatDisplayDate(entry.followUpDate)}${fuOverdue ? " · OVERDUE" : ""}`}
-              </Text>
+            <View style={[S.fuChip, { backgroundColor: `${fuColor}18`, borderColor: fuColor, flex: 1 }]}>
+              <Text style={[S.fuChipText, { color: fuColor }]}>{fuLabel}</Text>
             </View>
             {!entry.followUpDone && (
               <TouchableOpacity style={S.doneBtn} onPress={() => markFollowUpDone(entry)}>
@@ -335,21 +427,20 @@ export default function SentLogScreen() {
 
         {entry.notes ? (
           <TouchableOpacity onPress={() => toggleNotes(entry.id)}>
-            <Text style={S.notesText} numberOfLines={notesExpanded ? undefined : 2}>
-              {entry.notes}
-            </Text>
-            {!notesExpanded && entry.notes.length > 80 && (
-              <Text style={S.notesTap}>tap to expand</Text>
-            )}
+            <Text style={S.notesText} numberOfLines={notesExpanded ? undefined : 2}>{entry.notes}</Text>
+            {!notesExpanded && entry.notes.length > 80 && <Text style={S.notesTap}>tap to expand</Text>}
           </TouchableOpacity>
         ) : null}
 
         <View style={S.cardActions}>
+          <TouchableOpacity style={[S.actionBtn, S.actionBtnPrimary]} onPress={() => openAction(entry)}>
+            <Text style={[S.actionBtnText, { color: BLUE }]}>⚡ Take Action</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={S.actionBtn} onPress={() => openEdit(entry)}>
             <Text style={S.actionBtnText}>✏️ Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[S.actionBtn, S.actionBtnDelete]} onPress={() => handleDelete(entry)}>
-            <Text style={[S.actionBtnText, { color: "#ef4444" }]}>🗑 Delete</Text>
+            <Text style={[S.actionBtnText, { color: "#ef4444" }]}>🗑</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -507,7 +598,7 @@ export default function SentLogScreen() {
               selectionColor={GOLD}
             />
 
-            <Text style={S.fieldLabel}>WHATSAPP NUMBER (optional)</Text>
+            <Text style={S.fieldLabel}>WHATSAPP / MOBILE (optional)</Text>
             <TextInput
               style={S.fieldInput}
               value={editWhatsapp}
@@ -515,6 +606,29 @@ export default function SentLogScreen() {
               placeholder="+1234567890"
               placeholderTextColor="#475569"
               keyboardType="phone-pad"
+              selectionColor={GOLD}
+            />
+
+            <Text style={S.fieldLabel}>MOBILE (optional)</Text>
+            <TextInput
+              style={S.fieldInput}
+              value={editMobile}
+              onChangeText={setEditMobile}
+              placeholder="Mobile number"
+              placeholderTextColor="#475569"
+              keyboardType="phone-pad"
+              selectionColor={GOLD}
+            />
+
+            <Text style={S.fieldLabel}>WEBSITE / EMAIL (optional)</Text>
+            <TextInput
+              style={S.fieldInput}
+              value={editWebsite}
+              onChangeText={setEditWebsite}
+              placeholder="website.com or email@domain.com"
+              placeholderTextColor="#475569"
+              keyboardType="email-address"
+              autoCapitalize="none"
               selectionColor={GOLD}
             />
 
@@ -560,6 +674,120 @@ export default function SentLogScreen() {
                 <Text style={S.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
             </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* ── Action Modal ── */}
+      <Modal visible={!!actionEntry} transparent animationType="slide" presentationStyle="overFullScreen" onRequestClose={() => setActionEntry(null)}>
+        <Pressable style={S.modalOverlay} onPress={() => setActionEntry(null)} />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={S.modalSheet}>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <View style={S.modalHandle} />
+
+            <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 2 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={S.modalTitle}>{actionEntry?.recipientName ?? ""}</Text>
+                <Text style={{ color: "#64748b", fontFamily: FONT, fontSize: 11, marginBottom: 14 }}>{actionEntry?.letterTitle ?? ""}</Text>
+              </View>
+            </View>
+
+            {/* Pipeline Stage */}
+            <Text style={S.fieldLabel}>PIPELINE STAGE</Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+              {(["pending", "responded", "meeting", "converted", "no_response"] as OutcomeType[]).map(o => {
+                const color = OUTCOME_COLORS[o];
+                const active = actionOutcome === o;
+                return (
+                  <TouchableOpacity
+                    key={o}
+                    style={[S.chip, { borderColor: color, backgroundColor: active ? `${color}33` : "transparent" }]}
+                    onPress={() => handleActionOutcomeChange(o)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[S.chipText, { color: active ? color : "#64748b" }]}>{OUTCOME_LABELS[o]}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Follow-up */}
+            {actionEntry && actionEntry.followUpDate && !actionEntry.followUpDone && (
+              <>
+                <Text style={S.fieldLabel}>FOLLOW-UP</Text>
+                <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+                  <TouchableOpacity style={[S.chip, { borderColor: GREEN, flex: 1, alignItems: "center" }]} onPress={handleActionMarkFollowUpDone} activeOpacity={0.85}>
+                    <Text style={[S.chipText, { color: GREEN }]}>✓ Mark Follow-up Done</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+            <Text style={S.fieldLabel}>SET / UPDATE FOLLOW-UP DATE (DD/MM/YYYY)</Text>
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+              <TextInput
+                style={[S.fieldInput, { flex: 1 }]}
+                value={actionFollowUp}
+                onChangeText={setActionFollowUp}
+                placeholder="DD/MM/YYYY"
+                placeholderTextColor="#475569"
+                keyboardType="numbers-and-punctuation"
+                selectionColor={GOLD}
+              />
+              <TouchableOpacity
+                style={[S.chip, { borderColor: GOLD, paddingHorizontal: 16, alignItems: "center", justifyContent: "center" }]}
+                onPress={handleActionUpdateFollowUp}
+                activeOpacity={0.85}
+              >
+                <Text style={[S.chipText, { color: GOLD }]}>Save</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Contact details */}
+            <Text style={S.fieldLabel}>CONTACT DETAILS</Text>
+            <TextInput
+              style={[S.fieldInput, { marginBottom: 8 }]}
+              value={actionMobile}
+              onChangeText={setActionMobile}
+              placeholder="Mobile number"
+              placeholderTextColor="#475569"
+              keyboardType="phone-pad"
+              selectionColor={GOLD}
+            />
+            <TextInput
+              style={[S.fieldInput, { marginBottom: 8 }]}
+              value={actionWebsite}
+              onChangeText={setActionWebsite}
+              placeholder="Website or email"
+              placeholderTextColor="#475569"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              selectionColor={GOLD}
+            />
+            <TouchableOpacity style={[S.saveBtn, { marginBottom: 20 }]} onPress={handleSaveContact} activeOpacity={0.85}>
+              <Text style={S.saveBtnText}>{actionContactSaved ? "✓ Saved" : "Save Contact Details"}</Text>
+            </TouchableOpacity>
+
+            {/* Write next letter */}
+            <Text style={S.fieldLabel}>WRITE NEXT LETTER FOR THIS CONTACT</Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+              {NEXT_LETTER_OPTIONS.map(opt => (
+                <TouchableOpacity
+                  key={opt.route}
+                  style={[S.chip, { borderColor: BLUE, backgroundColor: `${BLUE}18` }]}
+                  onPress={() => {
+                    setActionEntry(null);
+                    router.push({ pathname: opt.route as any, params: { recipient: actionEntry?.recipientName ?? "" } });
+                  }}
+                  activeOpacity={0.85}
+                >
+                  <Text style={[S.chipText, { color: BLUE }]}>{opt.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity style={S.cancelBtn} onPress={() => setActionEntry(null)} activeOpacity={0.85}>
+              <Text style={S.cancelBtnText}>Close</Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
@@ -697,6 +925,7 @@ const S = StyleSheet.create({
   notesText: { color: "#64748b", fontFamily: FONT, fontSize: 11, lineHeight: 17, marginBottom: 4 },
   notesTap: { color: "#475569", fontFamily: FONT, fontSize: 10, marginBottom: 6 },
 
+  contactLine: { color: "#475569", fontFamily: FONT, fontSize: 10, marginTop: 3 },
   cardActions: { flexDirection: "row", gap: 8, marginTop: 8 },
   actionBtn: {
     backgroundColor: "#1e2d47",
@@ -704,6 +933,7 @@ const S = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
+  actionBtnPrimary: { backgroundColor: `${BLUE}18`, borderWidth: 1, borderColor: `${BLUE}55` },
   actionBtnDelete: { backgroundColor: "#1a0d0d" },
   actionBtnText: { color: "#94a3b8", fontFamily: FONT, fontSize: 11 },
 
