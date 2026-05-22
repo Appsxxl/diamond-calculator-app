@@ -44,7 +44,7 @@ interface CalculatorContextType {
 }
 
 const PARTNER_PIN = "4837";
-const LETTERS_PIN = "2941";
+const LETTERS_PIN = "LTR294";
 
 const CalculatorContext = createContext<CalculatorContextType | undefined>(undefined);
 

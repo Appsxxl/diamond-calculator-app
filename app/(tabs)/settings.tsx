@@ -443,15 +443,16 @@ export default function SettingsScreen() {
         <View style={S.modalOverlay}>
           <View style={S.modalBox}>
             <Text style={S.modalTitle}>✉️ Letters Access PIN</Text>
-            <Text style={S.modalDesc}>Enter your PIN to unlock Letters & Outreach.</Text>
+            <Text style={S.modalDesc}>Enter your 6-character access code to unlock Letters & Outreach.</Text>
             <TextInput
               style={[S.pinInput, lettersPinError && S.pinInputError]}
               value={lettersPinInput}
-              onChangeText={(v) => { setLettersPinInput(v); setLettersPinError(false); }}
-              keyboardType="numeric"
-              maxLength={4}
+              onChangeText={(v) => { setLettersPinInput(v.toUpperCase()); setLettersPinError(false); }}
+              keyboardType="default"
+              maxLength={6}
               secureTextEntry
-              placeholder="• • • •"
+              placeholder="• • • • • •"
+              autoCapitalize="characters"
               placeholderTextColor="#64748b"
               returnKeyType="done"
               onSubmitEditing={handleLettersPinSubmit}
