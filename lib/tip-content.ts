@@ -1523,7 +1523,1316 @@ const pt: TipMap = {
   },
 };
 
-const tips: Partial<Record<Language, TipMap>> = { en, nl, de, fr, es, it, pt };
+const ru: TipMap = {
+  monthlyGoal: {
+    title: 'Ежемесячная цель',
+    body: [
+      'Ваша персональная цель по продажам на этот месяц.',
+      'Отслеживайте прогресс в режиме реального времени с помощью индикатора выполнения.',
+      'Обновите цель в Настройках профиля (⚙) в любое время.',
+    ],
+  },
+  clientNameSaving: {
+    title: 'Сохранение имени клиента',
+    body: [
+      'Имя автоматически сохраняется по мере ввода.',
+      'Не нужно нажимать кнопку «Сохранить» — изменения фиксируются мгновенно.',
+      'Используйте читаемое имя для удобной идентификации в истории и экспорте.',
+    ],
+  },
+  vipStatus: {
+    title: 'VIP-статус клиента',
+    body: [
+      'Статусы: новый → активный → VIP → лидер → легенда.',
+      'Статус обновляется автоматически на основе активности клиента.',
+      'VIP-клиенты отображаются отдельно для быстрого доступа.',
+    ],
+  },
+  startAmount: {
+    title: 'Начальная сумма',
+    body: [
+      'Сумма первоначального вложения клиента.',
+      'Используется как база для расчёта ребейтов и роста.',
+      'Можно обновить в любое время при изменении условий.',
+    ],
+  },
+  strategyDuration: {
+    title: 'Срок стратегии',
+    body: [
+      'Общий планируемый срок инвестиционной стратегии в месяцах.',
+      'Определяет горизонт расчёта и ожидаемые выплаты.',
+      'Можно скорректировать под нужды клиента.',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'Ежемесячный взнос',
+    body: [
+      'Регулярная ежемесячная сумма, вносимая клиентом.',
+      'Учитывается в прогнозе накоплений и росте.',
+      'Оставьте 0 для единовременных инвестиций без пополнений.',
+    ],
+  },
+  annualBonus: {
+    title: 'Годовой бонус',
+    body: [
+      'Дополнительная сумма, вносимая клиентом раз в год.',
+      'Добавляется поверх ежемесячных взносов.',
+      'Полезно для расчёта крупных единовременных пополнений.',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'Фиксированное снятие',
+    body: [
+      'Регулярная ежемесячная сумма вывода из портфеля.',
+      'Используется для расчёта устойчивости стратегии вывода.',
+      'Оставьте 0, если снятий не планируется.',
+    ],
+  },
+  outPercentage: {
+    title: 'Процент вывода',
+    body: [
+      'Ежемесячный процент от баланса для вывода.',
+      'Альтернатива фиксированной сумме вывода.',
+      'Полезно для расчёта гибких стратегий вывода.',
+    ],
+  },
+  activeCompounding: {
+    title: 'Активное реинвестирование',
+    body: [
+      'При включении ребейты реинвестируются обратно в портфель.',
+      'Это ускоряет рост за счёт эффекта сложного процента.',
+      'При отключении ребейты выплачиваются в виде наличных.',
+    ],
+  },
+  reverseCalculator: {
+    title: 'Обратный калькулятор',
+    body: [
+      'Задайте целевой ежемесячный доход и срок — калькулятор рассчитает необходимую начальную сумму.',
+      'Удобно для планирования «от цели».',
+      'Результаты автоматически подставляются в основной сценарий.',
+    ],
+  },
+  calcHistory: {
+    title: 'История расчётов',
+    body: [
+      'Журнал всех расчётов по текущему клиенту.',
+      'Сравнивайте сценарии и отслеживайте изменения стратегии.',
+      'Экспортируйте в PDF для предоставления клиенту.',
+    ],
+  },
+  currencyDisplay: {
+    title: 'Отображение валюты',
+    body: [
+      'Выберите валюту для отображения сумм.',
+      'Не влияет на расчёты — только на форматирование.',
+      'Настраивается индивидуально для каждого клиента.',
+    ],
+  },
+  pdfExport: {
+    title: 'Экспорт в PDF',
+    body: [
+      'Создайте профессиональный PDF-отчёт по текущему сценарию.',
+      'Включает графики, таблицы и сводку.',
+      'Готов к отправке клиенту.',
+    ],
+  },
+  createLetter: {
+    title: 'Создать письмо',
+    body: [
+      'Создайте персонализированное письмо клиенту на основе текущего сценария.',
+      'Шаблон автоматически заполняется данными расчёта.',
+      'Редактируйте и отправляйте прямо из приложения.',
+    ],
+  },
+  scenarioChart: {
+    title: 'График сценария',
+    body: [
+      'Визуализация роста портфеля с течением времени.',
+      'Отображает баланс, взносы и ребейты по месяцам.',
+      'Нажмите на точку для детальной информации.',
+    ],
+  },
+  compareMode: {
+    title: 'Режим сравнения',
+    body: [
+      'Сравните несколько сценариев для одного клиента рядом.',
+      'Используйте для демонстрации различных стратегий.',
+      'Экспортируйте сравнение в PDF.',
+    ],
+  },
+  rankTiers: {
+    title: 'Уровни ранга',
+    body: [
+      'Ваш текущий ранг и условия перехода на следующий уровень.',
+      'Ранг определяет процент комиссии и бонусы.',
+      'Отслеживайте прогресс в реальном времени.',
+    ],
+  },
+  partnerList: {
+    title: 'Список партнёров',
+    body: [
+      'Все партнёры в вашей сети с их статусами.',
+      'Отслеживайте активность и объёмы команды.',
+      'Нажмите на партнёра для детальной информации.',
+    ],
+  },
+  commissionEstimator: {
+    title: 'Калькулятор комиссии',
+    body: [
+      'Рассчитайте ожидаемый доход на основе объёмов.',
+      'Включает личные продажи и командные бонусы.',
+      'Обновляется автоматически при изменении данных.',
+    ],
+  },
+  invitationVideos: {
+    title: 'Видео-приглашения',
+    body: [
+      'Видеоматериалы для знакомства потенциальных клиентов с продуктом.',
+      'Поделитесь ссылкой или отправьте прямо из приложения.',
+      'Регулярно обновляются командой.',
+    ],
+  },
+  adviserVideos: {
+    title: 'Видео для консультантов',
+    body: [
+      'Учебные материалы и обновления для консультантов.',
+      'Смотрите новые видео для повышения квалификации.',
+      'Помечайте просмотренные для удобного отслеживания.',
+    ],
+  },
+  lettersHub: {
+    title: 'Центр писем',
+    body: [
+      'Создавайте и управляйте персонализированными письмами для клиентов.',
+      'Журнал отправок — отслеживайте кому, что и когда отправлено.',
+      'Настройка профиля (⚙) — добавьте имя, компанию и логотип для автозаполнения.',
+    ],
+  },
+};
+
+const zh: TipMap = {
+  monthlyGoal: {
+    title: '月度目标',
+    body: [
+      '本月的个人销售目标。',
+      '通过进度条实时跟踪完成情况。',
+      '随时在个人资料设置(⚙)中更新目标。',
+    ],
+  },
+  clientNameSaving: {
+    title: '客户名称保存',
+    body: [
+      '输入时自动保存名称。',
+      '无需点击"保存"按钮，更改即时生效。',
+      '使用易读的名称，方便在历史记录和导出中识别。',
+    ],
+  },
+  vipStatus: {
+    title: '客户VIP状态',
+    body: [
+      '状态：新客户 → 活跃 → VIP → 领导者 → 传奇。',
+      '根据客户活动自动更新状态。',
+      'VIP客户单独显示，方便快速访问。',
+    ],
+  },
+  startAmount: {
+    title: '初始金额',
+    body: [
+      '客户的初始投资金额。',
+      '用作计算回扣和增长的基础。',
+      '条件变化时可随时更新。',
+    ],
+  },
+  strategyDuration: {
+    title: '策略期限',
+    body: [
+      '投资策略的总计划月数。',
+      '决定计算范围和预期支出。',
+      '可根据客户需求调整。',
+    ],
+  },
+  monthlyDeposit: {
+    title: '每月存款',
+    body: [
+      '客户每月定期存入的金额。',
+      '计入储蓄预测和增长中。',
+      '无月供投资请填0。',
+    ],
+  },
+  annualBonus: {
+    title: '年度奖金',
+    body: [
+      '客户每年额外存入的金额。',
+      '在月度存款基础上叠加。',
+      '适用于计算大额一次性存款。',
+    ],
+  },
+  fixedWithdrawal: {
+    title: '固定提款',
+    body: [
+      '每月从投资组合中定期提取的金额。',
+      '用于计算提款策略的可持续性。',
+      '如不提款请填0。',
+    ],
+  },
+  outPercentage: {
+    title: '提款比例',
+    body: [
+      '每月从余额中提取的百分比。',
+      '固定提款金额的替代方案。',
+      '适用于灵活提款策略计算。',
+    ],
+  },
+  activeCompounding: {
+    title: '主动复利',
+    body: [
+      '启用时，回扣将再投资回投资组合。',
+      '通过复利效应加速增长。',
+      '禁用时，回扣以现金形式支付。',
+    ],
+  },
+  reverseCalculator: {
+    title: '反向计算器',
+    body: [
+      '设定目标月收入和期限，计算器将计算所需初始金额。',
+      '便于"目标导向"规划。',
+      '结果自动填入主要场景。',
+    ],
+  },
+  calcHistory: {
+    title: '计算历史',
+    body: [
+      '当前客户的所有计算记录。',
+      '比较场景并跟踪策略变化。',
+      '导出为PDF供客户参考。',
+    ],
+  },
+  currencyDisplay: {
+    title: '货币显示',
+    body: [
+      '选择金额显示的货币。',
+      '不影响计算，仅影响格式。',
+      '可为每个客户单独设置。',
+    ],
+  },
+  pdfExport: {
+    title: 'PDF导出',
+    body: [
+      '为当前场景生成专业PDF报告。',
+      '包含图表、表格和摘要。',
+      '可直接发送给客户。',
+    ],
+  },
+  createLetter: {
+    title: '创建信函',
+    body: [
+      '根据当前场景为客户创建个性化信函。',
+      '模板自动填入计算数据。',
+      '可在应用内编辑和发送。',
+    ],
+  },
+  scenarioChart: {
+    title: '场景图表',
+    body: [
+      '投资组合随时间增长的可视化。',
+      '按月显示余额、存款和回扣。',
+      '点击数据点查看详细信息。',
+    ],
+  },
+  compareMode: {
+    title: '比较模式',
+    body: [
+      '并排比较同一客户的多个场景。',
+      '用于展示不同策略。',
+      '可将比较结果导出为PDF。',
+    ],
+  },
+  rankTiers: {
+    title: '等级层次',
+    body: [
+      '您的当前等级及晋升下一级的条件。',
+      '等级决定佣金比例和奖金。',
+      '实时跟踪进度。',
+    ],
+  },
+  partnerList: {
+    title: '合作伙伴列表',
+    body: [
+      '您网络中所有合作伙伴及其状态。',
+      '跟踪团队活动和业绩。',
+      '点击合作伙伴查看详细信息。',
+    ],
+  },
+  commissionEstimator: {
+    title: '佣金估算器',
+    body: [
+      '根据业绩计算预期收入。',
+      '包含个人销售和团队奖金。',
+      '数据变化时自动更新。',
+    ],
+  },
+  invitationVideos: {
+    title: '邀请视频',
+    body: [
+      '向潜在客户介绍产品的视频资料。',
+      '可分享链接或直接从应用发送。',
+      '由团队定期更新。',
+    ],
+  },
+  adviserVideos: {
+    title: '顾问视频',
+    body: [
+      '顾问培训资料和更新。',
+      '观看新视频提升专业技能。',
+      '标记已看视频方便跟踪。',
+    ],
+  },
+  lettersHub: {
+    title: '信函中心',
+    body: [
+      '为客户创建和管理个性化信函。',
+      '发送记录 — 跟踪发送对象、回复和后续跟进安排。',
+      '个人资料设置(⚙) — 添加姓名、公司和徽标以自动填写每封信。',
+    ],
+  },
+};
+
+const tl: TipMap = {
+  monthlyGoal: {
+    title: 'Buwanang Target',
+    body: [
+      'Ang iyong personal na target sa benta para sa buwang ito.',
+      'Subaybayan ang progreso sa real-time gamit ang progress bar.',
+      'I-update ang target anumang oras sa Profile Settings (⚙).',
+    ],
+  },
+  clientNameSaving: {
+    title: 'Pag-save ng Pangalan ng Kliyente',
+    body: [
+      'Awtomatikong sine-save ang pangalan habang nagta-type.',
+      'Hindi na kailangang pindutin ang "I-save" — agad na nai-record ang mga pagbabago.',
+      'Gumamit ng nababasang pangalan para sa madaling pagkilala sa kasaysayan at pag-export.',
+    ],
+  },
+  vipStatus: {
+    title: 'VIP Status ng Kliyente',
+    body: [
+      'Mga status: bago → aktibo → VIP → lider → alamat.',
+      'Awtomatikong ina-update ang status batay sa aktibidad ng kliyente.',
+      'Ang mga VIP na kliyente ay hiwalay na ipinapakita para sa mabilis na access.',
+    ],
+  },
+  startAmount: {
+    title: 'Panimulang Halaga',
+    body: [
+      'Ang paunang halaga ng investment ng kliyente.',
+      'Ginagamit bilang base para sa pagkalkula ng rebate at paglago.',
+      'Maaaring i-update anumang oras kung magbabago ang mga kondisyon.',
+    ],
+  },
+  strategyDuration: {
+    title: 'Tagal ng Estratehiya',
+    body: [
+      'Ang kabuuang nakaplanong buwan ng investment strategy.',
+      'Tinutukoy ang saklaw ng kalkulasyon at inaasahang kita.',
+      'Maaaring i-adjust ayon sa pangangailangan ng kliyente.',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'Buwanang Deposito',
+    body: [
+      'Ang regular na buwanang halaga na idinedeposito ng kliyente.',
+      'Kasama sa forecast ng ipon at paglago.',
+      'Mag-iwan ng 0 para sa isang beses na investment na walang dagdag na deposito.',
+    ],
+  },
+  annualBonus: {
+    title: 'Taunang Bonus',
+    body: [
+      'Karagdagang halaga na idinedeposito ng kliyente taon-taon.',
+      'Idinaragdag sa ibabaw ng buwanang deposito.',
+      'Kapaki-pakinabang para sa pagkalkula ng malalaking isang beses na deposito.',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'Nakapirming Withdrawal',
+    body: [
+      'Regular na buwanang halaga na inaalis mula sa portfolio.',
+      'Ginagamit para kalkulahin ang sustainability ng withdrawal strategy.',
+      'Mag-iwan ng 0 kung walang withdrawal na nakaplanong.',
+    ],
+  },
+  outPercentage: {
+    title: 'Porsyento ng Withdrawal',
+    body: [
+      'Buwanang porsyento ng balanse na awi-withdraw.',
+      'Alternatibo sa nakapirming halaga ng withdrawal.',
+      'Kapaki-pakinabang para sa flexible na withdrawal strategy.',
+    ],
+  },
+  activeCompounding: {
+    title: 'Aktibong Compounding',
+    body: [
+      'Kapag naka-on, ang mga rebate ay nire-reinvest pabalik sa portfolio.',
+      'Pabibilisin ang paglago sa pamamagitan ng compound effect.',
+      'Kapag naka-off, ang mga rebate ay ibinibigay bilang cash.',
+    ],
+  },
+  reverseCalculator: {
+    title: 'Reverse Calculator',
+    body: [
+      'Itakda ang target na buwanang kita at tagal — kakalkulahin ng calculator ang kinakailangang panimulang halaga.',
+      'Kapaki-pakinabang para sa pagpaplano na "mula sa layunin".',
+      'Awtomatikong nalalapat ang mga resulta sa pangunahing scenario.',
+    ],
+  },
+  calcHistory: {
+    title: 'Kasaysayan ng Kalkulasyon',
+    body: [
+      'Log ng lahat ng kalkulasyon para sa kasalukuyang kliyente.',
+      'Ikumpara ang mga scenario at subaybayan ang mga pagbabago sa estratehiya.',
+      'I-export sa PDF para ibahagi sa kliyente.',
+    ],
+  },
+  currencyDisplay: {
+    title: 'Display ng Pera',
+    body: [
+      'Piliin ang pera para sa pagpapakita ng mga halaga.',
+      'Hindi nakakaapekto sa mga kalkulasyon — para sa format lamang.',
+      'Maaaring i-configure nang hiwalay para sa bawat kliyente.',
+    ],
+  },
+  pdfExport: {
+    title: 'PDF Export',
+    body: [
+      'Gumawa ng propesyonal na PDF report para sa kasalukuyang scenario.',
+      'Kasama ang mga chart, talahanayan at buod.',
+      'Handa nang ipadala sa kliyente.',
+    ],
+  },
+  createLetter: {
+    title: 'Gumawa ng Liham',
+    body: [
+      'Gumawa ng personalisadong liham para sa kliyente batay sa kasalukuyang scenario.',
+      'Awtomatikong napupuno ang template ng data ng kalkulasyon.',
+      'I-edit at ipadala nang direkta mula sa app.',
+    ],
+  },
+  scenarioChart: {
+    title: 'Chart ng Scenario',
+    body: [
+      'Visualization ng paglago ng portfolio sa paglipas ng panahon.',
+      'Ipinapakita ang balanse, deposito at rebate bawat buwan.',
+      'Pindutin ang isang punto para sa detalyadong impormasyon.',
+    ],
+  },
+  compareMode: {
+    title: 'Compare Mode',
+    body: [
+      'Ikumpara ang maraming scenario para sa isang kliyente nang magkatabi.',
+      'Gamitin para ipakita ang iba\'t ibang estratehiya.',
+      'I-export ang paghahambing sa PDF.',
+    ],
+  },
+  rankTiers: {
+    title: 'Antas ng Ranggo',
+    body: [
+      'Ang iyong kasalukuyang ranggo at mga kondisyon para sa pag-akyat sa susunod na antas.',
+      'Ang ranggo ay nagtatakda ng porsyento ng komisyon at mga bonus.',
+      'Subaybayan ang progreso sa real time.',
+    ],
+  },
+  partnerList: {
+    title: 'Listahan ng Partner',
+    body: [
+      'Lahat ng partner sa iyong network at ang kanilang mga status.',
+      'Subaybayan ang aktibidad at dami ng koponan.',
+      'Pindutin ang isang partner para sa detalyadong impormasyon.',
+    ],
+  },
+  commissionEstimator: {
+    title: 'Estimator ng Komisyon',
+    body: [
+      'Kalkulahin ang inaasahang kita batay sa dami.',
+      'Kasama ang personal na benta at mga bonus ng koponan.',
+      'Awtomatikong nag-a-update kapag nagbago ang data.',
+    ],
+  },
+  invitationVideos: {
+    title: 'Mga Video ng Imbitasyon',
+    body: [
+      'Mga video na nagpapakilala sa produkto sa mga potensyal na kliyente.',
+      'Ibahagi ang link o ipadala nang direkta mula sa app.',
+      'Regular na ina-update ng koponan.',
+    ],
+  },
+  adviserVideos: {
+    title: 'Mga Video para sa Adviser',
+    body: [
+      'Mga materyal sa pagsasanay at mga update para sa mga adviser.',
+      'Manood ng mga bagong video para mapabuti ang kasanayan.',
+      'Markahan ang mga napanood para sa madaling pagsubaybay.',
+    ],
+  },
+  lettersHub: {
+    title: 'Hub ng mga Liham',
+    body: [
+      'Gumawa at pamahalaan ang mga personalisadong liham para sa mga kliyente.',
+      'Log ng Pagpapadala — subaybayan kung kanino, ano ang tugon at mag-iskedyul ng mga follow-up.',
+      'Pag-setup ng Profile (⚙) — idagdag ang iyong pangalan, kumpanya at logo para awtomatikong mapunan ang bawat liham.',
+    ],
+  },
+};
+
+const ar: TipMap = {
+  monthlyGoal: {
+    title: 'الهدف الشهري',
+    body: [
+      'هدفك الشخصي في المبيعات لهذا الشهر.',
+      'تتبع التقدم في الوقت الفعلي باستخدام شريط التقدم.',
+      'حدّث الهدف في أي وقت من إعدادات الملف الشخصي (⚙).',
+    ],
+  },
+  clientNameSaving: {
+    title: 'حفظ اسم العميل',
+    body: [
+      'يتم حفظ الاسم تلقائياً أثناء الكتابة.',
+      'لا حاجة للضغط على "حفظ" — تُسجَّل التغييرات فوراً.',
+      'استخدم اسماً مقروءاً لسهولة التعرف في السجل والتصدير.',
+    ],
+  },
+  vipStatus: {
+    title: 'حالة VIP للعميل',
+    body: [
+      'الحالات: جديد ← نشط ← VIP ← قائد ← أسطورة.',
+      'تتحدث الحالة تلقائياً بناءً على نشاط العميل.',
+      'يُعرض عملاء VIP بشكل منفصل لسرعة الوصول.',
+    ],
+  },
+  startAmount: {
+    title: 'المبلغ الابتدائي',
+    body: [
+      'مبلغ الاستثمار الأولي للعميل.',
+      'يُستخدم كقاعدة لحساب الخصومات والنمو.',
+      'يمكن تحديثه في أي وقت عند تغير الشروط.',
+    ],
+  },
+  strategyDuration: {
+    title: 'مدة الاستراتيجية',
+    body: [
+      'إجمالي الأشهر المخططة لاستراتيجية الاستثمار.',
+      'يحدد نطاق الحساب والعوائد المتوقعة.',
+      'يمكن تعديله وفق احتياجات العميل.',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'الإيداع الشهري',
+    body: [
+      'المبلغ الشهري المنتظم الذي يودعه العميل.',
+      'يُحتسب في توقعات الادخار والنمو.',
+      'اترك 0 للاستثمار لمرة واحدة دون إيداعات إضافية.',
+    ],
+  },
+  annualBonus: {
+    title: 'المكافأة السنوية',
+    body: [
+      'مبلغ إضافي يودعه العميل سنوياً.',
+      'يُضاف فوق الإيداعات الشهرية.',
+      'مفيد لحساب الإيداعات الكبيرة لمرة واحدة.',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'السحب الثابت',
+    body: [
+      'المبلغ الشهري المنتظم المسحوب من المحفظة.',
+      'يُستخدم لحساب استدامة استراتيجية السحب.',
+      'اترك 0 إن لم يكن هناك سحب مخطط.',
+    ],
+  },
+  outPercentage: {
+    title: 'نسبة السحب',
+    body: [
+      'النسبة المئوية الشهرية من الرصيد للسحب.',
+      'بديل عن مبلغ السحب الثابت.',
+      'مفيد لاستراتيجيات السحب المرنة.',
+    ],
+  },
+  activeCompounding: {
+    title: 'التراكم النشط',
+    body: [
+      'عند التفعيل، تُعاد استثمار الخصومات في المحفظة.',
+      'يُسرّع النمو من خلال تأثير الفائدة المركبة.',
+      'عند التعطيل، تُدفع الخصومات نقداً.',
+    ],
+  },
+  reverseCalculator: {
+    title: 'الحاسبة العكسية',
+    body: [
+      'حدد الدخل الشهري المستهدف والمدة — ستحسب الآلة الحاسبة المبلغ الابتدائي اللازم.',
+      'مفيد للتخطيط "من الهدف".',
+      'تُطبَّق النتائج تلقائياً على السيناريو الرئيسي.',
+    ],
+  },
+  calcHistory: {
+    title: 'سجل الحسابات',
+    body: [
+      'سجل بجميع الحسابات للعميل الحالي.',
+      'قارن السيناريوهات وتتبع تغييرات الاستراتيجية.',
+      'صدّر إلى PDF لتقديمه للعميل.',
+    ],
+  },
+  currencyDisplay: {
+    title: 'عرض العملة',
+    body: [
+      'اختر العملة لعرض المبالغ.',
+      'لا يؤثر على الحسابات — للتنسيق فقط.',
+      'يمكن ضبطه بشكل منفصل لكل عميل.',
+    ],
+  },
+  pdfExport: {
+    title: 'تصدير PDF',
+    body: [
+      'أنشئ تقرير PDF احترافياً للسيناريو الحالي.',
+      'يتضمن المخططات والجداول والملخص.',
+      'جاهز للإرسال إلى العميل.',
+    ],
+  },
+  createLetter: {
+    title: 'إنشاء خطاب',
+    body: [
+      'أنشئ خطاباً مخصصاً للعميل بناءً على السيناريو الحالي.',
+      'يملأ القالب بيانات الحساب تلقائياً.',
+      'حرر وأرسل مباشرة من التطبيق.',
+    ],
+  },
+  scenarioChart: {
+    title: 'مخطط السيناريو',
+    body: [
+      'تصور نمو المحفظة بمرور الوقت.',
+      'يعرض الرصيد والودائع والخصومات شهرياً.',
+      'انقر على نقطة للحصول على معلومات تفصيلية.',
+    ],
+  },
+  compareMode: {
+    title: 'وضع المقارنة',
+    body: [
+      'قارن سيناريوهات متعددة لنفس العميل جنباً إلى جنب.',
+      'استخدمه لعرض استراتيجيات مختلفة.',
+      'صدّر المقارنة إلى PDF.',
+    ],
+  },
+  rankTiers: {
+    title: 'مستويات الرتبة',
+    body: [
+      'رتبتك الحالية وشروط الترقي للمستوى التالي.',
+      'تحدد الرتبة نسبة العمولة والمكافآت.',
+      'تتبع التقدم في الوقت الفعلي.',
+    ],
+  },
+  partnerList: {
+    title: 'قائمة الشركاء',
+    body: [
+      'جميع الشركاء في شبكتك وحالاتهم.',
+      'تتبع نشاط الفريق وأحجام الأداء.',
+      'انقر على شريك للحصول على معلومات تفصيلية.',
+    ],
+  },
+  commissionEstimator: {
+    title: 'مقدّر العمولة',
+    body: [
+      'احسب الدخل المتوقع بناءً على الأحجام.',
+      'يشمل المبيعات الشخصية ومكافآت الفريق.',
+      'يتحدث تلقائياً عند تغير البيانات.',
+    ],
+  },
+  invitationVideos: {
+    title: 'فيديوهات الدعوة',
+    body: [
+      'مواد فيديو لتعريف العملاء المحتملين بالمنتج.',
+      'شارك الرابط أو أرسل مباشرة من التطبيق.',
+      'يتم تحديثها بانتظام من قِبل الفريق.',
+    ],
+  },
+  adviserVideos: {
+    title: 'فيديوهات المستشار',
+    body: [
+      'مواد تدريبية وتحديثات للمستشارين.',
+      'شاهد فيديوهات جديدة لتطوير مهاراتك.',
+      'ضع علامة على المشاهَد لسهولة التتبع.',
+    ],
+  },
+  lettersHub: {
+    title: 'مركز الخطابات',
+    body: [
+      'أنشئ وأدر خطابات مخصصة للعملاء.',
+      'سجل الإرسال — تتبع من أُرسل إليه وما كانت الاستجابة وجدوَلة المتابعات.',
+      'إعداد الملف الشخصي (⚙) — أضف اسمك وشركتك وشعارك لملء كل خطاب تلقائياً.',
+    ],
+  },
+};
+
+const th: TipMap = {
+  monthlyGoal: {
+    title: 'เป้าหมายรายเดือน',
+    body: [
+      'เป้าหมายการขายส่วนตัวของคุณสำหรับเดือนนี้',
+      'ติดตามความคืบหน้าแบบเรียลไทม์ผ่านแถบความคืบหน้า',
+      'อัปเดตเป้าหมายได้ทุกเมื่อในการตั้งค่าโปรไฟล์ (⚙)',
+    ],
+  },
+  clientNameSaving: {
+    title: 'การบันทึกชื่อลูกค้า',
+    body: [
+      'ชื่อจะบันทึกอัตโนมัติขณะพิมพ์',
+      'ไม่ต้องกดปุ่ม "บันทึก" — การเปลี่ยนแปลงจะถูกบันทึกทันที',
+      'ใช้ชื่อที่อ่านง่ายเพื่อระบุตัวตนในประวัติและการส่งออก',
+    ],
+  },
+  vipStatus: {
+    title: 'สถานะ VIP ของลูกค้า',
+    body: [
+      'สถานะ: ใหม่ → ใช้งานอยู่ → VIP → ผู้นำ → ตำนาน',
+      'สถานะอัปเดตอัตโนมัติตามกิจกรรมของลูกค้า',
+      'ลูกค้า VIP แสดงแยกต่างหากเพื่อการเข้าถึงที่รวดเร็ว',
+    ],
+  },
+  startAmount: {
+    title: 'จำนวนเงินเริ่มต้น',
+    body: [
+      'จำนวนเงินลงทุนเริ่มต้นของลูกค้า',
+      'ใช้เป็นฐานในการคำนวณส่วนลดและการเติบโต',
+      'สามารถอัปเดตได้ทุกเมื่อเมื่อเงื่อนไขเปลี่ยนแปลง',
+    ],
+  },
+  strategyDuration: {
+    title: 'ระยะเวลากลยุทธ์',
+    body: [
+      'จำนวนเดือนรวมที่วางแผนสำหรับกลยุทธ์การลงทุน',
+      'กำหนดขอบเขตการคำนวณและผลตอบแทนที่คาดหวัง',
+      'ปรับได้ตามความต้องการของลูกค้า',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'เงินฝากรายเดือน',
+    body: [
+      'จำนวนเงินที่ลูกค้าฝากเป็นประจำทุกเดือน',
+      'รวมอยู่ในการพยากรณ์การออมและการเติบโต',
+      'ใส่ 0 สำหรับการลงทุนครั้งเดียวโดยไม่มีการฝากเพิ่มเติม',
+    ],
+  },
+  annualBonus: {
+    title: 'โบนัสประจำปี',
+    body: [
+      'จำนวนเงินเพิ่มเติมที่ลูกค้าฝากทุกปี',
+      'เพิ่มเติมจากเงินฝากรายเดือน',
+      'มีประโยชน์สำหรับการคำนวณเงินฝากก้อนใหญ่ครั้งเดียว',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'การถอนเงินคงที่',
+    body: [
+      'จำนวนเงินที่ถอนออกจากพอร์ตโฟลิโอเป็นประจำทุกเดือน',
+      'ใช้คำนวณความยั่งยืนของกลยุทธ์การถอนเงิน',
+      'ใส่ 0 หากไม่มีแผนการถอนเงิน',
+    ],
+  },
+  outPercentage: {
+    title: 'เปอร์เซ็นต์การถอน',
+    body: [
+      'เปอร์เซ็นต์ของยอดคงเหลือที่ถอนออกทุกเดือน',
+      'ทางเลือกแทนจำนวนการถอนคงที่',
+      'มีประโยชน์สำหรับกลยุทธ์การถอนที่ยืดหยุ่น',
+    ],
+  },
+  activeCompounding: {
+    title: 'การทบต้นแบบแอคทีฟ',
+    body: [
+      'เมื่อเปิดใช้งาน ส่วนลดจะถูกนำไปลงทุนซ้ำในพอร์ตโฟลิโอ',
+      'เร่งการเติบโตผ่านเอฟเฟกต์ดอกเบี้ยทบต้น',
+      'เมื่อปิดใช้งาน ส่วนลดจะจ่ายเป็นเงินสด',
+    ],
+  },
+  reverseCalculator: {
+    title: 'เครื่องคิดเลขย้อนกลับ',
+    body: [
+      'กำหนดรายได้รายเดือนเป้าหมายและระยะเวลา — เครื่องคิดเลขจะคำนวณจำนวนเงินเริ่มต้นที่ต้องการ',
+      'สะดวกสำหรับการวางแผนแบบ "จากเป้าหมาย"',
+      'ผลลัพธ์จะนำไปใช้กับสถานการณ์หลักโดยอัตโนมัติ',
+    ],
+  },
+  calcHistory: {
+    title: 'ประวัติการคำนวณ',
+    body: [
+      'บันทึกการคำนวณทั้งหมดสำหรับลูกค้าปัจจุบัน',
+      'เปรียบเทียบสถานการณ์และติดตามการเปลี่ยนแปลงกลยุทธ์',
+      'ส่งออกเป็น PDF เพื่อมอบให้ลูกค้า',
+    ],
+  },
+  currencyDisplay: {
+    title: 'การแสดงสกุลเงิน',
+    body: [
+      'เลือกสกุลเงินสำหรับแสดงจำนวนเงิน',
+      'ไม่กระทบการคำนวณ — เพื่อการจัดรูปแบบเท่านั้น',
+      'สามารถตั้งค่าแยกต่างหากสำหรับลูกค้าแต่ละราย',
+    ],
+  },
+  pdfExport: {
+    title: 'ส่งออก PDF',
+    body: [
+      'สร้างรายงาน PDF มืออาชีพสำหรับสถานการณ์ปัจจุบัน',
+      'รวมกราฟ ตาราง และสรุป',
+      'พร้อมส่งให้ลูกค้า',
+    ],
+  },
+  createLetter: {
+    title: 'สร้างจดหมาย',
+    body: [
+      'สร้างจดหมายส่วนตัวสำหรับลูกค้าตามสถานการณ์ปัจจุบัน',
+      'เทมเพลตจะกรอกข้อมูลการคำนวณโดยอัตโนมัติ',
+      'แก้ไขและส่งได้โดยตรงจากแอป',
+    ],
+  },
+  scenarioChart: {
+    title: 'กราฟสถานการณ์',
+    body: [
+      'การแสดงภาพการเติบโตของพอร์ตโฟลิโอตามเวลา',
+      'แสดงยอดคงเหลือ เงินฝาก และส่วนลดรายเดือน',
+      'แตะจุดเพื่อดูข้อมูลโดยละเอียด',
+    ],
+  },
+  compareMode: {
+    title: 'โหมดเปรียบเทียบ',
+    body: [
+      'เปรียบเทียบหลายสถานการณ์สำหรับลูกค้าคนเดียวเคียงข้างกัน',
+      'ใช้เพื่อแสดงกลยุทธ์ที่แตกต่างกัน',
+      'ส่งออกการเปรียบเทียบเป็น PDF',
+    ],
+  },
+  rankTiers: {
+    title: 'ระดับยศ',
+    body: [
+      'ยศปัจจุบันของคุณและเงื่อนไขในการก้าวขึ้นสู่ระดับต่อไป',
+      'ยศกำหนดเปอร์เซ็นต์ค่าคอมมิชชันและโบนัส',
+      'ติดตามความคืบหน้าแบบเรียลไทม์',
+    ],
+  },
+  partnerList: {
+    title: 'รายชื่อพาร์ทเนอร์',
+    body: [
+      'พาร์ทเนอร์ทั้งหมดในเครือข่ายของคุณและสถานะของพวกเขา',
+      'ติดตามกิจกรรมและปริมาณของทีม',
+      'แตะพาร์ทเนอร์เพื่อดูข้อมูลโดยละเอียด',
+    ],
+  },
+  commissionEstimator: {
+    title: 'เครื่องประเมินค่าคอมมิชชัน',
+    body: [
+      'คำนวณรายได้ที่คาดหวังตามปริมาณ',
+      'รวมการขายส่วนตัวและโบนัสทีม',
+      'อัปเดตอัตโนมัติเมื่อข้อมูลเปลี่ยนแปลง',
+    ],
+  },
+  invitationVideos: {
+    title: 'วิดีโอเชิญชวน',
+    body: [
+      'สื่อวิดีโอสำหรับแนะนำผลิตภัณฑ์แก่ลูกค้าที่มีศักยภาพ',
+      'แชร์ลิงก์หรือส่งโดยตรงจากแอป',
+      'ทีมอัปเดตเป็นประจำ',
+    ],
+  },
+  adviserVideos: {
+    title: 'วิดีโอสำหรับที่ปรึกษา',
+    body: [
+      'สื่อการฝึกอบรมและการอัปเดตสำหรับที่ปรึกษา',
+      'ดูวิดีโอใหม่เพื่อพัฒนาทักษะ',
+      'ทำเครื่องหมายที่ดูแล้วเพื่อติดตามได้ง่าย',
+    ],
+  },
+  lettersHub: {
+    title: 'ศูนย์จดหมาย',
+    body: [
+      'สร้างและจัดการจดหมายส่วนตัวสำหรับลูกค้า',
+      'บันทึกการส่ง — ติดตามว่าส่งให้ใคร การตอบกลับ และกำหนดการติดตาม',
+      'การตั้งค่าโปรไฟล์ (⚙) — เพิ่มชื่อ บริษัท และโลโก้เพื่อกรอกจดหมายแต่ละฉบับโดยอัตโนมัติ',
+    ],
+  },
+};
+
+const hi: TipMap = {
+  monthlyGoal: {
+    title: 'मासिक लक्ष्य',
+    body: [
+      'इस महीने के लिए आपका व्यक्तिगत बिक्री लक्ष्य।',
+      'प्रगति बार के माध्यम से रियल-टाइम में प्रगति ट्रैक करें।',
+      'प्रोफ़ाइल सेटिंग्स (⚙) में किसी भी समय लक्ष्य अपडेट करें।',
+    ],
+  },
+  clientNameSaving: {
+    title: 'क्लाइंट नाम सहेजना',
+    body: [
+      'टाइप करते समय नाम स्वचालित रूप से सहेजा जाता है।',
+      '"सहेजें" बटन दबाने की आवश्यकता नहीं — परिवर्तन तुरंत दर्ज होते हैं।',
+      'इतिहास और निर्यात में आसान पहचान के लिए पठनीय नाम का उपयोग करें।',
+    ],
+  },
+  vipStatus: {
+    title: 'क्लाइंट VIP स्थिति',
+    body: [
+      'स्थितियाँ: नया → सक्रिय → VIP → नेता → किंवदंती।',
+      'क्लाइंट गतिविधि के आधार पर स्थिति स्वचालित रूप से अपडेट होती है।',
+      'VIP क्लाइंट त्वरित पहुँच के लिए अलग से दिखाए जाते हैं।',
+    ],
+  },
+  startAmount: {
+    title: 'प्रारंभिक राशि',
+    body: [
+      'क्लाइंट की प्रारंभिक निवेश राशि।',
+      'छूट और विकास की गणना के लिए आधार के रूप में उपयोग की जाती है।',
+      'स्थितियाँ बदलने पर किसी भी समय अपडेट किया जा सकता है।',
+    ],
+  },
+  strategyDuration: {
+    title: 'रणनीति की अवधि',
+    body: [
+      'निवेश रणनीति के लिए कुल नियोजित महीने।',
+      'गणना के दायरे और अपेक्षित भुगतान को निर्धारित करता है।',
+      'क्लाइंट की जरूरतों के अनुसार समायोजित किया जा सकता है।',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'मासिक जमा',
+    body: [
+      'क्लाइंट द्वारा हर महीने जमा की जाने वाली नियमित राशि।',
+      'बचत पूर्वानुमान और विकास में शामिल।',
+      'अतिरिक्त जमा के बिना एकमुश्त निवेश के लिए 0 छोड़ें।',
+    ],
+  },
+  annualBonus: {
+    title: 'वार्षिक बोनस',
+    body: [
+      'क्लाइंट द्वारा सालाना जमा की जाने वाली अतिरिक्त राशि।',
+      'मासिक जमा के ऊपर जोड़ी जाती है।',
+      'एकमुश्त बड़ी जमा की गणना के लिए उपयोगी।',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'निश्चित निकासी',
+    body: [
+      'पोर्टफोलियो से हर महीने निकाली जाने वाली नियमित राशि।',
+      'निकासी रणनीति की स्थिरता की गणना के लिए उपयोग किया जाता है।',
+      'यदि कोई निकासी नहीं है तो 0 छोड़ें।',
+    ],
+  },
+  outPercentage: {
+    title: 'निकासी प्रतिशत',
+    body: [
+      'हर महीने शेष राशि का निकाला जाने वाला प्रतिशत।',
+      'निश्चित निकासी राशि का विकल्प।',
+      'लचीली निकासी रणनीतियों के लिए उपयोगी।',
+    ],
+  },
+  activeCompounding: {
+    title: 'सक्रिय चक्रवृद्धि',
+    body: [
+      'सक्षम होने पर, छूट पोर्टफोलियो में वापस पुनर्निवेश की जाती हैं।',
+      'चक्रवृद्धि ब्याज प्रभाव के माध्यम से विकास को गति देता है।',
+      'अक्षम होने पर, छूट नकद के रूप में भुगतान की जाती है।',
+    ],
+  },
+  reverseCalculator: {
+    title: 'रिवर्स कैलकुलेटर',
+    body: [
+      'लक्ष्य मासिक आय और अवधि निर्धारित करें — कैलकुलेटर आवश्यक प्रारंभिक राशि की गणना करेगा।',
+      '"लक्ष्य से" योजना बनाने के लिए सुविधाजनक।',
+      'परिणाम मुख्य परिदृश्य में स्वचालित रूप से लागू होते हैं।',
+    ],
+  },
+  calcHistory: {
+    title: 'गणना इतिहास',
+    body: [
+      'वर्तमान क्लाइंट के लिए सभी गणनाओं का लॉग।',
+      'परिदृश्यों की तुलना करें और रणनीति परिवर्तनों को ट्रैक करें।',
+      'क्लाइंट को प्रदान करने के लिए PDF में निर्यात करें।',
+    ],
+  },
+  currencyDisplay: {
+    title: 'मुद्रा प्रदर्शन',
+    body: [
+      'राशि प्रदर्शित करने के लिए मुद्रा चुनें।',
+      'गणनाओं को प्रभावित नहीं करता — केवल स्वरूपण के लिए।',
+      'प्रत्येक क्लाइंट के लिए अलग से कॉन्फ़िगर किया जा सकता है।',
+    ],
+  },
+  pdfExport: {
+    title: 'PDF निर्यात',
+    body: [
+      'वर्तमान परिदृश्य के लिए पेशेवर PDF रिपोर्ट बनाएं।',
+      'चार्ट, तालिकाएँ और सारांश शामिल हैं।',
+      'क्लाइंट को भेजने के लिए तैयार।',
+    ],
+  },
+  createLetter: {
+    title: 'पत्र बनाएं',
+    body: [
+      'वर्तमान परिदृश्य के आधार पर क्लाइंट के लिए व्यक्तिगत पत्र बनाएं।',
+      'टेम्पलेट स्वचालित रूप से गणना डेटा से भरा जाता है।',
+      'ऐप से सीधे संपादित करें और भेजें।',
+    ],
+  },
+  scenarioChart: {
+    title: 'परिदृश्य चार्ट',
+    body: [
+      'समय के साथ पोर्टफोलियो वृद्धि का विज़ुअलाइज़ेशन।',
+      'मासिक शेष, जमा और छूट दिखाता है।',
+      'विस्तृत जानकारी के लिए किसी बिंदु पर टैप करें।',
+    ],
+  },
+  compareMode: {
+    title: 'तुलना मोड',
+    body: [
+      'एक क्लाइंट के लिए कई परिदृश्यों की साथ-साथ तुलना करें।',
+      'विभिन्न रणनीतियों को प्रदर्शित करने के लिए उपयोग करें।',
+      'तुलना को PDF में निर्यात करें।',
+    ],
+  },
+  rankTiers: {
+    title: 'रैंक स्तर',
+    body: [
+      'आपका वर्तमान रैंक और अगले स्तर पर जाने की शर्तें।',
+      'रैंक कमीशन प्रतिशत और बोनस निर्धारित करता है।',
+      'रियल टाइम में प्रगति ट्रैक करें।',
+    ],
+  },
+  partnerList: {
+    title: 'पार्टनर सूची',
+    body: [
+      'आपके नेटवर्क के सभी पार्टनर और उनकी स्थितियाँ।',
+      'टीम गतिविधि और मात्रा ट्रैक करें।',
+      'विस्तृत जानकारी के लिए किसी पार्टनर पर टैप करें।',
+    ],
+  },
+  commissionEstimator: {
+    title: 'कमीशन अनुमानक',
+    body: [
+      'मात्रा के आधार पर अपेक्षित आय की गणना करें।',
+      'व्यक्तिगत बिक्री और टीम बोनस शामिल हैं।',
+      'डेटा बदलने पर स्वचालित रूप से अपडेट होता है।',
+    ],
+  },
+  invitationVideos: {
+    title: 'आमंत्रण वीडियो',
+    body: [
+      'संभावित क्लाइंट को उत्पाद से परिचित कराने के लिए वीडियो सामग्री।',
+      'लिंक साझा करें या ऐप से सीधे भेजें।',
+      'टीम द्वारा नियमित रूप से अपडेट किया जाता है।',
+    ],
+  },
+  adviserVideos: {
+    title: 'सलाहकार वीडियो',
+    body: [
+      'सलाहकारों के लिए प्रशिक्षण सामग्री और अपडेट।',
+      'कौशल विकास के लिए नए वीडियो देखें।',
+      'आसान ट्रैकिंग के लिए देखे गए को चिह्नित करें।',
+    ],
+  },
+  lettersHub: {
+    title: 'पत्र केंद्र',
+    body: [
+      'क्लाइंट के लिए व्यक्तिगत पत्र बनाएं और प्रबंधित करें।',
+      'भेजने का लॉग — किसको भेजा, प्रतिक्रिया क्या थी और फॉलो-अप शेड्यूल करें।',
+      'प्रोफ़ाइल सेटअप (⚙) — प्रत्येक पत्र को स्वचालित रूप से भरने के लिए अपना नाम, कंपनी और लोगो जोड़ें।',
+    ],
+  },
+};
+
+const vi: TipMap = {
+  monthlyGoal: {
+    title: 'Mục tiêu hàng tháng',
+    body: [
+      'Mục tiêu doanh số cá nhân của bạn cho tháng này.',
+      'Theo dõi tiến độ theo thời gian thực qua thanh tiến độ.',
+      'Cập nhật mục tiêu bất cứ lúc nào trong Cài đặt Hồ sơ (⚙).',
+    ],
+  },
+  clientNameSaving: {
+    title: 'Lưu tên khách hàng',
+    body: [
+      'Tên được lưu tự động khi bạn gõ.',
+      'Không cần nhấn nút "Lưu" — thay đổi được ghi lại ngay lập tức.',
+      'Sử dụng tên dễ đọc để dễ nhận dạng trong lịch sử và xuất.',
+    ],
+  },
+  vipStatus: {
+    title: 'Trạng thái VIP khách hàng',
+    body: [
+      'Trạng thái: mới → đang hoạt động → VIP → lãnh đạo → huyền thoại.',
+      'Trạng thái tự động cập nhật dựa trên hoạt động của khách hàng.',
+      'Khách hàng VIP hiển thị riêng để truy cập nhanh.',
+    ],
+  },
+  startAmount: {
+    title: 'Số tiền ban đầu',
+    body: [
+      'Số tiền đầu tư ban đầu của khách hàng.',
+      'Được dùng làm cơ sở tính chiết khấu và tăng trưởng.',
+      'Có thể cập nhật bất cứ lúc nào khi điều kiện thay đổi.',
+    ],
+  },
+  strategyDuration: {
+    title: 'Thời hạn chiến lược',
+    body: [
+      'Tổng số tháng dự kiến cho chiến lược đầu tư.',
+      'Xác định phạm vi tính toán và khoản thanh toán dự kiến.',
+      'Có thể điều chỉnh theo nhu cầu của khách hàng.',
+    ],
+  },
+  monthlyDeposit: {
+    title: 'Tiền gửi hàng tháng',
+    body: [
+      'Số tiền định kỳ khách hàng gửi vào hàng tháng.',
+      'Được tính vào dự báo tiết kiệm và tăng trưởng.',
+      'Để 0 cho đầu tư một lần không có thêm tiền gửi.',
+    ],
+  },
+  annualBonus: {
+    title: 'Tiền thưởng hàng năm',
+    body: [
+      'Số tiền bổ sung khách hàng gửi hàng năm.',
+      'Được cộng thêm vào tiền gửi hàng tháng.',
+      'Hữu ích để tính các khoản gửi một lần lớn.',
+    ],
+  },
+  fixedWithdrawal: {
+    title: 'Rút tiền cố định',
+    body: [
+      'Số tiền định kỳ rút khỏi danh mục đầu tư mỗi tháng.',
+      'Dùng để tính độ bền vững của chiến lược rút tiền.',
+      'Để 0 nếu không có kế hoạch rút tiền.',
+    ],
+  },
+  outPercentage: {
+    title: 'Tỷ lệ rút tiền',
+    body: [
+      'Tỷ lệ phần trăm số dư rút ra mỗi tháng.',
+      'Thay thế cho số tiền rút cố định.',
+      'Hữu ích cho các chiến lược rút tiền linh hoạt.',
+    ],
+  },
+  activeCompounding: {
+    title: 'Lãi kép chủ động',
+    body: [
+      'Khi bật, chiết khấu được tái đầu tư vào danh mục.',
+      'Tăng tốc tăng trưởng thông qua hiệu ứng lãi kép.',
+      'Khi tắt, chiết khấu được trả bằng tiền mặt.',
+    ],
+  },
+  reverseCalculator: {
+    title: 'Máy tính ngược',
+    body: [
+      'Đặt thu nhập hàng tháng mục tiêu và thời hạn — máy tính sẽ tính số tiền ban đầu cần thiết.',
+      'Tiện lợi cho việc lập kế hoạch "từ mục tiêu".',
+      'Kết quả tự động áp dụng vào kịch bản chính.',
+    ],
+  },
+  calcHistory: {
+    title: 'Lịch sử tính toán',
+    body: [
+      'Nhật ký tất cả các phép tính cho khách hàng hiện tại.',
+      'So sánh các kịch bản và theo dõi thay đổi chiến lược.',
+      'Xuất sang PDF để cung cấp cho khách hàng.',
+    ],
+  },
+  currencyDisplay: {
+    title: 'Hiển thị tiền tệ',
+    body: [
+      'Chọn tiền tệ để hiển thị số tiền.',
+      'Không ảnh hưởng đến tính toán — chỉ để định dạng.',
+      'Có thể cấu hình riêng cho từng khách hàng.',
+    ],
+  },
+  pdfExport: {
+    title: 'Xuất PDF',
+    body: [
+      'Tạo báo cáo PDF chuyên nghiệp cho kịch bản hiện tại.',
+      'Bao gồm biểu đồ, bảng và tóm tắt.',
+      'Sẵn sàng gửi cho khách hàng.',
+    ],
+  },
+  createLetter: {
+    title: 'Tạo thư',
+    body: [
+      'Tạo thư cá nhân hóa cho khách hàng dựa trên kịch bản hiện tại.',
+      'Mẫu tự động điền dữ liệu tính toán.',
+      'Chỉnh sửa và gửi trực tiếp từ ứng dụng.',
+    ],
+  },
+  scenarioChart: {
+    title: 'Biểu đồ kịch bản',
+    body: [
+      'Trực quan hóa tăng trưởng danh mục theo thời gian.',
+      'Hiển thị số dư, tiền gửi và chiết khấu theo tháng.',
+      'Nhấn vào một điểm để xem thông tin chi tiết.',
+    ],
+  },
+  compareMode: {
+    title: 'Chế độ so sánh',
+    body: [
+      'So sánh nhiều kịch bản cho một khách hàng cạnh nhau.',
+      'Dùng để trình bày các chiến lược khác nhau.',
+      'Xuất so sánh sang PDF.',
+    ],
+  },
+  rankTiers: {
+    title: 'Cấp bậc',
+    body: [
+      'Cấp bậc hiện tại của bạn và điều kiện lên cấp tiếp theo.',
+      'Cấp bậc xác định tỷ lệ hoa hồng và tiền thưởng.',
+      'Theo dõi tiến độ theo thời gian thực.',
+    ],
+  },
+  partnerList: {
+    title: 'Danh sách đối tác',
+    body: [
+      'Tất cả đối tác trong mạng lưới của bạn và trạng thái của họ.',
+      'Theo dõi hoạt động và khối lượng nhóm.',
+      'Nhấn vào đối tác để xem thông tin chi tiết.',
+    ],
+  },
+  commissionEstimator: {
+    title: 'Ước tính hoa hồng',
+    body: [
+      'Tính thu nhập dự kiến dựa trên khối lượng.',
+      'Bao gồm doanh số cá nhân và tiền thưởng nhóm.',
+      'Tự động cập nhật khi dữ liệu thay đổi.',
+    ],
+  },
+  invitationVideos: {
+    title: 'Video mời',
+    body: [
+      'Tài liệu video giới thiệu sản phẩm cho khách hàng tiềm năng.',
+      'Chia sẻ liên kết hoặc gửi trực tiếp từ ứng dụng.',
+      'Được nhóm cập nhật thường xuyên.',
+    ],
+  },
+  adviserVideos: {
+    title: 'Video cho cố vấn',
+    body: [
+      'Tài liệu đào tạo và cập nhật cho cố vấn.',
+      'Xem video mới để nâng cao kỹ năng.',
+      'Đánh dấu đã xem để theo dõi dễ dàng.',
+    ],
+  },
+  lettersHub: {
+    title: 'Trung tâm thư',
+    body: [
+      'Tạo và quản lý thư cá nhân hóa cho khách hàng.',
+      'Nhật ký gửi — theo dõi gửi cho ai, phản hồi là gì và lên lịch theo dõi.',
+      'Thiết lập Hồ sơ (⚙) — thêm tên, công ty và logo để tự động điền vào từng thư.',
+    ],
+  },
+};
+
+const tips: Partial<Record<Language, TipMap>> = { en, nl, de, fr, es, it, pt, ru, zh, tl, ar, th, hi, vi };
 
 export function getTip(lang: Language, key: TipKey): TipContent {
   return tips[lang]?.[key] ?? tips.en![key];
