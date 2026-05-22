@@ -38,8 +38,8 @@ export function InfoTip({ title, body }: InfoTipProps) {
 }
 
 const S = StyleSheet.create({
-  btn: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: '#475569', alignItems: 'center', justifyContent: 'center' },
-  btnText: { color: '#64748b', fontSize: 11, fontWeight: 'bold', lineHeight: 14 },
+  btn: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: '#f59e0b', alignItems: 'center', justifyContent: 'center' },
+  btnText: { color: '#f59e0b', fontSize: 11, fontWeight: 'bold', lineHeight: 14 },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.65)', justifyContent: 'center', alignItems: 'center', padding: 24 },
   card: { backgroundColor: '#0f172a', borderRadius: 16, padding: 20, width: '100%', ...Platform.select({ web: { maxWidth: 480 } as any }), borderWidth: 1, borderColor: '#1e293b', shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 },
