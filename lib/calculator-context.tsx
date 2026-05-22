@@ -34,18 +34,24 @@ interface CalculatorContextType {
   partnerMode: boolean;
   enablePartnerMode: (pin: string) => boolean;
   disablePartnerMode: () => void;
+  // Letters Access
+  lettersAccess: boolean;
+  enableLettersAccess: (pin: string) => boolean;
+  disableLettersAccess: () => void;
   // Office Location
   officeLocation: OfficeLocation;
   setOfficeLocation: (office: OfficeLocation) => Promise<void>;
 }
 
 const PARTNER_PIN = "4837";
+const LETTERS_PIN = "2941";
 
 const CalculatorContext = createContext<CalculatorContextType | undefined>(undefined);
 
 export function CalculatorProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
   const [partnerMode, setPartnerMode] = useState(false);
+  const [lettersAccess, setLettersAccess] = useState(false);
   const [officeLocation, setOfficeLocationState] = useState<OfficeLocation>("dubai");
   const [calculation, setCalculation] = useState<CalculationState>({
     params: null,
@@ -69,6 +75,10 @@ export function CalculatorProvider({ children }: { children: ReactNode }) {
       const savedPartner = await AsyncStorage.getItem("partner_mode");
       if (savedPartner === "true") {
         setPartnerMode(true);
+      }
+      const savedLetters = await AsyncStorage.getItem("letters_access");
+      if (savedLetters === "true") {
+        setLettersAccess(true);
       }
       const savedOffice = await AsyncStorage.getItem("office_location");
       if (savedOffice && ["vienna", "dubai", "manila", "florida"].includes(savedOffice)) {
@@ -105,6 +115,20 @@ export function CalculatorProvider({ children }: { children: ReactNode }) {
   const disablePartnerMode = useCallback(() => {
     setPartnerMode(false);
     AsyncStorage.setItem("partner_mode", "false");
+  }, []);
+
+  const enableLettersAccess = useCallback((pin: string): boolean => {
+    if (pin === LETTERS_PIN) {
+      setLettersAccess(true);
+      AsyncStorage.setItem("letters_access", "true");
+      return true;
+    }
+    return false;
+  }, []);
+
+  const disableLettersAccess = useCallback(() => {
+    setLettersAccess(false);
+    AsyncStorage.setItem("letters_access", "false");
   }, []);
 
   const setOfficeLocation = useCallback(async (office: OfficeLocation) => {
@@ -229,6 +253,9 @@ export function CalculatorProvider({ children }: { children: ReactNode }) {
     partnerMode,
     enablePartnerMode,
     disablePartnerMode,
+    lettersAccess,
+    enableLettersAccess,
+    disableLettersAccess,
     officeLocation,
     setOfficeLocation,
   };

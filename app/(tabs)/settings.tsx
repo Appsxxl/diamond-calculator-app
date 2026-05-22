@@ -27,11 +27,15 @@ const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, officeLocation, setOfficeLocation } = useCalculator();
+  const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, lettersAccess, enableLettersAccess, disableLettersAccess, officeLocation, setOfficeLocation } = useCalculator();
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState(false);
+
+  const [showLettersPinModal, setShowLettersPinModal] = useState(false);
+  const [lettersPinInput, setLettersPinInput] = useState("");
+  const [lettersPinError, setLettersPinError] = useState(false);
 
   const languages = [
     { code: "en" as const, label: "🇬🇧 EN" },
@@ -132,6 +136,40 @@ export default function SettingsScreen() {
       if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } else {
       setPinError(true);
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
+  const handleLettersToggle = () => {
+    if (lettersAccess) {
+      if (Platform.OS === "web") {
+        if (window.confirm("Disable Letters & Outreach access?")) {
+          disableLettersAccess();
+        }
+      } else {
+        Alert.alert(
+          "Disable Letters Access",
+          "Letters & Outreach will be locked.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Disable", style: "destructive", onPress: () => disableLettersAccess() },
+          ]
+        );
+      }
+    } else {
+      setLettersPinInput("");
+      setLettersPinError(false);
+      setShowLettersPinModal(true);
+    }
+  };
+
+  const handleLettersPinSubmit = () => {
+    const success = enableLettersAccess(lettersPinInput);
+    if (success) {
+      setShowLettersPinModal(false);
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      setLettersPinError(true);
       if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
   };
@@ -241,6 +279,36 @@ export default function SettingsScreen() {
             </View>
           </View>
         </View>
+
+        {/* Letters Access Section — only shown when Partner Mode is active */}
+        {partnerMode && (
+          <View style={S.section}>
+            {sectionTitle("✉️ LETTERS & OUTREACH ACCESS")}
+            <View style={S.card}>
+              <View style={S.listRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[S.listLabel, lettersAccess && { color: "#f59e0b" }]}>
+                    {lettersAccess ? "🟢 Letters Access Active" : "🔒 Letters & Outreach Locked"}
+                  </Text>
+                  <Text style={S.listSub}>
+                    {lettersAccess
+                      ? "Full access to all letter templates & outreach tools"
+                      : "Enter PIN to unlock Letters & Outreach"}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={handleLettersToggle}
+                  style={[S.toggleBtn, lettersAccess && S.toggleBtnActive]}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[S.toggleBtnText, lettersAccess && S.toggleBtnTextActive]}>
+                    {lettersAccess ? "Disable" : "Enable"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* About Section */}
         <View style={S.section}>
@@ -356,6 +424,51 @@ export default function SettingsScreen() {
               <TouchableOpacity
                 style={S.modalConfirmBtn}
                 onPress={handlePinSubmit}
+                activeOpacity={0.8}
+              >
+                <Text style={S.modalConfirmText}>Unlock</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Letters Access PIN Modal */}
+      <Modal
+        visible={showLettersPinModal}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setShowLettersPinModal(false)}
+      >
+        <View style={S.modalOverlay}>
+          <View style={S.modalBox}>
+            <Text style={S.modalTitle}>✉️ Letters Access PIN</Text>
+            <Text style={S.modalDesc}>Enter your PIN to unlock Letters & Outreach.</Text>
+            <TextInput
+              style={[S.pinInput, lettersPinError && S.pinInputError]}
+              value={lettersPinInput}
+              onChangeText={(v) => { setLettersPinInput(v); setLettersPinError(false); }}
+              keyboardType="numeric"
+              maxLength={4}
+              secureTextEntry
+              placeholder="• • • •"
+              placeholderTextColor="#64748b"
+              returnKeyType="done"
+              onSubmitEditing={handleLettersPinSubmit}
+              autoFocus
+            />
+            {lettersPinError && <Text style={S.pinErrorText}>Incorrect PIN. Please try again.</Text>}
+            <View style={S.modalBtnRow}>
+              <TouchableOpacity
+                style={S.modalCancelBtn}
+                onPress={() => setShowLettersPinModal(false)}
+                activeOpacity={0.8}
+              >
+                <Text style={S.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={S.modalConfirmBtn}
+                onPress={handleLettersPinSubmit}
                 activeOpacity={0.8}
               >
                 <Text style={S.modalConfirmText}>Unlock</Text>

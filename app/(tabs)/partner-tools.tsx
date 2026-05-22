@@ -1337,7 +1337,7 @@ function getSPLabel(amount: number): string {
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 export default function PartnerToolsScreen() {
-  const { language } = useCalculator();
+  const { language, lettersAccess } = useCalculator();
   const tx = TX[language] ?? TX.en;
   const router = useRouter();
 
@@ -2093,26 +2093,47 @@ export default function PartnerToolsScreen() {
         </View>
 
         {/* ── LETTERS & OUTREACH HUB ── */}
-        <TouchableOpacity
-          style={{
-            marginHorizontal: 16, marginBottom: 14,
-            backgroundColor: "rgba(230,126,34,0.08)",
-            borderRadius: 14, padding: 16,
-            borderWidth: 1.5, borderColor: GOLD,
-            flexDirection: "row", alignItems: "center", gap: 14,
-          }}
-          onPress={() => router.push("/letters")}
-          activeOpacity={0.85}
-        >
-          <Text style={{ fontSize: 30 }}>✉️</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: GOLD, fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.lettersHubTitle}</Text>
-            <Text style={{ color: "#94a3b8", fontSize: 12, marginTop: 3, lineHeight: 17 }}>
-              {tx.lettersHubDesc}
-            </Text>
+        {lettersAccess ? (
+          <TouchableOpacity
+            style={{
+              marginHorizontal: 16, marginBottom: 14,
+              backgroundColor: "rgba(230,126,34,0.08)",
+              borderRadius: 14, padding: 16,
+              borderWidth: 1.5, borderColor: GOLD,
+              flexDirection: "row", alignItems: "center", gap: 14,
+            }}
+            onPress={() => router.push("/letters")}
+            activeOpacity={0.85}
+          >
+            <Text style={{ fontSize: 30 }}>✉️</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: GOLD, fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.lettersHubTitle}</Text>
+              <Text style={{ color: "#94a3b8", fontSize: 12, marginTop: 3, lineHeight: 17 }}>
+                {tx.lettersHubDesc}
+              </Text>
+            </View>
+            <Text style={{ color: GOLD, fontSize: 18 }}>›</Text>
+          </TouchableOpacity>
+        ) : (
+          <View
+            style={{
+              marginHorizontal: 16, marginBottom: 14,
+              backgroundColor: "rgba(15,23,42,0.6)",
+              borderRadius: 14, padding: 16,
+              borderWidth: 1.5, borderColor: "#334155",
+              flexDirection: "row", alignItems: "center", gap: 14,
+            }}
+          >
+            <Text style={{ fontSize: 30, opacity: 0.4 }}>✉️</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: "#475569", fontWeight: "bold", fontSize: 15, letterSpacing: 0.3 }}>{tx.lettersHubTitle}</Text>
+              <Text style={{ color: "#334155", fontSize: 12, marginTop: 3, lineHeight: 17 }}>
+                Contact your team leader to unlock access.
+              </Text>
+            </View>
+            <Text style={{ fontSize: 18 }}>🔒</Text>
           </View>
-          <Text style={{ color: GOLD, fontSize: 18 }}>›</Text>
-        </TouchableOpacity>
+        )}
 
         {/* ── RANK COMMAND CENTRE ── */}
         {residualSummary && (
