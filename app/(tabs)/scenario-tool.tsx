@@ -461,7 +461,7 @@ export default function ScenarioToolScreen() {
   const [monthData, setMonthData] = useState<Record<number, MonthData>>({});
   const [result, setResult] = useState<ReturnType<typeof runCalculation> | null>(null);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
-  const [showMarginMechanics, setShowMarginMechanics] = useState(true);
+  const [showMarginMechanics, setShowMarginMechanics] = useState(false);
 
   // Auto-recalculate when startAmount changes so Goal Reached updates immediately
   useEffect(() => {
@@ -485,7 +485,7 @@ export default function ScenarioToolScreen() {
 
   // Tracks which maturity banners the user has dismissed
   const [hiddenMaturityMonths, setHiddenMaturityMonths] = useState<Set<number>>(new Set());
-  const [allBannersHidden, setAllBannersHidden] = useState(false);
+  const [allBannersHidden, setAllBannersHidden] = useState(true);
   const hideMaturityBanner = useCallback((month: number) =>
     setHiddenMaturityMonths(prev => new Set([...prev, month])), []);
 
