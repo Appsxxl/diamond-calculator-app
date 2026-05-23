@@ -29,17 +29,22 @@ const LETTERS: Partial<Record<Language, Record<LetterType, string>>> & { en: Rec
 
 Dear [CUSTOMER_NAME],
 
-I hope this message finds you well.
+In a time of volatility, inflation and geopolitical developments, more and more people are looking for ways to better diversify and protect their capital.
 
-I wanted to reach out personally to share something I have been exploring with a number of clients who are looking to strengthen their asset base beyond the traditional financial markets.
+Physical investment diamonds can be an interesting addition within a broader wealth plan. They offer, among other things:
 
-Investment-grade physical diamonds have been drawing quiet but consistent attention from wealth-conscious individuals. Unlike equities, foreign exchange, or cryptocurrency, physical diamonds are not traded on any public exchange. Their value is not directly influenced by interest rate decisions, market corrections, or currency volatility. They are a tangible, portable, and discreet store of value — one that has preserved purchasing power across generations.
+• Independence – not stock market listed
+• Stability – focused on long-term value preservation
+• Discretion & portability – compact and easily transferable
+• Possibility of returns through ongoing 12-month contracts
 
-I am not making any recommendation — only opening a conversation. If you are curious to learn more about how some clients are approaching this as part of a broader wealth preservation strategy, I would be happy to share a brief overview at a time that suits you. No obligation, no pressure.
+I offer clients the opportunity to purchase physical investment diamonds at wholesale rates, as part of a broader wealth plan — our Plan B system.
 
-Looking forward to hearing from you.
+I would like to invite you for a no-obligation, confidential conversation of 15 minutes. You then decide for yourself whether this fits your situation and wishes.
 
-Warm regards,
+Do you have a brief moment in the coming days?
+
+Kind regards,
 
 [ADVISER_NAME]
 [ADVISER_COMPANY]
@@ -95,17 +100,22 @@ Kind regards,
     invitation:
 `[DATE]
 
-Beste [CUSTOMER_NAME],
+Geachte [CUSTOMER_NAME],
 
-Ik hoop dat het goed met u gaat.
+In een tijd van volatiliteit, inflatie en geopolitieke ontwikkelingen zoeken steeds meer mensen naar manieren om hun kapitaal beter te spreiden en te beschermen.
 
-Ik wilde u persoonlijk benaderen om iets te delen wat ik momenteel verken met een aantal cliënten die hun vermogensbasis willen versterken buiten de traditionele financiële markten.
+Fysieke investeringsdiamanten kunnen daarbij een interessante aanvulling zijn binnen een breder vermogensplan. Ze bieden onder andere:
 
-Investeerbare fysieke diamanten trekken stille maar consistente aandacht van vermogensgerichte personen. In tegenstelling tot aandelen, valutamarkten of cryptovaluta worden fysieke diamanten niet verhandeld op een openbare beurs. Hun waarde wordt niet rechtstreeks beïnvloed door rentebeslissingen, marktcorrecties of valutaschommelingen. Het zijn tastbare, draagbare en discrete waardeopslag — die koopkracht door generaties heen heeft behouden.
+• Onafhankelijkheid – niet beursgenoteerd
+• Stabiliteit – gericht op waardeopslag op lange termijn
+• Discretie & draagbaarheid – compact en gemakkelijk overdraagbaar
+• Mogelijkheid tot rendement via doorlopende 12-maandencontracten
 
-Ik maak hier geen aanbeveling — ik open enkel een gesprek. Als u nieuwsgierig bent naar hoe sommige cliënten dit benaderen als onderdeel van een bredere vermogensstrategie, deel ik graag een kort overzicht op een moment dat u uitkomt. Geen verplichting, geen druk.
+Ik bied cliënten de mogelijkheid om fysieke investeringsdiamanten aan te kopen tegen groothandelstarief, als onderdeel van een breder vermogensplan, ons systeem Plan B.
 
-Ik zie uw reactie graag tegemoet.
+Graag nodig ik u uit voor een vrijblijvend en vertrouwelijk gesprek van 15 minuten. U beslist daarna zelf of dit aansluit bij uw situatie en wensen.
+
+Heeft u de komende dagen een kort moment?
 
 Met vriendelijke groet,
 
@@ -165,15 +175,20 @@ Met vriendelijke groet,
 
 Sehr geehrte/r [CUSTOMER_NAME],
 
-ich hoffe, diese Nachricht erreicht Sie wohlbehalten.
+In einer Zeit der Volatilität, Inflation und geopolitischer Entwicklungen suchen immer mehr Menschen nach Möglichkeiten, ihr Kapital besser zu streuen und zu schützen.
 
-Ich möchte mich persönlich bei Ihnen melden, um etwas zu teilen, das ich derzeit mit einer Reihe von Mandanten erkunde, die ihre Vermögensbasis über die traditionellen Finanzmärkte hinaus stärken möchten.
+Physische Investmentdiamanten können dabei eine interessante Ergänzung innerhalb eines breiteren Vermögensplans sein. Sie bieten unter anderem:
 
-Physische Diamanten in Investmentqualität ziehen das stille, aber beständige Interesse von vermögensbewussten Personen auf sich. Im Gegensatz zu Aktien, Devisen oder Kryptowährungen werden physische Diamanten an keiner öffentlichen Börse gehandelt. Ihr Wert wird nicht direkt durch Zinsentscheidungen, Marktkorrekturen oder Währungsschwankungen beeinflusst. Sie sind ein greifbarer, tragbarer und diskreter Wertspeicher — der über Generationen hinweg Kaufkraft bewahrt hat.
+• Unabhängigkeit – nicht börsennotiert
+• Stabilität – ausgerichtet auf langfristige Wertaufbewahrung
+• Diskretion & Mobilität – kompakt und leicht übertragbar
+• Renditechancen durch laufende 12-Monatsverträge
 
-Ich spreche hier keine Empfehlung aus — ich öffne lediglich ein Gespräch. Falls Sie neugierig sind, wie einige Mandanten dies als Teil einer umfassenderen Vermögensstrategie angehen, würde ich gerne einen kurzen Überblick mit Ihnen teilen, wann es Ihnen passt. Keinerlei Verpflichtung, keinerlei Druck.
+Ich biete Kunden die Möglichkeit, physische Investmentdiamanten zum Großhandelspreis zu erwerben, als Teil eines breiteren Vermögensplans – unser System Plan B.
 
-Ich freue mich auf Ihre Rückmeldung.
+Gerne lade ich Sie zu einem unverbindlichen und vertraulichen Gespräch von 15 Minuten ein. Sie entscheiden danach selbst, ob dies zu Ihrer Situation und Ihren Wünschen passt.
+
+Haben Sie in den kommenden Tagen kurz Zeit?
 
 Mit freundlichen Grüßen,
 
@@ -233,15 +248,20 @@ Mit freundlichen Grüßen,
 
 Cher/Chère [CUSTOMER_NAME],
 
-J'espère que ce message vous trouve en bonne santé.
+Dans une période de volatilité, d'inflation et de développements géopolitiques, de plus en plus de personnes cherchent des moyens de mieux diversifier et protéger leur capital.
 
-Je souhaitais vous contacter personnellement pour partager quelque chose que j'explore actuellement avec plusieurs clients désireux de renforcer leur patrimoine au-delà des marchés financiers traditionnels.
+Les diamants d'investissement physiques peuvent constituer un complément intéressant dans le cadre d'un plan patrimonial plus large. Ils offrent notamment :
 
-Les diamants physiques de qualité investissement attirent une attention discrète mais constante de la part de personnes soucieuses de leur patrimoine. Contrairement aux actions, aux devises ou aux cryptomonnaies, les diamants physiques ne sont pas cotés sur une bourse publique. Leur valeur n'est pas directement influencée par les décisions de taux d'intérêt, les corrections de marché ou les fluctuations de change. Ils constituent une réserve de valeur tangible, portable et discrète — qui a préservé le pouvoir d'achat à travers les générations.
+• Indépendance – non coté en bourse
+• Stabilité – axé sur la préservation de la valeur à long terme
+• Discrétion & portabilité – compact et facilement transférable
+• Possibilité de rendement via des contrats continus de 12 mois
 
-Je ne fais aucune recommandation ici — j'ouvre simplement une conversation. Si vous êtes curieux de découvrir comment certains clients abordent cela dans le cadre d'une stratégie de préservation du patrimoine plus large, je serais ravi de vous présenter un bref aperçu au moment qui vous convient. Aucune obligation, aucune pression.
+J'offre à mes clients la possibilité d'acquérir des diamants d'investissement physiques au tarif de gros, dans le cadre d'un plan patrimonial plus large — notre système Plan B.
 
-Dans l'attente de votre retour.
+Je vous invite volontiers à un entretien sans engagement et confidentiel de 15 minutes. Vous décidez ensuite vous-même si cela correspond à votre situation et à vos souhaits.
+
+Auriez-vous un bref moment dans les prochains jours ?
 
 Cordialement,
 
@@ -301,15 +321,20 @@ Bien cordialement,
 
 Gentile [CUSTOMER_NAME],
 
-Spero che questo messaggio la trovi in buona salute.
+In un periodo di volatilità, inflazione e sviluppi geopolitici, sempre più persone cercano modi per diversificare e proteggere meglio il proprio capitale.
 
-Volevo contattarla personalmente per condividere qualcosa che sto esplorando con diversi clienti che desiderano rafforzare la propria base patrimoniale al di là dei mercati finanziari tradizionali.
+I diamanti di investimento fisici possono essere un'interessante integrazione nell'ambito di un piano patrimoniale più ampio. Offrono, tra l'altro:
 
-I diamanti fisici di qualità investimento stanno attirando un'attenzione discreta ma costante da parte di persone attente alla propria ricchezza. A differenza di azioni, valute o criptovalute, i diamanti fisici non sono negoziati su alcuna borsa pubblica. Il loro valore non è direttamente influenzato da decisioni sui tassi di interesse, correzioni del mercato o fluttuazioni valutarie. Sono una riserva di valore tangibile, portatile e discreta — che ha preservato il potere d'acquisto attraverso le generazioni.
+• Indipendenza – non quotati in borsa
+• Stabilità – orientati alla preservazione del valore a lungo termine
+• Discrezione e portabilità – compatti e facilmente trasferibili
+• Possibilità di rendimento tramite contratti continuativi di 12 mesi
 
-Non sto facendo alcuna raccomandazione — sto semplicemente aprendo una conversazione. Se è curioso di scoprire come alcuni clienti si approcciano a questo nell'ambito di una strategia di preservazione del patrimonio più ampia, sarei lieto di condividere una breve panoramica quando le fa comodo. Nessun obbligo, nessuna pressione.
+Offro ai clienti la possibilità di acquistare diamanti di investimento fisici a prezzo all'ingrosso, come parte di un piano patrimoniale più ampio — il nostro sistema Plan B.
 
-In attesa di un suo riscontro.
+La invito volentieri a una conversazione di 15 minuti, senza impegno e riservata. Lei decide poi se questo si adatta alla sua situazione e ai suoi desideri.
+
+Ha un breve momento nei prossimi giorni?
 
 Cordiali saluti,
 
@@ -369,17 +394,22 @@ Distinti saluti,
 
 Estimado/a [CUSTOMER_NAME],
 
-Espero que este mensaje le encuentre bien.
+En un tiempo de volatilidad, inflación y desarrollos geopolíticos, cada vez más personas buscan formas de diversificar y proteger mejor su capital.
 
-Quería ponerme en contacto personalmente para compartir algo que estoy explorando actualmente con varios clientes que desean fortalecer su base de activos más allá de los mercados financieros tradicionales.
+Los diamantes de inversión físicos pueden ser una adición interesante dentro de un plan patrimonial más amplio. Ofrecen, entre otras cosas:
 
-Los diamantes físicos de grado inversión están atrayendo una atención discreta pero constante por parte de personas preocupadas por su patrimonio. A diferencia de las acciones, los mercados de divisas o las criptomonedas, los diamantes físicos no se negocian en ninguna bolsa pública. Su valor no está directamente influenciado por las decisiones sobre tipos de interés, correcciones del mercado o fluctuaciones monetarias. Son una reserva de valor tangible, portable y discreta, que ha preservado el poder adquisitivo a través de generaciones.
+• Independencia – no cotizados en bolsa
+• Estabilidad – orientados a la preservación de valor a largo plazo
+• Discreción y portabilidad – compactos y fácilmente transferibles
+• Posibilidad de rendimiento mediante contratos continuos de 12 meses
 
-No hago ninguna recomendación aquí — simplemente abro una conversación. Si tiene curiosidad por saber cómo algunos clientes abordan esto como parte de una estrategia más amplia de preservación del patrimonio, estaré encantado de compartir un breve resumen cuando le convenga. Sin compromiso, sin presión.
+Ofrezco a mis clientes la posibilidad de adquirir diamantes de inversión físicos a precio mayorista, como parte de un plan patrimonial más amplio — nuestro sistema Plan B.
 
-Quedo a la espera de sus noticias.
+Me gustaría invitarle a una conversación de 15 minutos, sin compromiso y confidencial. Usted decide después si esto se adapta a su situación y deseos.
 
-Un cordial saludo,
+¿Tiene un breve momento en los próximos días?
+
+Atentamente,
 
 [ADVISER_NAME]
 [ADVISER_COMPANY]

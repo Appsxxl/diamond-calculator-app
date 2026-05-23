@@ -52,164 +52,6 @@ const CATEGORIES: Category[] = ["Prospect", "Client", "Partner", "Follow-up", "O
 
 const VARIABLES = ["{name}", "{amount}", "{city}", "{company}", "{date}", "{sp_level}"];
 
-const STARTER_TEMPLATES: { lang: string; flag: string; title: string; category: string; body: string }[] = [
-  {
-    lang: "NL", flag: "🇳🇱",
-    title: "Introductiebrief Investeringsdiamanten",
-    category: "Prospect",
-    body: `Geachte heer/mevrouw,
-
-In een tijd van volatiliteit, inflatie en geopolitieke ontwikkelingen zoeken steeds meer mensen naar manieren om hun kapitaal beter te spreiden en te beschermen.
-
-Fysieke investeringsdiamanten kunnen daarbij een interessante aanvulling zijn binnen een breder vermogensplan. Ze bieden onder andere:
-
-• Onafhankelijkheid – niet beursgenoteerd
-• Stabiliteit – gericht op waardeopslag op lange termijn
-• Discretie & draagbaarheid – compact en gemakkelijk overdraagbaar
-• Mogelijkheid tot rendement via doorlopende 12-maandencontracten
-
-Ik bied cliënten de mogelijkheid om fysieke investeringsdiamanten aan te kopen tegen groothandelstarief, als onderdeel van een breder vermogensplan, ons systeem Plan B.
-
-Graag nodig ik u uit voor een vrijblijvend en vertrouwelijk gesprek van 15 minuten. U beslist daarna zelf of dit aansluit bij uw situatie en wensen.
-
-Heeft u de komende dagen een kort moment?
-
-Met vriendelijke groet,
-{name}
-Specialist in fysieke investeringsdiamanten
-{phone} | {email}`,
-  },
-  {
-    lang: "EN", flag: "🇬🇧",
-    title: "Investment Diamonds Introduction",
-    category: "Prospect",
-    body: `Dear Sir/Madam,
-
-In a time of volatility, inflation and geopolitical developments, more and more people are looking for ways to better diversify and protect their capital.
-
-Physical investment diamonds can be an interesting addition within a broader wealth plan. They offer, among other things:
-
-• Independence – not stock market listed
-• Stability – focused on long-term value preservation
-• Discretion & portability – compact and easily transferable
-• Possibility of returns through ongoing 12-month contracts
-
-I offer clients the opportunity to purchase physical investment diamonds at wholesale rates, as part of a broader wealth plan — our Plan B system.
-
-I would like to invite you for a no-obligation, confidential conversation of 15 minutes. You then decide for yourself whether this fits your situation and wishes.
-
-Do you have a brief moment in the coming days?
-
-Kind regards,
-{name}
-Specialist in physical investment diamonds
-{phone} | {email}`,
-  },
-  {
-    lang: "DE", flag: "🇩🇪",
-    title: "Einführungsbrief Investmentdiamanten",
-    category: "Prospect",
-    body: `Sehr geehrte Damen und Herren,
-
-In einer Zeit der Volatilität, Inflation und geopolitischer Entwicklungen suchen immer mehr Menschen nach Möglichkeiten, ihr Kapital besser zu streuen und zu schützen.
-
-Physische Investmentdiamanten können dabei eine interessante Ergänzung innerhalb eines breiteren Vermögensplans sein. Sie bieten unter anderem:
-
-• Unabhängigkeit – nicht börsennotiert
-• Stabilität – ausgerichtet auf langfristige Wertaufbewahrung
-• Diskretion & Mobilität – kompakt und leicht übertragbar
-• Renditechancen durch laufende 12-Monatsverträge
-
-Ich biete Kunden die Möglichkeit, physische Investmentdiamanten zum Großhandelspreis zu erwerben, als Teil eines breiteren Vermögensplans – unser System Plan B.
-
-Gerne lade ich Sie zu einem unverbindlichen und vertraulichen Gespräch von 15 Minuten ein. Sie entscheiden danach selbst, ob dies zu Ihrer Situation und Ihren Wünschen passt.
-
-Haben Sie in den kommenden Tagen kurz Zeit?
-
-Mit freundlichen Grüßen,
-{name}
-Spezialist für physische Investmentdiamanten
-{phone} | {email}`,
-  },
-  {
-    lang: "FR", flag: "🇫🇷",
-    title: "Lettre d'introduction Diamants d'investissement",
-    category: "Prospect",
-    body: `Madame, Monsieur,
-
-Dans une période de volatilité, d'inflation et de développements géopolitiques, de plus en plus de personnes cherchent des moyens de mieux diversifier et protéger leur capital.
-
-Les diamants d'investissement physiques peuvent constituer un complément intéressant dans le cadre d'un plan patrimonial plus large. Ils offrent notamment :
-
-• Indépendance – non coté en bourse
-• Stabilité – axé sur la préservation de la valeur à long terme
-• Discrétion & portabilité – compact et facilement transférable
-• Possibilité de rendement via des contrats continus de 12 mois
-
-J'offre à mes clients la possibilité d'acquérir des diamants d'investissement physiques au tarif de gros, dans le cadre d'un plan patrimonial plus large — notre système Plan B.
-
-Je vous invite volontiers à un entretien sans engagement et confidentiel de 15 minutes. Vous décidez ensuite vous-même si cela correspond à votre situation et à vos souhaits.
-
-Auriez-vous un bref moment dans les prochains jours ?
-
-Cordialement,
-{name}
-Spécialiste en diamants d'investissement physiques
-{phone} | {email}`,
-  },
-  {
-    lang: "ES", flag: "🇪🇸",
-    title: "Carta de introducción Diamantes de inversión",
-    category: "Prospect",
-    body: `Estimado/a señor/a,
-
-En un tiempo de volatilidad, inflación y desarrollos geopolíticos, cada vez más personas buscan formas de diversificar y proteger mejor su capital.
-
-Los diamantes de inversión físicos pueden ser una adición interesante dentro de un plan patrimonial más amplio. Ofrecen, entre otras cosas:
-
-• Independencia – no cotizados en bolsa
-• Estabilidad – orientados a la preservación de valor a largo plazo
-• Discreción y portabilidad – compactos y fácilmente transferibles
-• Posibilidad de rendimiento mediante contratos continuos de 12 meses
-
-Ofrezco a mis clientes la posibilidad de adquirir diamantes de inversión físicos a precio mayorista, como parte de un plan patrimonial más amplio — nuestro sistema Plan B.
-
-Me gustaría invitarle a una conversación de 15 minutos, sin compromiso y confidencial. Usted decide después si esto se adapta a su situación y deseos.
-
-¿Tiene un breve momento en los próximos días?
-
-Atentamente,
-{name}
-Especialista en diamantes de inversión físicos
-{phone} | {email}`,
-  },
-  {
-    lang: "IT", flag: "🇮🇹",
-    title: "Lettera di introduzione Diamanti d'investimento",
-    category: "Prospect",
-    body: `Gentile Signore/Signora,
-
-In un periodo di volatilità, inflazione e sviluppi geopolitici, sempre più persone cercano modi per diversificare e proteggere meglio il proprio capitale.
-
-I diamanti di investimento fisici possono essere un'interessante integrazione nell'ambito di un piano patrimoniale più ampio. Offrono, tra l'altro:
-
-• Indipendenza – non quotati in borsa
-• Stabilità – orientati alla preservazione del valore a lungo termine
-• Discrezione e portabilità – compatti e facilmente trasferibili
-• Possibilità di rendimento tramite contratti continuativi di 12 mesi
-
-Offro ai clienti la possibilità di acquistare diamanti di investimento fisici a prezzo all'ingrosso, come parte di un piano patrimoniale più ampio — il nostro sistema Plan B.
-
-La invito volentieri a una conversazione di 15 minuti, senza impegno e riservata. Lei decide poi se questo si adatta alla sua situazione e ai suoi desideri.
-
-Ha un breve momento nei prossimi giorni?
-
-Cordiali saluti,
-{name}
-Specialista in diamanti di investimento fisici
-{phone} | {email}`,
-  },
-];
 
 function generateId(): string {
   return `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -255,7 +97,6 @@ export default function PersonalLettersScreen() {
   const [editCategory, setEditCategory] = useState<string>("Prospect");
   const [editBody, setEditBody] = useState("");
   const [editDraft, setEditDraft] = useState(true);
-  const [showStarters, setShowStarters] = useState(true);
 
   useEffect(() => {
     loadLetters();
@@ -378,15 +219,6 @@ export default function PersonalLettersScreen() {
     setFillModalVisible(false);
   };
 
-  const useFromTemplate = (tmpl: typeof STARTER_TEMPLATES[0]) => {
-    setActiveLetter(null);
-    setEditTitle(tmpl.title);
-    setEditCategory(tmpl.category);
-    setEditBody(tmpl.body);
-    setEditDraft(false);
-    setEditModalVisible(true);
-  };
-
   const insertVariable = (variable: string) => {
     setEditBody((prev) => prev + variable);
   };
@@ -475,38 +307,11 @@ export default function PersonalLettersScreen() {
           </Text>
         </View>
 
-        {/* Starter Templates */}
-        <View style={S.starterSection}>
-          <TouchableOpacity style={S.starterHeader} onPress={() => setShowStarters(v => !v)} activeOpacity={0.8}>
-            <Text style={S.starterHeaderText}>💎  STARTER TEMPLATES  ({STARTER_TEMPLATES.length})</Text>
-            <Text style={S.starterChevron}>{showStarters ? "▲" : "▼"}</Text>
-          </TouchableOpacity>
-          {showStarters && (
-            <View style={S.starterList}>
-              {STARTER_TEMPLATES.map((tmpl) => (
-                <View key={tmpl.lang} style={S.starterCard}>
-                  <View style={S.starterCardTop}>
-                    <View style={S.starterLangChip}>
-                      <Text style={S.starterFlag}>{tmpl.flag}</Text>
-                      <Text style={S.starterLang}>{tmpl.lang}</Text>
-                    </View>
-                    <Text style={S.starterTitle} numberOfLines={1}>{tmpl.title}</Text>
-                  </View>
-                  <Text style={S.starterPreview} numberOfLines={2}>{tmpl.body}</Text>
-                  <TouchableOpacity style={S.starterUseBtn} onPress={() => useFromTemplate(tmpl)} activeOpacity={0.85}>
-                    <Text style={S.starterUseBtnText}>Use Template →</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-
         {letters.length === 0 && (
           <View style={S.emptyState}>
             <Text style={S.emptyIcon}>✍️</Text>
             <Text style={S.emptyTitle}>No letters yet</Text>
-            <Text style={S.emptySub}>Tap "+ New Letter" or use a starter template above.</Text>
+            <Text style={S.emptySub}>Tap "+ New Letter" to create your first letter.</Text>
             <TouchableOpacity style={S.emptyBtn} onPress={openCreate}>
               <Text style={S.emptyBtnText}>+ New Letter</Text>
             </TouchableOpacity>
@@ -864,19 +669,4 @@ const S = StyleSheet.create({
     alignItems: "center",
   },
   cancelBtnText: { color: "#94a3b8", fontFamily: FONT, fontSize: 14 },
-
-  starterSection: { marginHorizontal: 16, marginTop: 12, marginBottom: 4 },
-  starterHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10, paddingHorizontal: 14, backgroundColor: "#0f1f38", borderRadius: 10, borderWidth: 1, borderColor: "#1e2d47" },
-  starterHeaderText: { color: "#f59e0b", fontFamily: FONT, fontSize: 11, letterSpacing: 0.8 },
-  starterChevron: { color: "#f59e0b", fontFamily: FONT, fontSize: 11 },
-  starterList: { marginTop: 8, gap: 10 },
-  starterCard: { backgroundColor: "#0f1f38", borderRadius: 12, borderWidth: 1, borderColor: "#1e2d47", padding: 14 },
-  starterCardTop: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 6 },
-  starterLangChip: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "#1e2d47", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
-  starterFlag: { fontSize: 14 },
-  starterLang: { color: "#f59e0b", fontFamily: FONT, fontSize: 11, fontWeight: "800" },
-  starterTitle: { color: "#e2e8f0", fontFamily: FONT, fontSize: 13, flex: 1 },
-  starterPreview: { color: "#475569", fontFamily: FONT, fontSize: 11, lineHeight: 17, marginBottom: 10 },
-  starterUseBtn: { backgroundColor: "#1e2d47", borderRadius: 8, paddingVertical: 8, alignItems: "center", borderWidth: 1, borderColor: "#f59e0b55" },
-  starterUseBtnText: { color: "#f59e0b", fontFamily: FONT, fontSize: 12 },
 });
