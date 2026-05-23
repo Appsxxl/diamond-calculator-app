@@ -9,7 +9,6 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system/legacy";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
@@ -17,6 +16,7 @@ import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
 import { LettersLangPicker } from "@/components/letters-lang-picker";
 import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
+import { loadLocalProfile } from "./letters/shared";
 
 type LetterType = "invitation" | "presentation" | "business";
 
@@ -1006,8 +1006,6 @@ function buildHtml(letter: string, logoDataUri: string, customerName: string, da
 </html>`;
 }
 
-const STORAGE_KEY = "client_letter_adviser_info";
-
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function ClientLetterScreen() {
   const router = useRouter();
@@ -1046,56 +1044,44 @@ export default function ClientLetterScreen() {
   const profileQuery = trpc.advisor.getProfile.useQuery(undefined, { retry: false });
 
   useEffect(() => {
-    const profile = profileQuery.data;
-    if (!profile) return;
-    if (profile.adviserName)  setAdviserName(profile.adviserName);
-    if (profile.companyName)  setAdviserCompany(profile.companyName);
-    if (profile.mobile)       setAdviserMobile(profile.mobile);
-    if (profile.contactInfo)  setAdviserContact(profile.contactInfo);
-    if (profile.logoUrl)      setCustomLogoUrl(profile.logoUrl);
-  }, [profileQuery.data]);
-
-  // AsyncStorage fallback for offline — only used if server profile is empty
-  useEffect(() => {
-    if (profileQuery.isLoading) return;
-    if (profileQuery.data?.adviserName) return; // server data takes priority
-    AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
-      if (!raw) return;
-      try {
-        const saved = JSON.parse(raw);
-        if (saved.adviserName)    setAdviserName((p) => p || saved.adviserName);
-        if (saved.adviserCompany) setAdviserCompany((p) => p || saved.adviserCompany);
-        if (saved.adviserMobile)  setAdviserMobile((p) => p || saved.adviserMobile);
-        if (saved.adviserContact) setAdviserContact((p) => p || saved.adviserContact);
-      } catch { /* ignore */ }
-    });
-  }, [profileQuery.isLoading, profileQuery.data]);
-
-  const saveAdviserInfo = useCallback(() => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ adviserName, adviserCompany, adviserMobile, adviserContact }));
-  }, [adviserName, adviserCompany, adviserMobile, adviserContact]);
+    const p = profileQuery.data;
+    if (p) {
+      if (p.adviserName)  setAdviserName(p.adviserName);
+      if (p.companyName)  setAdviserCompany(p.companyName);
+      if (p.mobile)       setAdviserMobile(p.mobile);
+      if (p.contactInfo)  setAdviserContact(p.contactInfo);
+      if (p.logoUrl)      setCustomLogoUrl(p.logoUrl);
+      return;
+    }
+    if (!profileQuery.isLoading) {
+      loadLocalProfile().then((local) => {
+        if (local.adviserName)  setAdviserName(local.adviserName);
+        if (local.companyName)  setAdviserCompany(local.companyName);
+        if (local.mobile)       setAdviserMobile(local.mobile);
+        if (local.contactInfo)  setAdviserContact(local.contactInfo);
+        if (local.logoUrl)      setCustomLogoUrl(local.logoUrl);
+      });
+    }
+  }, [profileQuery.data, profileQuery.isLoading]);
 
   const letter = buildLetter(letterLang, letterType, customerName, adviserName, adviserCompany, adviserMobile, adviserContact);
 
   const handleCopy = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await Clipboard.setStringAsync(letter);
-    saveAdviserInfo();
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
-  }, [letter, saveAdviserInfo]);
+  }, [letter]);
 
   const handleShare = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    saveAdviserInfo();
     try {
       await Share.share({ message: letter });
     } catch { /* cancelled */ }
-  }, [letter, saveAdviserInfo]);
+  }, [letter]);
 
   const handlePdf = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    saveAdviserInfo();
     setPdfLoading(true);
     try {
       const docCustomer = customerName.trim() || "———";
@@ -1138,7 +1124,7 @@ export default function ClientLetterScreen() {
       }
     } catch { /* cancelled */ }
     finally { setPdfLoading(false); }
-  }, [letter, logoBase64, saveAdviserInfo, customerName, letterLang]);
+  }, [letter, logoBase64, customerName, letterLang]);
 
   const TYPE_OPTIONS: { key: LetterType; label: string; icon: string; sub: string }[] = [
     { key: "invitation",   label: tx.typeInvitation,   icon: "✉️", sub: tx.typeInvitationSub },
@@ -1207,7 +1193,7 @@ export default function ClientLetterScreen() {
               placeholderTextColor="#475569"
               value={adviserName}
               onChangeText={setAdviserName}
-              onBlur={saveAdviserInfo}
+             
             />
             <TextInput
               style={S.input}
@@ -1215,7 +1201,7 @@ export default function ClientLetterScreen() {
               placeholderTextColor="#475569"
               value={adviserCompany}
               onChangeText={setAdviserCompany}
-              onBlur={saveAdviserInfo}
+             
             />
             <TextInput
               style={S.input}
@@ -1223,7 +1209,7 @@ export default function ClientLetterScreen() {
               placeholderTextColor="#475569"
               value={adviserMobile}
               onChangeText={setAdviserMobile}
-              onBlur={saveAdviserInfo}
+             
               keyboardType="phone-pad"
             />
             <TextInput
@@ -1232,7 +1218,7 @@ export default function ClientLetterScreen() {
               placeholderTextColor="#475569"
               value={adviserContact}
               onChangeText={setAdviserContact}
-              onBlur={saveAdviserInfo}
+             
               keyboardType="email-address"
             />
           </View>
