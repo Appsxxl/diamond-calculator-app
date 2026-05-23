@@ -15,6 +15,8 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
+import { LettersLangPicker } from "@/components/letters-lang-picker";
+import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
 
 type LetterType = "invitation" | "presentation" | "business";
 
@@ -1012,6 +1014,8 @@ export default function ClientLetterScreen() {
   const { language } = useCalculator();
 
   const tx = CL_TEXT[language] ?? CL_TEXT.en;
+  const [letterLang, setLetterLang] = useState<Language>(language);
+  const [topLangs, setTopLangs] = useState<Language[]>(["en", "nl", "de", "fr", "es", "it"]);
   const [letterType, setLetterType] = useState<LetterType>("invitation");
   const [customerName, setCustomerName] = useState("");
   const [adviserName, setAdviserName] = useState("");
@@ -1026,6 +1030,16 @@ export default function ClientLetterScreen() {
   // Load diamond logo for offline/fallback use
   useEffect(() => {
     loadDiamondBase64().then(setLogoBase64);
+  }, []);
+
+  useEffect(() => {
+    getTopLetterLanguages(6).then(setTopLangs);
+  }, []);
+
+  const handleLangSelect = useCallback((lang: Language) => {
+    setLetterLang(lang);
+    recordLetterLangUsage(lang);
+    getTopLetterLanguages(6).then(setTopLangs);
   }, []);
 
   // Load profile from server — populate fields and custom logo
@@ -1061,7 +1075,7 @@ export default function ClientLetterScreen() {
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ adviserName, adviserCompany, adviserMobile, adviserContact }));
   }, [adviserName, adviserCompany, adviserMobile, adviserContact]);
 
-  const letter = buildLetter(language, letterType, customerName, adviserName, adviserCompany, adviserMobile, adviserContact);
+  const letter = buildLetter(letterLang, letterType, customerName, adviserName, adviserCompany, adviserMobile, adviserContact);
 
   const handleCopy = useCallback(async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -1085,7 +1099,7 @@ export default function ClientLetterScreen() {
     setPdfLoading(true);
     try {
       const docCustomer = customerName.trim() || "———";
-      const docDate = formatDate(language);
+      const docDate = formatDate(letterLang);
       const logoSrc = await resolveLogoForPdf(customLogoUrl) || logoBase64;
       const html = buildHtml(letter, logoSrc, docCustomer, docDate);
       if (Platform.OS === "web") {
@@ -1124,7 +1138,7 @@ export default function ClientLetterScreen() {
       }
     } catch { /* cancelled */ }
     finally { setPdfLoading(false); }
-  }, [letter, logoBase64, saveAdviserInfo, customerName, language]);
+  }, [letter, logoBase64, saveAdviserInfo, customerName, letterLang]);
 
   const TYPE_OPTIONS: { key: LetterType; label: string; icon: string; sub: string }[] = [
     { key: "invitation",   label: tx.typeInvitation,   icon: "✉️", sub: tx.typeInvitationSub },
@@ -1153,6 +1167,12 @@ export default function ClientLetterScreen() {
             </View>
             <Text style={S.screenTitle}>{tx.title}</Text>
             <Text style={S.screenSub}>{tx.sub}</Text>
+          </View>
+
+          {/* ── Letter Language ── */}
+          <View style={S.section}>
+            <Text style={S.sectionLabel}>LETTER LANGUAGE</Text>
+            <LettersLangPicker languages={topLangs} selected={letterLang} onSelect={handleLangSelect} />
           </View>
 
           {/* ── Letter Type ── */}
@@ -1246,7 +1266,7 @@ export default function ClientLetterScreen() {
                 </View>
                 <View style={{ alignItems: "flex-end" }}>
                   <Text style={S.previewDocName}>{customerName.trim() || "———"}</Text>
-                  <Text style={S.previewDocDate}>{formatDate(language)}</Text>
+                  <Text style={S.previewDocDate}>{formatDate(letterLang)}</Text>
                 </View>
               </View>
               <View style={S.previewGoldBar} />
