@@ -10,13 +10,16 @@ import * as Sharing from "expo-sharing";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system/legacy";
 import { useRouter } from "expo-router";
+
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { trpc } from "@/lib/trpc";
 import type { Language } from "@/lib/translations";
+import { useLocalSearchParams } from "expo-router";
 import { LettersLangPicker } from "@/components/letters-lang-picker";
 import { getTopLetterLanguages, recordLetterLangUsage } from "@/lib/letters-lang";
 import { loadLocalProfile } from "./letters/shared";
+import { LogToPipelineModal } from "@/components/log-to-pipeline-modal";
 
 type LetterType = "invitation" | "presentation" | "business";
 
@@ -1010,12 +1013,15 @@ function buildHtml(letter: string, logoDataUri: string, customerName: string, da
 export default function ClientLetterScreen() {
   const router = useRouter();
   const { language } = useCalculator();
+  const { recipient } = useLocalSearchParams<{ recipient?: string }>();
 
   const tx = CL_TEXT[language] ?? CL_TEXT.en;
   const [letterLang, setLetterLang] = useState<Language>(language);
   const [topLangs, setTopLangs] = useState<Language[]>(["en", "nl", "de", "fr", "es", "it"]);
   const [letterType, setLetterType] = useState<LetterType>("invitation");
-  const [customerName, setCustomerName] = useState("");
+  const [customerName, setCustomerName] = useState(typeof recipient === "string" ? recipient : "");
+  const [logModalVisible, setLogModalVisible] = useState(false);
+  const [loggedSuccess, setLoggedSuccess] = useState(false);
   const [adviserName, setAdviserName] = useState("");
   const [adviserCompany, setAdviserCompany] = useState("");
   const [adviserMobile, setAdviserMobile] = useState("");
@@ -1273,7 +1279,24 @@ export default function ClientLetterScreen() {
             </TouchableOpacity>
           </View>
 
+          <TouchableOpacity
+            style={S.logBtn}
+            onPress={() => setLogModalVisible(true)}
+            activeOpacity={0.85}
+          >
+            <Text style={S.logBtnText}>{loggedSuccess ? "✓  Logged to Pipeline" : "📋  Log to Sent Pipeline"}</Text>
+          </TouchableOpacity>
+
           <Text style={S.disclaimer}>{tx.disclaimer}</Text>
+
+          <LogToPipelineModal
+            visible={logModalVisible}
+            onClose={() => setLogModalVisible(false)}
+            recipientName={customerName}
+            letterTitle={TYPE_OPTIONS.find(o => o.key === letterType)?.label ?? letterType}
+            letterCategory="Client"
+            onLogged={() => { setLoggedSuccess(true); setTimeout(() => setLoggedSuccess(false), 3000); }}
+          />
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -1500,4 +1523,15 @@ const S = StyleSheet.create({
     lineHeight: 16,
     textAlign: "center",
   },
+  logBtn: {
+    marginHorizontal: 16,
+    marginTop: 10,
+    paddingVertical: 13,
+    borderRadius: 12,
+    alignItems: "center",
+    backgroundColor: "#0d2212",
+    borderWidth: 1,
+    borderColor: "#22c55e",
+  },
+  logBtnText: { color: "#22c55e", fontFamily: FONT, fontSize: 14 },
 });
