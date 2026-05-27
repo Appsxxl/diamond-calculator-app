@@ -18,6 +18,7 @@ import {
   Linking,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useUserStatus } from "@/hooks/use-user-status";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
 import * as Clipboard from "expo-clipboard";
@@ -320,6 +321,7 @@ export default function ScenarioToolScreen() {
     propWithdrawalFrom?: string;
   }>();
   const { language, officeLocation, partnerMode, lettersAccess } = useCalculator();
+  const { isExpired } = useUserStatus();
   const { width: screenWidth } = useWindowDimensions();
   // Compute table column widths: 96% of screen, minus outer content padding (32) and card padding (24)
   const TW = Math.max(Math.round(Math.min(screenWidth * 0.96, 1450) - 56), 788);
@@ -882,6 +884,25 @@ export default function ScenarioToolScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} bgColor="#0f172a">
+      {isExpired && (
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 99, backgroundColor: "rgba(15,23,42,0.93)", justifyContent: "center", alignItems: "center", padding: 32 }}>
+          <Text style={{ fontSize: 48, marginBottom: 16 }}>🔒</Text>
+          <Text style={{ fontSize: 22, fontWeight: "800", color: "#f1f5f9", textAlign: "center", marginBottom: 10 }}>Trial Ended</Text>
+          <Text style={{ fontSize: 15, color: "#94a3b8", textAlign: "center", lineHeight: 22, marginBottom: 28 }}>
+            Subscribe to continue editing your strategy
+          </Text>
+          <TouchableOpacity
+            style={{ backgroundColor: "#f59e0b", borderRadius: 14, paddingVertical: 16, paddingHorizontal: 40, marginBottom: 14 }}
+            onPress={() => router.push("/paywall" as any)}
+            activeOpacity={0.85}
+          >
+            <Text style={{ fontSize: 17, fontWeight: "700", color: "#0f172a" }}>View Plans</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/activate" as any)} activeOpacity={0.7}>
+            <Text style={{ fontSize: 14, color: "#64748b" }}>Have an activation code?</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <ScrollView style={S.scroll} contentContainerStyle={S.content} keyboardShouldPersistTaps="handled">
 
         {/* Header */}

@@ -3,36 +3,27 @@ import "./scripts/load-env.js";
 import type { ExpoConfig } from "expo/config";
 
 // Bundle ID format: space.manus.<project_name_dots>.<timestamp>
-// e.g., "my-app" created at 2024-01-15 10:30:45 -> "space.manus.my.app.t20240115103045"
-// Bundle ID can only contain letters, numbers, and dots
-// Android requires each dot-separated segment to start with a letter
 const rawBundleId = "space.manus.diamond.calculator.app.t20260404074555";
 const bundleId =
   rawBundleId
-    .replace(/[-_]/g, ".") // Replace hyphens/underscores with dots
-    .replace(/[^a-zA-Z0-9.]/g, "") // Remove invalid chars
-    .replace(/\.+/g, ".") // Collapse consecutive dots
-    .replace(/^\.+|\.+$/g, "") // Trim leading/trailing dots
+    .replace(/[-_]/g, ".")
+    .replace(/[^a-zA-Z0-9.]/g, "")
+    .replace(/\.+/g, ".")
+    .replace(/^\.+|\.+$/g, "")
     .toLowerCase()
     .split(".")
-    .map((segment) => {
-      // Android requires each segment to start with a letter
-      // Prefix with 'x' if segment starts with a digit
-      return /^[a-zA-Z]/.test(segment) ? segment : "x" + segment;
-    })
+    .map((segment) => (/^[a-zA-Z]/.test(segment) ? segment : "x" + segment))
     .join(".") || "space.manus.app";
 
-// Extract timestamp from bundle ID and prefix with "manus" for deep link scheme
-// e.g., "space.manus.my.app.t20240115103045" -> "manus20240115103045"
 const timestamp = bundleId.split(".").pop()?.replace(/^t/, "") ?? "";
 const schemeFromBundleId = `manus${timestamp}`;
 
+// EAS Project ID - Set after running eas build:configure
+const EAS_PROJECT_ID = "ade99209-f13f-42d6-aabb-afe760bf5b98";
+
 const env = {
-  // App branding - update these values directly (do not use env vars)
   appName: "Plan B",
   appSlug: "diamond-calculator-app",
-  // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
-  // Leave empty to use the default icon from assets/images/icon.png
   logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663417308751/jCtAQ46pJGZpaYNWHBsQ4H/icon-jCB2JpzktDjtWxrhwEp9nT.webp",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
@@ -46,29 +37,38 @@ const config: ExpoConfig = {
   description: "Plan B — Strategic Wealth Optimization",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  updates: {
-    url: "https://u.expo.dev/YOUR_PROJECT_ID",
-    enabled: true,
-    fallbackToCacheTimeout: 0,
-    checkAutomatically: "ON_LOAD",
-  },
-  runtimeVersion: {
-    policy: "appVersion",
-  },
+  ...(EAS_PROJECT_ID
+    ? {
+        updates: {
+          url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+          enabled: true,
+          fallbackToCacheTimeout: 0,
+          checkAutomatically: "ON_LOAD" as const,
+        },
+        runtimeVersion: {
+          policy: "appVersion" as const,
+        },
+      }
+    : {}),
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
-    backgroundColor: "#ffffff",
-    "infoPlist": {
-      "ITSAppUsesNonExemptEncryption": false
-    }
+    backgroundColor: "#0f172a",
+    buildNumber: "1",
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+      NSPhotoLibraryUsageDescription:
+        "Allow Plan B to access your photo library to upload a profile logo.",
+      NSCameraUsageDescription:
+        "Allow Plan B to take a photo for your profile logo.",
+    },
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: "#0a7ea4",
+      backgroundColor: "#0f172a",
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
@@ -76,17 +76,18 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
-    permissions: ["POST_NOTIFICATIONS", "INTERNET"],
+    versionCode: 1,
+    permissions: [
+      "POST_NOTIFICATIONS",
+      "INTERNET",
+      "READ_MEDIA_IMAGES",
+      "READ_EXTERNAL_STORAGE",
+    ],
     intentFilters: [
       {
         action: "VIEW",
         autoVerify: true,
-        data: [
-          {
-            scheme: env.scheme,
-            host: "*",
-          },
-        ],
+        data: [{ scheme: env.scheme, host: "*" }],
         category: ["BROWSABLE", "DEFAULT"],
       },
     ],
@@ -101,6 +102,15 @@ const config: ExpoConfig = {
     "expo-font",
     "expo-web-browser",
     "expo-asset",
+    [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "Allow Plan B to access your photos to upload a profile logo.",
+        cameraPermission:
+          "Allow Plan B to take a photo for your profile logo.",
+      },
+    ],
     [
       "expo-audio",
       {
@@ -139,9 +149,12 @@ const config: ExpoConfig = {
     typedRoutes: true,
     reactCompiler: true,
   },
+  ...(EAS_PROJECT_ID ? { extra: { eas: { projectId: EAS_PROJECT_ID } } } : {}),
 };
 
-// Export environment for runtime access
 export const appEnv = env;
-
 export default config;
+
+
+
+

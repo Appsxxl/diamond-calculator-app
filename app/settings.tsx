@@ -18,6 +18,7 @@ import { t } from "@/lib/translations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import type { OfficeLocation } from "@/lib/calculator-context";
+import { useUserStatus } from "@/hooks/use-user-status";
 
 const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[] = [
   { id: "dubai", label: "🇦🇪 Dubai, UAE", city: "Dubai Freezone", reg: "DMCC-1007195 · SIRA Certified" },
@@ -29,6 +30,7 @@ const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[
 export default function SettingsScreen() {
   const router = useRouter();
   const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, officeLocation, setOfficeLocation } = useCalculator();
+  const { isTeam, isLoading: statusLoading } = useUserStatus();
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
@@ -234,6 +236,35 @@ export default function SettingsScreen() {
                   {partnerMode ? "Disable" : "Enable"}
                 </Text>
               </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Team Access Section */}
+        <View style={S.section}>
+          {sectionTitle("★ TEAM ACCESS")}
+          <View style={S.card}>
+            <View style={S.listRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={[S.listLabel, isTeam && { color: "#f59e0b" }]}>
+                  {isTeam ? "★ Team Access Active" : "Activate Team Access"}
+                </Text>
+                <Text style={S.listSub}>
+                  {isTeam
+                    ? "Lifetime access — all features unlocked"
+                    : "Enter your activation code for free lifetime access"}
+                </Text>
+              </View>
+              {!isTeam && !statusLoading && (
+                <TouchableOpacity
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onPress={() => router.push("/activate" as any)}
+                  style={S.toggleBtn}
+                  activeOpacity={0.8}
+                >
+                  <Text style={S.toggleBtnText}>Activate</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>

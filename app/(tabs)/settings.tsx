@@ -17,6 +17,8 @@ import { t } from "@/lib/translations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import type { OfficeLocation } from "@/lib/calculator-context";
+import { useUserStatus } from "@/hooks/use-user-status";
+import { trpc } from "@/lib/trpc";
 
 const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[] = [
   { id: "dubai", label: "🇦🇪 Dubai, UAE", city: "Dubai Freezone", reg: "DMCC-1007195 · SIRA Certified" },
@@ -28,6 +30,9 @@ const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[
 export default function SettingsScreen() {
   const router = useRouter();
   const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, lettersAccess, enableLettersAccess, disableLettersAccess, officeLocation, setOfficeLocation } = useCalculator();
+  const { isTeam, daysLeft, isExpired, isLoading: statusLoading } = useUserStatus();
+  const { data: me } = trpc.auth.me.useQuery();
+  const isAdmin = me?.role === "admin";
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
@@ -309,6 +314,57 @@ export default function SettingsScreen() {
             </View>
           </View>
         )}
+
+        {/* Admin Panel — visible to admins only */}
+        {isAdmin && (
+          <View style={S.section}>
+            {sectionTitle("⚙️ ADMIN")}
+            <View style={S.card}>
+              <Pressable
+                onPress={() => router.push("/admin" as any)}
+                style={({ pressed }) => [S.listRow, pressed && S.listRowPressed]}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={S.listLabel}>Admin Panel</Text>
+                  <Text style={S.listSub}>Users, codes, subscription status</Text>
+                </View>
+                <Text style={S.checkmark}>›</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
+
+        {/* Team Access Section */}
+        <View style={S.section}>
+          {sectionTitle("★ TEAM ACCESS")}
+          <View style={S.card}>
+            <View style={S.listRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={[S.listLabel, isTeam && { color: "#f59e0b" }]}>
+                  {isTeam ? "★ Team Access Active" : isExpired ? "Trial Ended" : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in trial`}
+                </Text>
+                <Text style={S.listSub}>
+                  {isTeam
+                    ? "Lifetime access — all features unlocked"
+                    : isExpired
+                    ? "Subscribe to continue using Pro features"
+                    : "Activate a team code for free lifetime access"}
+                </Text>
+              </View>
+              {!statusLoading && !isTeam && (
+                <TouchableOpacity
+                  onPress={() => router.push(isExpired ? ("/paywall" as any) : ("/activate" as any))}
+                  style={[S.toggleBtn, isExpired && { backgroundColor: "rgba(245,158,11,0.12)", borderColor: "#f59e0b" }]}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[S.toggleBtnText, isExpired && { color: "#f59e0b" }]}>
+                    {isExpired ? "Subscribe" : "Activate"}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </View>
 
         {/* About Section */}
         <View style={S.section}>

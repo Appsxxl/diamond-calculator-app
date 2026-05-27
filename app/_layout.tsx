@@ -22,6 +22,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
+import { initializePurchases } from "@/lib/purchases";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -39,6 +40,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     initManusRuntime();
+    initializePurchases();
   }, []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
@@ -92,6 +94,9 @@ export default function RootLayout() {
               <Stack.Screen name="help-article" />
               <Stack.Screen name="onboarding" />
               <Stack.Screen name="faq" />
+              <Stack.Screen name="activate" />
+              <Stack.Screen name="paywall" />
+              <Stack.Screen name="admin" />
             </Stack>
             <StatusBar style="auto" />
             <DisclaimerModal />

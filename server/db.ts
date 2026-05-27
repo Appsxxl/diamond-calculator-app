@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { AdvisorProfile, advisorProfiles, InsertAdvisorProfile, InsertUser, users } from "../drizzle/schema";
+import { AdvisorProfile, advisorProfiles, InsertAdvisorProfile, InsertUser, UserStatus, userStatuses, WhitelistCode, whitelistCodes, users, User } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -106,6 +106,84 @@ export async function upsertAdvisorProfile(
   if (!db) return;
   await db
     .insert(advisorProfiles)
+    .values({ userId, ...data })
+    .onDuplicateKeyUpdate({ set: data });
+}
+
+export async function getWhitelistCode(code: string): Promise<WhitelistCode | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(whitelistCodes)
+    .where(eq(whitelistCodes.code, code.toUpperCase()))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function markCodeUsed(codeId: number, userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(whitelistCodes)
+    .set({ usedBy: userId, usedAt: new Date() })
+    .where(eq(whitelistCodes.id, codeId));
+}
+
+export async function createWhitelistCode(code: string, description?: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(whitelistCodes).values({ code: code.toUpperCase(), description });
+}
+
+export async function listWhitelistCodes(): Promise<WhitelistCode[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(whitelistCodes).orderBy(whitelistCodes.createdAt);
+}
+
+export async function getUserStatus(userId: number): Promise<UserStatus | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(userStatuses).where(eq(userStatuses.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export type UserWithStatus = Pick<User, "id" | "name" | "email" | "role" | "createdAt"> & {
+  status: UserStatus["status"] | null;
+  activationCode: string | null;
+  activatedAt: Date | null;
+  trialStartedAt: Date | null;
+};
+
+export async function listUsersWithStatus(): Promise<UserWithStatus[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      createdAt: users.createdAt,
+      status: userStatuses.status,
+      activationCode: userStatuses.activationCode,
+      activatedAt: userStatuses.activatedAt,
+      trialStartedAt: userStatuses.trialStartedAt,
+    })
+    .from(users)
+    .leftJoin(userStatuses, eq(userStatuses.userId, users.id))
+    .orderBy(users.createdAt);
+}
+
+export async function upsertUserStatus(
+  userId: number,
+  data: Partial<Omit<UserStatus, "id" | "userId" | "createdAt" | "updatedAt">>,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .insert(userStatuses)
     .values({ userId, ...data })
     .onDuplicateKeyUpdate({ set: data });
 }

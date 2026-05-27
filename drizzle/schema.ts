@@ -1,5 +1,6 @@
 import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
+
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
@@ -40,3 +41,27 @@ export const advisorProfiles = mysqlTable("advisor_profiles", {
 
 export type AdvisorProfile = typeof advisorProfiles.$inferSelect;
 export type InsertAdvisorProfile = typeof advisorProfiles.$inferInsert;
+
+export const whitelistCodes = mysqlTable("whitelist_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  code: varchar("code", { length: 64 }).notNull().unique(),
+  description: varchar("description", { length: 256 }),
+  usedBy: int("usedBy"),
+  usedAt: timestamp("usedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type WhitelistCode = typeof whitelistCodes.$inferSelect;
+
+export const userStatuses = mysqlTable("user_statuses", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  status: mysqlEnum("status", ["team", "trial", "paid", "expired"]).default("trial").notNull(),
+  activationCode: varchar("activationCode", { length: 64 }),
+  activatedAt: timestamp("activatedAt"),
+  trialStartedAt: timestamp("trialStartedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserStatus = typeof userStatuses.$inferSelect;

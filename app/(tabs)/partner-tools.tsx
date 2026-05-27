@@ -19,6 +19,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
+import { PaywallGate } from "@/components/paywall-gate";
 import { useCalculator } from "@/lib/calculator-context";
 import { stratSimulate, getSPLevel, getNetDeposit, runCalculation, createDefaultMonthData } from "@/lib/calculator";
 import type { MonthData } from "@/lib/calculator";
@@ -2078,6 +2079,7 @@ export default function PartnerToolsScreen() {
   }, [partners, currentTier]);
 
   return (
+    <PaywallGate>
     <ScreenContainer bgColor="#0d1a2a">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
 
@@ -3255,6 +3257,7 @@ export default function PartnerToolsScreen() {
         </KeyboardAvoidingView>
       </Modal>
     </ScreenContainer>
+    </PaywallGate>
   );
 }
 

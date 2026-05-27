@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
+import { PaywallGate } from "@/components/paywall-gate";
 import { useCalculator } from "@/lib/calculator-context";
 import { router } from "expo-router";
 import { t } from "@/lib/translations";
@@ -368,6 +369,7 @@ export default function AffiliateScreen() {
   }, [partners]);
 
   return (
+    <PaywallGate>
     <ScreenContainer edges={["top", "left", "right"]} bgColor={NAVY}>
       <ScrollView style={S.scroll} contentContainerStyle={S.content}>
 
@@ -866,6 +868,7 @@ export default function AffiliateScreen() {
         </KeyboardAvoidingView>
       </Modal>
     </ScreenContainer>
+    </PaywallGate>
   );
 }
 
