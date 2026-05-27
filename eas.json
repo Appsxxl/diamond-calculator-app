@@ -30,8 +30,5 @@
         "track": "production"
       }
     }
-  },
-  "update": {
-    "channel": "main"
   }
 }
