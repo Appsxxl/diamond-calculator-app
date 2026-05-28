@@ -1,17 +1,54 @@
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
-import { AdvisorProfile, advisorProfiles, InsertAdvisorProfile, InsertUser, UserStatus, userStatuses, WhitelistCode, whitelistCodes, users, User } from "../drizzle/schema";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
+import path from "path";
+import fs from "fs";
+import {
+  AdvisorProfile,
+  advisorProfiles,
+  InsertAdvisorProfile,
+  InsertUser,
+  MagicLinkToken,
+  magicLinkTokens,
+  UserStatus,
+  userStatuses,
+  WhitelistCode,
+  whitelistCodes,
+  users,
+  User,
+} from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
-let _db: ReturnType<typeof drizzle> | null = null;
+function findD1SqlitePath(): string | null {
+  const d1Dir = path.resolve(".wrangler/state/v3/d1");
+  try {
+    const entries = fs.readdirSync(d1Dir, { recursive: true }) as string[];
+    for (const entry of entries) {
+      if (entry.endsWith(".sqlite") && !entry.includes("metadata")) {
+        return path.join(d1Dir, entry);
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
-export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+type DrizzleDb = ReturnType<typeof drizzle>;
+let _db: DrizzleDb | null = null;
+
+function getDb(): DrizzleDb | null {
+  if (!_db) {
+    const dbPath = findD1SqlitePath();
+    if (!dbPath) {
+      console.warn("[Database] Cannot find D1 SQLite file — run db:push first");
+      return null;
+    }
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const sqlite = new Database(dbPath);
+      _db = drizzle(sqlite);
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      console.warn("[Database] Cannot connect:", error);
       _db = null;
     }
   }
@@ -23,16 +60,14 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     throw new Error("User openId is required for upsert");
   }
 
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     console.warn("[Database] Cannot upsert user: database not available");
     return;
   }
 
   try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
+    const values: InsertUser = { openId: user.openId };
     const updateSet: Record<string, unknown> = {};
 
     const textFields = ["name", "email", "loginMethod"] as const;
@@ -68,7 +103,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
+    await db.insert(users).values(values).onConflictDoUpdate({
+      target: users.openId,
       set: updateSet,
     });
   } catch (error) {
@@ -78,21 +114,18 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 }
 
 export async function getUserByOpenId(openId: string) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
     return undefined;
   }
 
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
-
 export async function getAdvisorProfile(userId: number): Promise<AdvisorProfile | undefined> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return undefined;
   const result = await db.select().from(advisorProfiles).where(eq(advisorProfiles.userId, userId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
@@ -102,16 +135,16 @@ export async function upsertAdvisorProfile(
   userId: number,
   data: Partial<Omit<InsertAdvisorProfile, "id" | "userId" | "createdAt" | "updatedAt">>,
 ): Promise<void> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return;
   await db
     .insert(advisorProfiles)
     .values({ userId, ...data })
-    .onDuplicateKeyUpdate({ set: data });
+    .onConflictDoUpdate({ target: advisorProfiles.userId, set: { ...data, updatedAt: new Date() } });
 }
 
 export async function getWhitelistCode(code: string): Promise<WhitelistCode | undefined> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return undefined;
   const result = await db
     .select()
@@ -122,7 +155,7 @@ export async function getWhitelistCode(code: string): Promise<WhitelistCode | un
 }
 
 export async function markCodeUsed(codeId: number, userId: number): Promise<void> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return;
   await db
     .update(whitelistCodes)
@@ -131,19 +164,19 @@ export async function markCodeUsed(codeId: number, userId: number): Promise<void
 }
 
 export async function createWhitelistCode(code: string, description?: string): Promise<void> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return;
   await db.insert(whitelistCodes).values({ code: code.toUpperCase(), description });
 }
 
 export async function listWhitelistCodes(): Promise<WhitelistCode[]> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return [];
   return db.select().from(whitelistCodes).orderBy(whitelistCodes.createdAt);
 }
 
 export async function getUserStatus(userId: number): Promise<UserStatus | undefined> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return undefined;
   const result = await db.select().from(userStatuses).where(eq(userStatuses.userId, userId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
@@ -157,7 +190,7 @@ export type UserWithStatus = Pick<User, "id" | "name" | "email" | "role" | "crea
 };
 
 export async function listUsersWithStatus(): Promise<UserWithStatus[]> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return [];
   return db
     .select({
@@ -180,10 +213,59 @@ export async function upsertUserStatus(
   userId: number,
   data: Partial<Omit<UserStatus, "id" | "userId" | "createdAt" | "updatedAt">>,
 ): Promise<void> {
-  const db = await getDb();
+  const db = getDb();
   if (!db) return;
   await db
     .insert(userStatuses)
     .values({ userId, ...data })
-    .onDuplicateKeyUpdate({ set: data });
+    .onConflictDoUpdate({ target: userStatuses.userId, set: { ...data, updatedAt: new Date() } });
+}
+
+// ── Magic link tokens ──────────────────────────────────────────────────────────
+
+export async function createMagicLinkToken(
+  email: string,
+  token: string,
+  otp: string,
+  expiresAt: Date,
+): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  await db.insert(magicLinkTokens).values({ email, token, otp, expiresAt });
+}
+
+export async function getMagicLinkByToken(token: string): Promise<MagicLinkToken | undefined> {
+  const db = getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(magicLinkTokens)
+    .where(eq(magicLinkTokens.token, token))
+    .limit(1);
+  return result[0];
+}
+
+export async function getMagicLinkByOtp(
+  email: string,
+  otp: string,
+): Promise<MagicLinkToken | undefined> {
+  const db = getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(magicLinkTokens)
+    .where(eq(magicLinkTokens.email, email))
+    .orderBy(magicLinkTokens.createdAt)
+    .all();
+  // Find the latest unused matching OTP
+  return result.reverse().find((r) => r.otp === otp && !r.usedAt);
+}
+
+export async function markMagicLinkUsed(id: number): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  await db
+    .update(magicLinkTokens)
+    .set({ usedAt: new Date() })
+    .where(eq(magicLinkTokens.id, id));
 }

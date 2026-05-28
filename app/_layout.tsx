@@ -1,6 +1,6 @@
 import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -21,8 +21,30 @@ import {
 import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 
 import { trpc, createTRPCClient } from "@/lib/trpc";
-import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
+import { subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import { initializePurchases } from "@/lib/purchases";
+
+const PUBLIC_ROUTES = new Set(["login", "auth"]);
+
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { data: me, isLoading } = trpc.auth.me.useQuery(undefined, {
+    retry: false,
+    staleTime: 60_000,
+  });
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    if (isLoading) return;
+    const root = segments[0] as string | undefined;
+    const isPublic = !root || PUBLIC_ROUTES.has(root);
+    if (!me && !isPublic) {
+      router.replace("/login" as any);
+    }
+  }, [me, isLoading, segments]);
+
+  return <>{children}</>;
+}
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -39,7 +61,6 @@ export default function RootLayout() {
   const [frame, setFrame] = useState<Rect>(initialFrame);
 
   useEffect(() => {
-    initManusRuntime();
     initializePurchases();
   }, []);
 
@@ -85,19 +106,22 @@ export default function RootLayout() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <CalculatorProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="oauth/callback" />
-              <Stack.Screen name="scenario-tool" />
-              <Stack.Screen name="strategy-engineer" />
-              <Stack.Screen name="settings" />
-              <Stack.Screen name="help-article" />
-              <Stack.Screen name="onboarding" />
-              <Stack.Screen name="faq" />
-              <Stack.Screen name="activate" />
-              <Stack.Screen name="paywall" />
-              <Stack.Screen name="admin" />
-            </Stack>
+            <AuthGate>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="login" />
+                <Stack.Screen name="auth/verify" />
+                <Stack.Screen name="scenario-tool" />
+                <Stack.Screen name="strategy-engineer" />
+                <Stack.Screen name="settings" />
+                <Stack.Screen name="help-article" />
+                <Stack.Screen name="onboarding" />
+                <Stack.Screen name="faq" />
+                <Stack.Screen name="activate" />
+                <Stack.Screen name="paywall" />
+                <Stack.Screen name="admin" />
+              </Stack>
+            </AuthGate>
             <StatusBar style="auto" />
             <DisclaimerModal />
             <OfflineBanner />

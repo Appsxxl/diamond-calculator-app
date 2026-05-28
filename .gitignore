@@ -35,7 +35,12 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+.env.local
+
+# Wrangler local state
+.wrangler/
 
 # typescript
 *.tsbuildinfo

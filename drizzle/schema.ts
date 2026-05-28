@@ -1,67 +1,68 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-
-/**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
- */
-export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
-  id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+export const users = sqliteTable("users", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  openId: text("openId").notNull().unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  email: text("email"),
+  loginMethod: text("loginMethod"),
+  role: text("role").default("user").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).defaultNow().notNull(),
+  lastSignedIn: integer("lastSignedIn", { mode: "timestamp" }).defaultNow().notNull(),
 });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-export const advisorProfiles = mysqlTable("advisor_profiles", {
-  id: int("id").autoincrement().primaryKey(),
+export const advisorProfiles = sqliteTable("advisor_profiles", {
+  id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull().unique(),
-  adviserName: varchar("adviserName", { length: 256 }),
-  companyName: varchar("companyName", { length: 256 }),
-  mobile: varchar("mobile", { length: 64 }),
-  contactInfo: varchar("contactInfo", { length: 256 }),
-  logoKey: varchar("logoKey", { length: 512 }),
+  adviserName: text("adviserName"),
+  companyName: text("companyName"),
+  mobile: text("mobile"),
+  contactInfo: text("contactInfo"),
+  logoKey: text("logoKey"),
   logoUrl: text("logoUrl"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).defaultNow().notNull(),
 });
 
 export type AdvisorProfile = typeof advisorProfiles.$inferSelect;
 export type InsertAdvisorProfile = typeof advisorProfiles.$inferInsert;
 
-export const whitelistCodes = mysqlTable("whitelist_codes", {
-  id: int("id").autoincrement().primaryKey(),
-  code: varchar("code", { length: 64 }).notNull().unique(),
-  description: varchar("description", { length: 256 }),
+export const whitelistCodes = sqliteTable("whitelist_codes", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  code: text("code").notNull().unique(),
+  description: text("description"),
   usedBy: int("usedBy"),
-  usedAt: timestamp("usedAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  usedAt: integer("usedAt", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
 });
 
 export type WhitelistCode = typeof whitelistCodes.$inferSelect;
 
-export const userStatuses = mysqlTable("user_statuses", {
-  id: int("id").autoincrement().primaryKey(),
+export const userStatuses = sqliteTable("user_statuses", {
+  id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull().unique(),
-  status: mysqlEnum("status", ["team", "trial", "paid", "expired"]).default("trial").notNull(),
-  activationCode: varchar("activationCode", { length: 64 }),
-  activatedAt: timestamp("activatedAt"),
-  trialStartedAt: timestamp("trialStartedAt").defaultNow().notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  status: text("status").default("trial").notNull(),
+  activationCode: text("activationCode"),
+  activatedAt: integer("activatedAt", { mode: "timestamp" }),
+  trialStartedAt: integer("trialStartedAt", { mode: "timestamp" }).defaultNow().notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).defaultNow().notNull(),
 });
 
 export type UserStatus = typeof userStatuses.$inferSelect;
+
+export const magicLinkTokens = sqliteTable("magic_link_tokens", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  email: text("email").notNull(),
+  token: text("token").notNull().unique(),
+  otp: text("otp").notNull(),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+  usedAt: integer("usedAt", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
+});
+
+export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
