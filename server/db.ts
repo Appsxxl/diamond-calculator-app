@@ -67,8 +67,13 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 
   try {
-    const values: InsertUser = { openId: user.openId };
-    const updateSet: Record<string, unknown> = {};
+    const now = new Date();
+    const values: InsertUser = {
+      openId: user.openId,
+      createdAt: now,  // explicit so Drizzle encode (÷1000) runs — not the raw SQL default
+      updatedAt: now,
+    };
+    const updateSet: Record<string, unknown> = { updatedAt: now };
 
     const textFields = ["name", "email", "loginMethod"] as const;
     type TextField = (typeof textFields)[number];
@@ -96,11 +101,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     }
 
     if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
+      values.lastSignedIn = now;
+      updateSet.lastSignedIn = now;
     }
 
     await db.insert(users).values(values).onConflictDoUpdate({
@@ -137,10 +139,11 @@ export async function upsertAdvisorProfile(
 ): Promise<void> {
   const db = getDb();
   if (!db) return;
+  const now = new Date();
   await db
     .insert(advisorProfiles)
-    .values({ userId, ...data })
-    .onConflictDoUpdate({ target: advisorProfiles.userId, set: { ...data, updatedAt: new Date() } });
+    .values({ userId, ...data, createdAt: now, updatedAt: now })
+    .onConflictDoUpdate({ target: advisorProfiles.userId, set: { ...data, updatedAt: now } });
 }
 
 export async function getWhitelistCode(code: string): Promise<WhitelistCode | undefined> {
@@ -166,7 +169,7 @@ export async function markCodeUsed(codeId: number, userId: number): Promise<void
 export async function createWhitelistCode(code: string, description?: string): Promise<void> {
   const db = getDb();
   if (!db) return;
-  await db.insert(whitelistCodes).values({ code: code.toUpperCase(), description });
+  await db.insert(whitelistCodes).values({ code: code.toUpperCase(), description, createdAt: new Date() });
 }
 
 export async function listWhitelistCodes(): Promise<WhitelistCode[]> {
@@ -215,10 +218,11 @@ export async function upsertUserStatus(
 ): Promise<void> {
   const db = getDb();
   if (!db) return;
+  const now = new Date();
   await db
     .insert(userStatuses)
-    .values({ userId, ...data })
-    .onConflictDoUpdate({ target: userStatuses.userId, set: { ...data, updatedAt: new Date() } });
+    .values({ userId, ...data, createdAt: now, updatedAt: now, trialStartedAt: data.trialStartedAt ?? now })
+    .onConflictDoUpdate({ target: userStatuses.userId, set: { ...data, updatedAt: now } });
 }
 
 // ── Magic link tokens ──────────────────────────────────────────────────────────
@@ -231,7 +235,7 @@ export async function createMagicLinkToken(
 ): Promise<void> {
   const db = getDb();
   if (!db) return;
-  await db.insert(magicLinkTokens).values({ email, token, otp, expiresAt });
+  await db.insert(magicLinkTokens).values({ email, token, otp, expiresAt, createdAt: new Date() });
 }
 
 export async function getMagicLinkByToken(token: string): Promise<MagicLinkToken | undefined> {

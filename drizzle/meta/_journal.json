@@ -15,6 +15,13 @@
       "when": 1779997864797,
       "tag": "0001_tense_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780001199156,
+      "tag": "0002_tiresome_tag",
+      "breakpoints": true
     }
   ]
 }
