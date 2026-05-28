@@ -43,6 +43,75 @@ function StatusBadge({ status }: { status: string | null }) {
   );
 }
 
+function HelpCard() {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={{ marginHorizontal: 16, marginBottom: 12 }}>
+      <TouchableOpacity
+        onPress={() => setOpen((v) => !v)}
+        activeOpacity={0.8}
+        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+          backgroundColor: "#1e293b", borderRadius: 12, borderWidth: 1, borderColor: "#334155",
+          paddingHorizontal: 16, paddingVertical: 12 }}
+      >
+        <Text style={{ color: "#94a3b8", fontSize: 14, fontWeight: "600" }}>How to use this panel</Text>
+        <Text style={{ color: "#64748b", fontSize: 16 }}>{open ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+      {open && (
+        <View style={{ backgroundColor: "#1e293b", borderRadius: 12, borderWidth: 1, borderColor: "#334155",
+          borderTopWidth: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, padding: 16, gap: 14 }}>
+
+          <HelpSection title="Stats bar">
+            <HelpRow label="Total" text="Every registered user." />
+            <HelpRow label="Team" text="Users on the Team plan (activated a team code)." />
+            <HelpRow label="Pro" text="Users with an active paid subscription." />
+            <HelpRow label="Active" text="Users still within their 7-day free trial." />
+            <HelpRow label="Expired" text="Trial ended, no subscription or team code." />
+          </HelpSection>
+
+          <HelpSection title="Users tab — badges">
+            <HelpRow label="★ TEAM" text="Has a valid team activation code — full access." />
+            <HelpRow label="PRO" text="Paying subscriber via the App Store / Google Play." />
+            <HelpRow label="TRIAL" text="Free trial running, X days left shown." />
+            <HelpRow label="EXPIRED" text="Trial over — user sees the paywall." />
+            <HelpRow label="ADMIN" text="Can access this admin panel." />
+          </HelpSection>
+
+          <HelpSection title="Codes tab — giving someone team access">
+            <HelpRow label="1. Create a code" text='Type a code (e.g. TEAM-FRED-01) and optionally note who it is for, then tap "Create Code".' />
+            <HelpRow label="2. Share it" text="Send the code to your user. They enter it in the app under Settings → Activate." />
+            <HelpRow label="3. Track it" text='Once redeemed the code shows "USED" and the user appears with a ★ TEAM badge.' />
+            <HelpRow label="Naming tip" text="Use a pattern like TEAM-NAME-01 so you can identify codes at a glance." />
+          </HelpSection>
+
+          <HelpSection title="Local dev — OTP not arriving?">
+            <HelpRow label="" text="When RESEND_API_KEY is not set, the OTP is printed to the server terminal (the [0] lines) instead of emailed. Check the terminal for the 6-digit code." />
+          </HelpSection>
+
+        </View>
+      )}
+    </View>
+  );
+}
+
+function HelpSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ color: "#f59e0b", fontSize: 12, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function HelpRow({ label, text }: { label: string; text: string }) {
+  return (
+    <View style={{ flexDirection: "row", gap: 6 }}>
+      {label ? <Text style={{ color: "#e2e8f0", fontSize: 13, fontWeight: "600", minWidth: 70 }}>{label}</Text> : null}
+      <Text style={{ color: "#94a3b8", fontSize: 13, flex: 1 }}>{text}</Text>
+    </View>
+  );
+}
+
 export default function AdminScreen() {
   const router = useRouter();
   const [tab, setTab] = useState<"users" | "codes">("users");
@@ -111,6 +180,9 @@ export default function AdminScreen() {
           <StatCard label="Active" value={activeTrialCount} />
           <StatCard label="Expired" value={expiredCount} color="#f87171" />
         </View>
+
+        {/* How to use */}
+        <HelpCard />
 
         {/* Tab switcher */}
         <View style={S.tabRow}>
