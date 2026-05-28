@@ -65,7 +65,19 @@ export default function LoginScreen() {
         lastSignedIn: new Date(user.lastSignedIn),
       });
 
-      await utils.auth.me.invalidate();
+      // Set cache directly so AuthGate sees the user before navigation
+      utils.auth.me.setData(undefined, {
+        id: user.id,
+        openId: user.openId,
+        name: user.name,
+        email: user.email,
+        loginMethod: user.loginMethod,
+        lastSignedIn: new Date(user.lastSignedIn),
+        role: user.role as "user" | "admin",
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      });
+
       setStage("done");
       router.replace("/(tabs)" as any);
     } catch (e: any) {

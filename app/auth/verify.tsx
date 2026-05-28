@@ -27,17 +27,23 @@ export default function VerifyScreen() {
                   ? atob(params.user)
                   : Buffer.from(params.user, "base64").toString("utf-8");
               const userData = JSON.parse(decoded);
-              await Auth.setUserInfo({
+              const userInfo = {
                 id: userData.id,
                 openId: userData.openId,
                 name: userData.name,
                 email: userData.email,
                 loginMethod: userData.loginMethod,
                 lastSignedIn: new Date(userData.lastSignedIn ?? Date.now()),
+              };
+              await Auth.setUserInfo(userInfo);
+              utils.auth.me.setData(undefined, {
+                ...userInfo,
+                role: (userData.role ?? "user") as "user" | "admin",
+                updatedAt: new Date(),
+                createdAt: new Date(),
               });
             } catch {}
           }
-          await utils.auth.me.invalidate();
           router.replace("/(tabs)" as any);
           return;
         }
@@ -56,7 +62,17 @@ export default function VerifyScreen() {
             loginMethod: user.loginMethod,
             lastSignedIn: new Date(user.lastSignedIn),
           });
-          await utils.auth.me.invalidate();
+          utils.auth.me.setData(undefined, {
+            id: user.id,
+            openId: user.openId,
+            name: user.name,
+            email: user.email,
+            loginMethod: user.loginMethod,
+            lastSignedIn: new Date(user.lastSignedIn),
+            role: user.role as "user" | "admin",
+            updatedAt: new Date(),
+            createdAt: new Date(),
+          });
           router.replace("/(tabs)" as any);
           return;
         }
