@@ -100,7 +100,7 @@ export default function VerifyScreen() {
         {status === "error" && (
           <>
             <Text className="text-xl font-bold text-red-500">Link expired</Text>
-            <Text className="text-center text-base text-muted-foreground">{errorMsg}</Text>
+            <Text className="text-center text-base text-muted">{errorMsg}</Text>
             <Text
               className="mt-4 text-sm text-primary underline"
               onPress={() => router.replace("/login" as any)}

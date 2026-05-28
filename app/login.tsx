@@ -96,7 +96,7 @@ export default function LoginScreen() {
         {/* Logo / title */}
         <View className="mb-10 items-center">
           <Text className="text-4xl font-bold text-foreground">Plan B</Text>
-          <Text className="mt-2 text-base text-muted-foreground">Strategic Wealth Optimisation</Text>
+          <Text className="mt-2 text-base text-muted">Strategic Wealth Optimisation</Text>
         </View>
 
         {stage === "email" && (
@@ -134,13 +134,13 @@ export default function LoginScreen() {
 
         {stage === "otp" && (
           <>
-            <Text className="mb-1 text-sm text-muted-foreground text-center">
+            <Text className="mb-1 text-sm text-muted text-center">
               Check your email at
             </Text>
             <Text className="mb-6 text-base font-semibold text-foreground text-center">
               {email}
             </Text>
-            <Text className="mb-1 text-sm text-muted-foreground text-center">
+            <Text className="mb-1 text-sm text-muted text-center">
               Click the link in your email, or enter the 6-digit code below:
             </Text>
             <TextInput
@@ -175,7 +175,7 @@ export default function LoginScreen() {
                 setError(null);
               }}
             >
-              <Text className="text-sm text-muted-foreground">Use a different email</Text>
+              <Text className="text-sm text-muted">Use a different email</Text>
             </TouchableOpacity>
           </>
         )}
