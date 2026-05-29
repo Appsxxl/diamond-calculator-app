@@ -1,6 +1,6 @@
 import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -24,25 +24,9 @@ import { trpc, createTRPCClient } from "@/lib/trpc";
 import { subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import { initializePurchases } from "@/lib/purchases";
 
-const PUBLIC_ROUTES = new Set(["login", "auth"]);
-
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { data: me, isLoading } = trpc.auth.me.useQuery(undefined, {
-    retry: false,
-    staleTime: 60_000,
-  });
-  const router = useRouter();
-  const segments = useSegments();
-
-  useEffect(() => {
-    if (isLoading) return;
-    const root = segments[0] as string | undefined;
-    const isPublic = !root || PUBLIC_ROUTES.has(root);
-    if (!me && !isPublic) {
-      router.replace("/login" as any);
-    }
-  }, [me, isLoading, segments]);
-
+  // Auth is optional — users can access the app without logging in.
+  // Re-enable the redirect below once backend + email are fully configured.
   return <>{children}</>;
 }
 
