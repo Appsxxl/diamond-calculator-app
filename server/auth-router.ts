@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import nodemailer from "nodemailer";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { COOKIE_NAME, ONE_YEAR_MS } from "../shared/const.js";
@@ -25,48 +26,30 @@ function generateOtp(): string {
   return Math.floor(100_000 + Math.random() * 900_000).toString();
 }
 
-async function sendEmail(to: string, token: string, otp: string): Promise<void> {
-  if (!ENV.resendApiKey) {
-    // Dev mode: log instead of sending
-    const url = `${ENV.appUrl}/auth/verify?token=${token}`;
-    console.log(`\n[Auth] Magic link for ${to}:\n  URL: ${url}\n  OTP: ${otp}\n`);
-    return;
-  }
-
-  const verifyUrl = `${ENV.appUrl}/auth/verify?token=${token}`;
-  const html = `<!DOCTYPE html>
+function buildEmailHtml(verifyUrl: string, otp: string): string {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 16px">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
-
-        <!-- Header -->
         <tr><td style="padding-bottom:32px;text-align:center">
           <p style="margin:0;font-size:22px;font-weight:700;color:#f1f5f9;letter-spacing:-0.3px">Plan B</p>
           <p style="margin:6px 0 0;font-size:13px;color:#64748b;letter-spacing:0.3px">STRATEGIC WEALTH OPTIMISATION</p>
         </td></tr>
-
-        <!-- Card -->
         <tr><td style="background:#1e293b;border-radius:16px;border:1px solid #1e3a5f;padding:36px 32px">
-
           <p style="margin:0 0 8px;font-size:20px;font-weight:700;color:#f1f5f9">Your sign-in link</p>
           <p style="margin:0 0 28px;font-size:15px;color:#94a3b8;line-height:1.5">
             Click the button below to sign in to Plan B. This link expires in <strong style="color:#e2e8f0">15 minutes</strong>.
           </p>
-
-          <!-- CTA button -->
           <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:28px">
             <tr><td align="center">
-              <a href="${verifyUrl}"
-                 style="display:inline-block;background:#0ea5e9;color:#fff;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;letter-spacing:0.2px">
+              <a href="${verifyUrl}" style="display:inline-block;background:#0ea5e9;color:#fff;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;letter-spacing:0.2px">
                 Sign in to Plan B
               </a>
             </td></tr>
           </table>
-
-          <!-- Divider -->
           <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px">
             <tr>
               <td style="border-top:1px solid #1e3a5f"></td>
@@ -74,34 +57,50 @@ async function sendEmail(to: string, token: string, otp: string): Promise<void> 
               <td style="border-top:1px solid #1e3a5f"></td>
             </tr>
           </table>
-
-          <!-- OTP -->
           <p style="margin:0 0 6px;font-size:13px;color:#64748b;text-align:center">Enter this 6-digit code in the app:</p>
           <p style="margin:0;font-size:40px;font-weight:700;letter-spacing:14px;color:#0ea5e9;text-align:center;padding:12px 0">${otp}</p>
-
         </td></tr>
-
-        <!-- Footer -->
         <tr><td style="padding-top:24px;text-align:center">
           <p style="margin:0;font-size:12px;color:#334155">If you didn't request this, you can safely ignore this email.</p>
         </td></tr>
-
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
+}
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${ENV.resendApiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: ENV.fromEmail, to, subject: "Your Plan B sign-in link", html }),
-  });
+async function sendEmail(to: string, token: string, otp: string): Promise<void> {
+  const verifyUrl = `${ENV.appUrl}/auth/verify?token=${token}`;
+  const html = buildEmailHtml(verifyUrl, otp);
+  const subject = "Your Plan B sign-in link";
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Resend error: ${body}`);
+  // Gmail SMTP (preferred when configured)
+  if (ENV.gmailUser && ENV.gmailAppPassword) {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: ENV.gmailUser, pass: ENV.gmailAppPassword },
+    });
+    await transporter.sendMail({ from: `Plan B <${ENV.gmailUser}>`, to, subject, html });
+    return;
   }
+
+  // Resend fallback
+  if (ENV.resendApiKey) {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${ENV.resendApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: ENV.fromEmail, to, subject, html }),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Resend error: ${body}`);
+    }
+    return;
+  }
+
+  // Dev fallback: log to console
+  console.log(`\n[Auth] Magic link for ${to}:\n  URL: ${verifyUrl}\n  OTP: ${otp}\n`);
 }
 
 function buildUser(user: Awaited<ReturnType<typeof getUserByOpenId>>) {
