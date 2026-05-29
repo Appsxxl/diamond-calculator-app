@@ -4,6 +4,9 @@ export const ENV = {
   resendApiKey: process.env.RESEND_API_KEY ?? "",
   appUrl: process.env.APP_URL ?? "http://localhost:8081",
   fromEmail: process.env.FROM_EMAIL ?? "onboarding@resend.dev",
+  gmailUser: process.env.GMAIL_USER ?? "",
+  gmailAppPassword: (process.env.GMAIL_APP_PASSWORD ?? "").replace(/\s+/g, ""),
+  databasePath: process.env.DATABASE_PATH ?? "",
   isProduction: process.env.NODE_ENV === "production",
   // Legacy Manus fields — unused but kept so existing server files compile
   appId: "",

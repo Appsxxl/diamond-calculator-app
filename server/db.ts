@@ -19,6 +19,19 @@ import {
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
+const BOOTSTRAP_SQL = `
+CREATE TABLE IF NOT EXISTS \`users\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`openId\` text NOT NULL, \`name\` text, \`email\` text, \`loginMethod\` text, \`role\` text DEFAULT 'user' NOT NULL, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL, \`updatedAt\` integer DEFAULT (strftime('%s','now')) NOT NULL, \`lastSignedIn\` integer DEFAULT (strftime('%s','now')) NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS \`users_openId_unique\` ON \`users\` (\`openId\`);
+CREATE TABLE IF NOT EXISTS \`user_statuses\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`userId\` integer NOT NULL, \`status\` text DEFAULT 'trial' NOT NULL, \`activationCode\` text, \`activatedAt\` integer, \`trialStartedAt\` integer DEFAULT (strftime('%s','now')) NOT NULL, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL, \`updatedAt\` integer DEFAULT (strftime('%s','now')) NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS \`user_statuses_userId_unique\` ON \`user_statuses\` (\`userId\`);
+CREATE TABLE IF NOT EXISTS \`whitelist_codes\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`code\` text NOT NULL, \`description\` text, \`usedBy\` integer, \`usedAt\` integer, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS \`whitelist_codes_code_unique\` ON \`whitelist_codes\` (\`code\`);
+CREATE TABLE IF NOT EXISTS \`magic_link_tokens\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`email\` text NOT NULL, \`token\` text NOT NULL, \`otp\` text NOT NULL, \`expiresAt\` integer NOT NULL, \`usedAt\` integer, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS \`magic_link_tokens_token_unique\` ON \`magic_link_tokens\` (\`token\`);
+CREATE TABLE IF NOT EXISTS \`advisor_profiles\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`userId\` integer NOT NULL, \`adviserName\` text, \`companyName\` text, \`mobile\` text, \`contactInfo\` text, \`logoKey\` text, \`logoUrl\` text, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL, \`updatedAt\` integer DEFAULT (strftime('%s','now')) NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS \`advisor_profiles_userId_unique\` ON \`advisor_profiles\` (\`userId\`);
+`;
+
 function findD1SqlitePath(): string | null {
   const d1Dir = path.resolve(".wrangler/state/v3/d1");
   try {
@@ -34,19 +47,28 @@ function findD1SqlitePath(): string | null {
   return null;
 }
 
+function resolveDbPath(): string {
+  if (ENV.databasePath) return ENV.databasePath;
+  const d1Path = findD1SqlitePath();
+  if (d1Path) return d1Path;
+  return path.resolve("./app.db");
+}
+
 type DrizzleDb = ReturnType<typeof drizzle>;
 let _db: DrizzleDb | null = null;
 
 function getDb(): DrizzleDb | null {
   if (!_db) {
-    const dbPath = findD1SqlitePath();
-    if (!dbPath) {
-      console.warn("[Database] Cannot find D1 SQLite file — run db:push first");
-      return null;
-    }
+    const dbPath = resolveDbPath();
     try {
+      const isNew = !fs.existsSync(dbPath);
       const sqlite = new Database(dbPath);
+      if (isNew) {
+        console.log("[Database] New database — running schema bootstrap");
+        sqlite.exec(BOOTSTRAP_SQL);
+      }
       _db = drizzle(sqlite);
+      console.log(`[Database] Connected: ${dbPath}`);
     } catch (error) {
       console.warn("[Database] Cannot connect:", error);
       _db = null;
