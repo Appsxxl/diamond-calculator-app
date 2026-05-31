@@ -601,8 +601,8 @@ export default function VideosScreen() {
             <Text style={S.headerSub}>{tx.subtitle}</Text>
           </View>
 
-          {/* ══ SECTION 1: Invitation videos — adviser only ════════════════ */}
-          {partnerMode && <View style={S.sectionBlock}>
+          {/* ══ SECTION 1: Invitation videos — visible to all ═══════════════ */}
+          <View style={S.sectionBlock}>
             <View style={S.sectionHeaderRow}>
               <View style={S.vimeoLogoWrap}>
                 <Text style={S.vimeoLogoText}>💎</Text>
@@ -656,7 +656,7 @@ export default function VideosScreen() {
                 <Text style={S.refreshBtnText}>{vimeoRefreshing ? "…" : tx.refreshBtn}</Text>
               </TouchableOpacity>
             </View>
-          </View>}
+          </View>
 
           {/* ══ SECTION 2: Presentation + Plan — adviser only ═══════════════ */}
           {partnerMode && (
