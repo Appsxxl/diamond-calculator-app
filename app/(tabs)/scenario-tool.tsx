@@ -415,42 +415,15 @@ export default function ScenarioToolScreen() {
     });
   }, []);
 
-  // Load persisted backup on mount (runs once).
-  // Skip if we arrived with external params — the params effects will own state.
+  // Load persisted data on mount (runs once).
+  // Only restores clients and history — scenario inputs always start fresh.
   useEffect(() => {
-    if (params.plan || params.source === 'property') {
-      setHydrated(true);
-      return;
-    }
-    AsyncStorage.getItem(CLIENTS_KEY).then(raw => {
-      if (raw) { try { setSavedClients(JSON.parse(raw)); } catch {} }
-    });
-    AsyncStorage.getItem(HISTORY_KEY).then(raw => {
-      if (raw) { try { setHistory(JSON.parse(raw)); } catch {} }
-    });
-    AsyncStorage.getItem('plan_b_scenario_backup').then(raw => {
-      if (raw) {
-        try {
-          const s = JSON.parse(raw);
-          if (s.clientName   != null) setClientName(s.clientName);
-          if (s.startAmount  != null) setStartAmount(s.startAmount);
-          if (s.years        != null) setYears(s.years);
-          if (s.goal         != null) setGoal(s.goal);
-          if (s.vipEnabled   != null) setVipEnabled(s.vipEnabled);
-          if (s.manualVip    != null) setManualVip(s.manualVip);
-          if (s.monthData    != null) setMonthData(s.monthData);
-          if (s.bulkStortVal != null) setBulkStortVal(s.bulkStortVal);
-          if (s.bulkStortTo  != null) setBulkStortTo(s.bulkStortTo);
-          if (s.annualVal    != null) setAnnualVal(s.annualVal);
-          if (s.bulkOpnVal   != null) setBulkOpnVal(s.bulkOpnVal);
-          if (s.bulkOpnFrom  != null) setBulkOpnFrom(s.bulkOpnFrom);
-          if (s.bulkOpnPVal  != null) setBulkOpnPVal(s.bulkOpnPVal);
-          if (s.bulkOpnPFrom != null) setBulkOpnPFrom(s.bulkOpnPFrom);
-          if (s.bulkCompVal  != null) setBulkCompVal(s.bulkCompVal);
-          if (s.bulkCompFrom != null) setBulkCompFrom(s.bulkCompFrom);
-          if (s.bulkCompTo   != null) setBulkCompTo(s.bulkCompTo);
-        } catch {}
-      }
+    Promise.all([
+      AsyncStorage.getItem(CLIENTS_KEY),
+      AsyncStorage.getItem(HISTORY_KEY),
+    ]).then(([clientsRaw, historyRaw]) => {
+      if (clientsRaw) { try { setSavedClients(JSON.parse(clientsRaw)); } catch {} }
+      if (historyRaw) { try { setHistory(JSON.parse(historyRaw)); } catch {} }
       setHydrated(true);
     }).catch(() => setHydrated(true));
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -724,7 +697,6 @@ export default function ScenarioToolScreen() {
   };
 
   const handleReset = () => {
-    AsyncStorage.removeItem('plan_b_scenario_backup').catch(() => {});
     setAutosaved(false);
     setClientName(""); setStartAmount("3000"); setYears("5"); setGoal("3500");
     setVipEnabled(false); setManualVip(false); setMonthData({}); setResult(null);
@@ -879,24 +851,6 @@ export default function ScenarioToolScreen() {
     }));
   };
 
-  // Autosave — debounced 600ms, skips before hydration is confirmed
-  useEffect(() => {
-    if (!hydrated) return;
-    const backup = {
-      clientName, startAmount, years, goal, vipEnabled, manualVip, monthData,
-      bulkStortVal, bulkStortTo, annualVal, bulkOpnVal, bulkOpnFrom,
-      bulkOpnPVal, bulkOpnPFrom, bulkCompVal, bulkCompFrom, bulkCompTo,
-    };
-    const timer = setTimeout(() => {
-      AsyncStorage.setItem('plan_b_scenario_backup', JSON.stringify(backup))
-        .then(() => { setAutosaved(true); setTimeout(() => setAutosaved(false), 2000); })
-        .catch(() => {});
-    }, 600);
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, clientName, startAmount, years, goal, vipEnabled, manualVip, monthData,
-      bulkStortVal, bulkStortTo, annualVal, bulkOpnVal, bulkOpnFrom,
-      bulkOpnPVal, bulkOpnPFrom, bulkCompVal, bulkCompFrom, bulkCompTo]);
 
   const goalProgress = result ? result.goalProgress : 0;
 
