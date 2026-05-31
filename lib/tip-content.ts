@@ -1574,8 +1574,8 @@ const it: TipMap = {
     strategySummary: {
     title: 'Riepilogo Strategia',
     body: [
-      'Una panoramica della tua strategia completa: totale investito, sconti totali guadagnati, valore finale dei diamanti e se l'obiettivo mensile è stato raggiunto.',
-      'Il ROI e il mese di pareggio mostrano quando gli sconti cumulativi coprono l'investimento iniziale. Da quel punto ogni sconto è puro profitto.',
+      'Una panoramica della tua strategia completa: totale investito, sconti totali guadagnati, valore finale dei diamanti e se l\'obiettivo mensile è stato raggiunto.',
+      'Il ROI e il mese di pareggio mostrano quando gli sconti cumulativi coprono l\'investimento iniziale. Da quel punto ogni sconto è puro profitto.',
       'Usa questa sezione per presentare i numeri chiave a un cliente prima di mostrare la tabella mensile completa.',
     ],
   },
