@@ -8,7 +8,8 @@ export type TipKey =
   | 'compareMode' | 'rankTiers' | 'partnerList' | 'commissionEstimator'
   | 'invitationVideos' | 'adviserVideos' | 'lettersHub'
   | 'assetGoalPlanner' | 'projectedRevenueModel' | 'sentLog'
-  | 'strategySummary' | 'companyMargin' | 'monthlyDiscountSchedule';
+  | 'strategySummary' | 'companyMargin' | 'monthlyDiscountSchedule'
+  | 'bannerToggle';
 
 export type TipContent = { title: string; body: string[] };
 type TipMap = Record<TipKey, TipContent>;
@@ -275,6 +276,14 @@ const en: TipMap = {
       'Year-end rows are highlighted in amber. VIP activations, SP upgrades, and goal milestones are marked inline so you can see exactly when they happen.',
     ],
   },
+  bannerToggle: {
+    title: 'Maturity Banners',
+    body: [
+      'Green banners appear in the monthly table whenever a diamond batch reaches maturity — meaning its locked value is released and added to your active balance.',
+      'The number badge shows how many maturity events occur across your full strategy period.',
+      'Toggle the button to hide or show all maturity banners. Hide them for a cleaner view; show them to explain the growth milestones to a client.',
+    ],
+  },
 };
 
 const nl: TipMap = {
@@ -537,6 +546,14 @@ const nl: TipMap = {
       'Deze tabel toont elke maand van uw strategie: diamantsaldo, verdiende maandelijkse korting, opnames en cumulatieve totalen.',
       'Schakel tussen Maandelijks en Jaarlijks overzicht. De jaarweergave is ideaal voor klantpresentaties.',
       'Jaareindregels zijn goudkleurig gemarkeerd. VIP-activeringen, SP-upgrades en mijlpalen zijn inline aangegeven.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Rijpingsbanners',
+    body: [
+      'Groene banners verschijnen in de maandelijkse tabel wanneer een diamantbatch de rijping bereikt — de geblokkeerde waarde wordt vrijgegeven en toegevoegd aan uw actief saldo.',
+      'Het getal toont hoeveel rijpingsgebeurtenissen er in uw volledige strategie plaatsvinden.',
+      'Schakel de knop om alle rijpingsbanners te verbergen of te tonen. Verbergen voor een overzichtelijker beeld; tonen om groeimomententes aan een klant uit te leggen.',
     ],
   },
 };
@@ -803,6 +820,14 @@ const de: TipMap = {
       'Jahresabschlusszeilen sind gold markiert. VIP-Aktivierungen, SP-Upgrades und Meilensteine sind inline gekennzeichnet.',
     ],
   },
+  bannerToggle: {
+    title: 'Reife-Banner',
+    body: [
+      'Grüne Banner erscheinen in der Monatstabelle, wenn ein Diamantenpaket die Reife erreicht — der gesperrte Wert wird freigegeben und Ihrem aktiven Guthaben hinzugefügt.',
+      'Die Zahl zeigt, wie viele Reifeereignisse in Ihrer gesamten Strategie auftreten.',
+      'Schalten Sie die Schaltfläche um, um alle Reife-Banner aus- oder einzublenden. Ausblenden für eine übersichtlichere Ansicht; einblenden, um die Wachstumsmeilensteine einem Kunden zu erklären.',
+    ],
+  },
 };
 
 const fr: TipMap = {
@@ -1065,6 +1090,14 @@ const fr: TipMap = {
       'Ce tableau montre chaque mois de votre stratégie : solde en diamants, remise mensuelle gagnée, retraits et totaux cumulés.',
       'Basculez entre la vue Mensuelle et Annuelle. La vue annuelle est idéale pour les présentations clients.',
       'Les lignes de fin d\'année sont surlignées en or. Les activations VIP, mises à niveau SP et jalons sont indiqués en ligne.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Bannières de Maturité',
+    body: [
+      'Des bannières vertes apparaissent dans le tableau mensuel lorsqu\'un lot de diamants atteint sa maturité — la valeur bloquée est libérée et ajoutée à votre solde actif.',
+      'Le badge numérique indique combien d\'événements de maturité surviennent dans toute votre période de stratégie.',
+      'Appuyez sur le bouton pour masquer ou afficher toutes les bannières de maturité. Masquez-les pour une vue épurée ; affichez-les pour expliquer les jalons de croissance à un client.',
     ],
   },
 };
@@ -1331,6 +1364,14 @@ const es: TipMap = {
       'Las filas de fin de año están resaltadas en ámbar. Las activaciones VIP, actualizaciones SP y hitos se marcan en línea.',
     ],
   },
+  bannerToggle: {
+    title: 'Pancartas de Madurez',
+    body: [
+      'Las pancartas verdes aparecen en la tabla mensual cuando un lote de diamantes alcanza la madurez — el valor bloqueado se libera y se añade a su saldo activo.',
+      'El número muestra cuántos eventos de madurez ocurren durante todo su período de estrategia.',
+      'Pulse el botón para ocultar o mostrar todas las pancartas de madurez. Ocúltelas para una vista más limpia; muéstrelas para explicar los hitos de crecimiento a un cliente.',
+    ],
+  },
 };
 
 const it: TipMap = {
@@ -1593,6 +1634,14 @@ const it: TipMap = {
       'Questa tabella mostra ogni mese della tua strategia: saldo diamanti, sconto mensile guadagnato, prelievi e totali cumulativi.',
       'Passa tra la vista Mensile e Annuale. La vista annuale è ideale per le presentazioni ai clienti.',
       'Le righe di fine anno sono evidenziate in ambra. Le attivazioni VIP, aggiornamenti SP e traguardi sono indicati in linea.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Banner di Maturazione',
+    body: [
+      'I banner verdi appaiono nella tabella mensile quando un lotto di diamanti raggiunge la maturazione — il valore bloccato viene rilasciato e aggiunto al tuo saldo attivo.',
+      'Il numero mostra quanti eventi di maturazione si verificano nell\'intero periodo della strategia.',
+      'Premi il pulsante per nascondere o mostrare tutti i banner di maturazione. Nascondili per una vista più pulita; mostrali per spiegare i traguardi di crescita a un cliente.',
     ],
   },
 };
@@ -1859,6 +1908,14 @@ const pt: TipMap = {
       'As linhas de fim de ano estão destacadas em âmbar. Ativações VIP, atualizações SP e marcos são indicados em linha.',
     ],
   },
+  bannerToggle: {
+    title: 'Banners de Maturidade',
+    body: [
+      'Banners verdes aparecem na tabela mensal quando um lote de diamantes atinge a maturidade — o valor bloqueado é liberado e adicionado ao seu saldo ativo.',
+      'O número indica quantos eventos de maturidade ocorrem em todo o período da sua estratégia.',
+      'Pressione o botão para ocultar ou mostrar todos os banners de maturidade. Oculte-os para uma vista mais limpa; mostre-os para explicar os marcos de crescimento a um cliente.',
+    ],
+  },
 };
 
 const ru: TipMap = {
@@ -2092,6 +2149,14 @@ const ru: TipMap = {
       'Таблица показывает каждый месяц стратегии: баланс алмазов, заработанная скидка, выплаты и накопленные итоги.',
       'Переключайтесь между ежемесячным и годовым видом. Годовой вид идеален для презентаций клиентам.',
       'Строки конца года выделены золотым. Активации VIP, обновления SP и вехи отмечены в таблице.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Баннеры созревания',
+    body: [
+      'Зелёные баннеры появляются в месячной таблице, когда партия алмазов достигает созревания — заблокированная стоимость освобождается и добавляется к активному балансу.',
+      'Число показывает, сколько событий созревания происходит за весь период стратегии.',
+      'Нажмите кнопку, чтобы скрыть или показать все баннеры созревания. Скрывайте для чистого вида; показывайте, чтобы объяснить вехи роста клиенту.',
     ],
   },
 };
@@ -2329,6 +2394,14 @@ const zh: TipMap = {
       '年末行以琥珀色突出显示。VIP激活、SP升级和里程碑在表中标注。',
     ],
   },
+  bannerToggle: {
+    title: '成熟度横幅',
+    body: [
+      '当一批钻石达到成熟期时，月度表格中会出现绿色横幅——锁定的价值被释放并添加到您的活跃余额中。',
+      '数字徽章显示在您整个策略期间发生多少个成熟事件。',
+      '点击按钮可隐藏或显示所有成熟度横幅。隐藏可获得更清晰的视图；显示可向客户解释增长里程碑。',
+    ],
+  },
 };
 
 const tl: TipMap = {
@@ -2562,6 +2635,14 @@ const tl: TipMap = {
       'Ipinapakita ng talahanayan na ito ang bawat buwan ng iyong estratehiya: balanse ng brilyante, buwanang diskwentong nakuha, at mga kabuuan.',
       'Lumipat sa pagitan ng Buwanan at Taunan na view. Ang taunang view ay perpekto para sa mga presentasyon ng kliyente.',
       'Ang mga hanay sa katapusan ng taon ay naka-highlight sa amber.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Mga Maturity Banner',
+    body: [
+      'Lumalabas ang mga berdeng banner sa buwanang talahanayan kapag ang isang batch ng brilyante ay umabot sa kapanahunan — ang nakakulong na halaga ay inilalabas at idinaragdag sa iyong aktibong balanse.',
+      'Ang numero ay nagpapakita kung ilang maturity event ang magaganap sa buong panahon ng iyong estratehiya.',
+      'I-tap ang pindutan upang itago o ipakita ang lahat ng maturity banner. Itago para sa mas malinis na view; ipakita upang ipaliwanag ang mga milestone ng paglago sa isang kliyente.',
     ],
   },
 };
@@ -2799,6 +2880,14 @@ const ar: TipMap = {
       'صفوف نهاية العام مُميَّزة بالعنبر. تُشار تفعيلات VIP وترقيات SP والمعالم في الجدول.',
     ],
   },
+  bannerToggle: {
+    title: 'لافتات النضج',
+    body: [
+      'تظهر لافتات خضراء في الجدول الشهري عندما تصل دفعة من الماس إلى النضج — يتم تحرير القيمة المقفلة وإضافتها إلى رصيدك النشط.',
+      'الرقم يُظهر عدد أحداث النضج التي تحدث على مدار فترة استراتيجيتك الكاملة.',
+      'اضغط الزر لإخفاء أو إظهار جميع لافتات النضج. أخفِها للحصول على عرض أنظف؛ أظهرها لشرح معالم النمو للعميل.',
+    ],
+  },
 };
 
 const th: TipMap = {
@@ -3032,6 +3121,14 @@ const th: TipMap = {
       'ตารางนี้แสดงทุกเดือนของกลยุทธ์คุณ: ยอดเพชร ส่วนลดรายเดือน การถอนเงิน และยอดรวมสะสม',
       'สลับระหว่างมุมมองรายเดือนและรายปี มุมมองรายปีเหมาะสำหรับการนำเสนอลูกค้า',
       'แถวสิ้นปีถูกไฮไลต์ด้วยสีอำพัน การเปิดใช้งาน VIP การอัปเกรด SP และเหตุการณ์สำคัญถูกทำเครื่องหมายในตาราง',
+    ],
+  },
+  bannerToggle: {
+    title: 'แบนเนอร์ครบกำหนด',
+    body: [
+      'แบนเนอร์สีเขียวจะปรากฏในตารางรายเดือนเมื่อชุดเพชรถึงวันครบกำหนด — มูลค่าที่ถูกล็อกไว้จะถูกปลดล็อกและเพิ่มเข้าในยอดคงเหลือที่ใช้งานอยู่',
+      'ตัวเลขแสดงจำนวนเหตุการณ์ครบกำหนดที่เกิดขึ้นตลอดช่วงเวลากลยุทธ์ทั้งหมดของคุณ',
+      'กดปุ่มเพื่อซ่อนหรือแสดงแบนเนอร์ครบกำหนดทั้งหมด ซ่อนเพื่อมุมมองที่สะอาดขึ้น แสดงเพื่ออธิบายจุดสำคัญของการเติบโตให้ลูกค้า',
     ],
   },
 };
@@ -3269,6 +3366,14 @@ const hi: TipMap = {
       'वर्ष-अंत पंक्तियाँ एम्बर में हाइलाइट हैं। VIP सक्रियण, SP अपग्रेड और मील के पत्थर इनलाइन चिह्नित हैं।',
     ],
   },
+  bannerToggle: {
+    title: 'परिपक्वता बैनर',
+    body: [
+      'जब हीरे का एक बैच परिपक्वता तक पहुँचता है तो मासिक तालिका में हरे बैनर दिखाई देते हैं — लॉक मूल्य जारी होता है और आपकी सक्रिय शेष राशि में जोड़ा जाता है।',
+      'संख्या बताती है कि आपकी पूरी रणनीति अवधि में कितनी परिपक्वता घटनाएं होती हैं।',
+      'सभी परिपक्वता बैनर छिपाने या दिखाने के लिए बटन दबाएं। साफ दृश्य के लिए छिपाएं; ग्राहक को विकास मील के पत्थर समझाने के लिए दिखाएं।',
+    ],
+  },
 };
 
 const vi: TipMap = {
@@ -3502,6 +3607,14 @@ const vi: TipMap = {
       'Bảng này hiển thị từng tháng của chiến lược: số dư kim cương, chiết khấu hàng tháng kiếm được, rút tiền và tổng tích lũy.',
       'Chuyển đổi giữa chế độ xem Hàng tháng và Hàng năm. Chế độ xem hàng năm lý tưởng cho thuyết trình khách hàng.',
       'Các hàng cuối năm được đánh dấu màu hổ phách. Kích hoạt VIP, nâng cấp SP và mốc quan trọng được đánh dấu trong bảng.',
+    ],
+  },
+  bannerToggle: {
+    title: 'Banner Đáo Hạn',
+    body: [
+      'Các banner màu xanh lá xuất hiện trong bảng hàng tháng khi một lô kim cương đến hạn — giá trị bị khóa được giải phóng và thêm vào số dư đang hoạt động của bạn.',
+      'Con số cho biết có bao nhiêu sự kiện đáo hạn xảy ra trong toàn bộ kỳ chiến lược của bạn.',
+      'Nhấn nút để ẩn hoặc hiển thị tất cả banner đáo hạn. Ẩn để có chế độ xem gọn gàng hơn; hiển thị để giải thích các mốc tăng trưởng cho khách hàng.',
     ],
   },
 };

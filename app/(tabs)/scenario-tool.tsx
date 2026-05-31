@@ -2082,17 +2082,20 @@ export default function ScenarioToolScreen() {
                 {(() => {
                   const bannerCount = result?.months.filter(m => m.maturedSum > 0).length ?? 0;
                   return bannerCount > 0 ? (
-                    <TouchableOpacity
-                      onPress={() => setAllBannersHidden(v => !v)}
-                      style={{ backgroundColor: allBannersHidden ? '#1e293b' : 'rgba(34,197,94,0.12)', borderRadius: 5, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: allBannersHidden ? '#334155' : '#22c55e', flexDirection: 'row', alignItems: 'center', gap: 5 }}
-                    >
-                      <Text style={{ color: allBannersHidden ? '#64748b' : '#22c55e', fontSize: 10, fontWeight: 'bold' }}>
-                        {allBannersHidden ? t(language, 'showBanners') : t(language, 'hideBanners')}
-                      </Text>
-                      <View style={{ backgroundColor: allBannersHidden ? '#334155' : '#22c55e', borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
-                        <Text style={{ color: allBannersHidden ? '#94a3b8' : '#052e16', fontSize: 9, fontWeight: 'bold' }}>{bannerCount}</Text>
-                      </View>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <TouchableOpacity
+                        onPress={() => setAllBannersHidden(v => !v)}
+                        style={{ backgroundColor: allBannersHidden ? '#1e293b' : 'rgba(34,197,94,0.12)', borderRadius: 5, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: allBannersHidden ? '#334155' : '#22c55e', flexDirection: 'row', alignItems: 'center', gap: 5 }}
+                      >
+                        <Text style={{ color: allBannersHidden ? '#64748b' : '#22c55e', fontSize: 10, fontWeight: 'bold' }}>
+                          {allBannersHidden ? t(language, 'showBanners') : t(language, 'hideBanners')}
+                        </Text>
+                        <View style={{ backgroundColor: allBannersHidden ? '#334155' : '#22c55e', borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
+                          <Text style={{ color: allBannersHidden ? '#94a3b8' : '#052e16', fontSize: 9, fontWeight: 'bold' }}>{bannerCount}</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <InfoTip {...getTip(language, 'bannerToggle')} />
+                    </View>
                   ) : null;
                 })()}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
