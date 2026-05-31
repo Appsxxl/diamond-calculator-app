@@ -2825,10 +2825,14 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
 }
 
 function SummaryItem({ label, value, green, red }: { label: string; value: string; green?: boolean; red?: boolean }) {
+  const bg = green ? 'rgba(74,222,128,0.08)' : red ? 'rgba(248,113,113,0.08)' : '#0f172a';
+  const border = green ? 'rgba(74,222,128,0.35)' : red ? 'rgba(248,113,113,0.35)' : '#1e293b';
+  const labelColor = green ? '#4ade80' : red ? '#f87171' : '#94a3b8';
+  const valueColor = green ? '#4ade80' : red ? '#f87171' : '#e2e8f0';
   return (
-    <View style={S.summaryItem}>
-      <Text style={[S.summaryLabel, green ? { color: "#4ade80" } : red ? { color: "#f87171" } : {}]}>{label}</Text>
-      <Text style={[S.summaryValue, green ? { color: "#4ade80" } : red ? { color: "#f87171" } : { color: "#e2e8f0" }]}>{value}</Text>
+    <View style={[S.summaryItem, { backgroundColor: bg, borderWidth: 1.5, borderColor: border }]}>
+      <Text style={[S.summaryLabel, { color: labelColor, textTransform: 'uppercase', letterSpacing: 0.5 }]}>{label}</Text>
+      <Text style={[S.summaryValue, { color: valueColor }]}>{value}</Text>
     </View>
   );
 }
@@ -2920,8 +2924,8 @@ const S = StyleSheet.create({
   historyEntryMeta: { color: "#64748b", fontSize: 11, marginTop: 2 },
   historyEntryDate: { color: "#475569", fontSize: 11, marginLeft: 8 },
   summaryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
-  summaryItem: { backgroundColor: "#0f172a", borderRadius: 8, padding: 8, width: "48%" },
-  summaryLabel: { color: "#94a3b8", fontSize: 13, marginBottom: 2 },
+  summaryItem: { backgroundColor: "#0f172a", borderRadius: 8, padding: 9, width: "48%" },
+  summaryLabel: { color: "#94a3b8", fontSize: 10, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
   summaryValue: { color: "#fff", fontSize: 16, fontWeight: "bold" },
   tableHead: { flexDirection: "row", backgroundColor: "#1a2744", paddingVertical: 7, borderBottomWidth: 1.5, borderBottomColor: "#f59e0b" },
   th: { color: "#f59e0b", fontSize: 10, fontWeight: "bold", paddingHorizontal: 3, textAlign: "center", letterSpacing: 0.3 },
