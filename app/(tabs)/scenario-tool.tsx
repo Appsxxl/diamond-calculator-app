@@ -2038,8 +2038,8 @@ export default function ScenarioToolScreen() {
 
             {/* Monthly / Yearly Table */}
             <View style={[S.card, { overflow: 'visible', flexGrow: 1, flexShrink: 1 }]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 8 }}>
-                <Text style={[S.sectionLabel, { flex: 1, marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+              <Text style={[S.sectionLabel, { marginBottom: 6 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 8, flexWrap: 'wrap' }}>
                 {(() => {
                   const bannerCount = result?.months.filter(m => m.maturedSum > 0).length ?? 0;
                   return bannerCount > 0 ? (
@@ -2503,39 +2503,42 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
       total: last.capEnd,
     };
   });
+  const yw = 32, cw2 = 72, cw3 = 68, cw4 = 68, cw5 = 72, cw6 = 76;
   return (
-    <View>
-      <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
-        <Text style={{ width: 36, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
-        <Text style={{ flex: 1.2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'withdrawal')}</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualDiscountGained')}</Text>
-        <Text style={{ flex: 1, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'annualAssetGrowth')}</Text>
-        <Text style={{ flex: 1, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'vipStatus')}</Text>
-        <Text style={{ flex: 1, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }}>{t(language, 'finalBalance')}</Text>
-      </View>
-      {rows.map(r => (
-        <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
-          <Text style={{ width: 36, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
-          <Text style={{ flex: 1.2, color: '#facc15', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
-          <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
-          <Text style={{ flex: 1, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            {r.selfFunded ? (
-              <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
-                <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'vipSelfFunded')}</Text>
-              </View>
-            ) : r.firstActivation ? (
-              <View style={{ backgroundColor: 'rgba(239,68,68,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#ef4444' }}>
-                <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'newVip')}</Text>
-              </View>
-            ) : (
-              <Text style={{ color: '#64748b', fontSize: 10 }}>—</Text>
-            )}
-          </View>
-          <Text style={{ flex: 1, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View style={{ minWidth: yw + cw2 + cw3 + cw4 + cw5 + cw6 }}>
+        <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
+          <Text style={{ width: yw, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
+          <Text style={{ width: cw2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
+          <Text style={{ width: cw3, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualDiscountGained')}</Text>
+          <Text style={{ width: cw4, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualAssetGrowth')}</Text>
+          <Text style={{ width: cw5, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'vipStatus')}</Text>
+          <Text style={{ width: cw6, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'finalBalance')}</Text>
         </View>
-      ))}
-    </View>
+        {rows.map(r => (
+          <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
+            <Text style={{ width: yw, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
+            <Text style={{ width: cw2, color: '#facc15', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
+            <Text style={{ width: cw3, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
+            <Text style={{ width: cw4, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
+            <View style={{ width: cw5, alignItems: 'flex-end' }}>
+              {r.selfFunded ? (
+                <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
+                  <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'vipSelfFunded')}</Text>
+                </View>
+              ) : r.firstActivation ? (
+                <View style={{ backgroundColor: 'rgba(239,68,68,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#ef4444' }}>
+                  <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'newVip')}</Text>
+                </View>
+              ) : (
+                <Text style={{ color: '#64748b', fontSize: 10 }}>—</Text>
+              )}
+            </View>
+            <Text style={{ width: cw6, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
