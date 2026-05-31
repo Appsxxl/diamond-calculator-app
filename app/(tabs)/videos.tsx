@@ -121,19 +121,21 @@ function parseLiveVimeoItem(item: any): VimeoVideo {
 
   const langMatch = title.match(/JPP\d\s*-\s*([A-Za-záàâäãåçéèêëíìîïóòôöõúùûüýÿñšžčśżąćńłőüÁÄÉÍÓÖÚÜ]+)/i);
   const langWord = langMatch ? langMatch[1].toLowerCase() : "";
+  // Check JPP pattern word first, then fall back to scanning the full title
+  const searchText = langWord || titleLower;
   let langCode = "en";
-  if (/deutsch/.test(langWord))           langCode = "de";
-  else if (/english/.test(langWord))      langCode = "en";
-  else if (/espanol|español/.test(langWord)) langCode = "es";
-  else if (/français|francais/.test(langWord)) langCode = "fr";
-  else if (/italiano/.test(langWord))     langCode = "it";
-  else if (/portugues|português/.test(langWord)) langCode = "pt";
-  else if (/cesky|česky/.test(langWord))  langCode = "cs";
-  else if (/slovenský|slovensky/.test(langWord)) langCode = "sk";
-  else if (/polski/.test(langWord))       langCode = "pl";
-  else if (/romanesc|română/.test(langWord)) langCode = "ro";
-  else if (/srpski/.test(langWord))       langCode = "sr";
-  else if (/magyar/.test(langWord))       langCode = "hu";
+  if (/deutsch/.test(searchText))           langCode = "de";
+  else if (/english/.test(searchText))      langCode = "en";
+  else if (/espanol|español/.test(searchText)) langCode = "es";
+  else if (/français|francais/.test(searchText)) langCode = "fr";
+  else if (/italiano/.test(searchText))     langCode = "it";
+  else if (/portugues|português/.test(searchText)) langCode = "pt";
+  else if (/cesky|česky/.test(searchText))  langCode = "cs";
+  else if (/slovenský|slovensky/.test(searchText)) langCode = "sk";
+  else if (/polski/.test(searchText))       langCode = "pl";
+  else if (/romanesc|română/.test(searchText)) langCode = "ro";
+  else if (/srpski/.test(searchText))       langCode = "sr";
+  else if (/magyar/.test(searchText))       langCode = "hu";
 
   const days = item.upload_date
     ? Math.floor((Date.now() - new Date(item.upload_date).getTime()) / 86_400_000)
@@ -599,8 +601,8 @@ export default function VideosScreen() {
             <Text style={S.headerSub}>{tx.subtitle}</Text>
           </View>
 
-          {/* ══ SECTION 1: Invitation videos — visible to all ═══════════════ */}
-          <View style={S.sectionBlock}>
+          {/* ══ SECTION 1: Invitation videos — adviser only ════════════════ */}
+          {partnerMode && <View style={S.sectionBlock}>
             <View style={S.sectionHeaderRow}>
               <View style={S.vimeoLogoWrap}>
                 <Text style={S.vimeoLogoText}>💎</Text>
@@ -654,7 +656,7 @@ export default function VideosScreen() {
                 <Text style={S.refreshBtnText}>{vimeoRefreshing ? "…" : tx.refreshBtn}</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View>}
 
           {/* ══ SECTION 2: Presentation + Plan — adviser only ═══════════════ */}
           {partnerMode && (
