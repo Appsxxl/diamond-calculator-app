@@ -32,7 +32,8 @@ import { t, Language } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit, getSPLevel } from "@/lib/calculator";
 import { InfoTip } from "@/components/info-tip";
 import { getTip } from "@/lib/tip-content";
-import * as ScreenOrientation from "expo-screen-orientation";
+// Loaded at runtime on native only — web doesn't ship this module
+const ScreenOrientation = Platform.OS !== "web" ? require("expo-screen-orientation") : null;
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
