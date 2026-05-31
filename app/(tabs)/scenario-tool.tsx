@@ -1911,7 +1911,7 @@ export default function ScenarioToolScreen() {
                     <Text style={{ color: '#f59e0b', fontSize: 14, fontWeight: 'bold' }}>{cx(displayTotalIn)}</Text>
                   </View>
                 </View>
-                <SummaryItem label={t(language,'totalOut')} value={cx(result.totalOut)} green={result.totalOut > 0} />
+                <SummaryItem label={t(language,'totalOut')} value={cx(result.totalOut)} blue={result.totalOut > 0} />
                 <View style={{ backgroundColor: 'rgba(245,158,11,0.09)', borderRadius: 8, padding: 8, width: '48%', borderWidth: 1.5, borderColor: 'rgba(245,158,11,0.38)' }}>
                   <Text style={{ color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{t(language, 'finalBalance')}</Text>
                   <Text style={{ color: '#f59e0b', fontSize: 16, fontWeight: 'bold' }}>{cx(result.finalCap)}</Text>
@@ -2424,7 +2424,7 @@ function TableRow({ row, mData, onUpdate, cw }: { row: MonthResult; mData: Month
       </View>
       {/* Available Value */}
       <View style={{ width: cw.avail }}>
-        <Text style={[S.td, { color: "#4ade80", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
+        <Text style={[S.td, { color: "#60a5fa", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
       {/* Discount Applied */}
       <View style={{ width: cw.disc, alignItems: 'center', justifyContent: 'center' }}>
@@ -2505,7 +2505,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
       <View style={{ minWidth: yw + cw2 + cw3 + cw4 + cw5 + cw6 }}>
         <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
           <Text style={{ width: yw, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
-          <Text style={{ width: cw2, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
+          <Text style={{ width: cw2, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
           <Text style={{ width: cw3, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualDiscountGained')}</Text>
           <Text style={{ width: cw4, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualAssetGrowth')}</Text>
           <Text style={{ width: cw5, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'vipStatus')}</Text>
@@ -2514,7 +2514,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
         {rows.map(r => (
           <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
             <Text style={{ width: yw, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
-            <Text style={{ width: cw2, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
+            <Text style={{ width: cw2, color: '#60a5fa', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
             <Text style={{ width: cw3, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
             <Text style={{ width: cw4, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
             <View style={{ width: cw5, alignItems: 'flex-end' }}>
@@ -2778,11 +2778,11 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
   );
 }
 
-function SummaryItem({ label, value, green, red }: { label: string; value: string; green?: boolean; red?: boolean }) {
-  const bg = green ? 'rgba(74,222,128,0.08)' : red ? 'rgba(248,113,113,0.08)' : '#0f172a';
-  const border = green ? 'rgba(74,222,128,0.35)' : red ? 'rgba(248,113,113,0.35)' : '#1e293b';
-  const labelColor = green ? '#4ade80' : red ? '#f87171' : '#94a3b8';
-  const valueColor = green ? '#4ade80' : red ? '#f87171' : '#e2e8f0';
+function SummaryItem({ label, value, green, blue, red }: { label: string; value: string; green?: boolean; blue?: boolean; red?: boolean }) {
+  const bg = blue ? 'rgba(96,165,250,0.08)' : green ? 'rgba(74,222,128,0.08)' : red ? 'rgba(248,113,113,0.08)' : '#0f172a';
+  const border = blue ? 'rgba(96,165,250,0.35)' : green ? 'rgba(74,222,128,0.35)' : red ? 'rgba(248,113,113,0.35)' : '#1e293b';
+  const labelColor = blue ? '#60a5fa' : green ? '#4ade80' : red ? '#f87171' : '#94a3b8';
+  const valueColor = blue ? '#60a5fa' : green ? '#4ade80' : red ? '#f87171' : '#e2e8f0';
   return (
     <View style={[S.summaryItem, { backgroundColor: bg, borderWidth: 1.5, borderColor: border }]}>
       <Text style={[S.summaryLabel, { color: labelColor, textTransform: 'uppercase', letterSpacing: 0.5 }]}>{label}</Text>
