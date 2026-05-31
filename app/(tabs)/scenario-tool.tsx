@@ -2470,7 +2470,7 @@ function TableRow({ row, mData, onUpdate, cw }: { row: MonthResult; mData: Month
       </View>
       {/* Available Value */}
       <View style={{ width: cw.avail }}>
-        <Text style={[S.td, { color: "#facc15", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
+        <Text style={[S.td, { color: "#4ade80", fontWeight: "bold" }]}>{fmt(row.withdrawal)}</Text>
       </View>
       {/* Discount Applied */}
       <View style={{ width: cw.disc, alignItems: 'center', justifyContent: 'center' }}>
@@ -2551,7 +2551,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
       <View style={{ minWidth: yw + cw2 + cw3 + cw4 + cw5 + cw6 }}>
         <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
           <Text style={{ width: yw, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
-          <Text style={{ width: cw2, color: '#facc15', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
+          <Text style={{ width: cw2, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
           <Text style={{ width: cw3, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualDiscountGained')}</Text>
           <Text style={{ width: cw4, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualAssetGrowth')}</Text>
           <Text style={{ width: cw5, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'vipStatus')}</Text>
@@ -2560,7 +2560,7 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
         {rows.map(r => (
           <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
             <Text style={{ width: yw, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
-            <Text style={{ width: cw2, color: '#facc15', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
+            <Text style={{ width: cw2, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
             <Text style={{ width: cw3, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
             <Text style={{ width: cw4, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
             <View style={{ width: cw5, alignItems: 'flex-end' }}>
@@ -2827,7 +2827,7 @@ function CompanyMarginMechanics({ language }: { language: Language }) {
 function SummaryItem({ label, value, green, red }: { label: string; value: string; green?: boolean; red?: boolean }) {
   return (
     <View style={S.summaryItem}>
-      <Text style={S.summaryLabel}>{label}</Text>
+      <Text style={[S.summaryLabel, green ? { color: "#4ade80" } : red ? { color: "#f87171" } : {}]}>{label}</Text>
       <Text style={[S.summaryValue, green ? { color: "#4ade80" } : red ? { color: "#f87171" } : { color: "#e2e8f0" }]}>{value}</Text>
     </View>
   );
