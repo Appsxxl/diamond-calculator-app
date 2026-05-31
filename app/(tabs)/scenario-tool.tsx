@@ -32,6 +32,7 @@ import { t, Language } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit, getSPLevel } from "@/lib/calculator";
 import { InfoTip } from "@/components/info-tip";
 import { getTip } from "@/lib/tip-content";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 function numVal(s: string, fallback = 0): number {
   const n = parseFloat(s);
@@ -323,6 +324,24 @@ export default function ScenarioToolScreen() {
   const { language, officeLocation, partnerMode, lettersAccess } = useCalculator();
   const { isExpired } = useUserStatus();
   const { width: screenWidth } = useWindowDimensions();
+  const [landscape, setLandscape] = useState(false);
+  const toggleOrientation = useCallback(async () => {
+    if (Platform.OS === "web") return;
+    if (landscape) {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+      setLandscape(false);
+    } else {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      setLandscape(true);
+    }
+  }, [landscape]);
+  useEffect(() => {
+    return () => {
+      if (Platform.OS !== "web") {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+      }
+    };
+  }, []);
   // Compute table column widths: 96% of screen, minus outer content padding (32) and card padding (24)
   const TW = Math.max(Math.round(Math.min(screenWidth * 0.96, 1450) - 56), 788);
   const cw = {
@@ -912,6 +931,16 @@ export default function ScenarioToolScreen() {
           </TouchableOpacity>
           <Text style={S.title}>💎 Plan B</Text>
           <Text style={S.subtitle}>{t(language, 'welcomeSubtitle')}</Text>
+          {Platform.OS !== "web" && (
+            <TouchableOpacity
+              onPress={toggleOrientation}
+              style={{ position: 'absolute', right: 16, top: 16, backgroundColor: landscape ? '#f59e0b' : '#1e293b', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: landscape ? '#f59e0b' : '#334155' }}
+            >
+              <Text style={{ color: landscape ? '#000' : '#94a3b8', fontSize: 12, fontWeight: 'bold' }}>
+                {landscape ? '↕ Portrait' : '↔ Landscape'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Applied Banner */}
@@ -1026,14 +1055,25 @@ export default function ScenarioToolScreen() {
           />
         </View>
 
-        {/* Start & Years */}
-        <View style={S.row}>
-          <View style={[S.card, S.flex1, { marginRight: 5 }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
-              <InfoTip {...getTip(language, 'startAmount')} />
-            </View>
-            <TextInput style={S.bigInput} value={startAmount} onChangeText={v => { setStartAmount(v); setInputErrors(e => ({ ...e, startAmount: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
+        {/* Strategy Duration — full width above Initial Purchase */}
+        <View style={S.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'years').toUpperCase()}</Text>
+            <InfoTip {...getTip(language, 'strategyDuration')} />
+          </View>
+          <TextInput style={[S.bigInput, { maxWidth: 160 }]} value={years} onChangeText={v => { setYears(v); setInputErrors(e => ({ ...e, years: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
+          {inputErrors.years && (
+            <Text style={{ color: '#ef4444', fontSize: 11, marginTop: 4 }}>⚠️ {inputErrors.years}</Text>
+          )}
+        </View>
+
+        {/* Initial Purchase — now full width */}
+        <View style={S.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'startDiamonds').toUpperCase()} $</Text>
+            <InfoTip {...getTip(language, 'startAmount')} />
+          </View>
+          <TextInput style={S.bigInput} value={startAmount} onChangeText={v => { setStartAmount(v); setInputErrors(e => ({ ...e, startAmount: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
             {/* SP Tier Presets */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 8 }}>
               {([
@@ -1168,17 +1208,6 @@ export default function ScenarioToolScreen() {
               </>
             )}
           </View>
-          <View style={[S.card, S.flex1, { marginLeft: 5 }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'years').toUpperCase()}</Text>
-              <InfoTip {...getTip(language, 'strategyDuration')} />
-            </View>
-            <TextInput style={S.bigInput} value={years} onChangeText={v => { setYears(v); setInputErrors(e => ({ ...e, years: undefined })); }} keyboardType="numeric" placeholderTextColor="#555" />
-            {inputErrors.years && (
-              <Text style={{ color: '#ef4444', fontSize: 11, marginTop: 4 }}>⚠️ {inputErrors.years}</Text>
-            )}
-          </View>
-        </View>
 
         {/* Extra Options Help */}
         <TouchableOpacity
