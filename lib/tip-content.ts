@@ -280,6 +280,7 @@ const en: TipMap = {
     title: 'Maturity Banners',
     body: [
       'Green banners appear in the monthly table whenever a diamond batch reaches maturity — meaning its locked value is released and added to your active balance.',
+      'After 12 months the contract is free: you can choose free delivery of your diamonds or receive 100% of your initial investment back.',
       'The number badge shows how many maturity events occur across your full strategy period.',
       'Toggle the button to hide or show all maturity banners. Hide them for a cleaner view; show them to explain the growth milestones to a client.',
     ],
@@ -552,8 +553,9 @@ const nl: TipMap = {
     title: 'Rijpingsbanners',
     body: [
       'Groene banners verschijnen in de maandelijkse tabel wanneer een diamantbatch de rijping bereikt — de geblokkeerde waarde wordt vrijgegeven en toegevoegd aan uw actief saldo.',
+      'Na 12 maanden is het contract gratis: u kunt kiezen voor gratis levering van uw diamanten of 100% van uw initiële investering terugkrijgen.',
       'Het getal toont hoeveel rijpingsgebeurtenissen er in uw volledige strategie plaatsvinden.',
-      'Schakel de knop om alle rijpingsbanners te verbergen of te tonen. Verbergen voor een overzichtelijker beeld; tonen om groeimomententes aan een klant uit te leggen.',
+      'Schakel de knop om alle rijpingsbanners te verbergen of te tonen. Verbergen voor een overzichtelijker beeld; tonen om groeimijlpalen aan een klant uit te leggen.',
     ],
   },
 };
@@ -824,6 +826,7 @@ const de: TipMap = {
     title: 'Reife-Banner',
     body: [
       'Grüne Banner erscheinen in der Monatstabelle, wenn ein Diamantenpaket die Reife erreicht — der gesperrte Wert wird freigegeben und Ihrem aktiven Guthaben hinzugefügt.',
+      'Nach 12 Monaten ist der Vertrag kostenlos: Sie können die kostenlose Lieferung Ihrer Diamanten wählen oder 100% Ihrer Anfangsinvestition zurückerhalten.',
       'Die Zahl zeigt, wie viele Reifeereignisse in Ihrer gesamten Strategie auftreten.',
       'Schalten Sie die Schaltfläche um, um alle Reife-Banner aus- oder einzublenden. Ausblenden für eine übersichtlichere Ansicht; einblenden, um die Wachstumsmeilensteine einem Kunden zu erklären.',
     ],
@@ -1096,6 +1099,7 @@ const fr: TipMap = {
     title: 'Bannières de Maturité',
     body: [
       'Des bannières vertes apparaissent dans le tableau mensuel lorsqu\'un lot de diamants atteint sa maturité — la valeur bloquée est libérée et ajoutée à votre solde actif.',
+      'Après 12 mois, le contrat est gratuit : vous pouvez choisir la livraison gratuite de vos diamants ou récupérer 100% de votre investissement initial.',
       'Le badge numérique indique combien d\'événements de maturité surviennent dans toute votre période de stratégie.',
       'Appuyez sur le bouton pour masquer ou afficher toutes les bannières de maturité. Masquez-les pour une vue épurée ; affichez-les pour expliquer les jalons de croissance à un client.',
     ],
@@ -1368,6 +1372,7 @@ const es: TipMap = {
     title: 'Pancartas de Madurez',
     body: [
       'Las pancartas verdes aparecen en la tabla mensual cuando un lote de diamantes alcanza la madurez — el valor bloqueado se libera y se añade a su saldo activo.',
+      'Después de 12 meses el contrato es gratuito: puede elegir la entrega gratuita de sus diamantes o recibir el 100% de su inversión inicial de vuelta.',
       'El número muestra cuántos eventos de madurez ocurren durante todo su período de estrategia.',
       'Pulse el botón para ocultar o mostrar todas las pancartas de madurez. Ocúltelas para una vista más limpia; muéstrelas para explicar los hitos de crecimiento a un cliente.',
     ],
@@ -1640,6 +1645,7 @@ const it: TipMap = {
     title: 'Banner di Maturazione',
     body: [
       'I banner verdi appaiono nella tabella mensile quando un lotto di diamanti raggiunge la maturazione — il valore bloccato viene rilasciato e aggiunto al tuo saldo attivo.',
+      'Dopo 12 mesi il contratto è gratuito: puoi scegliere la consegna gratuita dei tuoi diamanti o ricevere il 100% del tuo investimento iniziale.',
       'Il numero mostra quanti eventi di maturazione si verificano nell\'intero periodo della strategia.',
       'Premi il pulsante per nascondere o mostrare tutti i banner di maturazione. Nascondili per una vista più pulita; mostrali per spiegare i traguardi di crescita a un cliente.',
     ],
@@ -1912,6 +1918,7 @@ const pt: TipMap = {
     title: 'Banners de Maturidade',
     body: [
       'Banners verdes aparecem na tabela mensal quando um lote de diamantes atinge a maturidade — o valor bloqueado é liberado e adicionado ao seu saldo ativo.',
+      'Após 12 meses o contrato é gratuito: pode escolher a entrega gratuita dos seus diamantes ou receber 100% do seu investimento inicial de volta.',
       'O número indica quantos eventos de maturidade ocorrem em todo o período da sua estratégia.',
       'Pressione o botão para ocultar ou mostrar todos os banners de maturidade. Oculte-os para uma vista mais limpa; mostre-os para explicar os marcos de crescimento a um cliente.',
     ],
@@ -2155,6 +2162,7 @@ const ru: TipMap = {
     title: 'Баннеры созревания',
     body: [
       'Зелёные баннеры появляются в месячной таблице, когда партия алмазов достигает созревания — заблокированная стоимость освобождается и добавляется к активному балансу.',
+      'После 12 месяцев контракт становится бесплатным: вы можете выбрать бесплатную доставку алмазов или получить 100% начальной инвестиции обратно.',
       'Число показывает, сколько событий созревания происходит за весь период стратегии.',
       'Нажмите кнопку, чтобы скрыть или показать все баннеры созревания. Скрывайте для чистого вида; показывайте, чтобы объяснить вехи роста клиенту.',
     ],
@@ -2398,6 +2406,7 @@ const zh: TipMap = {
     title: '成熟度横幅',
     body: [
       '当一批钻石达到成熟期时，月度表格中会出现绿色横幅——锁定的价值被释放并添加到您的活跃余额中。',
+      '12个月后合同免费：您可以选择免费配送您的钻石，或收回100%的初始投资。',
       '数字徽章显示在您整个策略期间发生多少个成熟事件。',
       '点击按钮可隐藏或显示所有成熟度横幅。隐藏可获得更清晰的视图；显示可向客户解释增长里程碑。',
     ],
@@ -2641,6 +2650,7 @@ const tl: TipMap = {
     title: 'Mga Maturity Banner',
     body: [
       'Lumalabas ang mga berdeng banner sa buwanang talahanayan kapag ang isang batch ng brilyante ay umabot sa kapanahunan — ang nakakulong na halaga ay inilalabas at idinaragdag sa iyong aktibong balanse.',
+      'Pagkatapos ng 12 buwan ang kontrata ay libre: maaari kang pumili ng libreng pagpapadala ng iyong mga brilyante o matatanggap ang 100% ng iyong paunang puhunan.',
       'Ang numero ay nagpapakita kung ilang maturity event ang magaganap sa buong panahon ng iyong estratehiya.',
       'I-tap ang pindutan upang itago o ipakita ang lahat ng maturity banner. Itago para sa mas malinis na view; ipakita upang ipaliwanag ang mga milestone ng paglago sa isang kliyente.',
     ],
@@ -2884,6 +2894,7 @@ const ar: TipMap = {
     title: 'لافتات النضج',
     body: [
       'تظهر لافتات خضراء في الجدول الشهري عندما تصل دفعة من الماس إلى النضج — يتم تحرير القيمة المقفلة وإضافتها إلى رصيدك النشط.',
+      'بعد 12 شهراً يصبح العقد مجانياً: يمكنك اختيار التوصيل المجاني لماسك أو استعادة 100% من استثمارك الأولي.',
       'الرقم يُظهر عدد أحداث النضج التي تحدث على مدار فترة استراتيجيتك الكاملة.',
       'اضغط الزر لإخفاء أو إظهار جميع لافتات النضج. أخفِها للحصول على عرض أنظف؛ أظهرها لشرح معالم النمو للعميل.',
     ],
@@ -3127,6 +3138,7 @@ const th: TipMap = {
     title: 'แบนเนอร์ครบกำหนด',
     body: [
       'แบนเนอร์สีเขียวจะปรากฏในตารางรายเดือนเมื่อชุดเพชรถึงวันครบกำหนด — มูลค่าที่ถูกล็อกไว้จะถูกปลดล็อกและเพิ่มเข้าในยอดคงเหลือที่ใช้งานอยู่',
+      'หลังจาก 12 เดือนสัญญาจะฟรี: คุณสามารถเลือกรับเพชรฟรีหรือรับเงินลงทุนเริ่มต้นคืน 100%',
       'ตัวเลขแสดงจำนวนเหตุการณ์ครบกำหนดที่เกิดขึ้นตลอดช่วงเวลากลยุทธ์ทั้งหมดของคุณ',
       'กดปุ่มเพื่อซ่อนหรือแสดงแบนเนอร์ครบกำหนดทั้งหมด ซ่อนเพื่อมุมมองที่สะอาดขึ้น แสดงเพื่ออธิบายจุดสำคัญของการเติบโตให้ลูกค้า',
     ],
@@ -3370,6 +3382,7 @@ const hi: TipMap = {
     title: 'परिपक्वता बैनर',
     body: [
       'जब हीरे का एक बैच परिपक्वता तक पहुँचता है तो मासिक तालिका में हरे बैनर दिखाई देते हैं — लॉक मूल्य जारी होता है और आपकी सक्रिय शेष राशि में जोड़ा जाता है।',
+      '12 महीनों के बाद अनुबंध मुफ्त है: आप अपने हीरों की मुफ्त डिलीवरी चुन सकते हैं या अपनी प्रारंभिक निवेश राशि का 100% वापस प्राप्त कर सकते हैं।',
       'संख्या बताती है कि आपकी पूरी रणनीति अवधि में कितनी परिपक्वता घटनाएं होती हैं।',
       'सभी परिपक्वता बैनर छिपाने या दिखाने के लिए बटन दबाएं। साफ दृश्य के लिए छिपाएं; ग्राहक को विकास मील के पत्थर समझाने के लिए दिखाएं।',
     ],
@@ -3613,6 +3626,7 @@ const vi: TipMap = {
     title: 'Banner Đáo Hạn',
     body: [
       'Các banner màu xanh lá xuất hiện trong bảng hàng tháng khi một lô kim cương đến hạn — giá trị bị khóa được giải phóng và thêm vào số dư đang hoạt động của bạn.',
+      'Sau 12 tháng hợp đồng miễn phí: bạn có thể chọn giao hàng miễn phí cho kim cương của mình hoặc nhận lại 100% khoản đầu tư ban đầu.',
       'Con số cho biết có bao nhiêu sự kiện đáo hạn xảy ra trong toàn bộ kỳ chiến lược của bạn.',
       'Nhấn nút để ẩn hoặc hiển thị tất cả banner đáo hạn. Ẩn để có chế độ xem gọn gàng hơn; hiển thị để giải thích các mốc tăng trưởng cho khách hàng.',
     ],
