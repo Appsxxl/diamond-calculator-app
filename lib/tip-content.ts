@@ -1064,7 +1064,7 @@ const fr: TipMap = {
     body: [
       'Ce tableau montre chaque mois de votre stratégie : solde en diamants, remise mensuelle gagnée, retraits et totaux cumulés.',
       'Basculez entre la vue Mensuelle et Annuelle. La vue annuelle est idéale pour les présentations clients.',
-      'Les lignes de fin d'année sont surlignées en or. Les activations VIP, mises à niveau SP et jalons sont indiqués en ligne.',
+      'Les lignes de fin d\'année sont surlignées en or. Les activations VIP, mises à niveau SP et jalons sont indiqués en ligne.',
     ],
   },
 };
