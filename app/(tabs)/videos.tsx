@@ -649,9 +649,11 @@ export default function VideosScreen() {
             })}
 
             <View style={S.vimeoFooterRow}>
-              <TouchableOpacity style={S.vimeoChannelBtn} onPress={openVimeoChannel} activeOpacity={0.85}>
-                <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
-              </TouchableOpacity>
+              {partnerMode && (
+                <TouchableOpacity style={S.vimeoChannelBtn} onPress={openVimeoChannel} activeOpacity={0.85}>
+                  <Text style={S.vimeoChannelBtnText}>{tx.vimeoChannelBtn}</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity style={S.refreshBtn} onPress={refreshVimeo} disabled={vimeoRefreshing}>
                 <Text style={S.refreshBtnText}>{vimeoRefreshing ? "…" : tx.refreshBtn}</Text>
               </TouchableOpacity>
