@@ -1876,7 +1876,10 @@ export default function ScenarioToolScreen() {
 
             {/* Summary Cards */}
             <View style={[S.card, { borderWidth: 1, borderColor: 'rgba(51,197,255,0.22)' }]}>
-              <Text style={S.sectionLabel}>{t(language, 'strategySummaryLabel').replace('{years}', String(Math.round(result.months.length / 12)))}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <Text style={[S.sectionLabel, { marginBottom: 0 }]}>{t(language, 'strategySummaryLabel').replace('{years}', String(Math.round(result.months.length / 12)))}</Text>
+                <InfoTip {...getTip(language, 'strategySummary')} />
+              </View>
 
               {/* 🎯 Target Monthly Goal — always visible, prominent */}
               <View style={{
@@ -2057,9 +2060,12 @@ export default function ScenarioToolScreen() {
                 borderWidth: 1, borderColor: 'rgba(212,175,55,0.4)',
               }}
             >
-              <Text style={{ color: '#D4AF37', fontSize: 12, fontWeight: 'bold', letterSpacing: 1.2 }}>
-                {t(language, 'companyMarginTitle')}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ color: '#D4AF37', fontSize: 12, fontWeight: 'bold', letterSpacing: 1.2 }}>
+                  {t(language, 'companyMarginTitle')}
+                </Text>
+                <InfoTip {...getTip(language, 'companyMargin')} />
+              </View>
               <Text style={{ color: 'rgba(212,175,55,0.7)', fontSize: 16 }}>
                 {showMarginMechanics ? '▲' : '▼'}
               </Text>
@@ -2068,7 +2074,10 @@ export default function ScenarioToolScreen() {
 
             {/* Monthly / Yearly Table */}
             <View style={[S.card, { overflow: 'visible', flexGrow: 1, flexShrink: 1 }]}>
-              <Text style={[S.sectionLabel, { marginBottom: 6 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <Text style={[S.sectionLabel, { marginBottom: 0 }]}>{t(language,'monthlyBreakdown').toUpperCase()}</Text>
+                <InfoTip {...getTip(language, 'monthlyDiscountSchedule')} />
+              </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 8, flexWrap: 'wrap' }}>
                 {(() => {
                   const bannerCount = result?.months.filter(m => m.maturedSum > 0).length ?? 0;

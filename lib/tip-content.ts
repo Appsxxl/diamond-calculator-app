@@ -7,7 +7,8 @@ export type TipKey =
   | 'currencyDisplay' | 'pdfExport' | 'createLetter' | 'scenarioChart'
   | 'compareMode' | 'rankTiers' | 'partnerList' | 'commissionEstimator'
   | 'invitationVideos' | 'adviserVideos' | 'lettersHub'
-  | 'assetGoalPlanner' | 'projectedRevenueModel' | 'sentLog';
+  | 'assetGoalPlanner' | 'projectedRevenueModel' | 'sentLog'
+  | 'strategySummary' | 'companyMargin' | 'monthlyDiscountSchedule';
 
 export type TipContent = { title: string; body: string[] };
 type TipMap = Record<TipKey, TipContent>;
@@ -250,6 +251,30 @@ const en: TipMap = {
       'Set a follow-up date to get an OVERDUE alert when the date has passed. Mark it Done once you have followed up. Overdue entries appear at the top in red so nothing slips through.',
     ],
   },
+  strategySummary: {
+    title: 'Strategy Summary',
+    body: [
+      'A snapshot of your full strategy: total invested, total discounts earned, final diamond value, and whether your monthly goal was reached.',
+      'The ROI and Break-Even month show when your cumulative discounts cover your initial investment. After that point every discount is pure profit.',
+      'Use this section to present the key numbers to a client in a clear, concise way before showing the full monthly table.',
+    ],
+  },
+  companyMargin: {
+    title: 'Company Margin Mechanics',
+    body: [
+      'Diamond Solution sources rough diamonds directly from mines at ~10% of retail price, cuts and certifies them in-house, and sells B2B globally at full market value.',
+      'This vertical integration eliminates 5–6 middlemen (broker, exchange, wholesaler, distributor, retailer) who typically inflate the price by 700%.',
+      'The margin created by cutting out the chain is what funds the monthly discount paid to investors — making the plan financially sustainable.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Monthly Discount Schedule',
+    body: [
+      'This table shows every month of your strategy — your diamond balance, monthly discount earned, withdrawals taken, and cumulative totals.',
+      'Switch between Monthly (row-by-row) and Yearly (annual summary) views. The yearly view is great for client presentations.',
+      'Year-end rows are highlighted in amber. VIP activations, SP upgrades, and goal milestones are marked inline so you can see exactly when they happen.',
+    ],
+  },
 };
 
 const nl: TipMap = {
@@ -488,6 +513,30 @@ const nl: TipMap = {
       'Log elke brief of outreach die u verstuurt. Noteer de naam van de ontvanger, het type brief, de verzenddatum en optioneel een follow-updatum om uw pijplijn bij te houden.',
       'Tik op de uitkomst-badge van een item om door de pijplijnfasen te bladeren: In behandeling → Gereageerd → Vergadering → Geconverteerd → Geen reactie.',
       'Stel een follow-updatum in voor een ACHTERSTALLIG-melding zodra de datum verstreken is. Markeer als Klaar na opvolging. Achterstallige items verschijnen bovenaan in rood zodat niets wordt gemist.',
+    ],
+  },
+    strategySummary: {
+    title: 'Strategie Samenvatting',
+    body: [
+      'Een overzicht van uw volledige strategie: totaal geïnvesteerd, totale kortingen verdiend, eindwaarde diamanten en of uw maandelijkse doel is bereikt.',
+      'De ROI en Break-Even maand tonen wanneer uw cumulatieve kortingen uw initiële investering dekken. Daarna is elke korting pure winst.',
+      'Gebruik dit gedeelte om de kerncijfers op een duidelijke manier aan een klant te presenteren voordat u de volledige maandelijkse tabel toont.',
+    ],
+  },
+  companyMargin: {
+    title: 'Bedrijfsmarge Mechanisme',
+    body: [
+      'Diamond Solution koopt ruwe diamanten rechtstreeks bij mijnen voor ~10% van de winkelprijs, snijdt en certificeert intern, en verkoopt B2B wereldwijd tegen volledige marktwaarde.',
+      'Deze verticale integratie elimineert 5–6 tussenpersonen die de prijs normaal met 700% opblazen.',
+      'De marge die ontstaat door de keten te omzeilen financiert de maandelijkse korting die aan investeerders wordt betaald.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Maandelijks Kortingsoverzicht',
+    body: [
+      'Deze tabel toont elke maand van uw strategie: diamantsaldo, verdiende maandelijkse korting, opnames en cumulatieve totalen.',
+      'Schakel tussen Maandelijks en Jaarlijks overzicht. De jaarweergave is ideaal voor klantpresentaties.',
+      'Jaareindregels zijn goudkleurig gemarkeerd. VIP-activeringen, SP-upgrades en mijlpalen zijn inline aangegeven.',
     ],
   },
 };
@@ -730,6 +779,30 @@ const de: TipMap = {
       'Setzen Sie ein Nachfassdatum, um eine ÜBERFÄLLIG-Warnung zu erhalten. Markieren Sie es als Erledigt nach dem Nachfassen. Überfällige Einträge erscheinen oben in Rot, damit nichts übersehen wird.',
     ],
   },
+    strategySummary: {
+    title: 'Strategie-Zusammenfassung',
+    body: [
+      'Ein Überblick über Ihre gesamte Strategie: Gesamtinvestition, erzielte Gesamtrabatte, finaler Diamantenwert und ob Ihr monatliches Ziel erreicht wurde.',
+      'ROI und Break-Even-Monat zeigen, wann Ihre kumulierten Rabatte Ihre Anfangsinvestition decken. Danach ist jeder Rabatt reiner Gewinn.',
+      'Nutzen Sie diesen Bereich, um einem Kunden die Kernzahlen klar zu präsentieren, bevor Sie die vollständige Monatstabelle zeigen.',
+    ],
+  },
+  companyMargin: {
+    title: 'Unternehmensmargen-Mechanismus',
+    body: [
+      'Diamond Solution bezieht Rohdiamanten direkt aus Minen für ~10% des Einzelhandelspreises, schleift und zertifiziert intern und verkauft B2B weltweit zum vollen Marktwert.',
+      'Diese vertikale Integration eliminiert 5–6 Zwischenhändler, die den Preis normalerweise um 700% erhöhen.',
+      'Die durch die Umgehung der Kette entstehende Marge finanziert die monatliche Vergütung der Investoren.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Monatlicher Rabattplan',
+    body: [
+      'Diese Tabelle zeigt jeden Monat Ihrer Strategie: Diamantenguthaben, monatlicher Rabatt, Auszahlungen und kumulative Summen.',
+      'Wechseln Sie zwischen Monatlicher und Jährlicher Ansicht. Die Jahresansicht eignet sich ideal für Kundenpräsentationen.',
+      'Jahresabschlusszeilen sind gold markiert. VIP-Aktivierungen, SP-Upgrades und Meilensteine sind inline gekennzeichnet.',
+    ],
+  },
 };
 
 const fr: TipMap = {
@@ -968,6 +1041,30 @@ const fr: TipMap = {
       'Enregistrez chaque lettre ou démarche envoyée. Notez le nom du destinataire, le type de lettre, la date d\'envoi et une date de suivi facultative pour garder le contrôle de votre pipeline.',
       'Appuyez sur le badge de résultat d\'une entrée pour faire défiler les étapes du pipeline : En attente → Répondu → Réunion → Converti → Sans réponse.',
       'Définissez une date de suivi pour recevoir une alerte EN RETARD lorsque la date est dépassée. Marquez-la Terminé après le suivi. Les entrées en retard apparaissent en rouge en haut de l\'écran.',
+    ],
+  },
+    strategySummary: {
+    title: 'Résumé de la Stratégie',
+    body: [
+      'Un aperçu de votre stratégie complète : total investi, remises totales gagnées, valeur finale des diamants et si votre objectif mensuel a été atteint.',
+      'Le ROI et le mois de seuil de rentabilité indiquent quand vos remises cumulées couvrent votre investissement initial. Ensuite, chaque remise est du pur profit.',
+      'Utilisez cette section pour présenter les chiffres clés à un client avant de montrer le tableau mensuel complet.',
+    ],
+  },
+  companyMargin: {
+    title: 'Mécanique des Marges',
+    body: [
+      'Diamond Solution source des diamants bruts directement des mines à ~10% du prix de détail, les taille et certifie en interne, et vend en B2B mondialement à pleine valeur marchande.',
+      'Cette intégration verticale élimine 5 à 6 intermédiaires qui gonflent normalement le prix de 700%.',
+      'La marge créée en court-circuitant la chaîne finance la remise mensuelle versée aux investisseurs.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Calendrier de Remises Mensuelles',
+    body: [
+      'Ce tableau montre chaque mois de votre stratégie : solde en diamants, remise mensuelle gagnée, retraits et totaux cumulés.',
+      'Basculez entre la vue Mensuelle et Annuelle. La vue annuelle est idéale pour les présentations clients.',
+      'Les lignes de fin d'année sont surlignées en or. Les activations VIP, mises à niveau SP et jalons sont indiqués en ligne.',
     ],
   },
 };
@@ -1210,6 +1307,30 @@ const es: TipMap = {
       'Establece una fecha de seguimiento para recibir una alerta de VENCIDO cuando la fecha haya pasado. Márcalo como Hecho tras el seguimiento. Las entradas vencidas aparecen en rojo en la parte superior.',
     ],
   },
+    strategySummary: {
+    title: 'Resumen de Estrategia',
+    body: [
+      'Un resumen de su estrategia completa: total invertido, descuentos totales ganados, valor final de diamantes y si se alcanzó su objetivo mensual.',
+      'El ROI y el mes de equilibrio muestran cuándo sus descuentos acumulados cubren su inversión inicial. A partir de ahí, cada descuento es ganancia pura.',
+      'Use esta sección para presentar las cifras clave a un cliente antes de mostrar la tabla mensual completa.',
+    ],
+  },
+  companyMargin: {
+    title: 'Mecánica del Margen Empresarial',
+    body: [
+      'Diamond Solution obtiene diamantes en bruto directamente de minas al ~10% del precio minorista, los talla y certifica internamente, y vende B2B globalmente al valor de mercado completo.',
+      'Esta integración vertical elimina 5–6 intermediarios que normalmente inflan el precio un 700%.',
+      'El margen generado al eliminar la cadena financia el descuento mensual pagado a los inversores.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Calendario de Descuentos Mensuales',
+    body: [
+      'Esta tabla muestra cada mes de su estrategia: saldo en diamantes, descuento mensual ganado, retiros y totales acumulados.',
+      'Cambie entre las vistas Mensual y Anual. La vista anual es ideal para presentaciones a clientes.',
+      'Las filas de fin de año están resaltadas en ámbar. Las activaciones VIP, actualizaciones SP y hitos se marcan en línea.',
+    ],
+  },
 };
 
 const it: TipMap = {
@@ -1448,6 +1569,30 @@ const it: TipMap = {
       'Registra ogni lettera o comunicazione inviata. Inserisci il nome del destinatario, il tipo di lettera, la data di invio e facoltativamente una data di follow-up per gestire la tua pipeline.',
       'Tocca il badge risultato di una voce per scorrere le fasi della pipeline: In attesa → Risposto → Riunione → Convertito → Nessuna risposta.',
       'Imposta una data di follow-up per ricevere un avviso IN SCADENZA quando la data è superata. Contrassegnala come Fatto dopo il follow-up. Le voci scadute appaiono in rosso in cima alla schermata.',
+    ],
+  },
+    strategySummary: {
+    title: 'Riepilogo Strategia',
+    body: [
+      'Una panoramica della tua strategia completa: totale investito, sconti totali guadagnati, valore finale dei diamanti e se l'obiettivo mensile è stato raggiunto.',
+      'Il ROI e il mese di pareggio mostrano quando gli sconti cumulativi coprono l'investimento iniziale. Da quel punto ogni sconto è puro profitto.',
+      'Usa questa sezione per presentare i numeri chiave a un cliente prima di mostrare la tabella mensile completa.',
+    ],
+  },
+  companyMargin: {
+    title: 'Meccanismo del Margine Aziendale',
+    body: [
+      'Diamond Solution acquista diamanti grezzi direttamente dalle miniere a ~10% del prezzo al dettaglio, li lavora e certifica internamente, e vende B2B globalmente al pieno valore di mercato.',
+      'Questa integrazione verticale elimina 5–6 intermediari che normalmente gonfiano il prezzo del 700%.',
+      'Il margine creato eliminando la catena finanzia lo sconto mensile pagato agli investitori.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Piano Sconti Mensili',
+    body: [
+      'Questa tabella mostra ogni mese della tua strategia: saldo diamanti, sconto mensile guadagnato, prelievi e totali cumulativi.',
+      'Passa tra la vista Mensile e Annuale. La vista annuale è ideale per le presentazioni ai clienti.',
+      'Le righe di fine anno sono evidenziate in ambra. Le attivazioni VIP, aggiornamenti SP e traguardi sono indicati in linea.',
     ],
   },
 };
@@ -1690,6 +1835,30 @@ const pt: TipMap = {
       'Defina uma data de acompanhamento para receber um alerta de ATRASADO quando a data passar. Marque como Concluído após o acompanhamento. Entradas atrasadas aparecem em vermelho no topo da tela.',
     ],
   },
+    strategySummary: {
+    title: 'Resumo da Estratégia',
+    body: [
+      'Uma visão geral da sua estratégia completa: total investido, descontos totais ganhos, valor final dos diamantes e se o seu objetivo mensal foi atingido.',
+      'O ROI e o mês de equilíbrio mostram quando os seus descontos acumulados cobrem o investimento inicial. A partir daí, cada desconto é lucro puro.',
+      'Use esta secção para apresentar os números-chave a um cliente antes de mostrar a tabela mensal completa.',
+    ],
+  },
+  companyMargin: {
+    title: 'Mecânica da Margem Empresarial',
+    body: [
+      'A Diamond Solution obtém diamantes brutos diretamente das minas a ~10% do preço de retalho, corta e certifica internamente, e vende B2B globalmente ao valor de mercado completo.',
+      'Esta integração vertical elimina 5 a 6 intermediários que normalmente inflacionam o preço em 700%.',
+      'A margem criada ao eliminar a cadeia financia o desconto mensal pago aos investidores.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Calendário de Descontos Mensais',
+    body: [
+      'Esta tabela mostra cada mês da sua estratégia: saldo em diamantes, desconto mensal ganho, levantamentos e totais acumulados.',
+      'Alterne entre a vista Mensal e Anual. A vista anual é ideal para apresentações a clientes.',
+      'As linhas de fim de ano estão destacadas em âmbar. Ativações VIP, atualizações SP e marcos são indicados em linha.',
+    ],
+  },
 };
 
 const ru: TipMap = {
@@ -1899,6 +2068,30 @@ const ru: TipMap = {
       'Фиксируйте каждое отправленное письмо или обращение. Укажите имя получателя, тип письма, дату отправки и при необходимости дату напоминания для контроля воронки.',
       'Нажмите на значок результата записи, чтобы переключаться по этапам воронки: Ожидание → Ответил → Встреча → Конвертирован → Нет ответа.',
       'Установите дату напоминания, чтобы получить предупреждение ПРОСРОЧЕНО. Отметьте как Выполнено после контакта. Просроченные записи отображаются вверху в красном цвете.',
+    ],
+  },
+    strategySummary: {
+    title: 'Сводка Стратегии',
+    body: [
+      'Обзор всей вашей стратегии: общая сумма инвестиций, заработанные скидки, итоговая стоимость алмазов и достигнута ли ежемесячная цель.',
+      'ROI и месяц окупаемости показывают, когда накопленные скидки покрывают начальные инвестиции. После этого каждая скидка — чистая прибыль.',
+      'Используйте этот раздел для представления ключевых показателей клиенту перед показом полной таблицы.',
+    ],
+  },
+  companyMargin: {
+    title: 'Механика Маржи Компании',
+    body: [
+      'Diamond Solution закупает необработанные алмазы напрямую с месторождений по ~10% розничной цены, обрабатывает и сертифицирует внутри, продаёт B2B по полной рыночной стоимости.',
+      'Вертикальная интеграция устраняет 5–6 посредников, которые обычно повышают цену на 700%.',
+      'Маржа от сокращения цепочки финансирует ежемесячные скидки инвесторам.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'График Ежемесячных Скидок',
+    body: [
+      'Таблица показывает каждый месяц стратегии: баланс алмазов, заработанная скидка, выплаты и накопленные итоги.',
+      'Переключайтесь между ежемесячным и годовым видом. Годовой вид идеален для презентаций клиентам.',
+      'Строки конца года выделены золотым. Активации VIP, обновления SP и вехи отмечены в таблице.',
     ],
   },
 };
@@ -2112,6 +2305,30 @@ const zh: TipMap = {
       '设置跟进日期，当日期过后将收到逾期警告。跟进完成后标记为已完成。逾期条目以红色显示在屏幕顶部，确保不遗漏任何事项。',
     ],
   },
+    strategySummary: {
+    title: '策略摘要',
+    body: [
+      '您完整策略的快照：总投资额、赚取的总折扣、最终钻石价值，以及是否达到了每月目标。',
+      'ROI和保本月份显示累计折扣何时覆盖初始投资。此后每笔折扣都是纯利润。',
+      '在展示完整月度表格之前，使用此部分向客户清晰呈现关键数据。',
+    ],
+  },
+  companyMargin: {
+    title: '公司利润机制',
+    body: [
+      'Diamond Solution直接从矿山以约零售价10%的价格采购原钻，在内部切割和认证，并以完整市场价值在全球B2B销售。',
+      '这种垂直整合消除了通常将价格抬高700%的5-6个中间商。',
+      '通过绕过供应链产生的利润资助支付给投资者的每月折扣。',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: '月度折扣计划',
+    body: [
+      '此表格显示您策略的每个月：钻石余额、赚取的月度折扣、提款和累计总额。',
+      '在月度和年度视图之间切换。年度视图非常适合客户演示。',
+      '年末行以琥珀色突出显示。VIP激活、SP升级和里程碑在表中标注。',
+    ],
+  },
 };
 
 const tl: TipMap = {
@@ -2321,6 +2538,30 @@ const tl: TipMap = {
       'I-log ang bawat liham o outreach na iyong naipadala. Itala ang pangalan ng tatanggap, uri ng liham, petsa ng pagpapadala, at opsyonal na petsa ng follow-up para kontrolin ang iyong pipeline.',
       'I-tap ang outcome badge ng isang entry para mag-cycle sa mga yugto ng pipeline: Nakabinbin → Sumagot → Pulong → Na-convert → Walang Tugon.',
       'Magtakda ng petsa ng follow-up para makatanggap ng alerto ng NAANTALA kapag lumipas na ang petsa. Markahan bilang Tapos na pagkatapos mag-follow up. Ang mga naantalang entry ay lumalabas sa itaas sa pulang kulay.',
+    ],
+  },
+    strategySummary: {
+    title: 'Buod ng Estratehiya',
+    body: [
+      'Isang buod ng iyong kumpletong estratehiya: kabuuang namuhunan, kabuuang diskwentong nakuha, panghuling halaga ng brilyante, at kung naabot ang buwanang layunin.',
+      'Ipinapakita ng ROI at Break-Even month kung kailan sakop ng iyong mga naipon na diskwento ang iyong paunang pamumuhunan.',
+      'Gamitin ang seksyong ito upang maipakita ang mga pangunahing numero sa kliyente bago ipakita ang buong talahanayan.',
+    ],
+  },
+  companyMargin: {
+    title: 'Mekanismo ng Margin ng Kumpanya',
+    body: [
+      'Ang Diamond Solution ay kumukuha ng magaspang na brilyante nang direkta mula sa mga minahan sa ~10% ng presyo sa tingi, ginugupit at sinesertipiko sa loob, at nagbebenta ng B2B sa buong mundo.',
+      'Inaalis ng vertical integration na ito ang 5–6 na tagapamagitan na karaniwang nagpapalaki ng presyo ng 700%.',
+      'Ang margin ay nagpopondo sa buwanang diskwento na binabayaran sa mga mamumuhunan.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Buwanang Iskedyul ng Diskwento',
+    body: [
+      'Ipinapakita ng talahanayan na ito ang bawat buwan ng iyong estratehiya: balanse ng brilyante, buwanang diskwentong nakuha, at mga kabuuan.',
+      'Lumipat sa pagitan ng Buwanan at Taunan na view. Ang taunang view ay perpekto para sa mga presentasyon ng kliyente.',
+      'Ang mga hanay sa katapusan ng taon ay naka-highlight sa amber.',
     ],
   },
 };
@@ -2534,6 +2775,30 @@ const ar: TipMap = {
       'حدد تاريخ متابعة لتلقي تنبيه متأخر عند مرور التاريخ. اضغط تم بعد المتابعة. تظهر الإدخالات المتأخرة باللون الأحمر في أعلى الشاشة.',
     ],
   },
+    strategySummary: {
+    title: 'ملخص الاستراتيجية',
+    body: [
+      'لمحة عامة عن استراتيجيتك الكاملة: إجمالي الاستثمار، الخصومات المكتسبة، القيمة النهائية للماس، وما إذا تم تحقيق هدفك الشهري.',
+      'يُظهر العائد على الاستثمار وشهر التعادل متى تغطي خصوماتك المتراكمة استثمارك الأولي.',
+      'استخدم هذا القسم لتقديم الأرقام الرئيسية للعميل قبل عرض الجدول الشهري الكامل.',
+    ],
+  },
+  companyMargin: {
+    title: 'آلية هامش الشركة',
+    body: [
+      'تحصل Diamond Solution على الماس الخام مباشرة من المناجم بـ~10% من سعر التجزئة، وتقطعه وتُصادق عليه داخلياً، وتبيعه B2B عالمياً بالقيمة السوقية الكاملة.',
+      'يُلغي هذا التكامل الرأسي 5-6 وسطاء يرفعون السعر عادةً بنسبة 700%.',
+      'الهامش الناتج عن تجاوز السلسلة يُموّل الخصم الشهري المدفوع للمستثمرين.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'جدول الخصومات الشهرية',
+    body: [
+      'يُظهر هذا الجدول كل شهر من استراتيجيتك: رصيد الماس، الخصم الشهري المكتسب، عمليات السحب والإجماليات.',
+      'التبديل بين العرض الشهري والسنوي. العرض السنوي مثالي لعروض العملاء.',
+      'صفوف نهاية العام مُميَّزة بالعنبر. تُشار تفعيلات VIP وترقيات SP والمعالم في الجدول.',
+    ],
+  },
 };
 
 const th: TipMap = {
@@ -2743,6 +3008,30 @@ const th: TipMap = {
       'บันทึกจดหมายหรือการติดต่อทุกฉบับที่คุณส่ง ระบุชื่อผู้รับ ประเภทจดหมาย วันที่ส่ง และวันติดตามผลหากต้องการ เพื่อควบคุมไปป์ไลน์ของคุณ',
       'แตะที่แบดจ์ผลลัพธ์ของรายการเพื่อวนผ่านขั้นตอนไปป์ไลน์: รอดำเนินการ → ตอบกลับแล้ว → นัดประชุม → แปลงแล้ว → ไม่มีการตอบกลับ',
       'ตั้งวันติดตามผลเพื่อรับการแจ้งเตือนเกินกำหนดเมื่อวันผ่านไป กดเสร็จสิ้นหลังติดตามผล รายการที่เกินกำหนดจะแสดงสีแดงที่ด้านบนของหน้าจอ',
+    ],
+  },
+    strategySummary: {
+    title: 'สรุปกลยุทธ์',
+    body: [
+      'ภาพรวมกลยุทธ์ทั้งหมดของคุณ: เงินลงทุนรวม ส่วนลดรวมที่ได้รับ มูลค่าเพชรสุดท้าย และบรรลุเป้าหมายรายเดือนหรือไม่',
+      'ROI และเดือน Break-Even แสดงให้เห็นว่าส่วนลดสะสมครอบคลุมการลงทุนเริ่มต้นเมื่อใด',
+      'ใช้ส่วนนี้เพื่อนำเสนอตัวเลขสำคัญให้ลูกค้าก่อนแสดงตารางรายเดือนเต็มรูปแบบ',
+    ],
+  },
+  companyMargin: {
+    title: 'กลไกอัตรากำไรของบริษัท',
+    body: [
+      'Diamond Solution จัดหาเพชรดิบโดยตรงจากเหมือง ~10% ของราคาขายปลีก ตัดและรับรองภายใน และขาย B2B ทั่วโลก',
+      'การรวมแนวดิ่งนี้ขจัดคนกลาง 5-6 รายที่มักเพิ่มราคา 700%',
+      'อัตรากำไรที่ได้จากการตัดห่วงโซ่จะจัดหาเงินทุนสำหรับส่วนลดรายเดือนที่จ่ายให้นักลงทุน',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'ตารางส่วนลดรายเดือน',
+    body: [
+      'ตารางนี้แสดงทุกเดือนของกลยุทธ์คุณ: ยอดเพชร ส่วนลดรายเดือน การถอนเงิน และยอดรวมสะสม',
+      'สลับระหว่างมุมมองรายเดือนและรายปี มุมมองรายปีเหมาะสำหรับการนำเสนอลูกค้า',
+      'แถวสิ้นปีถูกไฮไลต์ด้วยสีอำพัน การเปิดใช้งาน VIP การอัปเกรด SP และเหตุการณ์สำคัญถูกทำเครื่องหมายในตาราง',
     ],
   },
 };
@@ -2956,6 +3245,30 @@ const hi: TipMap = {
       'फॉलो-अप तारीख सेट करें ताकि तारीख निकलने पर OVERDUE अलर्ट मिले। फॉलो-अप के बाद Done मार्क करें। अतिदेय एंट्री स्क्रीन के ऊपर लाल रंग में दिखती हैं।',
     ],
   },
+    strategySummary: {
+    title: 'रणनीति सारांश',
+    body: [
+      'आपकी पूरी रणनीति का स्नैपशॉट: कुल निवेश, अर्जित कुल छूट, अंतिम हीरे का मूल्य, और क्या आपका मासिक लक्ष्य प्राप्त हुआ।',
+      'ROI और Break-Even महीना दिखाता है कि आपकी संचित छूट आपके प्रारंभिक निवेश को कब कवर करती है।',
+      'पूरी मासिक तालिका दिखाने से पहले ग्राहक को मुख्य संख्याएं प्रस्तुत करने के लिए इस अनुभाग का उपयोग करें।',
+    ],
+  },
+  companyMargin: {
+    title: 'कंपनी मार्जिन तंत्र',
+    body: [
+      'Diamond Solution खदानों से सीधे ~10% खुदरा मूल्य पर कच्चे हीरे प्राप्त करती है, आंतरिक रूप से काटती और प्रमाणित करती है, और पूरे बाजार मूल्य पर B2B बेचती है।',
+      'यह लंबवत एकीकरण 5-6 बिचौलियों को समाप्त करता है जो आमतौर पर कीमत 700% बढ़ाते हैं।',
+      'श्रृंखला को हटाकर बनाया गया मार्जिन निवेशकों को दी जाने वाली मासिक छूट को वित्तपोषित करता है।',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'मासिक छूट अनुसूची',
+    body: [
+      'यह तालिका आपकी रणनीति के प्रत्येक महीने को दिखाती है: हीरे की शेष राशि, अर्जित मासिक छूट, निकासी और संचित योग।',
+      'मासिक और वार्षिक दृश्य के बीच स्विच करें। वार्षिक दृश्य ग्राहक प्रस्तुतियों के लिए आदर्श है।',
+      'वर्ष-अंत पंक्तियाँ एम्बर में हाइलाइट हैं। VIP सक्रियण, SP अपग्रेड और मील के पत्थर इनलाइन चिह्नित हैं।',
+    ],
+  },
 };
 
 const vi: TipMap = {
@@ -3165,6 +3478,30 @@ const vi: TipMap = {
       'Ghi lại mọi thư hoặc liên hệ bạn đã gửi. Nhập tên người nhận, loại thư, ngày gửi và tùy chọn ngày theo dõi để quản lý quy trình của bạn.',
       'Nhấn vào huy hiệu kết quả của một mục để chuyển qua các giai đoạn quy trình: Đang chờ → Đã phản hồi → Cuộc họp → Đã chuyển đổi → Không phản hồi.',
       'Đặt ngày theo dõi để nhận cảnh báo QUÁ HẠN khi ngày đó đã qua. Đánh dấu là Hoàn thành sau khi theo dõi. Các mục quá hạn hiển thị màu đỏ ở đầu màn hình.',
+    ],
+  },
+  strategySummary: {
+    title: 'Tóm Tắt Chiến Lược',
+    body: [
+      'Tổng quan chiến lược đầy đủ của bạn: tổng đầu tư, tổng chiết khấu kiếm được, giá trị kim cương cuối cùng và liệu mục tiêu hàng tháng có đạt được không.',
+      'ROI và tháng hòa vốn cho thấy khi nào chiết khấu tích lũy bù đắp khoản đầu tư ban đầu.',
+      'Sử dụng phần này để trình bày các con số chính cho khách hàng trước khi hiển thị bảng hàng tháng đầy đủ.',
+    ],
+  },
+  companyMargin: {
+    title: 'Cơ Chế Lợi Nhuận Công Ty',
+    body: [
+      'Diamond Solution thu mua kim cương thô trực tiếp từ mỏ với ~10% giá bán lẻ, cắt và chứng nhận nội bộ, bán B2B toàn cầu theo giá thị trường đầy đủ.',
+      'Tích hợp dọc này loại bỏ 5-6 trung gian thường tăng giá 700%.',
+      'Lợi nhuận từ việc bỏ qua chuỗi cung ứng tài trợ cho chiết khấu hàng tháng trả cho nhà đầu tư.',
+    ],
+  },
+  monthlyDiscountSchedule: {
+    title: 'Lịch Chiết Khấu Hàng Tháng',
+    body: [
+      'Bảng này hiển thị từng tháng của chiến lược: số dư kim cương, chiết khấu hàng tháng kiếm được, rút tiền và tổng tích lũy.',
+      'Chuyển đổi giữa chế độ xem Hàng tháng và Hàng năm. Chế độ xem hàng năm lý tưởng cho thuyết trình khách hàng.',
+      'Các hàng cuối năm được đánh dấu màu hổ phách. Kích hoạt VIP, nâng cấp SP và mốc quan trọng được đánh dấu trong bảng.',
     ],
   },
 };
