@@ -2499,38 +2499,46 @@ function YearlySummary({ result, language }: { result: ReturnType<typeof runCalc
       total: last.capEnd,
     };
   });
-  const yw = 32, cw2 = 72, cw3 = 68, cw4 = 68, cw5 = 72, cw6 = 76;
+  const yw = 36, cw2 = 96, cw3 = 86, cw4 = 80, cw5 = 86, cw6 = 88;
+  const GAP = 6;
+  const blueBox = { borderWidth: 1.5, borderColor: '#3b82f6', borderRadius: 6, backgroundColor: 'rgba(59,130,246,0.10)', paddingHorizontal: 6, paddingVertical: 3 };
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={{ minWidth: yw + cw2 + cw3 + cw4 + cw5 + cw6 }}>
-        <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', paddingHorizontal: 4 }}>
+      <View style={{ minWidth: yw + cw2 + cw3 + cw4 + cw5 + cw6 + GAP * 5 }}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#334155', alignItems: 'flex-end', gap: GAP }}>
           <Text style={{ width: yw, color: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}>{t(language, 'year')}</Text>
-          <Text style={{ width: cw2, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
+          <View style={[blueBox, { width: cw2, alignItems: 'flex-end' }]}>
+            <Text style={{ color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'withdrawal')}</Text>
+          </View>
           <Text style={{ width: cw3, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualDiscountGained')}</Text>
-          <Text style={{ width: cw4, color: '#60a5fa', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualAssetGrowth')}</Text>
+          <Text style={{ width: cw4, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'annualAssetGrowth')}</Text>
           <Text style={{ width: cw5, color: '#94a3b8', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'vipStatus')}</Text>
           <Text style={{ width: cw6, color: '#4ade80', fontSize: 11, fontWeight: 'bold', textAlign: 'right' }} numberOfLines={2}>{t(language, 'finalBalance')}</Text>
         </View>
+        {/* Rows */}
         {rows.map(r => (
-          <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', paddingHorizontal: 4 }}>
-            <Text style={{ width: yw, color: '#f59e0b', fontSize: 13, fontWeight: 'bold' }}>Y{r.year}</Text>
-            <Text style={{ width: cw2, color: '#60a5fa', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebatePayout)}</Text>
-            <Text style={{ width: cw3, color: '#4ade80', fontSize: 13, textAlign: 'right' }}>{fmt(r.rebate)}</Text>
-            <Text style={{ width: cw4, color: r.deposits > 0 ? '#60a5fa' : '#475569', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
+          <View key={r.year} style={{ flexDirection: 'row', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#1e293b', alignItems: 'center', gap: GAP }}>
+            <Text style={{ width: yw, color: '#f59e0b', fontSize: 14, fontWeight: 'bold' }}>Y{r.year}</Text>
+            <View style={[blueBox, { width: cw2, alignItems: 'flex-end' }]}>
+              <Text style={{ color: '#60a5fa', fontSize: 14, fontWeight: 'bold' }}>{fmt(r.rebatePayout)}</Text>
+            </View>
+            <Text style={{ width: cw3, color: '#4ade80', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.rebate)}</Text>
+            <Text style={{ width: cw4, color: '#94a3b8', fontSize: 13, textAlign: 'right' }}>{r.deposits > 0 ? fmt(r.deposits) : '—'}</Text>
             <View style={{ width: cw5, alignItems: 'flex-end' }}>
               {r.selfFunded ? (
                 <View style={{ backgroundColor: 'rgba(34,197,94,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#22c55e' }}>
-                  <Text style={{ color: '#22c55e', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'vipSelfFunded')}</Text>
+                  <Text style={{ color: '#22c55e', fontSize: 9, fontWeight: 'bold' }}>{t(language, 'vipSelfFunded')}</Text>
                 </View>
               ) : r.firstActivation ? (
                 <View style={{ backgroundColor: 'rgba(239,68,68,0.2)', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: '#ef4444' }}>
-                  <Text style={{ color: '#fca5a5', fontSize: 8, fontWeight: 'bold' }}>{t(language, 'newVip')}</Text>
+                  <Text style={{ color: '#fca5a5', fontSize: 9, fontWeight: 'bold' }}>{t(language, 'newVip')}</Text>
                 </View>
               ) : (
-                <Text style={{ color: '#64748b', fontSize: 10 }}>—</Text>
+                <Text style={{ color: '#334155', fontSize: 10 }}>—</Text>
               )}
             </View>
-            <Text style={{ width: cw6, color: '#4ade80', fontSize: 13, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
+            <Text style={{ width: cw6, color: '#4ade80', fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{fmt(r.total)}</Text>
           </View>
         ))}
       </View>
