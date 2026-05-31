@@ -960,11 +960,11 @@ export default function ScenarioToolScreen() {
 
         {/* Goal bar */}
         <View style={S.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'goal').toUpperCase()} $</Text>
+            <InfoTip {...getTip(language, 'monthlyGoal')} />
+          </View>
           <View style={S.row}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-              <Text style={[S.label, { marginBottom: 0 }]}>{t(language, 'goal').toUpperCase()} $</Text>
-              <InfoTip {...getTip(language, 'monthlyGoal')} />
-            </View>
             <TextInput style={S.goalInput} value={goal} onChangeText={setGoal} keyboardType="numeric" placeholderTextColor="#666" />
             <TouchableOpacity style={S.resetBtn} onPress={handleReset}>
               <Text style={S.resetText}>{t(language, 'reset')}</Text>
@@ -1050,7 +1050,7 @@ export default function ScenarioToolScreen() {
                   style={{ backgroundColor: p.color + '18', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: p.color + '55' }}
                   activeOpacity={0.7}
                 >
-                  <Text style={{ color: p.color, fontSize: 10, fontWeight: 'bold' }}>{p.label}</Text>
+                  <Text style={{ color: p.color, fontSize: 12, fontWeight: 'bold' }}>{p.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -1064,24 +1064,24 @@ export default function ScenarioToolScreen() {
                     const vipFee = autoVip ? 1000 : 0;
                     const netDiamonds = net - vipFee;
                     return (
-                      <View style={{ marginTop: 6, backgroundColor: 'rgba(30,41,59,0.8)', borderRadius: 6, padding: 7, borderWidth: 1, borderColor: '#334155' }}>
+                      <View style={{ marginTop: 6, backgroundColor: 'rgba(30,41,59,0.8)', borderRadius: 6, padding: 8, borderWidth: 1, borderColor: '#334155' }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                          <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'grossDeposit')}</Text>
-                          <Text style={{ color: '#e2e8f0', fontSize: 10, fontWeight: 'bold' }}>${gross.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                          <Text style={{ color: '#94a3b8', fontSize: 12 }}>{t(language, 'grossDeposit')}</Text>
+                          <Text style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 'bold' }}>${gross.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
-                          <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'accessFee')}</Text>
-                          <Text style={{ color: '#ef4444', fontSize: 10 }}>−${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>
+                          <Text style={{ color: '#94a3b8', fontSize: 12 }}>{t(language, 'accessFee')}</Text>
+                          <Text style={{ color: '#ef4444', fontSize: 12 }}>−${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
                         {autoVip && (
-                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
-                            <Text style={{ color: '#94a3b8', fontSize: 10 }}>{t(language, 'vipActivationFee')}</Text>
-                            <Text style={{ color: '#ef4444', fontSize: 10 }}>−$1,000.00</Text>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>
+                            <Text style={{ color: '#94a3b8', fontSize: 12 }}>{t(language, 'vipActivationFee')}</Text>
+                            <Text style={{ color: '#ef4444', fontSize: 12 }}>−$1,000.00</Text>
                           </View>
                         )}
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3, borderTopWidth: 1, borderTopColor: '#334155', paddingTop: 3 }}>
-                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>{t(language, 'netInvestedDiamonds')}</Text>
-                          <Text style={{ color: '#4ade80', fontSize: 10, fontWeight: 'bold' }}>${netDiamonds.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4, borderTopWidth: 1, borderTopColor: '#334155', paddingTop: 4 }}>
+                          <Text style={{ color: '#4ade80', fontSize: 12, fontWeight: 'bold' }}>{t(language, 'netInvestedDiamonds')}</Text>
+                          <Text style={{ color: '#4ade80', fontSize: 12, fontWeight: 'bold' }}>${netDiamonds.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
                       </View>
                     );
@@ -2850,7 +2850,7 @@ const S = StyleSheet.create({
   progressLabel: { color: "#22c55e", fontSize: 13, fontWeight: "bold", marginTop: 3 },
   goalBadge: { backgroundColor: "#22c55e", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 3, marginLeft: 8 },
   goalBadgeText: { color: "#0f172a", fontWeight: "bold", fontSize: 13 },
-  vipBox: { alignItems: "center", marginLeft: 12 },
+  vipBox: { alignItems: "center", marginLeft: 12, width: 90 },
   sectionLabel: { color: "#f59e0b", fontSize: 15, fontWeight: "bold", marginBottom: 5, marginTop: 4, letterSpacing: 0.5 },
   bulkRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 4 },
   bulkInput: { flex: 1, backgroundColor: "#0f172a", color: "#fff", borderRadius: 6, padding: 7, fontSize: 15, borderWidth: 1, borderColor: "#334155" },

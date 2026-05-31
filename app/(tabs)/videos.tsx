@@ -599,70 +599,7 @@ export default function VideosScreen() {
             <Text style={S.headerSub}>{tx.subtitle}</Text>
           </View>
 
-          {/* ══ SECTION 1: YouTube ══════════════════════════════════════════ */}
-          <View style={S.sectionBlock}>
-            <View style={S.channelCard}>
-              <View style={S.channelLogoWrap}>
-                <Text style={S.channelLogoText}>📺</Text>
-              </View>
-              <View style={S.channelInfo}>
-                <Text style={S.channelName}>{tx.channelName}</Text>
-                <Text style={S.channelHandle}>@wealthpreservation101</Text>
-                <Text style={S.channelDesc} numberOfLines={2}>{tx.channelDesc}</Text>
-              </View>
-            </View>
-
-            <TouchableOpacity style={S.subscribeBtn} onPress={openYTChannel} activeOpacity={0.85}>
-              <Text style={S.subscribeBtnText}>{tx.subscribeBtn}</Text>
-            </TouchableOpacity>
-
-            <View style={S.sectionTitleRow}>
-              <Text style={S.sectionLabel}>{tx.latestVideos}</Text>
-              {!ytLoading && (
-                <Text style={[S.liveTag, { color: ytLive ? "#22c55e" : "#64748b" }]}>
-                  {ytLive ? `● LIVE` : `● CACHED`}
-                </Text>
-              )}
-              <TouchableOpacity style={S.refreshBtn} onPress={refreshYT} disabled={ytLoading}>
-                <Text style={S.refreshBtnText}>{ytLoading ? "…" : tx.refreshBtn}</Text>
-              </TouchableOpacity>
-            </View>
-
-            {ytLoading ? (
-              <ActivityIndicator color="#f59e0b" style={{ marginVertical: 24 }} />
-            ) : (
-              ytVideos.map((video) => (
-                <TouchableOpacity key={video.id} style={S.videoCard} onPress={() => openYouTube(video.id)} activeOpacity={0.85}>
-                  <View style={S.thumbWrap}>
-                    <Image source={{ uri: getThumbUrl(video.id) }} style={S.thumb} resizeMode="cover" />
-                    {!!video.duration && (
-                      <View style={S.durationBadge}>
-                        <Text style={S.durationText}>{video.duration}</Text>
-                      </View>
-                    )}
-                    <View style={S.playOverlay}>
-                      <View style={S.ytPlayBtn}>
-                        <Text style={S.playIcon}>▶</Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={S.videoInfo}>
-                    <Text style={S.videoTitle} numberOfLines={2}>{video.title}</Text>
-                    {(!!video.views || !!video.age) && (
-                      <View style={S.videoMeta}>
-                        {!!video.views && <Text style={S.videoMetaText}>{video.views} {tx.views}</Text>}
-                        {!!video.views && !!video.age && <Text style={S.videoMetaDot}>·</Text>}
-                        {!!video.age && <Text style={S.videoMetaText}>{video.age}</Text>}
-                      </View>
-                    )}
-                    <Text style={S.watchText}>{tx.watchVideo}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))
-            )}
-          </View>
-
-          {/* ══ SECTION 2a: Invitation videos — visible to all ══════════════ */}
+          {/* ══ SECTION 1: Invitation videos — visible to all ═══════════════ */}
           <View style={S.sectionBlock}>
             <View style={S.sectionHeaderRow}>
               <View style={S.vimeoLogoWrap}>
@@ -719,7 +656,7 @@ export default function VideosScreen() {
             </View>
           </View>
 
-          {/* ══ SECTION 2b: Presentation + Plan — adviser only ══════════════ */}
+          {/* ══ SECTION 2: Presentation + Plan — adviser only ═══════════════ */}
           {partnerMode && (
             <View style={S.sectionBlock}>
               <View style={S.sectionTitleRow}>
@@ -758,6 +695,66 @@ export default function VideosScreen() {
               })}
             </View>
           )}
+
+          {/* ══ SECTION 3: YouTube ══════════════════════════════════════════ */}
+          <View style={S.sectionBlock}>
+            <View style={S.channelCard}>
+              <View style={S.channelLogoWrap}>
+                <Text style={S.channelLogoText}>📺</Text>
+              </View>
+              <View style={S.channelInfo}>
+                <Text style={S.channelName}>{tx.channelName}</Text>
+                <Text style={S.channelHandle}>@wealthpreservation101</Text>
+                <Text style={S.channelDesc} numberOfLines={2}>{tx.channelDesc}</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity style={S.subscribeBtn} onPress={openYTChannel} activeOpacity={0.85}>
+              <Text style={S.subscribeBtnText}>{tx.subscribeBtn}</Text>
+            </TouchableOpacity>
+
+            <View style={S.sectionTitleRow}>
+              <Text style={S.sectionLabel}>{tx.latestVideos}</Text>
+              {ytLoading && <ActivityIndicator size="small" color="#f59e0b" style={{ marginLeft: 4 }} />}
+              {!ytLoading && (
+                <Text style={[S.liveTag, { color: ytLive ? "#22c55e" : "#64748b" }]}>
+                  {ytLive ? `● LIVE` : `● CACHED`}
+                </Text>
+              )}
+              <TouchableOpacity style={S.refreshBtn} onPress={refreshYT} disabled={ytLoading}>
+                <Text style={S.refreshBtnText}>{ytLoading ? "…" : tx.refreshBtn}</Text>
+              </TouchableOpacity>
+            </View>
+
+            {ytVideos.map((video) => (
+              <TouchableOpacity key={video.id} style={S.videoCard} onPress={() => openYouTube(video.id)} activeOpacity={0.85}>
+                <View style={S.thumbWrap}>
+                  <Image source={{ uri: getThumbUrl(video.id) }} style={S.thumb} resizeMode="cover" />
+                  {!!video.duration && (
+                    <View style={S.durationBadge}>
+                      <Text style={S.durationText}>{video.duration}</Text>
+                    </View>
+                  )}
+                  <View style={S.playOverlay}>
+                    <View style={S.ytPlayBtn}>
+                      <Text style={S.playIcon}>▶</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={S.videoInfo}>
+                  <Text style={S.videoTitle} numberOfLines={2}>{video.title}</Text>
+                  {(!!video.views || !!video.age) && (
+                    <View style={S.videoMeta}>
+                      {!!video.views && <Text style={S.videoMetaText}>{video.views} {tx.views}</Text>}
+                      {!!video.views && !!video.age && <Text style={S.videoMetaDot}>·</Text>}
+                      {!!video.age && <Text style={S.videoMetaText}>{video.age}</Text>}
+                    </View>
+                  )}
+                  <Text style={S.watchText}>{tx.watchVideo}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
 
         </View>
       </ScrollView>
