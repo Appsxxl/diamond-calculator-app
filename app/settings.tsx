@@ -17,6 +17,7 @@ import { useCalculator } from "@/lib/calculator-context";
 import { t } from "@/lib/translations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
+import Constants from "expo-constants";
 import type { OfficeLocation } from "@/lib/calculator-context";
 import { useUserStatus } from "@/hooks/use-user-status";
 
@@ -279,7 +280,7 @@ export default function SettingsScreen() {
             </View>
             <View style={[S.aboutRow, S.listRowBorder]}>
               <Text style={S.aboutLabel}>{t(language, "versionLabel")}</Text>
-              <Text style={S.aboutValue}>1.0.0</Text>
+              <Text style={S.aboutValue}>{Constants.expoConfig?.version ?? "2.1.0"}</Text>
             </View>
             <View style={S.aboutRow}>
               <Text style={S.aboutLabel}>{t(language, "descriptionLabel")}</Text>

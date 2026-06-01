@@ -391,6 +391,7 @@ export default function ScenarioToolScreen() {
   const [goal, setGoal] = useState("3500");
   const [inputErrors, setInputErrors] = useState<{ startAmount?: string; years?: string }>({});
   const [showOptionsHelp, setShowOptionsHelp] = useState(false);
+  const [showExtraOptions, setShowExtraOptions] = useState(false);
   const optionsHelp = useMemo(() => getOptionsHelpItems(language), [language]);
   const [vipEnabled, setVipEnabled] = useState(false);
 
@@ -1166,18 +1167,28 @@ export default function ScenarioToolScreen() {
             )}
           </View>
 
-        {/* Extra Options Help */}
+        {/* Extra Options — collapsible header */}
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6, paddingVertical: 6, paddingHorizontal: 2 }}
-          onPress={() => setShowOptionsHelp(true)}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8, paddingHorizontal: 2, marginBottom: 4 }}
+          onPress={() => setShowExtraOptions(v => !v)}
           activeOpacity={0.7}
         >
-          <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 1.5, borderColor: '#33C5FF', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: '#33C5FF', fontSize: 11, fontWeight: 'bold', lineHeight: 14 }}>i</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={{ color: '#33C5FF', fontSize: 12, fontWeight: '700', letterSpacing: 0.5 }}>EXTRA OPTIONS</Text>
+            <TouchableOpacity
+              onPress={e => { e.stopPropagation?.(); setShowOptionsHelp(true); }}
+              hitSlop={{ top: 8, right: 8, bottom: 8, left: 4 }}
+              activeOpacity={0.7}
+            >
+              <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 1.5, borderColor: '#33C5FF', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: '#33C5FF', fontSize: 11, fontWeight: 'bold', lineHeight: 14 }}>i</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <Text style={{ color: '#33C5FF', fontSize: 12, fontWeight: '600' }}>{optionsHelp.buttonLabel}</Text>
+          <Text style={{ color: '#33C5FF', fontSize: 14 }}>{showExtraOptions ? '▲' : '▼'}</Text>
         </TouchableOpacity>
 
+        {showExtraOptions && (<>
         {/* Bulk Deposit */}
         <View style={S.card}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5, marginTop: 4 }}>
@@ -1271,6 +1282,7 @@ export default function ScenarioToolScreen() {
             </View>
           )}
         </View>
+        </>)}
 
         {/* Recent Calculations History */}
         {history.length > 0 && (
@@ -2216,19 +2228,20 @@ export default function ScenarioToolScreen() {
         </>
         )}
 
-        <TouchableOpacity
-          onPress={() => mainScrollRef.current?.scrollTo({ y: 0, animated: true })}
-          activeOpacity={0.7}
-          style={{ alignSelf: 'center', marginTop: 8, marginBottom: 4 }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#1e293b', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#334155' }}>
-            <Text style={{ color: '#64748b', fontSize: 13 }}>↑</Text>
-            <Text style={{ color: '#64748b', fontSize: 12 }}>Back to top</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={{ height: 12 }} />
+        <View style={{ height: 20 }} />
         <DisclaimerFooter />
       </ScrollView>
+
+      {/* Floating scroll-to-top — always visible */}
+      <TouchableOpacity
+        onPress={() => mainScrollRef.current?.scrollTo({ y: 0, animated: true })}
+        activeOpacity={0.8}
+        style={{ position: 'absolute', bottom: 24, right: 16, zIndex: 20 }}
+      >
+        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#1e293b', borderWidth: 1.5, borderColor: '#334155', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.4, shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 6 }}>
+          <Text style={{ color: '#60a5fa', fontSize: 20, lineHeight: 24 }}>↑</Text>
+        </View>
+      </TouchableOpacity>
 
       {/* ── Extra Options Help Modal ── */}
       <Modal visible={showOptionsHelp} transparent animationType="slide" onRequestClose={() => setShowOptionsHelp(false)}>
