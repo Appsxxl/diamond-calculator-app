@@ -29,5 +29,8 @@ export function useUserStatus() {
     isExpired,
     isLoading,
     refetch,
+    email: data?.email ?? null,
+    name: data?.name ?? null,
+    isAdmin: data?.role === "admin",
   };
 }

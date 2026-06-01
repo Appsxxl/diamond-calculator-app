@@ -20,6 +20,7 @@ import * as Haptics from "expo-haptics";
 import Constants from "expo-constants";
 import type { OfficeLocation } from "@/lib/calculator-context";
 import { useUserStatus } from "@/hooks/use-user-status";
+import { trpc } from "@/lib/trpc";
 
 const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[] = [
   { id: "dubai", label: "🇦🇪 Dubai, UAE", city: "Dubai Freezone", reg: "DMCC-1007195 · SIRA Certified" },
@@ -32,6 +33,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, officeLocation, setOfficeLocation } = useCalculator();
   const { isTeam, isLoading: statusLoading } = useUserStatus();
+  const { data: me } = trpc.auth.me.useQuery();
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
@@ -152,6 +154,29 @@ export default function SettingsScreen() {
             <Text style={S.backArrow}>←</Text>
           </Pressable>
           <Text style={S.headerTitle}>{t(language, "settings")}</Text>
+        </View>
+
+        {/* Account Section */}
+        <View style={S.section}>
+          {sectionTitle("ACCOUNT")}
+          <View style={S.card}>
+            <View style={[S.listRow, S.listRowBorder]}>
+              <Text style={S.aboutLabel}>Email</Text>
+              <Text style={[S.aboutValue, { flex: 1, textAlign: "right" }]} numberOfLines={1}>
+                {me?.email ?? "—"}
+              </Text>
+            </View>
+            {me?.role === "admin" && (
+              <TouchableOpacity
+                onPress={() => router.push("/admin" as never)}
+                activeOpacity={0.7}
+                style={S.listRow}
+              >
+                <Text style={[S.listLabel, { color: "#f59e0b" }]}>Admin Panel</Text>
+                <Text style={S.articleChevron}>›</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {/* Language Section */}

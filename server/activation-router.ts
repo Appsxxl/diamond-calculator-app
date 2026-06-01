@@ -44,6 +44,9 @@ export const activationRouter = router({
       status: status?.status ?? "trial",
       activatedAt: status?.activatedAt ?? null,
       trialStartedAt: status?.trialStartedAt ?? ctx.user.createdAt,
+      email: ctx.user.email,
+      name: ctx.user.name,
+      role: ctx.user.role,
     };
   }),
 
