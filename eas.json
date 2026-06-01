@@ -21,13 +21,19 @@
       },
       "ios": {
         "simulator": false
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://diamond-calculator-app-production.up.railway.app"
       }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
       },
-      "ios": {}
+      "ios": {},
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://diamond-calculator-app-production.up.railway.app"
+      }
     }
   },
   "submit": {
