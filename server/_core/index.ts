@@ -56,6 +56,10 @@ async function startServer() {
 
   registerOAuthRoutes(app);
 
+  app.get("/", (_req, res) => {
+    res.sendStatus(200);
+  });
+
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now() });
   });
