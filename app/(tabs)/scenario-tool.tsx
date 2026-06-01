@@ -32,6 +32,7 @@ import { t, Language } from "@/lib/translations";
 import { runCalculation, MonthResult, fmt, MonthData, CalculationParams, createDefaultMonthData, getNetDeposit, getSPLevel } from "@/lib/calculator";
 import { InfoTip } from "@/components/info-tip";
 import { getTip } from "@/lib/tip-content";
+import Constants from "expo-constants";
 // Loaded at runtime on native only — web doesn't ship this module
 const ScreenOrientation = Platform.OS !== "web" ? require("expo-screen-orientation") : null;
 
@@ -484,6 +485,7 @@ export default function ScenarioToolScreen() {
   const hideMaturityBanner = useCallback((month: number) =>
     setHiddenMaturityMonths(prev => new Set([...prev, month])), []);
 
+  const mainScrollRef = useRef<ScrollView>(null);
   const tableHeaderScrollRef = useRef<ScrollView>(null);
   const tableBodyScrollRef = useRef<ScrollView>(null);
 
@@ -877,7 +879,7 @@ export default function ScenarioToolScreen() {
           </TouchableOpacity>
         </View>
       )}
-      <ScrollView style={S.scroll} contentContainerStyle={S.content} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={mainScrollRef} style={S.scroll} contentContainerStyle={S.content} keyboardShouldPersistTaps="handled">
 
         {/* Header */}
         <View style={S.header}>
@@ -1946,7 +1948,7 @@ export default function ScenarioToolScreen() {
               </View>
               {/* ── Version stamp ── */}
               <Text style={{ color: '#1e3a5f', fontSize: 8, textAlign: 'right', marginBottom: 4 }}>
-                {`v2.1 · ${new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' })}`}
+                {`v${Constants.expoConfig?.version ?? '2.1.0'} · ${new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' })}`}
               </Text>
 
               {(() => {
@@ -2214,7 +2216,17 @@ export default function ScenarioToolScreen() {
         </>
         )}
 
-        <View style={{ height: 20 }} />
+        <TouchableOpacity
+          onPress={() => mainScrollRef.current?.scrollTo({ y: 0, animated: true })}
+          activeOpacity={0.7}
+          style={{ alignSelf: 'center', marginTop: 8, marginBottom: 4 }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#1e293b', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#334155' }}>
+            <Text style={{ color: '#64748b', fontSize: 13 }}>↑</Text>
+            <Text style={{ color: '#64748b', fontSize: 12 }}>Back to top</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={{ height: 12 }} />
         <DisclaimerFooter />
       </ScrollView>
 
