@@ -314,6 +314,22 @@ export default function AdminScreen() {
               <Text style={{ color: "#94a3b8", fontSize: 14, fontWeight: "600" }}>⬇ Export CSV Backup</Text>
             </TouchableOpacity>
 
+            {/* Dev-mode email notice */}
+            {__DEV__ && (
+              <View style={{ backgroundColor: "rgba(245,158,11,0.08)", borderRadius: 10, borderWidth: 1,
+                borderColor: "rgba(245,158,11,0.25)", padding: 12 }}>
+                <Text style={{ color: "#f59e0b", fontSize: 12, fontWeight: "700", marginBottom: 4 }}>
+                  ⚠️ Dev mode — emails go to server console
+                </Text>
+                <Text style={{ color: "#94a3b8", fontSize: 12, lineHeight: 18 }}>
+                  No RESEND_API_KEY is set locally. Sent emails are printed in the terminal running{" "}
+                  <Text style={{ color: "#e2e8f0", fontWeight: "600" }}>pnpm dev</Text>
+                  {" "}— check there for OTP codes and activation emails.{"\n"}
+                  On Railway (production) emails are sent normally.
+                </Text>
+              </View>
+            )}
+
             {usersLoading ? (
               <ActivityIndicator color="#f59e0b" style={{ marginTop: 24 }} />
             ) : users.length === 0 ? (
@@ -322,7 +338,7 @@ export default function AdminScreen() {
               users.map((user) => {
                 const left = daysLeft(user.trialStartedAt, user.status);
                 const isExpired = left === 0 && user.status !== "team" && user.status !== "paid";
-                const canSend = !!user.email && user.status !== "team" && user.status !== "paid";
+                const canSend = !!user.email;
                 return (
                   <View key={user.id} style={S.userCard}>
                     <View style={{ flex: 1, gap: 4 }}>
