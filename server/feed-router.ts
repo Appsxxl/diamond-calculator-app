@@ -1,4 +1,5 @@
 import { publicProcedure, router } from "./_core/trpc";
+import { listUpcomingEvents } from "./db";
 
 const CHANNEL_ID = "UCXh1ElqY3LpawTWvCOW6pUA";
 const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -34,6 +35,19 @@ function parseXML(xml: string) {
 }
 
 export const feedRouter = router({
+  getEvents: publicProcedure.query(async () => {
+    const rows = await listUpcomingEvents();
+    return rows.map(e => ({
+      id: e.id,
+      title: e.title,
+      description: e.description ?? "",
+      eventDate: e.eventDate.toISOString(),
+      timezone: e.timezone,
+      link: e.link ?? "",
+      type: e.type,
+    }));
+  }),
+
   getYouTubeVideos: publicProcedure.query(async () => {
     try {
       const res = await fetch(RSS_URL, { signal: AbortSignal.timeout(10_000) });

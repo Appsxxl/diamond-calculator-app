@@ -11,6 +11,9 @@ import {
   markCodeUsed,
   upsertUser,
   upsertUserStatus,
+  createEvent,
+  deleteEvent,
+  listAllEvents,
 } from "./db";
 
 export const activationRouter = router({
@@ -87,4 +90,45 @@ export const activationRouter = router({
   listUsers: adminProcedure.query(async () => {
     return listUsersWithStatus();
   }),
+
+  listEvents: adminProcedure.query(async () => {
+    const rows = await listAllEvents();
+    return rows.map(e => ({
+      id: e.id,
+      title: e.title,
+      description: e.description ?? "",
+      eventDate: e.eventDate.toISOString(),
+      timezone: e.timezone,
+      link: e.link ?? "",
+      type: e.type,
+    }));
+  }),
+
+  createEvent: adminProcedure
+    .input(z.object({
+      title: z.string().min(1).max(200),
+      description: z.string().max(1000).optional(),
+      eventDate: z.string(), // ISO string
+      timezone: z.string().default("UTC"),
+      link: z.string().url().optional(),
+      type: z.enum(["zoom", "webinar", "event"]).default("zoom"),
+    }))
+    .mutation(async ({ input }) => {
+      await createEvent({
+        title: input.title,
+        description: input.description ?? null,
+        eventDate: new Date(input.eventDate),
+        timezone: input.timezone,
+        link: input.link ?? null,
+        type: input.type,
+      });
+      return { success: true };
+    }),
+
+  deleteEvent: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await deleteEvent(input.id);
+      return { success: true };
+    }),
 });

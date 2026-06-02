@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Clipboard from "expo-clipboard";
+import { trpc } from "@/lib/trpc";
 import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { PaywallGate } from "@/components/paywall-gate";
@@ -41,6 +42,7 @@ const DIAMOND_TIERS = [
 const REFERRAL_BASE    = "https://diamond-solution.net/user/register?reference=";
 const REFERRAL_KEY     = "referral_code";
 const PARTNERS_KEY     = "partner_list";
+const EVENTS_VISIBLE_KEY = "zoom_events_visible";
 const NAVY             = "#0d1a2a";
 const GOLD             = "#e67e22";
 const GREEN            = "#22c55e";
@@ -151,6 +153,23 @@ const BLANK_FORM = { name: "", whatsapp: "", country: "", startDate: formatDDMMY
 // ─── Main Component ─────────────────────────────────────────────────────────
 export default function AffiliateScreen() {
   const { language } = useCalculator();
+
+  // ── Zoom Calls & Events state ────────────────────────────────────────────
+  const [eventsVisible, setEventsVisible] = useState(true);
+  const { data: upcomingEvents = [] } = trpc.feed.getEvents.useQuery(undefined, { staleTime: 5 * 60_000 });
+
+  useEffect(() => {
+    AsyncStorage.getItem(EVENTS_VISIBLE_KEY).then(v => {
+      if (v !== null) setEventsVisible(v === "true");
+    });
+  }, []);
+
+  const toggleEventsVisible = async () => {
+    const next = !eventsVisible;
+    setEventsVisible(next);
+    await AsyncStorage.setItem(EVENTS_VISIBLE_KEY, String(next));
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
 
   // ── Referral Code state ──────────────────────────────────────────────────
   const [referralCode, setReferralCode] = useState("");
@@ -432,7 +451,78 @@ export default function AffiliateScreen() {
         </View>
 
         {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* 2. CALL LIST DASHBOARD                                          */}
+        {/* 2. ZOOM CALLS & EVENTS                                          */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <View style={[S.card, { borderLeftWidth: 3, borderLeftColor: "#7c3aed" }]}>
+          {/* Header with toggle */}
+          <TouchableOpacity onPress={toggleEventsVisible} activeOpacity={0.8}
+            style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text style={{ fontSize: 18 }}>📅</Text>
+              <Text style={[S.sectionLabel, { marginBottom: 0 }]}>ZOOM CALLS & EVENTS</Text>
+              {upcomingEvents.length > 0 && (
+                <View style={{ backgroundColor: "#7c3aed", borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2 }}>
+                  <Text style={{ color: "#fff", fontSize: 10, fontWeight: "700" }}>{upcomingEvents.length}</Text>
+                </View>
+              )}
+            </View>
+            <View style={{ backgroundColor: eventsVisible ? "rgba(124,58,237,0.2)" : "#0f172a",
+              borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1,
+              borderColor: eventsVisible ? "#7c3aed" : "#334155" }}>
+              <Text style={{ color: eventsVisible ? "#a78bfa" : "#475569", fontSize: 12, fontWeight: "700" }}>
+                {eventsVisible ? "ON" : "OFF"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {eventsVisible && (
+            <View style={{ marginTop: 12 }}>
+              {upcomingEvents.length === 0 ? (
+                <Text style={{ color: "#475569", fontSize: 13, textAlign: "center", paddingVertical: 16 }}>
+                  No upcoming events scheduled.
+                </Text>
+              ) : (
+                upcomingEvents.map(ev => {
+                  const typeIcon = ev.type === "zoom" ? "📹" : ev.type === "webinar" ? "🎓" : "📅";
+                  const typeColor = ev.type === "zoom" ? "#7c3aed" : ev.type === "webinar" ? BLUE : GOLD;
+                  const dt = new Date(ev.eventDate);
+                  const dateStr = dt.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" });
+                  const timeStr = dt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                  return (
+                    <View key={ev.id} style={{ backgroundColor: NAVY, borderRadius: 10, padding: 12,
+                      marginBottom: 8, borderLeftWidth: 3, borderLeftColor: typeColor }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
+                        <Text style={{ fontSize: 20 }}>{typeIcon}</Text>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ color: "#fff", fontSize: 14, fontWeight: "700" }}>{ev.title}</Text>
+                          {ev.description ? (
+                            <Text style={{ color: "#64748b", fontSize: 12, marginTop: 2, lineHeight: 17 }}>{ev.description}</Text>
+                          ) : null}
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 6, flexWrap: "wrap" }}>
+                            <Text style={{ color: typeColor, fontSize: 12, fontWeight: "600" }}>🗓 {dateStr}</Text>
+                            <Text style={{ color: "#94a3b8", fontSize: 12 }}>⏰ {timeStr} {ev.timezone}</Text>
+                          </View>
+                        </View>
+                      </View>
+                      {ev.link ? (
+                        <TouchableOpacity onPress={() => Linking.openURL(ev.link)}
+                          activeOpacity={0.85} style={{ marginTop: 10, backgroundColor: typeColor,
+                            borderRadius: 8, paddingVertical: 9, alignItems: "center" }}>
+                          <Text style={{ color: "#fff", fontSize: 13, fontWeight: "700" }}>
+                            {ev.type === "zoom" ? "📹 Join Zoom" : ev.type === "webinar" ? "🎓 Join Webinar" : "🔗 Open Event"}
+                          </Text>
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                  );
+                })
+              )}
+            </View>
+          )}
+        </View>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* 3. CALL LIST DASHBOARD                                          */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
           <View style={S.cardHeaderRow}>

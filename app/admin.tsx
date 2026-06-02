@@ -114,15 +114,27 @@ function HelpRow({ label, text }: { label: string; text: string }) {
 
 export default function AdminScreen() {
   const router = useRouter();
-  const [tab, setTab] = useState<"users" | "codes">("users");
+  const [tab, setTab] = useState<"users" | "codes" | "events">("users");
   const [newCode, setNewCode] = useState("");
   const [newCodeFor, setNewCodeFor] = useState("");
   const [creating, setCreating] = useState(false);
+
+  // Event form state
+  const [evtTitle, setEvtTitle]     = useState("");
+  const [evtDesc, setEvtDesc]       = useState("");
+  const [evtDate, setEvtDate]       = useState("");
+  const [evtTime, setEvtTime]       = useState("");
+  const [evtTZ, setEvtTZ]           = useState("UTC+8");
+  const [evtLink, setEvtLink]       = useState("");
+  const [evtType, setEvtType]       = useState<"zoom" | "webinar" | "event">("zoom");
+  const [creatingEvt, setCreatingEvt] = useState(false);
 
   const { data: users = [], isLoading: usersLoading, refetch: refetchUsers } =
     trpc.activation.listUsers.useQuery();
   const { data: codes = [], isLoading: codesLoading, refetch: refetchCodes } =
     trpc.activation.listCodes.useQuery();
+  const { data: adminEvents = [], isLoading: eventsLoading, refetch: refetchEvents } =
+    trpc.activation.listEvents.useQuery();
 
   const createCode = trpc.activation.createCode.useMutation({
     onSuccess: () => {
@@ -137,6 +149,41 @@ export default function AdminScreen() {
       Alert.alert("Error", e.message);
     },
   });
+
+  const createEvent = trpc.activation.createEvent.useMutation({
+    onSuccess: () => {
+      setEvtTitle(""); setEvtDesc(""); setEvtDate(""); setEvtTime("");
+      setEvtLink(""); setEvtType("zoom"); setCreatingEvt(false);
+      refetchEvents();
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+    onError: (e) => { setCreatingEvt(false); Alert.alert("Error", e.message); },
+  });
+
+  const deleteEvent = trpc.activation.deleteEvent.useMutation({
+    onSuccess: () => refetchEvents(),
+    onError: (e) => Alert.alert("Error", e.message),
+  });
+
+  const handleCreateEvent = () => {
+    if (!evtTitle.trim() || !evtDate.trim() || !evtTime.trim()) {
+      Alert.alert("Missing fields", "Title, date and time are required.");
+      return;
+    }
+    // Parse DD/MM/YYYY HH:MM → ISO
+    const [d, m, y] = evtDate.trim().split("/");
+    const iso = `${y}-${m?.padStart(2,"0")}-${d?.padStart(2,"0")}T${evtTime.trim()}:00`;
+    if (isNaN(new Date(iso).getTime())) { Alert.alert("Invalid date", "Use DD/MM/YYYY and HH:MM"); return; }
+    setCreatingEvt(true);
+    createEvent.mutate({
+      title: evtTitle.trim(),
+      description: evtDesc.trim() || undefined,
+      eventDate: new Date(iso).toISOString(),
+      timezone: evtTZ.trim() || "UTC",
+      link: evtLink.trim() || undefined,
+      type: evtType,
+    });
+  };
 
   const handleCreateCode = () => {
     const code = newCode.trim().toUpperCase();
@@ -186,23 +233,14 @@ export default function AdminScreen() {
 
         {/* Tab switcher */}
         <View style={S.tabRow}>
-          <TouchableOpacity
-            style={[S.tabBtn, tab === "users" && S.tabBtnActive]}
-            onPress={() => setTab("users")}
-            activeOpacity={0.8}
-          >
-            <Text style={[S.tabLabel, tab === "users" && S.tabLabelActive]}>
-              Users ({total})
-            </Text>
+          <TouchableOpacity style={[S.tabBtn, tab === "users" && S.tabBtnActive]} onPress={() => setTab("users")} activeOpacity={0.8}>
+            <Text style={[S.tabLabel, tab === "users" && S.tabLabelActive]}>Users ({total})</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[S.tabBtn, tab === "codes" && S.tabBtnActive]}
-            onPress={() => setTab("codes")}
-            activeOpacity={0.8}
-          >
-            <Text style={[S.tabLabel, tab === "codes" && S.tabLabelActive]}>
-              Codes ({usedCodes}/{codes.length})
-            </Text>
+          <TouchableOpacity style={[S.tabBtn, tab === "codes" && S.tabBtnActive]} onPress={() => setTab("codes")} activeOpacity={0.8}>
+            <Text style={[S.tabLabel, tab === "codes" && S.tabLabelActive]}>Codes ({usedCodes}/{codes.length})</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[S.tabBtn, tab === "events" && S.tabBtnActive]} onPress={() => setTab("events")} activeOpacity={0.8}>
+            <Text style={[S.tabLabel, tab === "events" && S.tabLabelActive]}>Events ({adminEvents.length})</Text>
           </TouchableOpacity>
         </View>
 
@@ -308,6 +346,76 @@ export default function AdminScreen() {
                     <Text style={[S.usedBadgeText, code.usedBy ? S.usedBadgeTextUsed : S.usedBadgeTextFree]}>
                       {code.usedBy ? "USED" : "FREE"}
                     </Text>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        )}
+
+        {/* Events tab */}
+        {tab === "events" && (
+          <View style={S.section}>
+            {/* Create event form */}
+            <View style={S.createCard}>
+              <Text style={S.createTitle}>Add Zoom Call / Event</Text>
+              {[
+                { label: "Title *", value: evtTitle, set: setEvtTitle, placeholder: "Weekly Zoom Call" },
+                { label: "Description", value: evtDesc, set: setEvtDesc, placeholder: "Optional details" },
+                { label: "Date (DD/MM/YYYY) *", value: evtDate, set: setEvtDate, placeholder: "02/06/2026" },
+                { label: "Time (HH:MM) *", value: evtTime, set: setEvtTime, placeholder: "14:00" },
+                { label: "Timezone", value: evtTZ, set: setEvtTZ, placeholder: "UTC+8" },
+                { label: "Join Link (Zoom/URL)", value: evtLink, set: setEvtLink, placeholder: "https://zoom.us/j/..." },
+              ].map(f => (
+                <TextInput key={f.label} style={[S.input, { marginTop: 8 }]}
+                  value={f.value} onChangeText={f.set}
+                  placeholder={f.placeholder} placeholderTextColor="#475569"
+                  autoCorrect={false} autoCapitalize="none" />
+              ))}
+
+              {/* Type picker */}
+              <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                {(["zoom", "webinar", "event"] as const).map(t => (
+                  <TouchableOpacity key={t} onPress={() => setEvtType(t)} activeOpacity={0.8}
+                    style={{ flex: 1, borderRadius: 8, paddingVertical: 8, alignItems: "center",
+                      backgroundColor: evtType === t ? "#f59e0b" : "#0f172a",
+                      borderWidth: 1, borderColor: evtType === t ? "#f59e0b" : "#334155" }}>
+                    <Text style={{ color: evtType === t ? "#0f172a" : "#64748b", fontSize: 12, fontWeight: "700", textTransform: "capitalize" }}>{t}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity
+                style={[S.createBtn, (creatingEvt || !evtTitle.trim()) && S.createBtnDisabled]}
+                onPress={handleCreateEvent} activeOpacity={0.85}
+                disabled={creatingEvt || !evtTitle.trim()}>
+                {creatingEvt
+                  ? <ActivityIndicator color="#0f172a" size="small" />
+                  : <Text style={S.createBtnText}>Add Event</Text>}
+              </TouchableOpacity>
+            </View>
+
+            {/* Event list */}
+            {eventsLoading ? (
+              <ActivityIndicator color="#f59e0b" style={{ marginTop: 16 }} />
+            ) : adminEvents.length === 0 ? (
+              <Text style={S.emptyText}>No events yet.</Text>
+            ) : (
+              adminEvents.map(ev => (
+                <View key={ev.id} style={[S.codeCard, { flexDirection: "column", gap: 6 }]}>
+                  <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={S.codeText}>{ev.type === "zoom" ? "📹" : ev.type === "webinar" ? "🎓" : "📅"} {ev.title}</Text>
+                      {ev.description ? <Text style={S.codeDesc}>{ev.description}</Text> : null}
+                      <Text style={S.codeDate}>{new Date(ev.eventDate).toLocaleString("en-GB", { day:"2-digit", month:"short", year:"2-digit", hour:"2-digit", minute:"2-digit" })} {ev.timezone}</Text>
+                      {ev.link ? <Text style={[S.codeDesc, { color: "#60a5fa" }]} numberOfLines={1}>{ev.link}</Text> : null}
+                    </View>
+                    <TouchableOpacity onPress={() => Alert.alert("Delete Event", `Remove "${ev.title}"?`, [
+                      { text: "Cancel", style: "cancel" },
+                      { text: "Delete", style: "destructive", onPress: () => deleteEvent.mutate({ id: ev.id }) },
+                    ])} style={{ padding: 6 }}>
+                      <Text style={{ fontSize: 18, color: "#ef4444" }}>🗑️</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))

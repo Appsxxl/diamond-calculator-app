@@ -71,3 +71,17 @@ export const magicLinkTokens = sqliteTable("magic_link_tokens", {
 });
 
 export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
+
+export const events = sqliteTable("events", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  description: text("description"),
+  eventDate: integer("eventDate", { mode: "timestamp" }).notNull(),
+  timezone: text("timezone").default("UTC").notNull(),
+  link: text("link"),
+  type: text("type").default("zoom").notNull(), // "zoom" | "webinar" | "event"
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(now).notNull(),
+});
+
+export type Event = typeof events.$inferSelect;
+export type InsertEvent = typeof events.$inferInsert;

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
 import path from "path";
@@ -16,6 +16,9 @@ import {
   whitelistCodes,
   users,
   User,
+  Event,
+  InsertEvent,
+  events,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -67,6 +70,8 @@ function getDb(): DrizzleDb | null {
         console.log("[Database] New database — running schema bootstrap");
         sqlite.exec(BOOTSTRAP_SQL);
       }
+      // Always-run migrations — safe to re-run (IF NOT EXISTS)
+      sqlite.exec(`CREATE TABLE IF NOT EXISTS \`events\` (\`id\` integer PRIMARY KEY AUTOINCREMENT NOT NULL, \`title\` text NOT NULL, \`description\` text, \`eventDate\` integer NOT NULL, \`timezone\` text DEFAULT 'UTC' NOT NULL, \`link\` text, \`type\` text DEFAULT 'zoom' NOT NULL, \`createdAt\` integer DEFAULT (strftime('%s','now')) NOT NULL);`);
       _db = drizzle(sqlite);
       console.log(`[Database] Connected: ${dbPath}`);
     } catch (error) {
@@ -294,4 +299,31 @@ export async function markMagicLinkUsed(id: number): Promise<void> {
     .update(magicLinkTokens)
     .set({ usedAt: new Date() })
     .where(eq(magicLinkTokens.id, id));
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+
+export async function listUpcomingEvents(): Promise<Event[]> {
+  const db = getDb();
+  if (!db) return [];
+  const cutoff = new Date(Date.now() - 2 * 60 * 60 * 1000); // keep events up to 2h after start
+  return db.select().from(events).where(gte(events.eventDate, cutoff)).orderBy(events.eventDate).all();
+}
+
+export async function listAllEvents(): Promise<Event[]> {
+  const db = getDb();
+  if (!db) return [];
+  return db.select().from(events).orderBy(events.eventDate).all();
+}
+
+export async function createEvent(data: Omit<InsertEvent, "id" | "createdAt">): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  await db.insert(events).values({ ...data, createdAt: new Date() });
+}
+
+export async function deleteEvent(id: number): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  await db.delete(events).where(eq(events.id, id));
 }
