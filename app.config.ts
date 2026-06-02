@@ -34,7 +34,7 @@ const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
   version: "2.1.0",
-  description: "Plan B — Strategic Wealth Optimization",
+  description: "Plan B — Diamond advisory tools for advisers and their clients. Scenarios, content and partner resources in multiple languages.",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   ...(EAS_PROJECT_ID

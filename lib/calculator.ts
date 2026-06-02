@@ -86,6 +86,11 @@ export interface CalculationParams {
   monthData: Record<number, MonthData>;
 }
 
+// Minimum amount required to open any SP contract (SP1 floor).
+// Compound gains below this threshold accumulate in the wallet pot each month
+// until the pot reaches this amount, then a new contract is opened.
+export const MIN_CONTRACT = 107;
+
 export const SP_LEVELS = [
   { name: 'SP1', minBalance: 0,      maxBalance: 999,      baseRate: 2.2,  vipBonus: 3.0, totalWithVip: 5.2  },
   { name: 'SP2', minBalance: 1000,   maxBalance: 2499,     baseRate: 2.45, vipBonus: 3.0, totalWithVip: 5.45 },
@@ -357,11 +362,13 @@ export function runCalculation(params: CalculationParams): CalculationResult {
     // Contract principals are FIXED for their entire 12-month life.
     // Compound gains are never folded back into the source tranche; instead they
     // immediately open a new independent 12-month contract (earning from next month).
+    // SP1 minimum is $107 — if the compound amount is below that, it stays in
+    // the wallet and accumulates until the pot reaches MIN_CONTRACT.
     const leftover = Math.max(0, available - rO);
     const nC = Math.round(leftover * (mD.comp / 100));
-    wallet = leftover - nC;
 
-    if (nC > 0) {
+    if (nC >= MIN_CONTRACT) {
+      wallet = leftover - nC;
       const cSp = getSPLevel(nC);
       tranches.push({
         id: nextId++,
@@ -372,6 +379,8 @@ export function runCalculation(params: CalculationParams): CalculationResult {
         maturityMonth: m + 13, // 12 full months of earning
         isCompound: true,
       });
+    } else {
+      wallet = leftover; // pot accumulates — open contract once MIN_CONTRACT is reached
     }
 
     // ── 11. VIP countdown ────────────────────────────────────────────────────
@@ -519,19 +528,23 @@ export function stratSimulate(
       const out = available * (opnP / 100);
       finalAvailable = out;
       const reinvest = Math.round(available - out);
-      if (reinvest > 0) {
+      if (reinvest >= MIN_CONTRACT) {
         const cSp = getSPLevel(reinvest);
         tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
+        wallet = 0;
+      } else {
+        wallet = reinvest; // accumulate until MIN_CONTRACT
       }
-      wallet = 0;
     } else {
       finalAvailable = available;
       const reinvest = Math.round(available);
-      if (reinvest > 0) {
+      if (reinvest >= MIN_CONTRACT) {
         const cSp = getSPLevel(reinvest);
         tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
+        wallet = 0;
+      } else {
+        wallet = reinvest; // accumulate until MIN_CONTRACT
       }
-      wallet = 0;
     }
 
     if (vMnd > 0) vMnd--;
@@ -593,11 +606,13 @@ export function stratFindMeetingMonth(
     if (available >= goal) return i;
 
     const reinvest = Math.round(available);
-    if (reinvest > 0) {
+    if (reinvest >= MIN_CONTRACT) {
       const cSp = getSPLevel(reinvest);
       tranches.push({ id: nextId++, principal: reinvest, spName: cSp.name, baseRate: cSp.baseRate, startMonth: i + 1, maturityMonth: i + 13, isCompound: true });
+      wallet = 0;
+    } else {
+      wallet = reinvest; // accumulate until MIN_CONTRACT
     }
-    wallet = 0;
 
     if (vMnd > 0) vMnd--;
     if (vMnd === 0) vActive = false;
