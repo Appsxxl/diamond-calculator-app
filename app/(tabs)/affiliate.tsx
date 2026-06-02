@@ -21,6 +21,17 @@ import { PaywallGate } from "@/components/paywall-gate";
 import { useCalculator } from "@/lib/calculator-context";
 import { router } from "expo-router";
 import { t } from "@/lib/translations";
+import { InfoTip } from "@/components/info-tip";
+
+// ─── Section label with ⓘ tip ────────────────────────────────────────────────
+function SectionHeader({ label, tipTitle, tipBody }: { label: string; tipTitle: string; tipBody: string[] }) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+      <Text style={{ color: "#e67e22", fontSize: 13, fontWeight: "bold", letterSpacing: 0.8, textTransform: "uppercase", flex: 1 }}>{label}</Text>
+      <InfoTip title={tipTitle} body={tipBody} />
+    </View>
+  );
+}
 
 const DIAMOND_TIERS = [
   { rank: "Partner",              emoji: "🤝", directs: 0, teamVol: "$0",           distrib: "—",   infinity: "—",   poolShares: "—",                              bonus: "—"           },
@@ -410,7 +421,16 @@ export default function AffiliateScreen() {
         {/* 1. REFERRAL LINK — PINNED MASTER HEADER                        */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.referralCard}>
-          <Text style={S.sectionLabel}>{t(language, "affReferralLinkTitle")}</Text>
+          <SectionHeader
+            label={t(language, "affReferralLinkTitle")}
+            tipTitle="Referral Link"
+            tipBody={[
+              "Your personal referral link sends new clients directly to the Diamond Solution registration page with your code pre-filled.",
+              "Tap ✏️ to set or update your referral code (your back-office username). Tap Copy to copy the full link, or Open to test it in a browser.",
+              "Share this link via WhatsApp, email, social media, or your client presentations. Every registration through your link is automatically linked to your account.",
+              "Tip: make sure your code is saved before sharing — without it, new registrations won't be tracked to you.",
+            ]}
+          />
 
           {editingCode ? (
             <View style={S.editRow}>
@@ -459,7 +479,19 @@ export default function AffiliateScreen() {
             style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={{ fontSize: 18 }}>📅</Text>
-              <Text style={[S.sectionLabel, { marginBottom: 0 }]}>ZOOM CALLS & EVENTS</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
+                <Text style={{ color: "#e67e22", fontSize: 13, fontWeight: "bold", letterSpacing: 0.8, textTransform: "uppercase" }}>ZOOM CALLS & EVENTS</Text>
+                <InfoTip
+                  title="Zoom Calls & Events"
+                  body={[
+                    "Shows all upcoming Zoom calls, webinars and events scheduled by your admin.",
+                    "Each card shows the title, date & time (in your admin's timezone), and a Join button that opens the Zoom/meeting link directly.",
+                    "Events automatically disappear 2 hours after their start time — no manual cleanup needed.",
+                    "Use the ON / OFF toggle to hide or show this section. Your preference is saved to your device.",
+                    "To add or remove events, open Admin Panel → Events tab.",
+                  ]}
+                />
+              </View>
               {upcomingEvents.length > 0 && (
                 <View style={{ backgroundColor: "#7c3aed", borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2 }}>
                   <Text style={{ color: "#fff", fontSize: 10, fontWeight: "700" }}>{upcomingEvents.length}</Text>
@@ -526,7 +558,17 @@ export default function AffiliateScreen() {
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
           <View style={S.cardHeaderRow}>
-            <Text style={S.sectionLabel}>{t(language, "affDashboardTitle")}</Text>
+            <SectionHeader
+              label={t(language, "affDashboardTitle")}
+              tipTitle="Call List Dashboard"
+              tipBody={[
+                "Your personal CRM for tracking all clients in your network. Each member card shows their plan, level, VIP status, and auto-generated action alerts.",
+                "Alerts explained:\n• 💰 Monthly rebate — client earns a significant monthly rebate, great talking point.\n• 📋 90-day check-in — due between day 80–100, call to review progress.\n• ⚠️ Month 11 — contract renewal is approaching, prepare documents.\n• 🔄 12-month — full strategy review opportunity.\n• 📈 Compounding Review — portfolio has grown 10%+, present upsell opportunity.",
+                "Stats bar: Members = total clients added. Portfolio Value = total estimated current value. Total Earnings = your estimated monthly residual. Review Calls = clients ready for a compounding review conversation.",
+                "The Rank Advancement tracker shows your progress toward the next Diamond rank based on total team volume. Blue Diamond unlocks the Global Pool Bonus.",
+                "Tap + Add Member to register a new client. Long-tap a card to edit. Use the search bar to filter by name or country.",
+              ]}
+            />
             <TouchableOpacity style={S.addBtn} onPress={openAdd}>
               <Text style={S.addBtnText}>{t(language, "affAddMember")}</Text>
             </TouchableOpacity>
@@ -644,7 +686,17 @@ export default function AffiliateScreen() {
         {/* 3. GLOBAL POOL BONUS                                            */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={[S.card, { borderColor: "#1a2a4a", borderWidth: 1 }]}>
-          <Text style={S.sectionLabel}>{t(language, "affGlobalPoolTitle")}</Text>
+          <SectionHeader
+            label={t(language, "affGlobalPoolTitle")}
+            tipTitle="Global Pool Bonus"
+            tipBody={[
+              "The Global Pool is a shared profit-sharing bonus distributed monthly to qualifying Diamond ranks.",
+              "How to use: open your Diamond Solution back office and note the Pool Total, number of Members, and your number of Parts for each pool. Enter those numbers here to calculate your monthly payout.",
+              "Pool 1 — unlocked at Blue Diamond (min). Max 6 parts.\nPool 2 — unlocked at Purple Diamond. Max 4 parts.\nPool 3 — unlocked at Double Diamond Elite. Max 2 parts. (Shows 0 until members qualify.)",
+              "Your Payout = (Pool Total ÷ Members) × Your Parts. Update the numbers each month when your back office refreshes.",
+              "The Total line shows your combined monthly income from all three pools.",
+            ]}
+          />
           <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18, marginBottom: 14 }}>
             {t(language, "affPoolNote")}
           </Text>
@@ -705,7 +757,16 @@ export default function AffiliateScreen() {
         {/* 4. COMMISSION STRUCTURE                                         */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language, "affCommissionTitle")}</Text>
+          <SectionHeader
+            label={t(language, "affCommissionTitle")}
+            tipTitle="Commission Structure"
+            tipBody={[
+              "You earn a percentage of the monthly rebate generated by clients in your downline, up to 3 levels deep.",
+              "Level 1 — 10% of the monthly rebate earned by clients you personally referred.\nLevel 2 — 5% of the monthly rebate of clients referred by your Level 1 members.\nLevel 3 — 3% of the monthly rebate of clients referred by your Level 2 members.",
+              "Example: a Level 1 client with $25,000 at SP4 (3.0%/mo) generates $750/mo in rebate. Your L1 commission = $75/mo from that single client.",
+              "These commissions are on top of the Infinity Bonus (gap fill) and Pool Bonus. All three stack together for your total monthly income.",
+            ]}
+          />
           {[
             { pct: "10%", color: GREEN, title: t(language, "affCommL1Title"), desc: t(language, "affCommL1Desc") },
             { pct: "5%",  color: BLUE,  title: t(language, "affCommL2Title"), desc: t(language, "affCommL2Desc") },
@@ -727,7 +788,17 @@ export default function AffiliateScreen() {
         {/* 5. DIAMOND RANK BONUS PLAN                                      */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language, "affRankPlanTitle")}</Text>
+          <SectionHeader
+            label={t(language, "affRankPlanTitle")}
+            tipTitle="Diamond Rank Bonus Plan"
+            tipBody={[
+              "The 5-Bonus System gives you 5 simultaneous income streams as your team volume grows.",
+              "1. Unilevel (18%) — 10/5/3% on L1/L2/L3 rebates.\n2. Infinity Bonus (up to 24%) — fills the gap when your upline is lower ranked than you.\n3. Matching Bonus (25%) — 5×5% on matching your downline leaders' Unilevel income.\n4. Global Pools (3%) — shared profit pool for Blue Diamond and above.\n5. Rank Bonus — one-time cash rewards from $1,000 (Emerald) to $5,000,000 (Black Diamond).",
+              "Rank Bonuses are paid in diamonds — you receive the equivalent value in physical certified diamonds, which you can liquidate or hold as an asset.",
+              "Ranks are FOR LIFE — once achieved, you keep the rank and its bonuses permanently, even if team volume drops.",
+              "Scroll the table horizontally to see all columns: Directs required, Team Volume, Distribution %, Infinity %, Pool Shares, and Rank Bonus.",
+            ]}
+          />
 
           {/* 5-Bonus System Summary */}
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
@@ -814,7 +885,15 @@ export default function AffiliateScreen() {
         {/* 6. HOW IT WORKS                                                 */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <View style={S.card}>
-          <Text style={S.sectionLabel}>{t(language, "affHowItWorksTitle")}</Text>
+          <SectionHeader
+            label={t(language, "affHowItWorksTitle")}
+            tipTitle="How It Works — Quick Guide"
+            tipBody={[
+              "This is the step-by-step process for onboarding a new client and getting them active in the Diamond Solution system.",
+              "Step 1: Share your referral link (top of this screen) with your prospect.\nStep 2: They register and choose a Savings Plan (SP1–SP7 based on investment amount).\nStep 3: Once active, add them to your Call List so alerts and residuals are tracked.\nStep 4: Follow the alert system for 90-day, Month 11, and Compounding Review calls.\nStep 5: Present upgrade opportunities when the Compounding Review alert fires.",
+              "The referral link ensures the registration is automatically linked to your back-office account — no manual tracking needed.",
+            ]}
+          />
           {[
             t(language, "affStep1"),
             t(language, "affStep2"),
