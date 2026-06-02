@@ -19,6 +19,7 @@ import { useCalculator } from "@/lib/calculator-context";
 import * as Haptics from "expo-haptics";
 import { InfoTip } from "@/components/info-tip";
 import { getTip } from "@/lib/tip-content";
+import { trpc } from "@/lib/trpc";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface YouTubeVideo {
@@ -467,23 +468,31 @@ async function fetchYouTubeRSS(): Promise<YouTubeVideo[]> {
 
 // ─── YouTube Hook ─────────────────────────────────────────────────────────────
 function useYouTubeVideos() {
-  const [videos, setVideos]         = useState<YouTubeVideo[]>(YOUTUBE_FALLBACK);
-  const [loading, setLoading]       = useState(true);
-  const [liveLoaded, setLiveLoaded] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
+  // Primary: server-side fetch (works on all platforms, no CORS issues)
+  const { data: serverVideos, isLoading: serverLoading, refetch } =
+    trpc.feed.getYouTubeVideos.useQuery(undefined, { staleTime: 5 * 60_000, retry: 1 });
+
+  // Fallback: direct fetch if server returns empty
+  const [fallbackVideos, setFallbackVideos] = useState<YouTubeVideo[]>([]);
+  const [fallbackLoading, setFallbackLoading] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    fetchYouTubeRSS().then(result => {
-      if (cancelled) return;
-      if (result.length > 0) { setVideos(result); setLiveLoaded(true); }
-      else { setVideos(YOUTUBE_FALLBACK); setLiveLoaded(false); }
-      setLoading(false);
-    });
-    return () => { cancelled = true; };
-  }, [refreshKey]);
+    if (!serverLoading && (!serverVideos || serverVideos.length === 0)) {
+      setFallbackLoading(true);
+      fetchYouTubeRSS().then(result => {
+        setFallbackVideos(result.length > 0 ? result : YOUTUBE_FALLBACK);
+        setFallbackLoading(false);
+      });
+    }
+  }, [serverLoading, serverVideos]);
+
+  const videos: YouTubeVideo[] = (serverVideos && serverVideos.length > 0)
+    ? serverVideos.map(v => ({ ...v, duration: "", views: "" }))
+    : (fallbackVideos.length > 0 ? fallbackVideos : YOUTUBE_FALLBACK);
+
+  const liveLoaded = (serverVideos && serverVideos.length > 0) || fallbackVideos.length > 0;
+  const loading = serverLoading || fallbackLoading;
+  const refresh = useCallback(() => { refetch(); }, [refetch]);
 
   return { videos, loading, liveLoaded, refresh };
 }
