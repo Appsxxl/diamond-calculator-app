@@ -34,7 +34,7 @@ const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
   version: "2.1.0",
-  description: "Plan B — Strategic wealth optimization simulator with multi-language support and advanced calculations.",
+  description: "Plan B — Strategic scenario planning simulator with multi-language support and advanced calculations.",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   ...(EAS_PROJECT_ID

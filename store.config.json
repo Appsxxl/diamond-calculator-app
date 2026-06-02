@@ -1,0 +1,151 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "Plan B",
+        "description": "Plan B — Strategic scenario planning simulator with multi-language support and advanced calculations.",
+        "keywords": ["diamond", "strategy", "calculator", "adviser", "planning", "scenario", "simulator"]
+      },
+      "nl-NL": {
+        "title": "Plan B",
+        "description": "Plan B — Strategische scenarioplanningsimulator met meertalige ondersteuning en geavanceerde berekeningen.",
+        "keywords": ["diamant", "strategie", "calculator", "adviseur", "planning", "scenario"]
+      },
+      "de-DE": {
+        "title": "Plan B",
+        "description": "Plan B — Strategischer Szenario-Planungssimulator mit mehrsprachiger Unterstützung und fortschrittlichen Berechnungen.",
+        "keywords": ["Diamant", "Strategie", "Rechner", "Berater", "Planung", "Szenario"]
+      },
+      "fr-FR": {
+        "title": "Plan B",
+        "description": "Plan B — Simulateur stratégique de planification de scénarios avec prise en charge multilingue et calculs avancés.",
+        "keywords": ["diamant", "stratégie", "calculateur", "conseiller", "planification", "scénario"]
+      },
+      "es-ES": {
+        "title": "Plan B",
+        "description": "Plan B — Simulador estratégico de planificación de escenarios con soporte multilingüe y cálculos avanzados.",
+        "keywords": ["diamante", "estrategia", "calculadora", "asesor", "planificación", "escenario"]
+      },
+      "ru-RU": {
+        "title": "Plan B",
+        "description": "Plan B — Стратегический симулятор сценарного планирования с многоязычной поддержкой и расширенными расчётами.",
+        "keywords": ["алмаз", "стратегия", "калькулятор", "советник", "планирование", "сценарий"]
+      },
+      "zh-Hans": {
+        "title": "Plan B",
+        "description": "Plan B — 具有多语言支持和高级计算功能的战略情景规划模拟器。",
+        "keywords": ["钻石", "策略", "计算器", "顾问", "规划", "情景"]
+      },
+      "pt-PT": {
+        "title": "Plan B",
+        "description": "Plan B — Simulador estratégico de planeamento de cenários com suporte multilíngue e cálculos avançados.",
+        "keywords": ["diamante", "estratégia", "calculadora", "consultor", "planeamento", "cenário"]
+      },
+      "ar-SA": {
+        "title": "Plan B",
+        "description": "Plan B — محاكي استراتيجي لتخطيط السيناريوهات مع دعم متعدد اللغات وحسابات متقدمة.",
+        "keywords": ["ألماس", "استراتيجية", "حاسبة", "مستشار", "تخطيط", "سيناريو"]
+      },
+      "th": {
+        "title": "Plan B",
+        "description": "Plan B — เครื่องจำลองการวางแผนสถานการณ์เชิงกลยุทธ์พร้อมรองรับหลายภาษาและการคำนวณขั้นสูง",
+        "keywords": ["เพชร", "กลยุทธ์", "เครื่องคำนวณ", "ที่ปรึกษา", "การวางแผน"]
+      },
+      "hi": {
+        "title": "Plan B",
+        "description": "Plan B — बहु-भाषा समर्थन और उन्नत गणनाओं के साथ रणनीतिक परिदृश्य नियोजन सिम्युलेटर।",
+        "keywords": ["हीरा", "रणनीति", "कैलकुलेटर", "सलाहकार", "नियोजन"]
+      },
+      "it": {
+        "title": "Plan B",
+        "description": "Plan B — Simulatore strategico di pianificazione scenari con supporto multilingue e calcoli avanzati.",
+        "keywords": ["diamante", "strategia", "calcolatore", "consulente", "pianificazione", "scenario"]
+      },
+      "vi": {
+        "title": "Plan B",
+        "description": "Plan B — Trình mô phỏng lập kế hoạch tình huống chiến lược với hỗ trợ đa ngôn ngữ và tính toán nâng cao.",
+        "keywords": ["kim cương", "chiến lược", "máy tính", "cố vấn", "lập kế hoạch"]
+      },
+      "fil": {
+        "title": "Plan B",
+        "description": "Plan B — Estratehikong simulator ng pagpaplano ng senaryo na may suporta sa maraming wika at mga advanced na kalkulasyon.",
+        "keywords": ["brilyante", "estratehiya", "calculator", "tagapayo", "pagpaplano", "senaryo"]
+      }
+    }
+  },
+  "google": {
+    "info": {
+      "en-US": {
+        "title": "Plan B",
+        "shortDescription": "Strategic scenario planning simulator with advanced calculations.",
+        "fullDescription": "Plan B — Strategic scenario planning simulator with multi-language support and advanced calculations."
+      },
+      "nl-NL": {
+        "title": "Plan B",
+        "shortDescription": "Strategische scenarioplanningsimulator met geavanceerde berekeningen.",
+        "fullDescription": "Plan B — Strategische scenarioplanningsimulator met meertalige ondersteuning en geavanceerde berekeningen."
+      },
+      "de-DE": {
+        "title": "Plan B",
+        "shortDescription": "Strategischer Szenario-Planungssimulator mit fortschrittlichen Berechnungen.",
+        "fullDescription": "Plan B — Strategischer Szenario-Planungssimulator mit mehrsprachiger Unterstützung und fortschrittlichen Berechnungen."
+      },
+      "fr-FR": {
+        "title": "Plan B",
+        "shortDescription": "Simulateur stratégique de planification de scénarios avec calculs avancés.",
+        "fullDescription": "Plan B — Simulateur stratégique de planification de scénarios avec prise en charge multilingue et calculs avancés."
+      },
+      "es-ES": {
+        "title": "Plan B",
+        "shortDescription": "Simulador estratégico de planificación de escenarios con cálculos avanzados.",
+        "fullDescription": "Plan B — Simulador estratégico de planificación de escenarios con soporte multilingüe y cálculos avanzados."
+      },
+      "ru-RU": {
+        "title": "Plan B",
+        "shortDescription": "Стратегический симулятор сценарного планирования с расширенными расчётами.",
+        "fullDescription": "Plan B — Стратегический симулятор сценарного планирования с многоязычной поддержкой и расширенными расчётами."
+      },
+      "zh-CN": {
+        "title": "Plan B",
+        "shortDescription": "具有高级计算功能的战略情景规划模拟器。",
+        "fullDescription": "Plan B — 具有多语言支持和高级计算功能的战略情景规划模拟器。"
+      },
+      "pt-PT": {
+        "title": "Plan B",
+        "shortDescription": "Simulador estratégico de planeamento de cenários com cálculos avançados.",
+        "fullDescription": "Plan B — Simulador estratégico de planeamento de cenários com suporte multilíngue e cálculos avançados."
+      },
+      "ar": {
+        "title": "Plan B",
+        "shortDescription": "محاكي استراتيجي لتخطيط السيناريوهات مع حسابات متقدمة.",
+        "fullDescription": "Plan B — محاكي استراتيجي لتخطيط السيناريوهات مع دعم متعدد اللغات وحسابات متقدمة."
+      },
+      "th": {
+        "title": "Plan B",
+        "shortDescription": "เครื่องจำลองการวางแผนสถานการณ์เชิงกลยุทธ์พร้อมการคำนวณขั้นสูง",
+        "fullDescription": "Plan B — เครื่องจำลองการวางแผนสถานการณ์เชิงกลยุทธ์พร้อมรองรับหลายภาษาและการคำนวณขั้นสูง"
+      },
+      "hi-IN": {
+        "title": "Plan B",
+        "shortDescription": "उन्नत गणनाओं के साथ रणनीतिक परिदृश्य नियोजन सिम्युलेटर।",
+        "fullDescription": "Plan B — बहु-भाषा समर्थन और उन्नत गणनाओं के साथ रणनीतिक परिदृश्य नियोजन सिम्युलेटर।"
+      },
+      "it-IT": {
+        "title": "Plan B",
+        "shortDescription": "Simulatore strategico di pianificazione scenari con calcoli avanzati.",
+        "fullDescription": "Plan B — Simulatore strategico di pianificazione scenari con supporto multilingue e calcoli avanzati."
+      },
+      "vi": {
+        "title": "Plan B",
+        "shortDescription": "Trình mô phỏng lập kế hoạch tình huống chiến lược với tính toán nâng cao.",
+        "fullDescription": "Plan B — Trình mô phỏng lập kế hoạch tình huống chiến lược với hỗ trợ đa ngôn ngữ và tính toán nâng cao."
+      },
+      "fil": {
+        "title": "Plan B",
+        "shortDescription": "Estratehikong simulator ng pagpaplano ng senaryo na may mga advanced na kalkulasyon.",
+        "fullDescription": "Plan B — Estratehikong simulator ng pagpaplano ng senaryo na may suporta sa maraming wika at mga advanced na kalkulasyon."
+      }
+    }
+  }
+}
