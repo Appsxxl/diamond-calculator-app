@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
+  Share,
   Text,
   TextInput,
   TouchableOpacity,
@@ -119,6 +121,10 @@ export default function AdminScreen() {
   const [newCodeFor, setNewCodeFor] = useState("");
   const [creating, setCreating] = useState(false);
 
+  // Send code via email modal
+  const [sendModal, setSendModal] = useState<{ code: string; email: string } | null>(null);
+  const [sending, setSending] = useState(false);
+
   // Event form state
   const [evtTitle, setEvtTitle]     = useState("");
   const [evtDesc, setEvtDesc]       = useState("");
@@ -175,6 +181,44 @@ export default function AdminScreen() {
     onError: (e) => Alert.alert("Error", e.message),
   });
 
+  const sendCodeEmail = trpc.activation.sendCodeEmail.useMutation({
+    onSuccess: (_, vars) => {
+      setSendModal(null);
+      setSending(false);
+      refetchCodes();
+      Alert.alert("✅ Sent!", `Activation code emailed to ${vars.email}.`);
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+    onError: (e) => {
+      setSending(false);
+      Alert.alert("Error", e.message);
+    },
+  });
+
+  const handleSendCode = () => {
+    if (!sendModal?.email.trim() || !sendModal?.code) return;
+    setSending(true);
+    sendCodeEmail.mutate({ email: sendModal.email.trim().toLowerCase(), code: sendModal.code });
+  };
+
+  const handleExport = async () => {
+    const headers = "ID,Email,Name,Status,Activation Code,Joined\n";
+    const rows = users.map((u) => [
+      u.id,
+      `"${u.email ?? ""}"`,
+      `"${(u.name ?? "").replace(/"/g, '""')}"`,
+      u.status ?? "trial",
+      u.activationCode ?? "",
+      new Date(u.createdAt).toLocaleDateString("en-GB"),
+    ].join(","));
+    const csv = headers + rows.join("\n");
+    try {
+      await Share.share({ message: csv, title: "Plan B — Users Export" });
+    } catch {
+      Alert.alert("Export failed", "Could not open share sheet.");
+    }
+  };
+
   const handleCreateEvent = () => {
     if (!evtTitle.trim() || !evtDate.trim() || !evtTime.trim()) {
       Alert.alert("Missing fields", "Title, date and time are required.");
@@ -213,6 +257,7 @@ export default function AdminScreen() {
   const activeTrialCount = total - teamCount - paidCount - expiredCount;
 
   const usedCodes = codes.filter((c) => c.usedBy !== null).length;
+  const freeCodes = codes.filter((c) => c.usedBy === null);
 
   return (
     <ScreenContainer bgColor="#0f172a">
@@ -260,6 +305,15 @@ export default function AdminScreen() {
         {/* Users tab */}
         {tab === "users" && (
           <View style={S.section}>
+            {/* Export button */}
+            <TouchableOpacity
+              onPress={handleExport}
+              activeOpacity={0.8}
+              style={{ backgroundColor: "#1e293b", borderRadius: 10, borderWidth: 1, borderColor: "#334155",
+                paddingVertical: 11, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}>
+              <Text style={{ color: "#94a3b8", fontSize: 14, fontWeight: "600" }}>⬇ Export CSV Backup</Text>
+            </TouchableOpacity>
+
             {usersLoading ? (
               <ActivityIndicator color="#f59e0b" style={{ marginTop: 24 }} />
             ) : users.length === 0 ? (
@@ -268,6 +322,7 @@ export default function AdminScreen() {
               users.map((user) => {
                 const left = daysLeft(user.trialStartedAt, user.status);
                 const isExpired = left === 0 && user.status !== "team" && user.status !== "paid";
+                const canSend = !!user.email && user.status !== "team" && user.status !== "paid";
                 return (
                   <View key={user.id} style={S.userCard}>
                     <View style={{ flex: 1, gap: 4 }}>
@@ -290,9 +345,20 @@ export default function AdminScreen() {
                         )}
                       </View>
                     </View>
-                    <Text style={S.joinDate}>
-                      {new Date(user.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" })}
-                    </Text>
+                    <View style={{ alignItems: "flex-end", gap: 8 }}>
+                      <Text style={S.joinDate}>
+                        {new Date(user.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" })}
+                      </Text>
+                      {canSend && (
+                        <TouchableOpacity
+                          onPress={() => setSendModal({ email: user.email!, code: freeCodes[0]?.code ?? "" })}
+                          activeOpacity={0.7}
+                          style={{ backgroundColor: "rgba(245,158,11,0.12)", borderRadius: 7, borderWidth: 1,
+                            borderColor: "rgba(245,158,11,0.3)", paddingHorizontal: 10, paddingVertical: 5 }}>
+                          <Text style={{ fontSize: 12, color: "#f59e0b", fontWeight: "700" }}>📧 Send Code</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
                   </View>
                 );
               })
@@ -355,10 +421,21 @@ export default function AdminScreen() {
                       Created {new Date(code.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" })}
                     </Text>
                   </View>
-                  <View style={[S.usedBadge, code.usedBy ? S.usedBadgeUsed : S.usedBadgeFree]}>
-                    <Text style={[S.usedBadgeText, code.usedBy ? S.usedBadgeTextUsed : S.usedBadgeTextFree]}>
-                      {code.usedBy ? "USED" : "FREE"}
-                    </Text>
+                  <View style={{ alignItems: "flex-end", gap: 8 }}>
+                    <View style={[S.usedBadge, code.usedBy ? S.usedBadgeUsed : S.usedBadgeFree]}>
+                      <Text style={[S.usedBadgeText, code.usedBy ? S.usedBadgeTextUsed : S.usedBadgeTextFree]}>
+                        {code.usedBy ? "USED" : "FREE"}
+                      </Text>
+                    </View>
+                    {!code.usedBy && (
+                      <TouchableOpacity
+                        onPress={() => setSendModal({ code: code.code, email: "" })}
+                        activeOpacity={0.7}
+                        style={{ backgroundColor: "rgba(14,165,233,0.12)", borderRadius: 7, borderWidth: 1,
+                          borderColor: "rgba(14,165,233,0.3)", paddingHorizontal: 10, paddingVertical: 5 }}>
+                        <Text style={{ fontSize: 12, color: "#38bdf8", fontWeight: "700" }}>📧 Send</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               ))
@@ -520,6 +597,88 @@ export default function AdminScreen() {
         )}
 
       </ScrollView>
+
+      {/* Send Code via Email Modal */}
+      <Modal
+        visible={sendModal !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => !sending && setSendModal(null)}
+      >
+        <Pressable
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", padding: 24 }}
+          onPress={() => { if (!sending) setSendModal(null); }}
+        >
+          <Pressable onPress={() => {}}>
+            <View style={{ backgroundColor: "#1e293b", borderRadius: 18, borderWidth: 1, borderColor: "#334155", padding: 20, gap: 0 }}>
+              <Text style={{ fontSize: 17, fontWeight: "700", color: "#f1f5f9", marginBottom: 16 }}>📧 Send Activation Code</Text>
+
+              {/* Email field */}
+              <Text style={{ fontSize: 12, color: "#64748b", fontWeight: "600", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Recipient Email</Text>
+              <TextInput
+                style={S.input}
+                value={sendModal?.email ?? ""}
+                onChangeText={(v) => setSendModal((prev) => prev ? { ...prev, email: v } : prev)}
+                placeholder="member@email.com"
+                placeholderTextColor="#475569"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!sending}
+              />
+
+              {/* Code picker */}
+              <Text style={{ fontSize: 12, color: "#64748b", fontWeight: "600", marginTop: 16, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Select Code {sendModal?.code ? `— ${sendModal.code}` : "(tap to select)"}
+              </Text>
+              {freeCodes.length === 0 ? (
+                <View style={{ backgroundColor: "rgba(239,68,68,0.08)", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "rgba(239,68,68,0.2)" }}>
+                  <Text style={{ color: "#f87171", fontSize: 13 }}>No free codes available. Create one in the Codes tab first.</Text>
+                </View>
+              ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 4 }}>
+                  <View style={{ flexDirection: "row", gap: 8 }}>
+                    {freeCodes.map((c) => {
+                      const selected = sendModal?.code === c.code;
+                      return (
+                        <TouchableOpacity
+                          key={c.id}
+                          onPress={() => setSendModal((prev) => prev ? { ...prev, code: c.code } : prev)}
+                          activeOpacity={0.8}
+                          style={{ borderRadius: 8, paddingHorizontal: 14, paddingVertical: 9, borderWidth: 1.5,
+                            backgroundColor: selected ? "#f59e0b" : "#0f172a",
+                            borderColor: selected ? "#f59e0b" : "#334155" }}>
+                          <Text style={{ fontSize: 13, fontWeight: "700", color: selected ? "#0f172a" : "#94a3b8", letterSpacing: 0.5 }}>{c.code}</Text>
+                          {c.description ? (
+                            <Text style={{ fontSize: 11, color: selected ? "rgba(0,0,0,0.5)" : "#475569", marginTop: 2 }}>{c.description}</Text>
+                          ) : null}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              )}
+
+              {/* Send button */}
+              <TouchableOpacity
+                style={[S.createBtn, { marginTop: 20 },
+                  (!sendModal?.email.trim() || !sendModal?.code || sending || freeCodes.length === 0) && S.createBtnDisabled]}
+                onPress={handleSendCode}
+                activeOpacity={0.85}
+                disabled={!sendModal?.email.trim() || !sendModal?.code || sending || freeCodes.length === 0}>
+                {sending
+                  ? <ActivityIndicator color="#0f172a" size="small" />
+                  : <Text style={S.createBtnText}>Send Activation Code</Text>}
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => { if (!sending) setSendModal(null); }} style={{ marginTop: 12, alignItems: "center" }}>
+                <Text style={{ color: "#64748b", fontSize: 14 }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
     </ScreenContainer>
   );
 }

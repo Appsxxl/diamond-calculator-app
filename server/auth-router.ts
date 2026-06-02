@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import { z } from "zod";
+import { sendMail } from "./_core/mailer";
 import { TRPCError } from "@trpc/server";
 import { COOKIE_NAME, ONE_YEAR_MS } from "../shared/const.js";
 import { publicProcedure, router } from "./_core/trpc";
@@ -73,34 +74,10 @@ function buildEmailHtml(verifyUrl: string, otp: string): string {
 async function sendEmail(to: string, token: string, otp: string): Promise<void> {
   const verifyUrl = `${ENV.appUrl}/auth/verify?token=${token}`;
   const html = buildEmailHtml(verifyUrl, otp);
-  const subject = "Your Plan B sign-in link";
-
-  // Gmail SMTP (preferred when configured)
-  if (ENV.gmailUser && ENV.gmailAppPassword) {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: ENV.gmailUser, pass: ENV.gmailAppPassword },
-    });
-    await transporter.sendMail({ from: `Plan B <${ENV.gmailUser}>`, to, subject, html });
-    return;
+  await sendMail({ to, subject: "Your Plan B sign-in link", html });
+  if (!ENV.gmailUser && !ENV.resendApiKey) {
+    console.log(`\n[Auth] Magic link for ${to}:\n  URL: ${verifyUrl}\n  OTP: ${otp}\n`);
   }
-
-  // Resend fallback
-  if (ENV.resendApiKey) {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${ENV.resendApiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: ENV.fromEmail, to, subject, html }),
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Resend error: ${body}`);
-    }
-    return;
-  }
-
-  // Dev fallback: log to console
-  console.log(`\n[Auth] Magic link for ${to}:\n  URL: ${verifyUrl}\n  OTP: ${otp}\n`);
 }
 
 function buildUser(user: Awaited<ReturnType<typeof getUserByOpenId>>) {

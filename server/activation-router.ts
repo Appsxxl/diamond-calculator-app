@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, protectedProcedure, router } from "./_core/trpc";
 import { ENV } from "./_core/env";
+import { sendMail } from "./_core/mailer";
 import {
   createWhitelistCode,
   getWhitelistCode,
@@ -90,6 +91,51 @@ export const activationRouter = router({
   listUsers: adminProcedure.query(async () => {
     return listUsersWithStatus();
   }),
+
+  sendCodeEmail: adminProcedure
+    .input(z.object({
+      email: z.string().email(),
+      code: z.string().min(1),
+    }))
+    .mutation(async ({ input }) => {
+      const record = await getWhitelistCode(input.code);
+      if (!record) throw new TRPCError({ code: "NOT_FOUND", message: "Code not found." });
+      if (record.usedBy) throw new TRPCError({ code: "BAD_REQUEST", message: "That code is already redeemed." });
+
+      const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 16px">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
+        <tr><td style="padding:32px;background:#1e293b;border-radius:16px;border:1px solid #334155">
+          <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#f59e0b;letter-spacing:1px;text-transform:uppercase">Plan B — Activation</p>
+          <h1 style="margin:0 0 20px;font-size:24px;font-weight:800;color:#f1f5f9">You have been granted Team Access</h1>
+          <p style="margin:0 0 24px;font-size:15px;color:#94a3b8;line-height:24px">
+            Your activation code is ready. Enter it in the Plan B app under <strong style="color:#e2e8f0">Settings → Activate</strong> to unlock lifetime access.
+          </p>
+          <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:12px;padding:20px;text-align:center;margin-bottom:28px">
+            <p style="margin:0 0 6px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:1px">Your Code</p>
+            <p style="margin:0;font-size:28px;font-weight:900;color:#f59e0b;letter-spacing:4px">${input.code}</p>
+          </div>
+          <p style="margin:0 0 8px;font-size:13px;color:#64748b;line-height:20px">
+            1. Open the Plan B app<br>
+            2. Go to <strong style="color:#e2e8f0">Settings</strong><br>
+            3. Tap <strong style="color:#e2e8f0">★ Team Access → Activate</strong><br>
+            4. Enter the code above and tap Activate
+          </p>
+          <p style="margin:24px 0 0;font-size:12px;color:#334155">This code is personal — do not share it. One-time use only.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+      await sendMail({ to: input.email, subject: "Your Plan B activation code", html });
+      return { success: true };
+    }),
 
   listEvents: adminProcedure.query(async () => {
     const rows = await listAllEvents();
