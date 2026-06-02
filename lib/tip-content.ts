@@ -126,7 +126,7 @@ const en: TipMap = {
     title: 'Currency Display',
     body: [
       'Switch the display currency for all summary values in the results section.',
-      'USD — US Dollar (base currency of Plan B)\nEUR — Euro (rate: 0.92)\nGBP — British Pound (rate: 0.79)\nAED — UAE Dirham (rate: 3.67)',
+      'USD — US Dollar (base currency of Plan B)\nEUR — Euro (rate: 0.92)\nGBP — British Pound (rate: 0.79)\nAED — UAE Dirham (rate: 3.67)\nPHP — Philippine Peso (rate: 57.5)\nSGD — Singapore Dollar (rate: 1.35)',
       'Rates are fixed approximations for presentation purposes. Always verify live rates before presenting to clients.',
       'The monthly table stays in USD. Only the main summary cards convert.',
     ],
@@ -399,7 +399,7 @@ const nl: TipMap = {
     title: 'Valuta Weergave',
     body: [
       'Schakel de weergavevaluta voor alle samenvatting-waarden in de resultaten.',
-      'USD — US Dollar (basisvaluta van Plan B)\nEUR — Euro (koers: 0,92)\nGBP — Brits Pond (koers: 0,79)\nAED — VAE Dirham (koers: 3,67)',
+      'USD — US Dollar (basisvaluta van Plan B)\nEUR — Euro (koers: 0,92)\nGBP — Brits Pond (koers: 0,79)\nAED — VAE Dirham (koers: 3,67)\nPHP — Filippijnse Peso (koers: 57,5)\nSGD — Singaporese Dollar (koers: 1,35)',
       'Koersen zijn vaste benaderingen voor presentatiedoeleinden. Controleer altijd actuele koersen voordat u klanten presenteert.',
       'De maandelijkse tabel blijft in USD. Alleen de hoofdsamenvatting wordt geconverteerd.',
     ],
@@ -672,7 +672,7 @@ const de: TipMap = {
     title: 'Währungsanzeige',
     body: [
       'Wechseln Sie die Anzeigewährung für alle Zusammenfassungswerte im Ergebnisbereich.',
-      'USD — US-Dollar (Basiswährung von Plan B)\nEUR — Euro (Kurs: 0,92)\nGBP — Britisches Pfund (Kurs: 0,79)\nAED — VAE-Dirham (Kurs: 3,67)',
+      'USD — US-Dollar (Basiswährung von Plan B)\nEUR — Euro (Kurs: 0,92)\nGBP — Britisches Pfund (Kurs: 0,79)\nAED — VAE-Dirham (Kurs: 3,67)\nPHP — Philippinischer Peso (Kurs: 57,5)\nSGD — Singapur-Dollar (Kurs: 1,35)',
       'Kurse sind feste Näherungswerte für Präsentationszwecke. Überprüfen Sie immer aktuelle Kurse vor der Kundenpräsentation.',
       'Die Monatstabelle bleibt in USD. Nur die Hauptübersichtskarten werden konvertiert.',
     ],
@@ -945,7 +945,7 @@ const fr: TipMap = {
     title: 'Affichage de la Devise',
     body: [
       'Changez la devise d\'affichage pour toutes les valeurs récapitulatives dans la section des résultats.',
-      'USD — Dollar américain (devise de base de Plan B)\nEUR — Euro (taux : 0,92)\nGBP — Livre sterling (taux : 0,79)\nAED — Dirham des EAU (taux : 3,67)',
+      'USD — Dollar américain (devise de base de Plan B)\nEUR — Euro (taux : 0,92)\nGBP — Livre sterling (taux : 0,79)\nAED — Dirham des EAU (taux : 3,67)\nPHP — Peso philippin (taux : 57,5)\nSGD — Dollar de Singapour (taux : 1,35)',
       'Les taux sont des approximations fixes à des fins de présentation. Vérifiez toujours les taux en vigueur avant de les présenter aux clients.',
       'Le tableau mensuel reste en USD. Seules les cartes récapitulatives principales sont converties.',
     ],
@@ -1218,7 +1218,7 @@ const es: TipMap = {
     title: 'Visualización de Moneda',
     body: [
       'Cambie la moneda de visualización para todos los valores de resumen en la sección de resultados.',
-      'USD — Dólar estadounidense (moneda base de Plan B)\nEUR — Euro (tasa: 0,92)\nGBP — Libra esterlina (tasa: 0,79)\nAED — Dírham de EAU (tasa: 3,67)',
+      'USD — Dólar estadounidense (moneda base de Plan B)\nEUR — Euro (tasa: 0,92)\nGBP — Libra esterlina (tasa: 0,79)\nAED — Dírham de EAU (tasa: 3,67)\nPHP — Peso filipino (tasa: 57,5)\nSGD — Dólar de Singapur (tasa: 1,35)',
       'Las tasas son aproximaciones fijas para fines de presentación. Verifique siempre las tasas en vivo antes de presentar a clientes.',
       'La tabla mensual permanece en USD. Solo las tarjetas de resumen principales se convierten.',
     ],
@@ -1491,7 +1491,7 @@ const it: TipMap = {
     title: 'Visualizzazione Valuta',
     body: [
       'Cambia la valuta di visualizzazione per tutti i valori di riepilogo nella sezione dei risultati.',
-      'USD — Dollaro USA (valuta base di Plan B)\nEUR — Euro (tasso: 0,92)\nGBP — Sterlina britannica (tasso: 0,79)\nAED — Dirham degli EAU (tasso: 3,67)',
+      'USD — Dollaro USA (valuta base di Plan B)\nEUR — Euro (tasso: 0,92)\nGBP — Sterlina britannica (tasso: 0,79)\nAED — Dirham degli EAU (tasso: 3,67)\nPHP — Peso filippino (tasso: 57,5)\nSGD — Dollaro di Singapore (tasso: 1,35)',
       'I tassi sono approssimazioni fisse a scopo di presentazione. Verificate sempre i tassi attuali prima di presentare ai clienti.',
       'La tabella mensile rimane in USD. Solo le schede di riepilogo principali vengono convertite.',
     ],
@@ -1764,7 +1764,7 @@ const pt: TipMap = {
     title: 'Exibição de Moeda',
     body: [
       'Mude a moeda de exibição para todos os valores de resumo na seção de resultados.',
-      'USD — Dólar americano (moeda base do Plan B)\nEUR — Euro (taxa: 0,92)\nGBP — Libra esterlina (taxa: 0,79)\nAED — Dirham dos EAU (taxa: 3,67)',
+      'USD — Dólar americano (moeda base do Plan B)\nEUR — Euro (taxa: 0,92)\nGBP — Libra esterlina (taxa: 0,79)\nAED — Dirham dos EAU (taxa: 3,67)\nPHP — Peso filipino (taxa: 57,5)\nSGD — Dólar de Singapura (taxa: 1,35)',
       'As taxas são aproximações fixas para fins de apresentação. Verifique sempre as taxas ao vivo antes de apresentar aos clientes.',
       'A tabela mensal permanece em USD. Apenas os cartões de resumo principais são convertidos.',
     ],

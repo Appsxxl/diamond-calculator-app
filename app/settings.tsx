@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -33,7 +33,15 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, officeLocation, setOfficeLocation } = useCalculator();
   const { isTeam, isLoading: statusLoading } = useUserStatus();
-  const { data: me } = trpc.auth.me.useQuery();
+  const { data: me, refetch: refetchMe } = trpc.auth.me.useQuery();
+  const claimAdmin = trpc.activation.claimAdmin.useMutation({ onSuccess: () => refetchMe() });
+
+  useEffect(() => {
+    if (me && me.role !== "admin") {
+      claimAdmin.mutate();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [me?.role]);
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");

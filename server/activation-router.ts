@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, protectedProcedure, router } from "./_core/trpc";
+import { ENV } from "./_core/env";
 import {
   createWhitelistCode,
   getWhitelistCode,
@@ -8,6 +9,7 @@ import {
   listUsersWithStatus,
   listWhitelistCodes,
   markCodeUsed,
+  upsertUser,
   upsertUserStatus,
 } from "./db";
 
@@ -48,6 +50,15 @@ export const activationRouter = router({
       name: ctx.user.name,
       role: ctx.user.role,
     };
+  }),
+
+  claimAdmin: protectedProcedure.mutation(async ({ ctx }) => {
+    if (!ENV.ownerOpenId || ctx.user.openId !== ENV.ownerOpenId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Not the owner account." });
+    }
+    if (ctx.user.role === "admin") return { already: true };
+    await upsertUser({ openId: ctx.user.openId, role: "admin" });
+    return { promoted: true };
   }),
 
   setPaidStatus: protectedProcedure.mutation(async ({ ctx }) => {

@@ -270,6 +270,8 @@ const CURRENCIES = [
   { code: 'EUR', symbol: '€',    rate: 0.92 },
   { code: 'GBP', symbol: '£',    rate: 0.79 },
   { code: 'AED', symbol: 'AED ', rate: 3.67 },
+  { code: 'PHP', symbol: '₱',   rate: 57.5 },
+  { code: 'SGD', symbol: 'S$',  rate: 1.35 },
 ] as const;
 type CurrencyCode = typeof CURRENCIES[number]['code'];
 
