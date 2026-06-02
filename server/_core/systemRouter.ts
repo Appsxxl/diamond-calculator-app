@@ -2,6 +2,8 @@ import { z } from "zod";
 import { notifyOwner } from "./notification";
 import { adminProcedure, publicProcedure, router } from "./trpc";
 
+const SERVER_START = Date.now();
+
 export const systemRouter = router({
   health: publicProcedure
     .input(
@@ -12,6 +14,18 @@ export const systemRouter = router({
     .query(() => ({
       ok: true,
     })),
+
+  diagnostics: publicProcedure.query(() => {
+    const uptimeMs = Date.now() - SERVER_START;
+    const uptimeMin = Math.floor(uptimeMs / 60_000);
+    return {
+      ok: true,
+      serverTime: new Date().toISOString(),
+      uptimeMinutes: uptimeMin,
+      nodeVersion: process.version,
+      env: process.env.NODE_ENV ?? "unknown",
+    };
+  }),
 
   notifyOwner: adminProcedure
     .input(

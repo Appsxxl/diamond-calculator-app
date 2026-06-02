@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -114,7 +114,7 @@ function HelpRow({ label, text }: { label: string; text: string }) {
 
 export default function AdminScreen() {
   const router = useRouter();
-  const [tab, setTab] = useState<"users" | "codes" | "events">("users");
+  const [tab, setTab] = useState<"users" | "codes" | "events" | "diag">("users");
   const [newCode, setNewCode] = useState("");
   const [newCodeFor, setNewCodeFor] = useState("");
   const [creating, setCreating] = useState(false);
@@ -135,6 +135,16 @@ export default function AdminScreen() {
     trpc.activation.listCodes.useQuery();
   const { data: adminEvents = [], isLoading: eventsLoading, refetch: refetchEvents } =
     trpc.activation.listEvents.useQuery();
+
+  const { data: diagData, isLoading: diagLoading, refetch: refetchDiag, error: diagError } =
+    trpc.system.diagnostics.useQuery(undefined, { enabled: tab === "diag", retry: 1, staleTime: 0 });
+
+  const [pingMs, setPingMs] = useState<number | null>(null);
+  useEffect(() => {
+    if (tab !== "diag") return;
+    const start = Date.now();
+    refetchDiag().then(() => setPingMs(Date.now() - start));
+  }, [tab]);
 
   const createCode = trpc.activation.createCode.useMutation({
     onSuccess: () => {
@@ -241,6 +251,9 @@ export default function AdminScreen() {
           </TouchableOpacity>
           <TouchableOpacity style={[S.tabBtn, tab === "events" && S.tabBtnActive]} onPress={() => setTab("events")} activeOpacity={0.8}>
             <Text style={[S.tabLabel, tab === "events" && S.tabLabelActive]}>Events ({adminEvents.length})</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[S.tabBtn, tab === "diag" && S.tabBtnActive]} onPress={() => setTab("diag")} activeOpacity={0.8}>
+            <Text style={[S.tabLabel, tab === "diag" && S.tabLabelActive]}>📡 Diag</Text>
           </TouchableOpacity>
         </View>
 
@@ -420,6 +433,89 @@ export default function AdminScreen() {
                 </View>
               ))
             )}
+          </View>
+        )}
+
+        {/* Diagnostics tab */}
+        {tab === "diag" && (
+          <View style={[S.section, { gap: 10 }]}>
+
+            {/* Server status card */}
+            <View style={S.createCard}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <Text style={S.createTitle}>Server Status</Text>
+                <TouchableOpacity onPress={() => { const s = Date.now(); refetchDiag().then(() => setPingMs(Date.now() - s)); }} activeOpacity={0.7}>
+                  <Text style={{ color: "#64748b", fontSize: 13 }}>Refresh</Text>
+                </TouchableOpacity>
+              </View>
+              {diagLoading ? (
+                <ActivityIndicator color="#f59e0b" />
+              ) : diagError ? (
+                <View style={{ backgroundColor: "rgba(239,68,68,0.08)", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "rgba(239,68,68,0.25)" }}>
+                  <Text style={{ color: "#f87171", fontSize: 13, fontWeight: "700" }}>❌ Server Unreachable</Text>
+                  <Text style={{ color: "#94a3b8", fontSize: 12, marginTop: 4 }}>{diagError.message}</Text>
+                  <Text style={{ color: "#64748b", fontSize: 11, marginTop: 8, lineHeight: 17 }}>
+                    Possible causes:{"\n"}• Railway service is sleeping (free tier cold start ~30s){"\n"}• Wrong API URL in EXPO_PUBLIC_API_BASE_URL{"\n"}• Server crashed — check Railway Logs tab
+                  </Text>
+                </View>
+              ) : diagData ? (
+                <View style={{ gap: 8 }}>
+                  <View style={{ backgroundColor: "rgba(74,222,128,0.08)", borderRadius: 8, padding: 10, borderWidth: 1, borderColor: "rgba(74,222,128,0.2)", flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <Text style={{ fontSize: 20 }}>✅</Text>
+                    <Text style={{ color: "#4ade80", fontSize: 14, fontWeight: "700" }}>Server Online</Text>
+                    {pingMs !== null && <Text style={{ color: "#64748b", fontSize: 12 }}>{pingMs}ms</Text>}
+                  </View>
+                  {[
+                    { label: "Server Time", value: new Date(diagData.serverTime).toLocaleString() },
+                    { label: "Uptime", value: `${diagData.uptimeMinutes} minutes` },
+                    { label: "Environment", value: diagData.env },
+                    { label: "Node.js", value: diagData.nodeVersion },
+                  ].map(row => (
+                    <View key={row.label} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: "#1e293b" }}>
+                      <Text style={{ color: "#64748b", fontSize: 13 }}>{row.label}</Text>
+                      <Text style={{ color: "#e2e8f0", fontSize: 13, fontWeight: "600" }}>{row.value}</Text>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+            </View>
+
+            {/* Common issues */}
+            <View style={S.createCard}>
+              <Text style={[S.createTitle, { marginBottom: 14 }]}>Common Issues & Fixes</Text>
+              {[
+                {
+                  icon: "🔄", title: "App shows stale or missing data",
+                  fix: "Go to Settings → Diagnostics → Refresh Everything. This clears all cached queries and reloads from the server.",
+                },
+                {
+                  icon: "😴", title: "Server takes 20–30s to respond",
+                  fix: "Railway free tier sleeps after inactivity. First request wakes it up. Upgrade to a paid Railway plan to keep it always-on.",
+                },
+                {
+                  icon: "🔐", title: "Admin panel not visible in Settings",
+                  fix: "OWNER_OPEN_ID in Railway must match your login email exactly. Open Settings once after setting it — claimAdmin runs automatically.",
+                },
+                {
+                  icon: "📧", title: "OTP emails not arriving",
+                  fix: "Check FROM_EMAIL and RESEND_API_KEY in Railway variables. In dev, the OTP prints to the server terminal instead.",
+                },
+                {
+                  icon: "📹", title: "YouTube shows only 4 old videos",
+                  fix: "The server-side RSS proxy may be slow. Pull to refresh on the Videos tab. If it persists, check Railway logs for errors in the feed router.",
+                },
+                {
+                  icon: "⚪", title: "Blank screen or app frozen",
+                  fix: "Force-close and reopen the app. If that fails, go to Settings → Diagnostics → Refresh Everything to reset all query state.",
+                },
+              ].map((item, i) => (
+                <View key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottomWidth: i < 5 ? 1 : 0, borderBottomColor: "#1e293b" }}>
+                  <Text style={{ color: "#e2e8f0", fontSize: 14, fontWeight: "700", marginBottom: 4 }}>{item.icon} {item.title}</Text>
+                  <Text style={{ color: "#64748b", fontSize: 12, lineHeight: 18 }}>→ {item.fix}</Text>
+                </View>
+              ))}
+            </View>
+
           </View>
         )}
 

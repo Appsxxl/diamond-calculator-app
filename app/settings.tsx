@@ -21,6 +21,7 @@ import Constants from "expo-constants";
 import type { OfficeLocation } from "@/lib/calculator-context";
 import { useUserStatus } from "@/hooks/use-user-status";
 import { trpc } from "@/lib/trpc";
+import { useQueryClient } from "@tanstack/react-query";
 
 const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[] = [
   { id: "dubai", label: "🇦🇪 Dubai, UAE", city: "Dubai Freezone", reg: "DMCC-1007195 · SIRA Certified" },
@@ -32,9 +33,45 @@ const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[
 export default function SettingsScreen() {
   const router = useRouter();
   const { language, setLanguage, clearCalculation, partnerMode, enablePartnerMode, disablePartnerMode, officeLocation, setOfficeLocation } = useCalculator();
+  const queryClient = useQueryClient();
   const { isTeam, isLoading: statusLoading } = useUserStatus();
   const { data: me, refetch: refetchMe } = trpc.auth.me.useQuery();
   const claimAdmin = trpc.activation.claimAdmin.useMutation({ onSuccess: () => refetchMe() });
+
+  const [diagStatus, setDiagStatus] = useState<"idle" | "checking" | "ok" | "error">("idle");
+  const [diagInfo, setDiagInfo] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefreshAll = async () => {
+    setRefreshing(true);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    await queryClient.invalidateQueries();
+    await queryClient.refetchQueries({ type: "active" });
+    setTimeout(() => setRefreshing(false), 1200);
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const handleCheckServer = async () => {
+    setDiagStatus("checking");
+    setDiagInfo(null);
+    const start = Date.now();
+    try {
+      const res = await fetch(`${require("@/constants/oauth").getApiBaseUrl()}/api/trpc/system.diagnostics?input=${encodeURIComponent(JSON.stringify({ json: {} }))}`, { signal: AbortSignal.timeout(8000) });
+      const ms = Date.now() - start;
+      if (res.ok) {
+        const json = await res.json();
+        const d = json?.result?.data?.json;
+        setDiagStatus("ok");
+        setDiagInfo(`Server OK · ${ms}ms · uptime ${d?.uptimeMinutes ?? "?"}min · ${d?.env ?? ""}`);
+      } else {
+        setDiagStatus("error");
+        setDiagInfo(`HTTP ${res.status} · ${ms}ms`);
+      }
+    } catch (e: unknown) {
+      setDiagStatus("error");
+      setDiagInfo(e instanceof Error ? e.message : "Connection failed");
+    }
+  };
 
   useEffect(() => {
     if (me && me.role !== "admin") {
@@ -378,6 +415,55 @@ export default function SettingsScreen() {
             <Text style={S.articleTitle}>{t(language, "viewOnboarding") || "View Introduction"}</Text>
             <Text style={S.articleChevron}>›</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* Diagnostics & Recovery */}
+        <View style={S.section}>
+          {sectionTitle("DIAGNOSTICS & RECOVERY")}
+          <View style={S.card}>
+
+            {/* Refresh all */}
+            <TouchableOpacity onPress={handleRefreshAll} activeOpacity={0.8}
+              style={[S.listRow, S.listRowBorder, refreshing && { opacity: 0.6 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={S.listLabel}>🔄 Refresh Everything</Text>
+                <Text style={S.listSub}>Clears all cached data and reloads from the server. Use when the app shows stale or missing data.</Text>
+              </View>
+              {refreshing && <Text style={{ color: "#4ade80", fontSize: 13, fontWeight: "700" }}>Done ✓</Text>}
+            </TouchableOpacity>
+
+            {/* Server ping */}
+            <TouchableOpacity onPress={handleCheckServer} activeOpacity={0.8}
+              style={[S.listRow, S.listRowBorder, diagStatus === "checking" && { opacity: 0.6 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={S.listLabel}>📡 Check Server</Text>
+                <Text style={S.listSub}>
+                  {diagStatus === "idle"    ? "Ping the API server to verify it is reachable." :
+                   diagStatus === "checking" ? "Checking…" :
+                   diagStatus === "ok"      ? `✅ ${diagInfo}` :
+                   `❌ ${diagInfo}`}
+                </Text>
+              </View>
+              <Text style={{ color: diagStatus === "ok" ? "#4ade80" : diagStatus === "error" ? "#f87171" : "#64748b", fontSize: 18 }}>
+                {diagStatus === "ok" ? "✓" : diagStatus === "error" ? "✕" : "›"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Common fixes */}
+            <TouchableOpacity activeOpacity={0.8} style={S.listRow}
+              onPress={() => Alert.alert(
+                "Common Fixes",
+                "1. App shows old data → tap Refresh Everything above.\n\n2. Login screen keeps appearing → your session expired, log in again.\n\n3. Videos show only 4 old clips → server may be waking up, wait 30 seconds and pull to refresh.\n\n4. Admin panel not visible → make sure OWNER_OPEN_ID is set in Railway and open Settings once to trigger auto-claim.\n\n5. Emails not arriving → check FROM_EMAIL and RESEND_API_KEY in Railway variables.\n\n6. Blank screen on open → force-close the app and reopen. If it persists, tap Refresh Everything.",
+                [{ text: "Got it", style: "default" }]
+              )}>
+              <View style={{ flex: 1 }}>
+                <Text style={S.listLabel}>🛠 Common Fixes</Text>
+                <Text style={S.listSub}>Tap to see solutions for the most common issues.</Text>
+              </View>
+              <Text style={S.articleChevron}>›</Text>
+            </TouchableOpacity>
+
+          </View>
         </View>
 
         {/* Data Management */}
