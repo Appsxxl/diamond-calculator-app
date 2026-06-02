@@ -15,7 +15,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Strategic Wealth Optimization",
+    welcomeSubtitle: "Strategic Scenario Planning",
     familyIncomeTagline: "Build Your Family's Monthly Income with Diamonds",
     startCalculation: "Start Calculation",
     recentCalculations: "Recent Calculations",
@@ -150,7 +150,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "App Name",
     versionLabel: "Version",
     descriptionLabel: "Description",
-    appDescription: "Plan B — Strategic wealth optimization simulator with multi-language support and advanced financial calculations.",
+    appDescription: "Plan B — Strategic scenario planning simulator with multi-language support and advanced calculations.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Goal Planning",
@@ -587,7 +587,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Strategische Vermogensoptimalisatie",
+    welcomeSubtitle: "Strategische Scenario Planning",
     familyIncomeTagline: "Bouw het Maandinkomen van uw Gezin op met Diamanten",
     startCalculation: "Berekening Starten",
     recentCalculations: "Recente Berekeningen",
@@ -724,7 +724,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "App Naam",
     versionLabel: "Versie",
     descriptionLabel: "Beschrijving",
-    appDescription: "Strategische vermogensoptimalisatiesimulator met meertalige ondersteuning en geavanceerde financiële berekeningen.",
+    appDescription: "Plan B — Strategische scenarioplanningsimulator met meertalige ondersteuning en geavanceerde berekeningen.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Doelplanning",
@@ -1144,7 +1144,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Strategische Vermögensoptimierung",
+    welcomeSubtitle: "Strategische Szenarioplanung",
     familyIncomeTagline: "Bauen Sie das Monatseinkommen Ihrer Familie mit Diamanten auf",
     startCalculation: "Berechnung Starten",
     recentCalculations: "Letzte Berechnungen",
@@ -1281,7 +1281,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "App-Name",
     versionLabel: "Version",
     descriptionLabel: "Beschreibung",
-    appDescription: "Strategischer Vermögensoptimierungssimulator mit mehrsprachiger Unterstützung und erweiterten Finanzberechnungen.",
+    appDescription: "Plan B — Strategischer Szenario-Planungssimulator mit mehrsprachiger Unterstützung und fortschrittlichen Berechnungen.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Zielplanung",
@@ -1701,7 +1701,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Optimisation Stratégique de la Richesse",
+    welcomeSubtitle: "Planification Stratégique de Scénarios",
     familyIncomeTagline: "Construisez le Revenu Mensuel de votre Famille avec des Diamants",
     startCalculation: "Commencer le Calcul",
     recentCalculations: "Calculs Récents",
@@ -1838,7 +1838,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Nom de l'application",
     versionLabel: "Version",
     descriptionLabel: "Description",
-    appDescription: "Simulateur d'optimisation stratégique de la richesse avec support multilingue et calculs financiers avancés.",
+    appDescription: "Plan B — Simulateur stratégique de planification de scénarios avec prise en charge multilingue et calculs avancés.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Planification d'objectifs",
@@ -2258,7 +2258,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Optimización Estratégica de la Riqueza",
+    welcomeSubtitle: "Planificación Estratégica de Escenarios",
     familyIncomeTagline: "Construya los Ingresos Mensuales de su Familia con Diamantes",
     startCalculation: "Iniciar Cálculo",
     recentCalculations: "Cálculos Recientes",
@@ -2395,7 +2395,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Nombre de la App",
     versionLabel: "Versión",
     descriptionLabel: "Descripción",
-    appDescription: "Simulador estratégico de optimización de riqueza con soporte multilingüe y cálculos financieros avanzados.",
+    appDescription: "Plan B — Simulador estratégico de planificación de escenarios con soporte multilingüe y cálculos avanzados.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Planificación de Objetivos",
@@ -2814,7 +2814,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Стратегическая оптимизация капитала",
+    welcomeSubtitle: "Стратегическое сценарное планирование",
     familyIncomeTagline: "Создайте ежемесячный доход вашей семьи с помощью алмазов",
     startCalculation: "Начать расчёт",
     recentCalculations: "Недавние расчёты",
@@ -2951,7 +2951,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Название приложения",
     versionLabel: "Версия",
     descriptionLabel: "Описание",
-    appDescription: "Plan B — стратегический симулятор оптимизации капитала с многоязычной поддержкой.",
+    appDescription: "Plan B — Стратегический симулятор сценарного планирования с многоязычной поддержкой и расширенными расчётами.",
 
     // Strategy Engineer Result Strings
     seSubtitle: "Планирование целей",
@@ -3367,7 +3367,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Home Screen
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "战略财富优化",
+    welcomeSubtitle: "战略情景规划",
     familyIncomeTagline: "用钻石打造您家庭的月收入",
     startCalculation: "开始计算",
     recentCalculations: "最近计算",
@@ -3504,7 +3504,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "应用名称",
     versionLabel: "版本",
     descriptionLabel: "描述",
-    appDescription: "Plan B — 多语言战略财富优化模拟器。",
+    appDescription: "Plan B — 具有多语言支持和高级计算功能的战略情景规划模拟器。",
 
     // Strategy Engineer Result Strings
     seSubtitle: "目标规划",
@@ -3914,7 +3914,7 @@ export const translations: Record<Language, Record<string, string>> = {
   // ─── Filipino / Tagalog ──────────────────────────────────────────────────
   tl: {
     welcomeTitle: "Maligayang pagdating sa Plan B",
-    welcomeSubtitle: "Ang iyong pisikal na kayamanan",
+    welcomeSubtitle: "Estratehikong Pagpaplano ng Senaryo",
     familyIncomeTagline: "Itayo ang Buwanang Kita ng Iyong Pamilya sa Pamamagitan ng Diamonds",
     goalCards: "Mga Layunin",
     goalCardsSubtitle: "Piliin ang iyong diskarte",
@@ -4081,7 +4081,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Pangalan ng App",
     versionLabel: "Bersyon",
     descriptionLabel: "Paglalarawan",
-    appDescription: "Plan B — Strategic wealth optimization simulator na may suporta sa maraming wika at advanced na kalkulasyong pinansyal.",
+    appDescription: "Plan B — Estratehikong simulator ng pagpaplano ng senaryo na may suporta sa maraming wika at mga advanced na kalkulasyon.",
     seSubtitle: "Pagpaplano ng Layunin",
     seReadiness: "KAHANDAAN",
     seReadinessLabel: "ng iyong layunin ay natutugunan na ng iyong kasalukuyang deposito",
@@ -4439,7 +4439,7 @@ export const translations: Record<Language, Record<string, string>> = {
   // ─── Portuguese ──────────────────────────────────────────────────────────
   pt: {
     welcomeTitle: "Bem-vindo ao Plan B",
-    welcomeSubtitle: "O seu activo físico de riqueza",
+    welcomeSubtitle: "Planeamento Estratégico de Cenários",
     familyIncomeTagline: "Construa a Renda Mensal da sua Família com Diamantes",
     goalCards: "Objetivos",
     goalCardsSubtitle: "Escolha a sua estratégia",
@@ -4606,7 +4606,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Nome da App",
     versionLabel: "Versão",
     descriptionLabel: "Descrição",
-    appDescription: "Plan B — Simulador estratégico de otimização de riqueza com suporte multilingue e cálculos financeiros avançados.",
+    appDescription: "Plan B — Simulador estratégico de planeamento de cenários com suporte multilíngue e cálculos avançados.",
     seSubtitle: "Planeamento de Objetivos",
     seReadiness: "PRONTIDÃO",
     seReadinessLabel: "do seu objetivo já está coberto pelo seu depósito atual",
@@ -4964,7 +4964,7 @@ export const translations: Record<Language, Record<string, string>> = {
   // ─── Arabic ──────────────────────────────────────────────────────────────
   ar: {
     welcomeTitle: "مرحباً بك في الخطة ب",
-    welcomeSubtitle: "أصلك المادي من الثروة",
+    welcomeSubtitle: "التخطيط الاستراتيجي للسيناريوهات",
     familyIncomeTagline: "ابنِ دخلاً شهرياً لعائلتك مع الماس",
     goalCards: "الأهداف",
     goalCardsSubtitle: "اختر استراتيجيتك",
@@ -5131,7 +5131,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "اسم التطبيق",
     versionLabel: "الإصدار",
     descriptionLabel: "الوصف",
-    appDescription: "Plan B — محاكي استراتيجي لتحسين الثروة مع دعم متعدد اللغات وحسابات مالية متقدمة.",
+    appDescription: "Plan B — محاكي استراتيجي لتخطيط السيناريوهات مع دعم متعدد اللغات وحسابات متقدمة.",
     seSubtitle: "تخطيط الأهداف",
     seReadiness: "الجاهزية",
     seReadinessLabel: "من هدفك تم تغطيته بالفعل من خلال إيداعك الحالي",
@@ -5488,7 +5488,7 @@ export const translations: Record<Language, Record<string, string>> = {
   // ─── Thai ─────────────────────────────────────────────────────────────────
   th: {
     welcomeTitle: "ยินดีต้อนรับสู่ Plan B",
-    welcomeSubtitle: "สินทรัพย์ทางกายภาพของคุณ",
+    welcomeSubtitle: "การวางแผนสถานการณ์เชิงกลยุทธ์",
     familyIncomeTagline: "สร้างรายได้รายเดือนให้ครอบครัวของคุณด้วยเพชร",
     goalCards: "เป้าหมาย",
     goalCardsSubtitle: "เลือกกลยุทธ์ของคุณ",
@@ -5655,7 +5655,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "ชื่อแอป",
     versionLabel: "เวอร์ชัน",
     descriptionLabel: "คำอธิบาย",
-    appDescription: "Plan B — โปรแกรมจำลองการเพิ่มประสิทธิภาพความมั่งคั่งเชิงกลยุทธ์พร้อมรองรับหลายภาษาและการคำนวณทางการเงินขั้นสูง",
+    appDescription: "Plan B — เครื่องจำลองการวางแผนสถานการณ์เชิงกลยุทธ์พร้อมรองรับหลายภาษาและการคำนวณขั้นสูง",
     seSubtitle: "การวางแผนเป้าหมาย",
     seReadiness: "ความพร้อม",
     seReadinessLabel: "ของเป้าหมายของคุณได้รับการตอบสนองด้วยเงินฝากปัจจุบันแล้ว",
@@ -6012,7 +6012,7 @@ export const translations: Record<Language, Record<string, string>> = {
   // ─── Hindi ────────────────────────────────────────────────────────────────
   hi: {
     welcomeTitle: "Plan B में आपका स्वागत है",
-    welcomeSubtitle: "आपकी भौतिक संपत्ति",
+    welcomeSubtitle: "रणनीतिक परिदृश्य नियोजन",
     familyIncomeTagline: "हीरों से अपने परिवार की मासिक आय बनाएं",
     goalCards: "लक्ष्य",
     goalCardsSubtitle: "अपनी रणनीति चुनें",
@@ -6179,7 +6179,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "ऐप का नाम",
     versionLabel: "संस्करण",
     descriptionLabel: "विवरण",
-    appDescription: "Plan B — बहु-भाषा समर्थन और उन्नत वित्तीय गणनाओं के साथ रणनीतिक संपत्ति अनुकूलन सिम्युलेटर।",
+    appDescription: "Plan B — बहु-भाषा समर्थन और उन्नत गणनाओं के साथ रणनीतिक परिदृश्य नियोजन सिम्युलेटर।",
     seSubtitle: "लक्ष्य योजना",
     seReadiness: "तैयारी",
     seReadinessLabel: "आपके लक्ष्य का पहले से ही आपकी वर्तमान जमा राशि द्वारा पूरा किया जा रहा है",
@@ -6541,7 +6541,7 @@ export const translations: Record<Language, Record<string, string>> = {
     strategyEngineer: "Architetto Plan B",
     settings: "Impostazioni",
     welcomeTitle: "Plan B",
-    welcomeSubtitle: "Ottimizzazione Patrimoniale Strategica",
+    welcomeSubtitle: "Pianificazione Strategica degli Scenari",
     familyIncomeTagline: "Costruisci il Reddito Mensile della tua Famiglia con i Diamanti",
     startCalculation: "Inizia Calcolo",
     recentCalculations: "Calcoli Recenti",
@@ -6644,7 +6644,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Nome App",
     versionLabel: "Versione",
     descriptionLabel: "Descrizione",
-    appDescription: "Plan B — Simulatore di ottimizzazione patrimoniale strategica con supporto multilingua e calcoli finanziari avanzati.",
+    appDescription: "Plan B — Simulatore strategico di pianificazione scenari con supporto multilingue e calcoli avanzati.",
     seSubtitle: "Pianificazione Obiettivi",
     seReadiness: "PRONTEZZA",
     seReadinessLabel: "del tuo obiettivo è già soddisfatto dal tuo deposito attuale",
@@ -7060,7 +7060,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
   vi: {
     welcomeTitle: "Chào mừng đến với Plan B",
-    welcomeSubtitle: "Tài sản vật chất của bạn",
+    welcomeSubtitle: "Lập kế hoạch tình huống chiến lược",
     familyIncomeTagline: "Xây Dựng Thu Nhập Hàng Tháng Cho Gia Đình Bạn Với Kim Cương",
     goalCards: "Mục tiêu",
     goalCardsSubtitle: "Chọn chiến lược của bạn",
@@ -7227,7 +7227,7 @@ export const translations: Record<Language, Record<string, string>> = {
     appNameLabel: "Tên Ứng Dụng",
     versionLabel: "Phiên Bản",
     descriptionLabel: "Mô Tả",
-    appDescription: "Plan B — Trình mô phỏng tối ưu hóa tài sản chiến lược với hỗ trợ đa ngôn ngữ và tính toán tài chính nâng cao.",
+    appDescription: "Plan B — Trình mô phỏng lập kế hoạch tình huống chiến lược với hỗ trợ đa ngôn ngữ và tính toán nâng cao.",
     seSubtitle: "Lập Kế Hoạch Mục Tiêu",
     seReadiness: "SẴN SÀNG",
     seReadinessLabel: "mục tiêu của bạn đã được đáp ứng bởi khoản tiền gửi hiện tại",

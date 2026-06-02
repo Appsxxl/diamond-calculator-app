@@ -175,7 +175,7 @@ function getArticle(articleId: string, lang: string): Article {
     },
     "2": {
       en: {
-        title: "Understanding Investment Strategies",
+        title: "Understanding Planning Strategies",
         sections: [
           {
             heading: "The 4 Strategic Plans",

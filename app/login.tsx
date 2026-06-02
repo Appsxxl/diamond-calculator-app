@@ -96,7 +96,7 @@ export default function LoginScreen() {
         {/* Logo / title */}
         <View className="mb-10 items-center">
           <Text className="text-4xl font-bold text-foreground">Plan B</Text>
-          <Text className="mt-2 text-base text-muted">Strategic Wealth Optimisation</Text>
+          <Text className="mt-2 text-base text-muted">Strategic Scenario Planning</Text>
         </View>
 
         {stage === "email" && (
