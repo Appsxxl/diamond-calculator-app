@@ -72,10 +72,10 @@ async function startServer() {
     }),
   );
 
-  const port = parseInt(process.env.PORT || "3000");
+  const port = parseInt(process.env.PORT ?? "3000", 10);
 
   server.listen(port, "0.0.0.0", () => {
-    console.log(`[api] server listening on 0.0.0.0:${port}`);
+    console.log(`[api] server listening on 0.0.0.0:${port} (PORT env: ${process.env.PORT})`);
   });
 }
 
