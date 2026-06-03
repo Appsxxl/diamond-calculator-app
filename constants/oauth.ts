@@ -2,6 +2,8 @@ import * as ReactNative from "react-native";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? "";
 
+const RAILWAY_URL = "https://diamond-calculator-app-production.up.railway.app";
+
 export function getApiBaseUrl(): string {
   if (API_BASE_URL) return API_BASE_URL.replace(/\/$/, "");
 
@@ -12,9 +14,11 @@ export function getApiBaseUrl(): string {
     }
     const apiHostname = hostname.replace(/^8081-/, "3000-");
     if (apiHostname !== hostname) return `${protocol}//${apiHostname}`;
+    // pages.dev and any other production web deployment → Railway
+    return RAILWAY_URL;
   }
 
-  return "";
+  return RAILWAY_URL;
 }
 
 export const SESSION_TOKEN_KEY = "app_session_token";
