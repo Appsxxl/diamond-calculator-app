@@ -37,7 +37,7 @@ function buildEmailHtml(verifyUrl: string, otp: string): string {
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
         <tr><td style="padding-bottom:32px;text-align:center">
           <p style="margin:0;font-size:22px;font-weight:700;color:#f1f5f9;letter-spacing:-0.3px">Plan B</p>
-          <p style="margin:6px 0 0;font-size:13px;color:#64748b;letter-spacing:0.3px">STRATEGIC WEALTH OPTIMISATION</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#64748b;letter-spacing:0.3px">STRATEGIC SCENARIO PLANNING</p>
         </td></tr>
         <tr><td style="background:#1e293b;border-radius:16px;border:1px solid #1e3a5f;padding:36px 32px">
           <p style="margin:0 0 8px;font-size:20px;font-weight:700;color:#f1f5f9">Your sign-in link</p>
