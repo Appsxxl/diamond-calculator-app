@@ -20,6 +20,7 @@ import Constants from "expo-constants";
 import type { OfficeLocation } from "@/lib/calculator-context";
 import { useUserStatus } from "@/hooks/use-user-status";
 import { trpc } from "@/lib/trpc";
+import * as Auth from "@/lib/_core/auth";
 
 const OFFICES: { id: OfficeLocation; label: string; city: string; reg: string }[] = [
   { id: "dubai", label: "🇦🇪 Dubai, UAE", city: "Dubai Freezone", reg: "DMCC-1007195 · SIRA Certified" },
@@ -34,6 +35,28 @@ export default function SettingsScreen() {
   const { isTeam, daysLeft, isExpired, isLoading: statusLoading } = useUserStatus();
   const { data: me } = trpc.auth.me.useQuery();
   const isAdmin = me?.role === "admin";
+  const logoutMutation = trpc.auth.logout.useMutation();
+  const utils = trpc.useUtils();
+
+  const handleLogout = () => {
+    const doLogout = async () => {
+      try {
+        await logoutMutation.mutateAsync();
+      } catch {}
+      await Auth.removeSessionToken();
+      await Auth.clearUserInfo();
+      utils.auth.me.setData(undefined, null as any);
+      router.replace("/login" as any);
+    };
+    if (Platform.OS === "web") {
+      if (window.confirm("Sign out of Plan B?")) doLogout();
+    } else {
+      Alert.alert("Sign Out", "Are you sure you want to sign out?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Sign Out", style: "destructive", onPress: doLogout },
+      ]);
+    }
+  };
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState("");
@@ -441,6 +464,22 @@ export default function SettingsScreen() {
           >
             <Text style={S.dangerBtnText}>{t(language, "clearHistory")}</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* Sign Out */}
+        <View style={S.section}>
+          <TouchableOpacity
+            onPress={handleLogout}
+            activeOpacity={0.8}
+            style={[S.dangerBtn, { borderColor: "#64748b", marginBottom: 8 }]}
+          >
+            <Text style={[S.dangerBtnText, { color: "#94a3b8" }]}>Sign Out</Text>
+          </TouchableOpacity>
+          {me?.email && (
+            <Text style={{ color: "#475569", fontSize: 13, textAlign: "center", marginTop: 6 }}>
+              Signed in as {me.email}
+            </Text>
+          )}
         </View>
 
       </ScrollView>
