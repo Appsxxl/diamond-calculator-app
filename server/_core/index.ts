@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import { getMagicLinkByToken, markMagicLinkUsed } from "../db";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -62,6 +63,39 @@ async function startServer() {
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now() });
+  });
+
+  app.get("/auth/verify", async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : null;
+    const html = (title: string, msg: string, ok: boolean) => `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title} — Plan B</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.card{background:#1e293b;border:1px solid #1e3a5f;border-radius:16px;padding:40px 32px;max-width:420px;width:90%;text-align:center}
+h1{color:#f1f5f9;font-size:22px;margin:0 0 12px}p{color:#94a3b8;font-size:15px;line-height:1.6;margin:0 0 24px}
+.badge{display:inline-block;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700}
+.ok{background:rgba(16,185,129,0.15);color:#10b981}.err{background:rgba(239,68,68,0.15);color:#ef4444}</style>
+</head><body><div class="card">
+<p style="color:#64748b;font-size:13px;margin-bottom:16px">PLAN B</p>
+<h1>${title}</h1><p>${msg}</p>
+<span class="badge ${ok ? "ok" : "err"}">${ok ? "✓ Verified" : "✗ Invalid"}</span>
+</div></body></html>`;
+
+    if (!token) {
+      res.status(400).send(html("Invalid Link", "No token was provided. Please request a new sign-in link.", false));
+      return;
+    }
+    try {
+      const record = await getMagicLinkByToken(token);
+      if (!record || record.usedAt || record.expiresAt < new Date()) {
+        res.status(400).send(html("Link Expired", "This sign-in link has already been used or has expired. Open the Plan B app and request a new one.", false));
+        return;
+      }
+      await markMagicLinkUsed(record.id);
+      res.send(html("Signed In!", "Your sign-in link was verified. Open the Plan B app — you are now signed in. You can close this page.", true));
+    } catch {
+      res.status(500).send(html("Error", "Something went wrong. Please try again.", false));
+    }
   });
 
   app.use(
