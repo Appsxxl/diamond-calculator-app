@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import * as Clipboard from "expo-clipboard";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 
@@ -342,11 +343,25 @@ export default function AdminScreen() {
                 return (
                   <View key={user.id} style={S.userCard}>
                     <View style={{ flex: 1, gap: 4 }}>
-                      <Text style={S.userName} numberOfLines={1}>
-                        {user.name ?? user.email ?? `User #${user.id}`}
-                      </Text>
-                      {user.email && user.name && (
-                        <Text style={S.userEmail} numberOfLines={1}>{user.email}</Text>
+                      {user.name && (
+                        <Text style={S.userName} numberOfLines={1}>{user.name}</Text>
+                      )}
+                      {user.email ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            Clipboard.setStringAsync(user.email!).then(() =>
+                              Alert.alert("Copied", `${user.email} copied to clipboard.`)
+                            );
+                          }}
+                          activeOpacity={0.7}
+                        >
+                          <Text style={[S.userEmail, { color: "#e2e8f0", fontSize: 14 }]} numberOfLines={1}>
+                            {user.email}
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <Text style={S.userName} numberOfLines={1}>{`User #${user.id}`}</Text>
                       )}
                       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
                         <StatusBadge status={isExpired ? "expired" : (user.status ?? "trial")} />
