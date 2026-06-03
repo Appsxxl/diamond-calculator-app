@@ -92,7 +92,7 @@ h1{color:#f1f5f9;font-size:22px;margin:0 0 12px}p{color:#94a3b8;font-size:15px;l
         return;
       }
       await markMagicLinkUsed(record.id);
-      res.send(html("Signed In!", "Your sign-in link was verified. Open the Plan B app — you are now signed in. You can close this page.", true));
+      res.send(html("Link Verified", "Your link is valid. Return to the Plan B app and enter the 6-digit code from your email to complete sign-in.", true));
     } catch {
       res.status(500).send(html("Error", "Something went wrong. Please try again.", false));
     }
