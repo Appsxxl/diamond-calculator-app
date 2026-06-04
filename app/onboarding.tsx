@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Modal,
   Pressable,
+  Platform,
 } from "react-native";
 import { useRouter, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -80,7 +81,9 @@ export default function OnboardingScreen() {
 
   const [subtitle, setSubtitle] = useState("");
 
+  // Native: poll player.currentTime for subtitle sync
   useEffect(() => {
+    if (Platform.OS === "web") return;
     const interval = setInterval(() => {
       const t = player.currentTime;
       const cue = SUBTITLES.find((s) => t >= s.start && t < s.end);
@@ -88,6 +91,13 @@ export default function OnboardingScreen() {
     }, 80);
     return () => clearInterval(interval);
   }, [player]);
+
+  // Web: subtitle sync via onTimeUpdate on the <video> element
+  const handleWebTimeUpdate = (e: any) => {
+    const t = e.target.currentTime as number;
+    const cue = SUBTITLES.find((s) => t >= s.start && t < s.end);
+    setSubtitle(cue?.text ?? "");
+  };
 
   const canGoBack = navigation.canGoBack();
   const tr = (key: string) => t(language, key);
@@ -144,12 +154,25 @@ export default function OnboardingScreen() {
 
         {/* Hero Video */}
         <View style={S.videoContainer}>
-          <VideoView
-            player={player}
-            style={S.video}
-            contentFit="cover"
-            nativeControls={false}
-          />
+          {Platform.OS === "web"
+            ? React.createElement("video", {
+                src: require("@/assets/onboarding/intro.mp4"),
+                autoPlay: true,
+                muted: true,
+                playsInline: true,
+                loop: false,
+                onTimeUpdate: handleWebTimeUpdate,
+                style: { width: "100%", height: "100%", objectFit: "cover" },
+              })
+            : (
+              <VideoView
+                player={player}
+                style={S.video}
+                contentFit="cover"
+                nativeControls={false}
+              />
+            )
+          }
           {subtitle ? (
             <View style={S.subtitleBar}>
               <Text style={S.subtitleText}>{subtitle}</Text>
