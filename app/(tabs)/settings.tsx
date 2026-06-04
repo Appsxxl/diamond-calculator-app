@@ -591,7 +591,7 @@ const S = {
   backArrow: { fontSize: 22, color: "#e2e8f0" },
   headerTitle: { fontSize: 22, fontWeight: "700" as const, color: "#e2e8f0", flex: 1 },
   section: { paddingHorizontal: 24, paddingTop: 28 },
-  sectionTitle: { fontSize: 13, fontWeight: "700" as const, color: "#64748b", letterSpacing: 1, marginBottom: 8 },
+  sectionTitle: { fontSize: 13, fontWeight: "600" as const, color: "#64748b", letterSpacing: 0.5, marginBottom: 8 },
   sectionDesc: { fontSize: 14, color: "#64748b", marginBottom: 10, lineHeight: 20 },
   card: { backgroundColor: "#1e293b", borderRadius: 14, borderWidth: 1, borderColor: "#334155", overflow: "hidden" as const },
   listRow: {
@@ -612,13 +612,15 @@ const S = {
   toggleBtn: {
     backgroundColor: "#0f172a",
     borderRadius: 8,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "#334155",
+    minWidth: 76,
+    alignItems: "center" as const,
   },
   toggleBtnActive: { backgroundColor: "rgba(239,68,68,0.1)", borderColor: "#ef4444" },
-  toggleBtnText: { fontSize: 14, fontWeight: "bold" as const, color: "#94a3b8" },
+  toggleBtnText: { fontSize: 13, fontWeight: "600" as const, color: "#94a3b8" },
   toggleBtnTextActive: { color: "#f87171" },
   aboutRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 4 },
   aboutLabel: { fontSize: 14, color: "#64748b" },
@@ -646,7 +648,7 @@ const S = {
     paddingVertical: 16,
     alignItems: "center" as const,
   },
-  dangerBtnText: { color: "#f87171", fontWeight: "bold" as const, fontSize: 17 },
+  dangerBtnText: { color: "#f87171", fontWeight: "600" as const, fontSize: 15 },
   // PIN Modal
   modalOverlay: {
     flex: 1,

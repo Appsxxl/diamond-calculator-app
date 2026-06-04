@@ -95,7 +95,11 @@ export default function LoginScreen() {
       >
         {/* Logo / title */}
         <View className="mb-10 items-center">
-          <Text className="text-4xl font-bold text-foreground">Plan B</Text>
+          <Text
+            style={{ fontSize: 34, fontWeight: "600", color: "#f1f5f9" }}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >Plan B</Text>
           <Text className="mt-2 text-base text-muted">Strategic Scenario Planning</Text>
         </View>
 

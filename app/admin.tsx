@@ -39,7 +39,7 @@ function StatusBadge({ status }: { status: string | null }) {
   const cfg = map[s] ?? map["trial"];
   return (
     <View style={{ backgroundColor: cfg.bg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
-      <Text style={{ fontSize: 11, fontWeight: "700", color: cfg.color, letterSpacing: 0.5 }}>
+      <Text style={{ fontSize: 11, fontWeight: "600", color: cfg.color }}>
         {cfg.label}
       </Text>
     </View>
@@ -270,8 +270,8 @@ export default function AdminScreen() {
             <Text style={S.backArrow}>←</Text>
           </Pressable>
           <Text style={S.headerTitle}>Admin Panel</Text>
-          <TouchableOpacity onPress={() => { refetchUsers(); refetchCodes(); }} activeOpacity={0.7}>
-            <Text style={{ color: "#64748b", fontSize: 14 }}>Refresh</Text>
+          <TouchableOpacity onPress={() => { refetchUsers(); refetchCodes(); }} activeOpacity={0.7} style={{ flexShrink: 0 }}>
+            <Text style={{ color: "#64748b", fontSize: 14 }} numberOfLines={1}>Refresh</Text>
           </TouchableOpacity>
         </View>
 
@@ -372,7 +372,7 @@ export default function AdminScreen() {
                           <Text style={S.trialDays}>{left}d left</Text>
                         )}
                         {user.role === "admin" && (
-                          <Text style={{ fontSize: 11, color: "#64748b", fontWeight: "600" }}>ADMIN</Text>
+                          <Text style={{ fontSize: 11, color: "#64748b", fontWeight: "600", flexShrink: 0 }}>ADMIN</Text>
                         )}
                       </View>
                     </View>
