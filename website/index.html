@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan B — Strategic Portfolio Planning</title>
+  <meta name="description" content="Real, physical diamonds. A timeless asset that protects and completes your wealth in an uncertain world." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0f1e;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo span { font-size: 20px; font-weight: 700; color: #f1f5f9; letter-spacing: 0.5px; }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 15px; transition: color 0.2s; }
+    .nav-links a:hover { color: #f1f5f9; }
+
+    /* HERO */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.3);
+      color: #f59e0b;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: #f59e0b;
+    }
+    .hero p {
+      font-size: clamp(16px, 2vw, 19px);
+      color: #94a3b8;
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 44px;
+    }
+    .btn-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: #f59e0b;
+      color: #0a0f1e;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f1f5f9;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* PILLARS */
+    .pillars {
+      padding: 80px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #475569;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      margin-bottom: 56px;
+      letter-spacing: -0.5px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #131c30;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      padding: 28px 24px;
+      border-top: 3px solid var(--accent);
+    }
+    .card-icon { font-size: 32px; margin-bottom: 16px; }
+    .card-title { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .card-desc { font-size: 14px; color: #94a3b8; line-height: 1.6; }
+
+    /* DOWNLOAD */
+    .download {
+      background: linear-gradient(135deg, #0c1a2e 0%, #0f172a 100%);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .download h2 { font-size: clamp(26px, 4vw, 38px); font-weight: 700; margin-bottom: 16px; }
+    .download p { color: #94a3b8; font-size: 16px; margin-bottom: 36px; }
+    .platforms { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 14px 24px;
+      text-decoration: none;
+      color: #f1f5f9;
+      transition: border-color 0.2s;
+      min-width: 180px;
+    }
+    .platform-btn:hover { border-color: #f59e0b; }
+    .platform-icon { font-size: 28px; }
+    .platform-text small { display: block; font-size: 11px; color: #64748b; margin-bottom: 2px; }
+    .platform-text strong { font-size: 16px; font-weight: 700; }
+    .coming-soon { opacity: 0.45; pointer-events: none; }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer p { font-size: 13px; color: #475569; }
+    footer a { color: #64748b; text-decoration: none; font-size: 13px; }
+    footer a:hover { color: #94a3b8; }
+    .footer-links { display: flex; gap: 20px; }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="/">
+      <span>💎 Plan B</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#pillars">Features</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="mailto:stigapp@xelo.media">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="badge">Strategic Portfolio Planning</div>
+    <h1>The 4 Pillars of a<br /><em>Strong Portfolio</em></h1>
+    <p>A strong portfolio needs more than stocks and digital numbers. Plan B gives you the missing piece: real, physical diamonds you can actually hold.</p>
+    <div class="btn-group">
+      <a href="#download" class="btn-primary">📱 Download the App</a>
+      <a href="#pillars" class="btn-secondary">Learn More</a>
+    </div>
+  </section>
+
+  <section class="pillars" id="pillars">
+    <p class="section-label">Why Plan B</p>
+    <h2 class="section-title">Built for serious investors</h2>
+    <div class="grid">
+      <div class="card" style="--accent:#f59e0b">
+        <div class="card-icon">💰</div>
+        <div class="card-title">Monthly Discounts</div>
+        <div class="card-desc">Up to 6.3% strategy discount per month paid directly to your account. Exclusively on the Solution Plan.</div>
+      </div>
+      <div class="card" style="--accent:#38bdf8">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">100% Buyback Guarantee</div>
+        <div class="card-desc">Sell your physical diamonds back at the exact price you paid at the end of your 12-month contract.</div>
+      </div>
+      <div class="card" style="--accent:#a78bfa">
+        <div class="card-icon">💎</div>
+        <div class="card-title">GIA-Certified Diamonds</div>
+        <div class="card-desc">Every diamond is independently certified by the GIA. Laser-engraved, ethically sourced, fully yours from day one.</div>
+      </div>
+      <div class="card" style="--accent:#34d399">
+        <div class="card-icon">👑</div>
+        <div class="card-title">Legacy & Inheritance</div>
+        <div class="card-desc">Your diamonds are your full legal property. Keep them, sell them, or pass them to future generations.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="download" id="download">
+    <h2>Download Plan B</h2>
+    <p>Available on Android. iOS coming soon.</p>
+    <div class="platforms">
+      <a href="https://expo.dev/artifacts/eas/mPz3JpGYHSPUiMRCiSnmu.apk" class="platform-btn">
+        <span class="platform-icon">🤖</span>
+        <div class="platform-text">
+          <small>Download for</small>
+          <strong>Android</strong>
+        </div>
+      </a>
+      <div class="platform-btn coming-soon">
+        <span class="platform-icon">🍎</span>
+        <div class="platform-text">
+          <small>Coming soon</small>
+          <strong>iOS</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Xelo Media. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="mailto:stigapp@xelo.media">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>
