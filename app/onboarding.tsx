@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -80,8 +80,11 @@ export default function OnboardingScreen() {
   });
 
   const [subtitle, setSubtitle] = useState("");
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const webVideoRef = useRef<any>(null);
 
-  // Native: poll player.currentTime for subtitle sync
+  // Native: poll for subtitle sync and playing state
   useEffect(() => {
     if (Platform.OS === "web") return;
     const interval = setInterval(() => {
@@ -92,11 +95,36 @@ export default function OnboardingScreen() {
     return () => clearInterval(interval);
   }, [player]);
 
-  // Web: subtitle sync via onTimeUpdate on the <video> element
+  // Web: subtitle sync via onTimeUpdate
   const handleWebTimeUpdate = (e: any) => {
     const t = e.target.currentTime as number;
     const cue = SUBTITLES.find((s) => t >= s.start && t < s.end);
     setSubtitle(cue?.text ?? "");
+  };
+
+  const togglePlay = () => {
+    if (Platform.OS === "web") {
+      const vid = webVideoRef.current;
+      if (!vid) return;
+      if (vid.paused) { vid.play(); setIsPlaying(true); }
+      else { vid.pause(); setIsPlaying(false); }
+    } else {
+      if (isPlaying) { player.pause(); setIsPlaying(false); }
+      else { player.play(); setIsPlaying(true); }
+    }
+  };
+
+  const toggleMute = () => {
+    if (Platform.OS === "web") {
+      const vid = webVideoRef.current;
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      setIsMuted(vid.muted);
+    } else {
+      const next = !isMuted;
+      player.muted = next;
+      setIsMuted(next);
+    }
   };
 
   const canGoBack = navigation.canGoBack();
@@ -156,6 +184,7 @@ export default function OnboardingScreen() {
         <View style={S.videoContainer}>
           {Platform.OS === "web"
             ? React.createElement("video", {
+                ref: webVideoRef,
                 src: require("@/assets/onboarding/intro.mp4"),
                 autoPlay: true,
                 muted: true,
@@ -173,11 +202,21 @@ export default function OnboardingScreen() {
               />
             )
           }
-          {subtitle ? (
-            <View style={S.subtitleBar}>
-              <Text style={S.subtitleText}>{subtitle}</Text>
-            </View>
-          ) : null}
+
+          {/* Control bar: [▶/⏸]  subtitle  [🔇/🔊] */}
+          <View style={S.controlBar}>
+            <TouchableOpacity onPress={togglePlay} style={S.ctrlBtn} activeOpacity={0.75}>
+              <Text style={S.ctrlIcon}>{isPlaying ? "⏸" : "▶"}</Text>
+            </TouchableOpacity>
+
+            <Text style={S.subtitleText} numberOfLines={2}>
+              {subtitle}
+            </Text>
+
+            <TouchableOpacity onPress={toggleMute} style={S.ctrlBtn} activeOpacity={0.75}>
+              <Text style={S.ctrlIcon}>{isMuted ? "🔇" : "🔊"}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Header */}
@@ -331,22 +370,37 @@ const S = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  subtitleBar: {
+  controlBar: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(0,0,0,0.62)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  ctrlBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  ctrlIcon: {
+    fontSize: 16,
   },
   subtitleText: {
+    flex: 1,
     color: "#ffffff",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
-    lineHeight: 20,
+    lineHeight: 18,
   },
   header: {
     paddingTop: 16,
