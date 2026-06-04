@@ -5,8 +5,21 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { Platform } from "react-native";
+import { Platform, Text } from "react-native";
 import "@/lib/_core/nativewind-pressable";
+
+// Prevent OPPO/ColorOS from injecting text-shadow or stroke on every Text node.
+// CSS has no effect on native Android — this RN defaultProps approach covers the APK.
+if (Platform.OS === "android") {
+  const textDefaults = (Text as any).defaultProps ?? {};
+  (Text as any).defaultProps = {
+    ...textDefaults,
+    style: [
+      { textShadowColor: "transparent", textShadowRadius: 0, textShadowOffset: { width: 0, height: 0 } },
+      textDefaults.style,
+    ],
+  };
+}
 import { ThemeProvider } from "@/lib/theme-provider";
 import { CalculatorProvider } from "@/lib/calculator-context";
 import { DisclaimerModal } from "@/components/disclaimer-modal";
