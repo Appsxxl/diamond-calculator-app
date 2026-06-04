@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useRouter, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { VideoView, useVideoPlayer } from "expo-video";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { t } from "@/lib/translations";
@@ -63,6 +64,12 @@ export default function OnboardingScreen() {
   const { language, setLanguage } = useCalculator();
   const [tooltip, setTooltip] = useState<number | null>(null);
 
+  const player = useVideoPlayer(require("@/assets/onboarding/intro.mp4"), (p) => {
+    p.loop = false;
+    p.muted = true;
+    p.play();
+  });
+
   const canGoBack = navigation.canGoBack();
   const tr = (key: string) => t(language, key);
 
@@ -114,6 +121,16 @@ export default function OnboardingScreen() {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Hero Video */}
+        <View style={S.videoContainer}>
+          <VideoView
+            player={player}
+            style={S.video}
+            contentFit="cover"
+            nativeControls={false}
+          />
         </View>
 
         {/* Header */}
@@ -253,6 +270,19 @@ const S = StyleSheet.create({
   },
   langLabelActive: {
     color: "#38bdf8",
+  },
+  videoContainer: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginTop: 12,
+    marginBottom: 4,
+    backgroundColor: "#000",
+  },
+  video: {
+    width: "100%",
+    height: "100%",
   },
   header: {
     paddingTop: 16,
