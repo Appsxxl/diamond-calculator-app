@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,14 @@ import { VideoView, useVideoPlayer } from "expo-video";
 import { ScreenContainer } from "@/components/screen-container";
 import { useCalculator } from "@/lib/calculator-context";
 import { t } from "@/lib/translations";
+
+const SUBTITLES = [
+  { start: 0.08,  end: 2.333, text: "Is your wealth just digital numbers" },
+  { start: 2.333, end: 3.92,  text: "On a screen controlled by someone else?" },
+  { start: 3.92,  end: 5.541, text: "Plan B is real physical assets" },
+  { start: 5.541, end: 7.541, text: "You can actually hold. Plan B." },
+  { start: 8.56,  end: 10.001, text: "Protect your Wealth! 💎" },
+];
 
 const CARD_ICONS = [
   require("@/assets/onboarding/rebates.png"),
@@ -69,6 +77,17 @@ export default function OnboardingScreen() {
     p.muted = true;
     p.play();
   });
+
+  const [subtitle, setSubtitle] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const t = player.currentTime;
+      const cue = SUBTITLES.find((s) => t >= s.start && t < s.end);
+      setSubtitle(cue?.text ?? "");
+    }, 80);
+    return () => clearInterval(interval);
+  }, [player]);
 
   const canGoBack = navigation.canGoBack();
   const tr = (key: string) => t(language, key);
@@ -131,6 +150,11 @@ export default function OnboardingScreen() {
             contentFit="cover"
             nativeControls={false}
           />
+          {subtitle ? (
+            <View style={S.subtitleBar}>
+              <Text style={S.subtitleText}>{subtitle}</Text>
+            </View>
+          ) : null}
         </View>
 
         {/* Header */}
@@ -283,6 +307,23 @@ const S = StyleSheet.create({
   video: {
     width: "100%",
     height: "100%",
+  },
+  subtitleBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.62)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignItems: "center",
+  },
+  subtitleText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 20,
   },
   header: {
     paddingTop: 16,
